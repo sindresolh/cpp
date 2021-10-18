@@ -1,8 +1,9 @@
 # Cooperative Parssons Problems (CPP)
 
-## Arkitektur (fra 18.10.21)
+## Arkitektur diagram(fra 18.10.21)
 
-![Alt text](./documentation/images/arkitektur.jpg?raw=true)
+<img src="./documentation/images/arkitektur.jpg" width="500">
 
-## Kompontenter (fra 18.10.21)
-![Alt text](./documentation/images/komponentoversikt.jpg?raw=true)
+## Komponent diagram (fra 18.10.21)
+
+<img src="./documentation/images/komponentoversikt.jpg" width="500">
