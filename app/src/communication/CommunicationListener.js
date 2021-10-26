@@ -1,22 +1,21 @@
 import React, { Component, useEffect, useState } from 'react';
 import { withWebRTC } from 'react-liowebrtc';
 import { connect } from 'react-redux';
-
+import store from '../redux/store/store';
 import App from '../App';
-import Counter from '../redux/testcomponents/counterComponent';
 
 /**
- * Listens to changes in the redux store
+ * Helper function to retrive data from the redux store.
  *
  * @param {*} state : Redux store
  * @returns
  */
 const mapStateToProps = (state) => ({
-  counter: state.counter, // update from counter to game state later
+  counter: state.counter, // update from counter to game state later (now gets it form reduxers/index.js)
 });
 
 /**
- * Listens to changes in the state and sends new shout events
+ * Listens to changes in the redux store and sends new messages to all peers.
  */
 class CommunicationListener extends Component {
   /**
@@ -27,15 +26,15 @@ class CommunicationListener extends Component {
   componentDidUpdate(prevProps) {
     if (prevProps.counter !== this.props.counter) {
       console.log('component did update');
-      this.props.webrtc.shout('new count', 'a new count event');
+      const state = store.getState();
+      this.props.webrtc.shout('new count', state.counter);
     }
   }
 
   render() {
     return (
       <>
-        {/* <App /> */}
-        <Counter />
+        <App />
       </>
     );
   }

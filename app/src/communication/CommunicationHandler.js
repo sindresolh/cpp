@@ -1,6 +1,20 @@
 import React, { Component } from 'react';
 import { LioWebRTC } from 'react-liowebrtc';
 import CommunicationListener from './CommunicationListener';
+import store from '../redux/store/store';
+import { connect } from 'react-redux';
+import { increment, decrement } from '../redux/actions';
+
+/**
+ * Helper function to let us call dispatch from a class function
+ */
+const mapStateToProps = null;
+function mapDispatchToProps(dispatch) {
+  return {
+    dispatch_increment: (...args) => dispatch(increment(...args)),
+    dispatch_decrement: (...args) => dispatch(decrement(...args)),
+  };
+}
 
 /**
  * Handles all incoming communication
@@ -34,13 +48,31 @@ class CommunicationHandler extends Component {
    */
   handlePeerData = (webrtc, type, payload, peer) => {
     switch (type) {
-      case 'new count': // Another player pressed the count
-        console.log('incoming count change from another peer');
+      case 'new count':
+        this.newCount(payload); // Another player pressed the count
         break;
       default:
         return;
     }
   };
+
+  /**
+   * Temporarly function to show how the counter can work in multiplayer
+   *
+   * @param {*} payload : Payload send int the webrtc shout
+   */
+  newCount(payload) {
+    console.log('incoming count change from another peer : ' + payload);
+    const counter = store.getState().counter;
+    const { dispatch_increment, dispatch_decrement } = this.props;
+
+    if (payload > counter) {
+      dispatch_increment(5);
+    } else if (payload < counter) {
+      dispatch_decrement(5);
+    }
+    // else counter = payload - do nothing
+  }
 
   render() {
     return (
@@ -57,4 +89,7 @@ class CommunicationHandler extends Component {
   }
 }
 
-export default CommunicationHandler;
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CommunicationHandler);

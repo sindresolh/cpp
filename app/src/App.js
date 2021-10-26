@@ -1,11 +1,11 @@
 import { useSelector } from 'react-redux';
 import CommunicationHandler from './communication/CommunicationHandler';
+import Counter from './redux/testcomponents/counterComponent';
 
 function App() {
-  const counter = useSelector((state) => state.counter);
   return (
     <div className="App">
-      <h1>Hallo verden</h1>
+      <Counter />
     </div>
   );
 }
