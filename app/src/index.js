@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import CommunicationHandler from './communication/CommunicationHandler';
 import reportWebVitals from './reportWebVitals';
 import { createStore, applyMiddleware } from 'redux';
 import allReducer from './redux/reducers';
@@ -18,7 +18,7 @@ const store = createStore(
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <CommunicationHandler />
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')
