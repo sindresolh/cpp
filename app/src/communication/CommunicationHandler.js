@@ -33,8 +33,12 @@ class CommunicationHandler extends Component {
    * @param {*} peer : Keeps information about this peer
    */
   handlePeerData = (webrtc, type, payload, peer) => {
-    if (type === 'event-label') {
-      console.log(payload);
+    switch (type) {
+      case 'new count': // Another player pressed the count
+        console.log('incoming count change from another peer');
+        break;
+      default:
+        return;
     }
   };
 

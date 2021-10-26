@@ -1,46 +1,44 @@
 import React, { Component, useEffect, useState } from 'react';
 import { withWebRTC } from 'react-liowebrtc';
-import { useDispatch } from 'react-redux';
-import { getNumber } from '../redux/actions';
+import { connect } from 'react-redux';
 
 import App from '../App';
 import Counter from '../redux/testcomponents/counterComponent';
 
-/*
-  Listens for incoming channel events
-*/
-const Listener = (props) => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    console.log('funker dette?');
-    //dispatch(getRecentSheets());
-  }, [dispatch]);
-
-  return (
-    <>
-      {/* <App /> */}
-      <Counter />
-    </>
-  );
-};
+/**
+ * Listens to changes in the redux store
+ *
+ * @param {*} state : Redux store
+ * @returns
+ */
+const mapStateToProps = (state) => ({
+  counter: state.counter, // update from counter to game state later
+});
 
 /**
- * Wrapper for the function Listener. WebRTC require classes and useEffect requires a function.
+ * Listens to changes in the state and sends new shout events
  */
 class CommunicationListener extends Component {
-  handleClick = () => {
-    console.log('button clicked');
-    this.props.webrtc.shout('event-label', 'payload');
-  };
+  /**
+   * Shouts when the counter changes
+   *
+   * @param {*} prevProps : Checks that the new counter value is different
+   */
+  componentDidUpdate(prevProps) {
+    if (prevProps.counter !== this.props.counter) {
+      console.log('component did update');
+      this.props.webrtc.shout('new count', 'a new count event');
+    }
+  }
 
   render() {
     return (
       <>
-        <Listener />
+        {/* <App /> */}
+        <Counter />
       </>
     );
   }
 }
 
-export default withWebRTC(CommunicationListener);
+export default connect(mapStateToProps)(withWebRTC(CommunicationListener));

@@ -13,9 +13,3 @@ export const decrement = (number) => {
     payload: number,
   };
 };
-
-export const getNumber = () => {
-  return {
-    type: 'GET_NUMBER',
-  };
-};
