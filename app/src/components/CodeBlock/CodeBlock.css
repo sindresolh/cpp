@@ -13,26 +13,26 @@
   opacity: 0.5;
 }
 
-.c1 {
+.variable {
   background-color: turquoise;
 }
 
-.c2 {
+.function {
   background-color: tomato;
 }
 
-.p1 {
+.player1 {
   border-color: red;
 }
 
-.p2 {
+.player2 {
   border-color: blue;
 }
 
-.p3 {
+.player3 {
   border-color: yellow;
 }
 
-.p4 {
+.player4 {
   border-color: green;
 }

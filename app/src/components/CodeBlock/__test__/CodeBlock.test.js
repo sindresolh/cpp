@@ -15,11 +15,12 @@ let codeBlock; // uses props from player 1
 
 beforeEach(() => {
   codeBlock = render(
+    // must wrap component in DnDProvider to allow dragging
     <DndProvider backend={HTML5Backend}>
       <CodeBlock {...propsP1} />
     </DndProvider>
   );
-  codeBlock = codeBlock.getByTestId('codeBlock-p1');
+  codeBlock = codeBlock.getByTestId('codeBlock-player1');
 });
 
 test('can render to screen', () => {
@@ -32,35 +33,39 @@ test('block border matches player colors', () => {
       <CodeBlock {...propsP2} />
     </DndProvider>
   );
-  codeBlockP2 = codeBlockP2.getByTestId('codeBlock-p2');
+  codeBlockP2 = codeBlockP2.getByTestId('codeBlock-player2');
+
   let codeBlockP3 = render(
     <DndProvider backend={HTML5Backend}>
       <CodeBlock {...propsP3} />
     </DndProvider>
   );
-  codeBlockP3 = codeBlockP3.getByTestId('codeBlock-p3');
+  codeBlockP3 = codeBlockP3.getByTestId('codeBlock-player3');
+
   let codeBlockP4 = render(
     <DndProvider backend={HTML5Backend}>
       <CodeBlock {...propsP4} />
     </DndProvider>
   );
-  codeBlockP4 = codeBlockP4.getByTestId('codeBlock-p4');
+  codeBlockP4 = codeBlockP4.getByTestId('codeBlock-player4');
 
-  expect(codeBlock).toHaveClass('p1');
-  expect(codeBlockP2).toHaveClass('p2');
-  expect(codeBlockP3).toHaveClass('p3');
-  expect(codeBlockP4).toHaveClass('p4');
+  expect(codeBlock).toHaveClass('player1');
+  expect(codeBlockP2).toHaveClass('player2');
+  expect(codeBlockP3).toHaveClass('player3');
+  expect(codeBlockP4).toHaveClass('player4');
 });
 
 test('block background color matches code block category', () => {
-  let codeBlockP4 = render(
+  let variableCodeBlock = codeBlock;
+  let functionCodeBlock = render(
     <DndProvider backend={HTML5Backend}>
       <CodeBlock {...propsP4} />
     </DndProvider>
   );
-  codeBlockP4 = codeBlockP4.getByTestId('codeBlock-p4');
-  expect(codeBlock).toHaveClass('c1'); // variable category
-  expect(codeBlockP4).toHaveClass('c2'); // function category
+  functionCodeBlock = functionCodeBlock.getByTestId('codeBlock-player4');
+
+  expect(variableCodeBlock).toHaveClass('variable');
+  expect(functionCodeBlock).toHaveClass('function');
 });
 
 test.skip('dragging changes opacity ', () => {
@@ -68,9 +73,7 @@ test.skip('dragging changes opacity ', () => {
   someDiv = someDiv.getByTestId('someDiv');
 
   expect(codeBlock).not.toHaveClass('dragging');
-  fireEvent.dragStart(codeBlock);
-  fireEvent.dragEnter(someDiv);
-  fireEvent.dragOver(someDiv);
-
-  expect(screen.getByTestId('codeBlock-p1')).toHaveClass('dragging');
+  // TODO: fireevent to drag element
+  // might help to use chrome event listeners breakpoints to figure out what event are needed to trigger dragging in the test
+  expect(codeBlock).toHaveClass('dragging');
 });

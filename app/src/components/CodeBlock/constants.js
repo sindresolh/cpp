@@ -1,7 +1,7 @@
 // TODO: discuss different types of category
 export const CATEGORY = {
-  VARIABLE: 1,
-  FUNCTION: 2,
+  VARIABLE: 'variable',
+  FUNCTION: 'function',
 };
 
 export const PLAYER = {
