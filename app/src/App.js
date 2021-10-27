@@ -4,7 +4,7 @@ import Counter from './redux/testcomponents/counterComponent';
 
 function App() {
   return (
-    <div className="App">
+    <div className='App'>
       <Counter />
     </div>
   );
