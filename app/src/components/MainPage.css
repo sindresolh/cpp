@@ -1,0 +1,8 @@
+.mainpage {
+  display: flex;
+  flex-direction: column;
+}
+
+.mainpage > div {
+  text-align: center;
+}
