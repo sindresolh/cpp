@@ -1,5 +1,16 @@
+/* TODO: figure out styling*/
 .cb {
   border: solid;
+  border-radius: 8px;
+  height: 20px;
+  width: 100px;
+  margin: 2px;
+  padding: 7px;
+  text-align: left;
+}
+
+.dragging {
+  opacity: 0.5;
 }
 
 .c1 {
