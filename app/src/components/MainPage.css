@@ -1,8 +1,6 @@
 .mainpage {
+  height: 100%;
   display: flex;
-  flex-direction: column;
-}
-
-.mainpage > div {
+  flex-flow: column;
   text-align: center;
 }

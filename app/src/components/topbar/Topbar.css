@@ -1,4 +1,5 @@
 .Topbar {
   background-color: DodgerBlue;
   font-size: 30px;
+  flex: 1;
 }

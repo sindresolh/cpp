@@ -1,4 +1,5 @@
 .Game {
   background-color: lightcoral;
   font-size: 30px;
+  flex: 100;
 }
