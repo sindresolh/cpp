@@ -1,5 +1,4 @@
 import { useSelector } from 'react-redux';
-import CodeBlock from './components/CodeBlock/CodeBlock';
 import CounterComponent from './redux/testcomponents/counterComponent';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { sampleBlockP4 as propsP1 } from './components/CodeBlock/__test__/sample-block';
