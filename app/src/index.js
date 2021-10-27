@@ -1,24 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import CommunicationHandler from './communication/CommunicationHandler';
 import reportWebVitals from './reportWebVitals';
-import { createStore, applyMiddleware } from 'redux';
-import allReducer from './redux/reducers';
 import { Provider } from 'react-redux';
-// import thunk from 'redux-thunk';                                             // PRODUCTION
-
-// Redux store that holds global state
-const store = createStore(
-  allReducer,
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__() // DEBUGGING
-  //applyMiddleware(thunk)                                                      // PRODUCTION
-);
+import store from './redux/store/store';
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <CommunicationHandler />
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')
