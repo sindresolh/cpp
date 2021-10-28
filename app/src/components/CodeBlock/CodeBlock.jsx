@@ -42,7 +42,7 @@ function CodeBlock({ id, content, player, category, placement = null }) {
   );
 }
 
-CodeBlock.prototypes = {
+CodeBlock.proptypes = {
   id: PropTypes.string,
   content: PropTypes.string,
   player: PropTypes.number,
