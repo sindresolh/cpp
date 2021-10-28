@@ -1,0 +1,38 @@
+/* TODO: figure out styling*/
+.cb {
+  border: solid;
+  border-radius: 8px;
+  height: 20px;
+  width: 100px;
+  margin: 2px;
+  padding: 7px;
+  text-align: left;
+}
+
+.dragging {
+  opacity: 0.5;
+}
+
+.variable {
+  background-color: turquoise;
+}
+
+.function {
+  background-color: tomato;
+}
+
+.player1 {
+  border-color: red;
+}
+
+.player2 {
+  border-color: blue;
+}
+
+.player3 {
+  border-color: yellow;
+}
+
+.player4 {
+  border-color: green;
+}
