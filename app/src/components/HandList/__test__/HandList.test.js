@@ -31,3 +31,8 @@ test('hand list contains 4 code blocks', () => {
     expect(block).not.toBeNull();
   });
 });
+
+/*     kanskje lettere å gjøre disse som integration tests...     */
+// TODO: test for å droppe en block i lista.
+
+// TODO: test for å bytte rekkefølge på codeblocks ved å dra en block opp eller ned

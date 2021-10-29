@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import CodeBlock from '../CodeBlock/CodeBlock';
 import PropTypes from 'prop-types';
+import './HandList.css';
+import { useSelector, useDispatch } from 'react-redux';
+import { addBlock, setList } from '../../redux/actions';
 
 /**
  * This component represents a list of code blocks. Each player will have a list.
@@ -13,12 +16,21 @@ import PropTypes from 'prop-types';
 function HandList({ codeBlocks, player }) {
   // TODO: implement droppable
   // TODO: implement reference?
+  const dispatch = useDispatch();
+  const handListIndex = player - 1;
+  const blocks = useSelector((state) => state.handList[handListIndex]);
+
+  // Only set the list on initial render. This might not be an ideal solution -H
+  useEffect(() => {
+    dispatch(setList(codeBlocks, handListIndex));
+  }, []);
+
   return (
     <div>
       <ul data-testid={`handList-player${player}`}>
-        {codeBlocks.map((codeBlock) => {
+        {blocks.map((codeBlock) => {
           return (
-            <li key={codeBlock.id}>
+            <li className={'li'} key={codeBlock.id}>
               <CodeBlock {...codeBlock} />
             </li>
           );
@@ -28,7 +40,7 @@ function HandList({ codeBlocks, player }) {
   );
 }
 
-HandList.proptypes = {
+HandList.propTypes = {
   codeBlocks: PropTypes.array,
   player: PropTypes.number,
 };
