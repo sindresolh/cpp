@@ -4,6 +4,7 @@ import { ItemTypes } from '../../utils/itemtypes';
 import { useRef } from 'react';
 import { useDrag } from 'react-dnd';
 import PropTypes from 'prop-types';
+import { useDrop } from 'react-dnd';
 
 /**
  * This component represents a code block. Can be either in a player list or in a code line in the solution field.
@@ -13,18 +14,59 @@ import PropTypes from 'prop-types';
  * @param {string} content   content of the code block, e.g. 'x = 1'
  * @param {number} player   the player number who owns this block
  * @param {string} category   the category, e.g. 'variable' or 'function'
+ *  @param {function} moveBlock move the block to a a new position
+ * @param {function} findBlock find the current position of the block
  * @param {string} placement    reference to where this block is placed (player list or in solution field)
  * @returns a draggable div containing a code block
  */
-function CodeBlock({ id, content, player, category, placement = null }) {
+function CodeBlock({
+  id,
+  content,
+  player,
+  category,
+  moveBlock,
+  findBlock,
+  placement = null,
+}) {
+  // TODO: we might need this for moving a block from hand -> solution field
   const placementRef = useRef(placement);
-  const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
-    type: ItemTypes.CODEBLOCK,
-    item: { id, content, player, placement: placementRef.current },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
+  const originalIndex = findBlock(id).index; // index before block is moved
+
+  // implement dragging
+  const [{ isDragging }, drag] = useDrag(
+    () => ({
+      type: ItemTypes.CODEBLOCK,
+      item: { id, originalIndex },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+      end: (item, monitor) => {
+        const { id: droppedId, originalIndex } = item;
+        const didDrop = monitor.didDrop();
+        if (!didDrop) {
+          // move block back to original position if dropped outside of a droppable zone
+          moveBlock(droppedId, originalIndex);
+        }
+      },
     }),
-  }));
+    [id, originalIndex, moveBlock]
+  );
+
+  // implement dropping
+  const [, drop] = useDrop(
+    () => ({
+      accept: ItemTypes.CODEBLOCK,
+      canDrop: () => false, // list updates on hover, not on drop
+      hover({ id: draggedId }) {
+        // real-time update list while dragging is happening
+        if (draggedId !== id) {
+          const { index: overIndex } = findBlock(id);
+          moveBlock(draggedId, overIndex);
+        }
+      },
+    }),
+    [findBlock, moveBlock]
+  );
 
   let className = isDragging
     ? `cb ${category} player${player} dragging`
@@ -32,7 +74,7 @@ function CodeBlock({ id, content, player, category, placement = null }) {
 
   return (
     <div
-      ref={drag}
+      ref={(node) => drag(drop(node))}
       data-testid={`codeBlock-player${player}`}
       id={id}
       className={className}

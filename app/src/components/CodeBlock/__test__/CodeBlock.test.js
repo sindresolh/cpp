@@ -13,11 +13,15 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 let codeBlock; // uses props from player 1
 
+// Mocking callback functions used in drag-and-drop functionality
+const findBlock = (arg1) => ({ block: {}, index: 1 });
+const moveBlock = (arg1, arg2) => {};
+
 beforeEach(() => {
   codeBlock = render(
     // must wrap component in DnDProvider to allow dragging
     <DndProvider backend={HTML5Backend}>
-      <CodeBlock {...propsP1} />
+      <CodeBlock {...propsP1} findBlock={findBlock} moveBlock={moveBlock} />
     </DndProvider>
   );
   codeBlock = codeBlock.getByTestId('codeBlock-player1');
@@ -30,21 +34,21 @@ test('can render to screen', () => {
 test('block border matches player colors', () => {
   let codeBlockP2 = render(
     <DndProvider backend={HTML5Backend}>
-      <CodeBlock {...propsP2} />
+      <CodeBlock {...propsP2} findBlock={findBlock} moveBlock={moveBlock} />
     </DndProvider>
   );
   codeBlockP2 = codeBlockP2.getByTestId('codeBlock-player2');
 
   let codeBlockP3 = render(
     <DndProvider backend={HTML5Backend}>
-      <CodeBlock {...propsP3} />
+      <CodeBlock {...propsP3} findBlock={findBlock} moveBlock={moveBlock} />
     </DndProvider>
   );
   codeBlockP3 = codeBlockP3.getByTestId('codeBlock-player3');
 
   let codeBlockP4 = render(
     <DndProvider backend={HTML5Backend}>
-      <CodeBlock {...propsP4} />
+      <CodeBlock {...propsP4} findBlock={findBlock} moveBlock={moveBlock} />
     </DndProvider>
   );
   codeBlockP4 = codeBlockP4.getByTestId('codeBlock-player4');
@@ -59,7 +63,7 @@ test('block background color matches code block category', () => {
   let variableCodeBlock = codeBlock;
   let functionCodeBlock = render(
     <DndProvider backend={HTML5Backend}>
-      <CodeBlock {...propsP4} />
+      <CodeBlock {...propsP4} findBlock={findBlock} moveBlock={moveBlock} />
     </DndProvider>
   );
   functionCodeBlock = functionCodeBlock.getByTestId('codeBlock-player4');
