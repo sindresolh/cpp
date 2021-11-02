@@ -6,12 +6,13 @@ import { useEffect } from 'react';
 
 /**
  *
- * @param {Array} codeBlocks    an array where each element is a block and it's indent
+ * @param {Array} codeLines    an array where each element is a block and it's indent
  * @returns a div containing the blocks players has moved to
  */
-function SolutionField({ codeBlocks }) {
-  const blocks = codeBlocks; //useSelector((state) => state.solutionField);
+function SolutionField({ codeLines }) {
+  const lines = codeLines; //useSelector((state) => state.solutionField);
   const dispatch = useDispatch();
+  console.log(lines);
 
   const findBlock = useCallback(() => {
     // TODO
@@ -19,11 +20,11 @@ function SolutionField({ codeBlocks }) {
       block: {},
       index: 0,
     };
-  }, [blocks]);
+  }, [lines]);
 
   const moveBlock = useCallback(() => {
     // TODO
-  }, [findBlock, blocks]);
+  }, [findBlock, lines]);
 
   useEffect(() => {
     // TODO
@@ -32,12 +33,12 @@ function SolutionField({ codeBlocks }) {
   return (
     <div>
       <ul data-testid='solutionField'>
-        {blocks.map((codeBlock) => {
-          console.log(codeBlock.block);
+        {lines.map((line) => {
+          console.log(line.block);
           return (
-            <li key={codeBlock.block.id}>
+            <li key={line.block.id}>
               <CodeBlock
-                {...codeBlock.block}
+                {...line.block}
                 moveBlock={moveBlock}
                 findBlock={findBlock}
               />

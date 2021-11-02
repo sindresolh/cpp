@@ -14,7 +14,7 @@ beforeEach(() => {
   solutionField = render(
     <Provider store={store}>
       <DndProvider backend={HTML5Backend}>
-        <SolutionField {...props.field} />
+        <SolutionField codeLines={props.field} />
       </DndProvider>
     </Provider>
   );

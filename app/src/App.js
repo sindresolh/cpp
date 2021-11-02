@@ -13,7 +13,7 @@ function App() {
     <div className='App'>
       {/*<Counter/>*/}
       <DndProvider backend={HTML5Backend}>
-        <SolutionField codeBlocks={fieldProps.field} />
+        <SolutionField codeLines={fieldProps.field} />
       </DndProvider>
     </div>
   );
