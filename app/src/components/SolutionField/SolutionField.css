@@ -2,7 +2,9 @@ li {
   background-color: darkorange;
 }
 
-div {
+.divSF {
   max-width: 500px;
-  background-color: darkkhaki;
+  background-color: darksalmon;
+  float: left;
+  margin-left: 100px;
 }

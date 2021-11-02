@@ -2,7 +2,8 @@
   background-color: seagreen;
 }
 
-div {
+.divHL {
   max-width: 200px;
   background-color: cornsilk;
+  float: left;
 }

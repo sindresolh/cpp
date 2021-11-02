@@ -8,6 +8,7 @@ import update from 'immutability-helper';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from '../../utils/itemtypes';
 import PropTypes from 'prop-types';
+import './SolutionField.css';
 
 /**
  *
@@ -63,7 +64,7 @@ function SolutionField({ codeLines }) {
   const [, drop] = useDrop(() => ({ accept: ItemTypes.CODEBLOCK }));
 
   return (
-    <div ref={drop}>
+    <div className={'divSF'} ref={drop}>
       <ul data-testid='solutionField'>
         {lines.map((line) => {
           return (

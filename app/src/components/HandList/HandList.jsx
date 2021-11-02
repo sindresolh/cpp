@@ -23,6 +23,8 @@ function HandList({ codeBlocks, player }) {
   const handListIndex = player - 1;
   const blocks = useSelector((state) => state.handList[handListIndex]);
 
+  console.log(blocks);
+
   // Only set the list on initial render. This might not be an ideal solution -H
   useEffect(() => {
     dispatch(setList(codeBlocks, handListIndex));
@@ -60,7 +62,7 @@ function HandList({ codeBlocks, player }) {
   const [, drop] = useDrop(() => ({ accept: ItemTypes.CODEBLOCK }));
 
   return (
-    <div ref={drop}>
+    <div className={'divHL'} ref={drop}>
       <ul data-testid={`handList-player${player}`}>
         {blocks.map((codeBlock) => {
           return (
