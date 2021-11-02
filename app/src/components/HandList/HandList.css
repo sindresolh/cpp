@@ -1,3 +1,8 @@
 .li {
   background-color: seagreen;
 }
+
+div {
+  max-width: 200px;
+  background-color: cornsilk;
+}

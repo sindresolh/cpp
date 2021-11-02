@@ -23,3 +23,5 @@ beforeEach(() => {
 test('can render to screen', () => {
   expect(solutionField).toBeVisible();
 });
+
+// TODO: store, lage
