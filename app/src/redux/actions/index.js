@@ -13,3 +13,23 @@ export const decrement = (number) => {
     payload: number,
   };
 };
+
+export const setList = (blocks, handListIndex) => {
+  return {
+    type: 'SET_LIST',
+    payload: {
+      blocks,
+      handListIndex,
+    },
+  };
+};
+
+export const addBlock = (block, handListIndex) => {
+  return {
+    type: 'ADD_BLOCK',
+    payload: {
+      block,
+      handListIndex,
+    },
+  };
+};
