@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import CodeBlock from '../CodeBlock/CodeBlock';
 import { useCallback } from 'react';
 import { useEffect } from 'react';
+import { setField } from '../../redux/actions';
 
 /**
  *
@@ -10,9 +11,8 @@ import { useEffect } from 'react';
  * @returns a div containing the blocks players has moved to
  */
 function SolutionField({ codeLines }) {
-  const lines = codeLines; //useSelector((state) => state.solutionField);
+  const lines = useSelector((state) => state.solutionField);
   const dispatch = useDispatch();
-  console.log(lines);
 
   const findBlock = useCallback(() => {
     // TODO
@@ -27,14 +27,13 @@ function SolutionField({ codeLines }) {
   }, [findBlock, lines]);
 
   useEffect(() => {
-    // TODO
+    dispatch(setField(codeLines));
   }, []);
 
   return (
     <div>
       <ul data-testid='solutionField'>
         {lines.map((line) => {
-          console.log(line.block);
           return (
             <li key={line.block.id}>
               <CodeBlock

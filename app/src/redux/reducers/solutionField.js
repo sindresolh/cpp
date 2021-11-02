@@ -7,8 +7,10 @@
 const solutionFieldReducer = (state = [], action) => {
   switch (action.type) {
     case 'SET_FIELD': {
-      // TODO
+      return action.payload.lines;
     }
+    default:
+      return state;
   }
 };
 

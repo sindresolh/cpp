@@ -33,3 +33,12 @@ export const addBlock = (block, handListIndex) => {
     },
   };
 };
+
+export const setField = (lines) => {
+  return {
+    type: 'SET_FIELD',
+    payload: {
+      lines,
+    },
+  };
+};
