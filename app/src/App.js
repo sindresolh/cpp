@@ -5,14 +5,13 @@ import HandList from './components/HandList/HandList';
 import { sampleHandLists as props } from './components/HandList/__test__/sample-list';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import './App.css';
+import MainPage from './components/MainPage';
 
 function App() {
   return (
-    <div className='App'>
-      {/*<Counter/>*/}
-      <DndProvider backend={HTML5Backend}>
-        <HandList codeBlocks={props.player1} player={1} />
-      </DndProvider>
+    <div className="App">
+      <MainPage />
     </div>
   );
 }
