@@ -41,6 +41,46 @@ export const sampleHandLists = {
       category: CATEGORY.VARIABLE,
     },
   ],
+  player3: [
+    {
+      id: 'cb-10',
+      content: 'distractor7',
+      player: PLAYER.P3,
+      category: CATEGORY.FUNCTION,
+    },
+    {
+      id: 'cb-11',
+      content: 'distractor8',
+      player: PLAYER.P3,
+      category: CATEGORY.FUNCTION,
+    },
+    {
+      id: 'cb-12',
+      content: 'distractor9',
+      player: PLAYER.P3,
+      category: CATEGORY.VARIABLE,
+    },
+  ],
+  player4: [
+    {
+      id: 'cb-13',
+      content: 'distractor10',
+      player: PLAYER.P4,
+      category: CATEGORY.VARIABLE,
+    },
+    {
+      id: 'cb-14',
+      content: 'distractor11',
+      player: PLAYER.P4,
+      category: CATEGORY.VARIABLE,
+    },
+    {
+      id: 'cb-15',
+      content: 'distractor12',
+      player: PLAYER.P4,
+      category: CATEGORY.FUNCTION,
+    },
+  ],
 };
 
 export const sampleField = {
@@ -67,8 +107,17 @@ export const sampleField = {
       block: {
         id: 'cb-9',
         content: 'distractor2',
-        player: PLAYER.P1,
+        player: PLAYER.P3,
         category: CATEGORY.VARIABLE,
+      },
+      indent: 3,
+    },
+    {
+      block: {
+        id: 'cb-16',
+        content: 'distractor13',
+        player: PLAYER.P4,
+        category: CATEGORY.FUNCTION,
       },
       indent: 3,
     },

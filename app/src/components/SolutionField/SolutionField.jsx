@@ -109,6 +109,7 @@ function SolutionField({ codeLines }) {
 
   return (
     <div className={'divSF'} ref={drop}>
+      <h6>solution field</h6>
       <ul data-testid='solutionField'>
         {lines.map((line) => {
           return (
