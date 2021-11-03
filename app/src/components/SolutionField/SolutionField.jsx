@@ -51,54 +51,68 @@ function SolutionField({ codeLines }) {
       const blockObj = findBlock(id);
 
       // update the block position in the solution field
-      if (blockObj !== undefined) {
-        line = {
-          block: blockObj.block,
-          indent: atIndent,
-        };
-        updatedLines = update(lines, {
-          $splice: [
-            [blockObj.index, 1],
-            [atIndex, 0, line],
-          ],
-        });
-
-        dispatch(setField(updatedLines));
-
-        // block came from a hand
-      } else {
-        const handLists = store.getState().handList;
-        let blockIsNotFound = true;
-        let handListIndex = 0;
-        let movedBlock;
-        const AMOUNT_OF_PLAYERS = 4;
-
-        // find block and update the correct hand list
-        while (blockIsNotFound && handListIndex < AMOUNT_OF_PLAYERS) {
-          for (
-            let block = 0;
-            block < handLists[handListIndex].length;
-            block++
-          ) {
-            if (handLists[handListIndex][block].id === id) {
-              // block is found, stop looking
-              blockIsNotFound = false;
-              movedBlock = handLists[handListIndex][block];
-              dispatch(removeBlockFromList(id, handListIndex));
-              updatedLines = [
-                ...lines.slice(0, atIndex),
-                { block: movedBlock, indent: atIndent },
-                ...lines.slice(atIndex),
-              ];
-              dispatch(setField(updatedLines));
-            }
-          }
-          handListIndex++;
-        }
-      }
+      if (blockObj !== undefined)
+        swapBlockPositionInField(blockObj, atIndex, atIndent);
+      // block came from a hand
+      else moveBlockFromList(id, atIndex, atIndent);
     },
     [findBlock, lines]
   );
+
+  /**
+   * Swap the position of the dragged block.
+   * @param {object} blockObj     the block and it's originalindex
+   * @param {number} atIndex      the new index the block was dragged into
+   * @param {number} atIndent     the indent the block was dragged into
+   */
+  const swapBlockPositionInField = (blockObj, atIndex, atIndent) => {
+    const line = {
+      block: blockObj.block,
+      indent: atIndent,
+    };
+    const updatedLines = update(lines, {
+      $splice: [
+        [blockObj.index, 1],
+        [atIndex, 0, line],
+      ],
+    });
+
+    dispatch(setField(updatedLines));
+  };
+
+  /**
+   * Move the dragged block from the list it came from
+   * and add it to the solution field.
+   * @param {string} id the id of the block that was dragged
+   * @param {number} atIndex    the index it was dragged into
+   * @param {number} atIndent   the indent it was dragged into
+   */
+  const moveBlockFromList = (id, atIndex, atIndent) => {
+    const handLists = store.getState().handList;
+    let blockIsNotFound = true;
+    let handListIndex = 0;
+    let movedBlock;
+    const AMOUNT_OF_PLAYERS = 4;
+
+    // find block and update the correct hand list
+    while (blockIsNotFound && handListIndex < AMOUNT_OF_PLAYERS) {
+      for (let block = 0; block < handLists[handListIndex].length; block++) {
+        if (handLists[handListIndex][block].id === id) {
+          // block is found, stop looking
+          blockIsNotFound = false;
+          movedBlock = handLists[handListIndex][block];
+          dispatch(removeBlockFromList(id, handListIndex));
+          const updatedLines = [
+            ...lines.slice(0, atIndex),
+            { block: movedBlock, indent: atIndent },
+            ...lines.slice(atIndex),
+          ];
+          dispatch(setField(updatedLines));
+        }
+      }
+      handListIndex++;
+    }
+  };
 
   // only set field on initial render. might not be ideal -H
   useEffect(() => {

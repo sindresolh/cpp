@@ -21,7 +21,6 @@ function HandList({ codeBlocks, player }) {
   const dispatch = useDispatch();
   const handListIndex = player - 1;
   const blocks = useSelector((state) => state.handList[handListIndex]);
-  console.log('blogs length', blocks.length);
   const emptyList = blocks.length === 0;
 
   // Only set the list on initial render. This might not be an ideal solution -H
@@ -46,44 +45,56 @@ function HandList({ codeBlocks, player }) {
   // update the position of the block when moved inside a list
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0, playerNo) => {
-      let updatedBlocks;
       const block = findBlock(id);
 
       // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
-      if (block !== undefined) {
-        updatedBlocks = update(blocks, {
-          $splice: [
-            [block.index, 1],
-            [atIndex, 0, block.block],
-          ],
-        });
-
-        dispatch(setList(updatedBlocks, handListIndex));
-
-        // move block from solution field to hand list
-      } else {
-        let solutionField = store.getState().solutionField;
-        let movedBlock = solutionField.filter(
-          (line) => line.block.id === id
-        )[0];
-
-        // players cannot move their own blocks to another player's hand
-        // a player can only move their own block to their own hand from solution field
-        if (movedBlock !== undefined && movedBlock.block.player === player) {
-          movedBlock = movedBlock.block;
-          updatedBlocks = [
-            ...blocks.slice(0, atIndex),
-            movedBlock,
-            ...blocks.slice(atIndex),
-          ];
-
-          dispatch(setList(updatedBlocks, handListIndex));
-          dispatch(removeBlockFromField(id));
-        }
-      }
+      if (block !== undefined) swapBlockPositionInList(block, atIndex);
+      // move block from solution field to hand list
+      else moveBlockFromField(id, atIndex);
     },
     [findBlock, blocks]
   );
+
+  /**
+   * Swap the position of the dragged block.
+   * @param {object} block  the moved block and the original index
+   * @param {*} atIndex     the new index of the block
+   */
+  const swapBlockPositionInList = (block, atIndex) => {
+    const updatedBlocks = update(blocks, {
+      $splice: [
+        [block.index, 1],
+        [atIndex, 0, block.block],
+      ],
+    });
+
+    dispatch(setList(updatedBlocks, handListIndex));
+  };
+
+  /**
+   * Move the dragged block from the field
+   * and add it to the player's hand.
+   * @param {string} id     the id of the moved block
+   * @param {number} atIndex    the index the block is moved into
+   */
+  const moveBlockFromField = (id, atIndex) => {
+    let solutionField = store.getState().solutionField;
+    let movedBlock = solutionField.filter((line) => line.block.id === id)[0];
+
+    // players cannot move their own blocks to another player's hand
+    // a player can only move their own block to their own hand from solution field
+    if (movedBlock !== undefined && movedBlock.block.player === player) {
+      movedBlock = movedBlock.block;
+      const updatedBlocks = [
+        ...blocks.slice(0, atIndex),
+        movedBlock,
+        ...blocks.slice(atIndex),
+      ];
+
+      dispatch(setList(updatedBlocks, handListIndex));
+      dispatch(removeBlockFromField(id));
+    }
+  };
 
   // blocks can be dropped into empty hand list
   const [, drop] = useDrop(
