@@ -13,13 +13,11 @@ import store from '../../redux/store/store';
  * This component represents a list of code blocks. Each player will have a list.
  * This list can accept dragged codeblocks if it is the correct player.
  *
- * @param {Array} codeBlocks        code blocks in the list
- * @param {Number} player           which player owns the list
- * @returns         a div containing a list of codeblocks
+ * @param {Array} codeBlocks    code blocks in the list
+ * @param {Number} player   which player owns the list
+ * @returns a div containing a list of codeblocks
  */
 function HandList({ codeBlocks, player }) {
-  // TODO: implement droppable
-  // TODO: implement reference?
   const dispatch = useDispatch();
   const handListIndex = player - 1;
   const blocks = useSelector((state) => state.handList[handListIndex]);
@@ -33,7 +31,7 @@ function HandList({ codeBlocks, player }) {
   const findBlock = useCallback(
     (id) => {
       const block = blocks.filter((block) => block.id === id)[0];
-      if (block === undefined) return undefined;
+      if (block === undefined) return undefined; // block came solution field
 
       return {
         block,
@@ -45,46 +43,43 @@ function HandList({ codeBlocks, player }) {
 
   // update the position of the block when moved inside a list
   const moveBlock = useCallback(
-    (id, atIndex, atIndent = 0, moveBlockBack = false) => {
+    (id, atIndex, atIndent = 0, playerNo) => {
       let updatedBlocks;
-      const blockObj = findBlock(id);
-      // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
+      const block = findBlock(id);
 
-      if (blockObj !== undefined) {
+      // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
+      if (block !== undefined) {
         updatedBlocks = update(blocks, {
           $splice: [
-            [blockObj.index, 1],
-            [atIndex, 0, blockObj.block],
+            [block.index, 1],
+            [atIndex, 0, block.block],
           ],
         });
+
         dispatch(setList(updatedBlocks, handListIndex));
-        if (moveBlockBack) {
-          dispatch(removeBlockFromField(id));
-        }
+
         // move block from solution field to hand list
       } else {
         let solutionField = store.getState().solutionField;
         let movedBlock = solutionField.filter(
           (line) => line.block.id === id
         )[0];
-        // prevent player from moving block from one hand to another
-        if (
-          movedBlock !== undefined &&
-          movedBlock.block.player === handListIndex + 1
-        ) {
+
+        // players cannot move their own blocks to another player's hand
+        // a player can only move their own block to their own hand from solution field
+        if (movedBlock !== undefined && movedBlock.block.player === player) {
           movedBlock = movedBlock.block;
-          console.log(movedBlock);
           updatedBlocks = [
             ...blocks.slice(0, atIndex),
             movedBlock,
             ...blocks.slice(atIndex),
           ];
+
           dispatch(setList(updatedBlocks, handListIndex));
           dispatch(removeBlockFromField(id));
         }
       }
     },
-
     [findBlock, blocks]
   );
 

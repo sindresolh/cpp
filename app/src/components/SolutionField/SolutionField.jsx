@@ -25,10 +25,12 @@ function SolutionField({ codeLines }) {
     (id) => {
       const blocks = lines.map((line) => line.block);
       const block = blocks.filter((block) => block.id === id)[0];
-      if (block === undefined) return undefined;
+
+      if (block === undefined) return undefined; // block came from a hand list
 
       const blockIndex = blocks.indexOf(block);
       const indent = lines[blockIndex].indent;
+
       return {
         block,
         index: blockIndex,
@@ -38,15 +40,14 @@ function SolutionField({ codeLines }) {
     [lines]
   );
 
-  // update the position of the block when moved
-  // TODO: implement block moved from solution field and vice versa
+  // move the block within the field or to a hand list
+  // TODO: make sure it works with indents
   const moveBlock = useCallback(
-    // TODO: make sure it works with indents
-    (id, atIndex, atIndent = 0, moveBlockBack = false, playerIndex) => {
+    (id, atIndex, atIndent = 0, playerNo) => {
       let updatedLines;
       let line;
+      // get block if it exists in solutionfield
       const blockObj = findBlock(id);
-      // get block if it exists in solutionfield. undefined means the block came from a hand list. in that case, state will be updated elsewhere
 
       // update the block position in the solution field
       if (blockObj !== undefined) {
@@ -62,18 +63,16 @@ function SolutionField({ codeLines }) {
         });
 
         dispatch(setField(updatedLines));
-        if (moveBlockBack) {
-          dispatch(removeBlockFromList(id, playerIndex));
-        }
-        // add block to solution field and remove from player's hand
-      } else {
-        let handLists = store.getState().handList;
 
+        // block came from a hand
+      } else {
+        const handLists = store.getState().handList;
         let blockIsNotFound = true;
         let handListIndex = 0;
         let movedBlock;
         const AMOUNT_OF_PLAYERS = 4;
 
+        // find block and update the correct hand list
         while (blockIsNotFound && handListIndex < AMOUNT_OF_PLAYERS) {
           for (
             let block = 0;
@@ -81,10 +80,10 @@ function SolutionField({ codeLines }) {
             block++
           ) {
             if (handLists[handListIndex][block].id === id) {
+              // block is found, stop looking
               blockIsNotFound = false;
               movedBlock = handLists[handListIndex][block];
               dispatch(removeBlockFromList(id, handListIndex));
-
               updatedLines = [
                 ...lines.slice(0, atIndex),
                 { block: movedBlock, indent: atIndent },
@@ -100,6 +99,7 @@ function SolutionField({ codeLines }) {
     [findBlock, lines]
   );
 
+  // only set field on initial render. might not be ideal -H
   useEffect(() => {
     dispatch(setField(codeLines));
   }, []);

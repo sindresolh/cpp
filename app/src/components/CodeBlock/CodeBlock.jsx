@@ -19,17 +19,7 @@ import { useDrop } from 'react-dnd';
  * @param {string} placement    reference to where this block is placed (player list or in solution field)
  * @returns a draggable div containing a code block
  */
-function CodeBlock({
-  id,
-  content,
-  player,
-  category,
-  moveBlock,
-  findBlock,
-  placement = null,
-}) {
-  // TODO: we might need this for moving a block from hand -> solution field
-  const placementRef = useRef(placement);
+function CodeBlock({ id, content, player, category, moveBlock, findBlock }) {
   const { index: originalIndex, indent: originalIndent } = findBlock(id); // index and indent before block is moved
 
   // implement dragging
@@ -37,18 +27,20 @@ function CodeBlock({
     () => ({
       type: ItemTypes.CODEBLOCK,
       item: { id, originalIndex, originalIndent },
+
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
+
       end: (item, monitor) => {
         const { id: droppedId, originalIndex, originalIndent } = item;
         const didDrop = monitor.didDrop();
+
         if (!didDrop) {
           // TODO: move block back to original position if dropped outside of a droppable zone
           // commented out due to a bug with multiple players.
           // We can fix this later if we get time. It's a nice-to-have feature at best. Removing it does not break functionality in any way
           /*
-          console.log('move back');
           moveBlock(droppedId, originalIndex, originalIndent, true, player - 1);
           */
         }
@@ -61,12 +53,13 @@ function CodeBlock({
   const [, drop] = useDrop(
     () => ({
       accept: ItemTypes.CODEBLOCK,
+
       canDrop: () => false, // list updates on hover, not on drop
       hover({ id: draggedId }) {
         // real-time update list while dragging is happening
         if (draggedId !== id) {
           const { index: overIndex, indent: overIndent } = findBlock(id);
-          moveBlock(draggedId, overIndex, overIndent);
+          moveBlock(draggedId, overIndex, overIndent, player);
         }
       },
     }),
