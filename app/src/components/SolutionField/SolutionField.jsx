@@ -3,12 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import CodeBlock from '../CodeBlock/CodeBlock';
 import { useCallback } from 'react';
 import { useEffect } from 'react';
-import { setField } from '../../redux/actions';
+import { setField, removeBlockFromList } from '../../redux/actions';
 import update from 'immutability-helper';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from '../../utils/itemtypes';
 import PropTypes from 'prop-types';
 import './SolutionField.css';
+import store from '../../redux/store/store';
 
 /**
  *
@@ -47,6 +48,7 @@ function SolutionField({ codeLines }) {
       const blockObj = findBlock(id);
       // get block if it exists in solutionfield. undefined means the block came from a hand list. in that case, state will be updated elsewhere
 
+      // update the block position in the solution field
       if (blockObj !== undefined) {
         line = {
           block: blockObj.block,
@@ -60,11 +62,42 @@ function SolutionField({ codeLines }) {
         });
 
         dispatch(setField(updatedLines));
+
+        // add block to solution field and remove from player's hand
       } else {
         // TODO: kalle på en annen action
         // hent handlist state. hent blocken
         // dispatch å fjerne den blocken fra lista
         //  dispatch å oppdatere solutionfield til å ha den blocken
+
+        let handLists = store.getState().handList;
+
+        let blockIsNotFound = true;
+        let handListIndex = 0;
+        let movedBlock;
+        const AMOUNT_OF_PLAYERS = 4;
+
+        while (blockIsNotFound && handListIndex < AMOUNT_OF_PLAYERS) {
+          for (
+            let block = 0;
+            block < handLists[handListIndex].length;
+            block++
+          ) {
+            if (handLists[handListIndex][block].id === id) {
+              blockIsNotFound = false;
+              movedBlock = handLists[handListIndex][block];
+              dispatch(removeBlockFromList(id, handListIndex));
+
+              updatedLines = [
+                ...lines.slice(0, atIndex),
+                { block: movedBlock, indent: atIndent },
+                ...lines.slice(atIndex),
+              ];
+              console.log(updatedLines);
+              dispatch(setField(updatedLines));
+            }
+          }
+        }
       }
     },
     [findBlock, lines]

@@ -42,3 +42,13 @@ export const setField = (lines) => {
     },
   };
 };
+
+export const removeBlockFromList = (blockId, handListIndex) => {
+  return {
+    type: 'REMOVE_BLOCK_FROM_LIST',
+    payload: {
+      id: blockId,
+      handListIndex,
+    },
+  };
+};
