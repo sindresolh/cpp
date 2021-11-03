@@ -101,8 +101,8 @@ function HandList({ codeBlocks, player }) {
     () => ({
       accept: ItemTypes.CODEBLOCK,
       canDrop: () => emptyList,
-      drop: (item) => {
-        if (item.player === player) {
+      hover: (item) => {
+        if (emptyList && item.player === player) {
           const solutionField = store.getState().solutionField;
           const line = solutionField.filter(
             (line) => line.block.id === item.id
@@ -115,7 +115,7 @@ function HandList({ codeBlocks, player }) {
         }
       },
     }),
-    [blocks]
+    [blocks, emptyList]
   );
 
   return (

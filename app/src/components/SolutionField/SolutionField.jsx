@@ -124,19 +124,21 @@ function SolutionField({ codeLines }) {
     () => ({
       accept: ItemTypes.CODEBLOCK,
       canDrop: () => emptyField,
-      drop: (item) => {
-        const handListIndex = item.player - 1;
-        const handLists = store.getState().handList;
-        const handList = handLists[handListIndex];
-        const block = handList.filter((block) => block.id === item.id)[0];
+      hover: (item) => {
+        if (emptyField) {
+          const handListIndex = item.player - 1;
+          const handLists = store.getState().handList;
+          const handList = handLists[handListIndex];
+          const block = handList.filter((block) => block.id === item.id)[0];
 
-        // only allow dropping into empty list if it's the player's block
-        // TODO: indent
-        dispatch(setField([{ block, indent: 0 }]));
-        dispatch(removeBlockFromList(item.id, handListIndex));
+          // only allow dropping into empty list if it's the player's block
+          // TODO: indent
+          dispatch(setField([{ block, indent: 0 }]));
+          dispatch(removeBlockFromList(item.id, handListIndex));
+        }
       },
     }),
-    [lines]
+    [lines, emptyField]
   );
 
   return (
