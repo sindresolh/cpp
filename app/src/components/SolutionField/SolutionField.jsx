@@ -42,7 +42,7 @@ function SolutionField({ codeLines }) {
   // TODO: implement block moved from solution field and vice versa
   const moveBlock = useCallback(
     // TODO: make sure it works with indents
-    (id, atIndex, atIndent = 0) => {
+    (id, atIndex, atIndent = 0, moveBlockBack = false, playerIndex) => {
       let updatedLines;
       let line;
       const blockObj = findBlock(id);
@@ -62,14 +62,11 @@ function SolutionField({ codeLines }) {
         });
 
         dispatch(setField(updatedLines));
-
+        if (moveBlockBack) {
+          dispatch(removeBlockFromList(id, playerIndex));
+        }
         // add block to solution field and remove from player's hand
       } else {
-        // TODO: kalle på en annen action
-        // hent handlist state. hent blocken
-        // dispatch å fjerne den blocken fra lista
-        //  dispatch å oppdatere solutionfield til å ha den blocken
-
         let handLists = store.getState().handList;
 
         let blockIsNotFound = true;

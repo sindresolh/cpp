@@ -46,7 +46,7 @@ function HandList({ codeBlocks, player }) {
   // update the position of the block when moved
   // TODO: implement block moved from solution field and vice versa
   const moveBlock = useCallback(
-    (id, atIndex) => {
+    (id, atIndex, atIndent = 0, moveBlockBack = false) => {
       let updatedBlocks;
       const blockObj = findBlock(id);
       // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
@@ -59,6 +59,9 @@ function HandList({ codeBlocks, player }) {
           ],
         });
         dispatch(setList(updatedBlocks, handListIndex));
+        if (moveBlockBack) {
+          dispatch(removeBlockFromField(id));
+        }
       } else {
         // TODO: kalle på en annen action
         // hent solutionfield state. hent blocken

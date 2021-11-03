@@ -45,7 +45,10 @@ function CodeBlock({
         const didDrop = monitor.didDrop();
         if (!didDrop) {
           // move block back to original position if dropped outside of a droppable zone
-          moveBlock(droppedId, originalIndex, originalIndent);
+          console.log('move back now');
+
+          moveBlock(droppedId, originalIndex, originalIndent, true, player - 1);
+          console.log('ok');
         }
       },
     }),
