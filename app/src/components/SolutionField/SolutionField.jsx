@@ -18,6 +18,7 @@ import store from '../../redux/store/store';
  */
 function SolutionField({ codeLines }) {
   const lines = useSelector((state) => state.solutionField);
+  const emptyField = lines.length === 0;
   const dispatch = useDispatch();
 
   // finds the block, it's index and indent based on id
@@ -43,7 +44,7 @@ function SolutionField({ codeLines }) {
   // move the block within the field or to a hand list
   // TODO: make sure it works with indents
   const moveBlock = useCallback(
-    (id, atIndex, atIndent = 0, playerNo) => {
+    (id, atIndex, atIndent = 0) => {
       let updatedLines;
       let line;
       // get block if it exists in solutionfield
@@ -104,8 +105,25 @@ function SolutionField({ codeLines }) {
     dispatch(setField(codeLines));
   }, []);
 
-  // blocks can be dropped into solution field
-  const [, drop] = useDrop(() => ({ accept: ItemTypes.CODEBLOCK }));
+  // blocks can be dropped into empty solution field
+  const [, drop] = useDrop(
+    () => ({
+      accept: ItemTypes.CODEBLOCK,
+      canDrop: () => emptyField,
+      drop: (item) => {
+        const handListIndex = item.player - 1;
+        const handLists = store.getState().handList;
+        const handList = handLists[handListIndex];
+        const block = handList.filter((block) => block.id === item.id)[0];
+
+        // only allow dropping into empty list if it's the player's block
+        // TODO: indent
+        dispatch(setField([{ block, indent: 0 }]));
+        dispatch(removeBlockFromList(item.id, handListIndex));
+      },
+    }),
+    [lines]
+  );
 
   return (
     <div className={'divSF'} ref={drop}>

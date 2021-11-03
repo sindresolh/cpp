@@ -26,7 +26,7 @@ function CodeBlock({ id, content, player, category, moveBlock, findBlock }) {
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: ItemTypes.CODEBLOCK,
-      item: { id, originalIndex, originalIndent },
+      item: { id, originalIndex, originalIndent, player },
 
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
@@ -59,7 +59,7 @@ function CodeBlock({ id, content, player, category, moveBlock, findBlock }) {
         // real-time update list while dragging is happening
         if (draggedId !== id) {
           const { index: overIndex, indent: overIndent } = findBlock(id);
-          moveBlock(draggedId, overIndex, overIndent, player);
+          moveBlock(draggedId, overIndex, overIndent);
         }
       },
     }),

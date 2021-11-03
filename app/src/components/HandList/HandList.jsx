@@ -21,6 +21,8 @@ function HandList({ codeBlocks, player }) {
   const dispatch = useDispatch();
   const handListIndex = player - 1;
   const blocks = useSelector((state) => state.handList[handListIndex]);
+  console.log('blogs length', blocks.length);
+  const emptyList = blocks.length === 0;
 
   // Only set the list on initial render. This might not be an ideal solution -H
   useEffect(() => {
@@ -83,8 +85,27 @@ function HandList({ codeBlocks, player }) {
     [findBlock, blocks]
   );
 
-  // blocks can be dropped into hand list
-  const [, drop] = useDrop(() => ({ accept: ItemTypes.CODEBLOCK }));
+  // blocks can be dropped into empty hand list
+  const [, drop] = useDrop(
+    () => ({
+      accept: ItemTypes.CODEBLOCK,
+      canDrop: () => emptyList,
+      drop: (item) => {
+        if (item.player === player) {
+          const solutionField = store.getState().solutionField;
+          const line = solutionField.filter(
+            (line) => line.block.id === item.id
+          )[0];
+          const block = line.block;
+
+          // only allow dropping into empty list if it's the player's block
+          dispatch(setList([block], handListIndex));
+          dispatch(removeBlockFromField(item.id));
+        }
+      },
+    }),
+    [blocks]
+  );
 
   return (
     <div className={'divHL'} ref={drop}>
