@@ -23,8 +23,6 @@ function HandList({ codeBlocks, player }) {
   const handListIndex = player - 1;
   const blocks = useSelector((state) => state.handList[handListIndex]);
 
-  console.log(blocks);
-
   // Only set the list on initial render. This might not be an ideal solution -H
   useEffect(() => {
     dispatch(setList(codeBlocks, handListIndex));
@@ -34,6 +32,8 @@ function HandList({ codeBlocks, player }) {
   const findBlock = useCallback(
     (id) => {
       const block = blocks.filter((block) => block.id === id)[0];
+      if (block === undefined) return undefined;
+
       return {
         block,
         index: blocks.indexOf(block),
@@ -46,15 +46,26 @@ function HandList({ codeBlocks, player }) {
   // TODO: implement block moved from solution field and vice versa
   const moveBlock = useCallback(
     (id, atIndex) => {
-      const { block, index } = findBlock(id);
-      const updatedBlocks = update(blocks, {
-        $splice: [
-          [index, 1],
-          [atIndex, 0, block],
-        ],
-      });
-      dispatch(setList(updatedBlocks, handListIndex));
+      let updatedBlocks;
+      const blockObj = findBlock(id);
+      // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
+
+      if (blockObj !== undefined) {
+        updatedBlocks = update(blocks, {
+          $splice: [
+            [blockObj.index, 1],
+            [atIndex, 0, blockObj.block],
+          ],
+        });
+        dispatch(setList(updatedBlocks, handListIndex));
+      } else {
+        // TODO: kalle på en annen action
+        // hent solutionfield state. hent blocken
+        // dispatch å fjerne den blocken fra fieldet
+        //  dispatch å oppdatere handlist til å ha den blocken
+      }
     },
+
     [findBlock, blocks]
   );
 

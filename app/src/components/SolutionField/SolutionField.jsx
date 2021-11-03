@@ -24,6 +24,8 @@ function SolutionField({ codeLines }) {
     (id) => {
       const blocks = lines.map((line) => line.block);
       const block = blocks.filter((block) => block.id === id)[0];
+      if (block === undefined) return undefined;
+
       const blockIndex = blocks.indexOf(block);
       const indent = lines[blockIndex].indent;
       return {
@@ -40,18 +42,30 @@ function SolutionField({ codeLines }) {
   const moveBlock = useCallback(
     // TODO: make sure it works with indents
     (id, atIndex, atIndent = 0) => {
-      const { block, index, indent } = findBlock(id);
-      const line = {
-        block: block,
-        indent: atIndent,
-      };
-      const updatedLines = update(lines, {
-        $splice: [
-          [index, 1],
-          [atIndex, 0, line],
-        ],
-      });
-      dispatch(setField(updatedLines));
+      let updatedLines;
+      let line;
+      const blockObj = findBlock(id);
+      // get block if it exists in solutionfield. undefined means the block came from a hand list. in that case, state will be updated elsewhere
+
+      if (blockObj !== undefined) {
+        line = {
+          block: blockObj.block,
+          indent: atIndent,
+        };
+        updatedLines = update(lines, {
+          $splice: [
+            [blockObj.index, 1],
+            [atIndex, 0, line],
+          ],
+        });
+
+        dispatch(setField(updatedLines));
+      } else {
+        // TODO: kalle på en annen action
+        // hent handlist state. hent blocken
+        // dispatch å fjerne den blocken fra lista
+        //  dispatch å oppdatere solutionfield til å ha den blocken
+      }
     },
     [findBlock, lines]
   );

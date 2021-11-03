@@ -32,7 +32,7 @@ export const sampleField = {
         player: PLAYER.P1,
         category: CATEGORY.VARIABLE,
       },
-      indent: 0,
+      indent: 1,
     },
     {
       block: {
@@ -41,7 +41,7 @@ export const sampleField = {
         player: PLAYER.P1,
         category: CATEGORY.FUNCTION,
       },
-      indent: 0,
+      indent: 2,
     },
     {
       block: {
@@ -50,7 +50,7 @@ export const sampleField = {
         player: PLAYER.P1,
         category: CATEGORY.VARIABLE,
       },
-      indent: 0,
+      indent: 3,
     },
   ],
 };

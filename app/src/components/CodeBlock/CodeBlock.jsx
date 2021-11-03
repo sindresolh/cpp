@@ -30,26 +30,26 @@ function CodeBlock({
 }) {
   // TODO: we might need this for moving a block from hand -> solution field
   const placementRef = useRef(placement);
-  const originalIndex = findBlock(id).index; // index before block is moved
+  const { index: originalIndex, indent: originalIndent } = findBlock(id); // index and indent before block is moved
 
   // implement dragging
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: ItemTypes.CODEBLOCK,
-      item: { id, originalIndex },
+      item: { id, originalIndex, originalIndent },
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
       end: (item, monitor) => {
-        const { id: droppedId, originalIndex } = item;
+        const { id: droppedId, originalIndex, originalIndent } = item;
         const didDrop = monitor.didDrop();
         if (!didDrop) {
           // move block back to original position if dropped outside of a droppable zone
-          moveBlock(droppedId, originalIndex);
+          moveBlock(droppedId, originalIndex, originalIndent);
         }
       },
     }),
-    [id, originalIndex, moveBlock]
+    [id, originalIndex, originalIndent, moveBlock]
   );
 
   // implement dropping
@@ -60,8 +60,8 @@ function CodeBlock({
       hover({ id: draggedId }) {
         // real-time update list while dragging is happening
         if (draggedId !== id) {
-          const { index: overIndex } = findBlock(id);
-          moveBlock(draggedId, overIndex);
+          const { index: overIndex, indent: overIndent } = findBlock(id);
+          moveBlock(draggedId, overIndex, overIndent);
         }
       },
     }),
