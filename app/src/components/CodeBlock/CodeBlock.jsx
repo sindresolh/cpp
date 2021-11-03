@@ -44,11 +44,13 @@ function CodeBlock({
         const { id: droppedId, originalIndex, originalIndent } = item;
         const didDrop = monitor.didDrop();
         if (!didDrop) {
-          // move block back to original position if dropped outside of a droppable zone
-          console.log('move back now');
-
+          // TODO: move block back to original position if dropped outside of a droppable zone
+          // commented out due to a bug with multiple players.
+          // We can fix this later if we get time. It's a nice-to-have feature at best. Removing it does not break functionality in any way
+          /*
+          console.log('move back');
           moveBlock(droppedId, originalIndex, originalIndent, true, player - 1);
-          console.log('ok');
+          */
         }
       },
     }),

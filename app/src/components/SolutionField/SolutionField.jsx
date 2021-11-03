@@ -93,6 +93,7 @@ function SolutionField({ codeLines }) {
               dispatch(setField(updatedLines));
             }
           }
+          handListIndex++;
         }
       }
     },

@@ -43,8 +43,7 @@ function HandList({ codeBlocks, player }) {
     [blocks]
   );
 
-  // update the position of the block when moved
-  // TODO: implement block moved from solution field and vice versa
+  // update the position of the block when moved inside a list
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0, moveBlockBack = false) => {
       let updatedBlocks;
@@ -62,22 +61,27 @@ function HandList({ codeBlocks, player }) {
         if (moveBlockBack) {
           dispatch(removeBlockFromField(id));
         }
+        // move block from solution field to hand list
       } else {
-        // TODO: kalle på en annen action
-        // hent solutionfield state. hent blocken
-        // dispatch å fjerne den blocken fra fieldet
-        //  dispatch å oppdatere handlist til å ha den blocken
         let solutionField = store.getState().solutionField;
-        let movedBlock = solutionField.filter((line) => line.block.id === id)[0]
-          .block;
-
-        updatedBlocks = [
-          ...blocks.slice(0, atIndex),
-          movedBlock,
-          ...blocks.slice(atIndex),
-        ];
-        dispatch(setList(updatedBlocks, handListIndex));
-        dispatch(removeBlockFromField(id));
+        let movedBlock = solutionField.filter(
+          (line) => line.block.id === id
+        )[0];
+        // prevent player from moving block from one hand to another
+        if (
+          movedBlock !== undefined &&
+          movedBlock.block.player === handListIndex + 1
+        ) {
+          movedBlock = movedBlock.block;
+          console.log(movedBlock);
+          updatedBlocks = [
+            ...blocks.slice(0, atIndex),
+            movedBlock,
+            ...blocks.slice(atIndex),
+          ];
+          dispatch(setList(updatedBlocks, handListIndex));
+          dispatch(removeBlockFromField(id));
+        }
       }
     },
 

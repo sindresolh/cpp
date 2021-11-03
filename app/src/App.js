@@ -18,6 +18,7 @@ function App() {
         <div style={{ minWidth: '500px', float: 'left' }}>
           <HandList codeBlocks={props.player1} player={1} />
           <SolutionField codeLines={fieldProps.field} />
+          <HandList codeBlocks={props.player2} player={2} />
         </div>
       </DndProvider>
     </div>
