@@ -3,10 +3,11 @@ import CodeBlock from '../CodeBlock/CodeBlock';
 import PropTypes from 'prop-types';
 import './HandList.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { addBlock, setList } from '../../redux/actions';
+import { addBlock, setList, removeBlockFromField } from '../../redux/actions';
 import update from 'immutability-helper';
 import { ItemTypes } from '../../utils/itemtypes';
 import { useDrop } from 'react-dnd';
+import store from '../../redux/store/store';
 
 /**
  * This component represents a list of code blocks. Each player will have a list.
@@ -63,6 +64,17 @@ function HandList({ codeBlocks, player }) {
         // hent solutionfield state. hent blocken
         // dispatch å fjerne den blocken fra fieldet
         //  dispatch å oppdatere handlist til å ha den blocken
+        let solutionField = store.getState().solutionField;
+        let movedBlock = solutionField.filter((line) => line.block.id === id)[0]
+          .block;
+
+        updatedBlocks = [
+          ...blocks.slice(0, atIndex),
+          movedBlock,
+          ...blocks.slice(atIndex),
+        ];
+        dispatch(setList(updatedBlocks, handListIndex));
+        dispatch(removeBlockFromField(id));
       }
     },
 

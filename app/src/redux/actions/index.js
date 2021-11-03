@@ -52,3 +52,12 @@ export const removeBlockFromList = (blockId, handListIndex) => {
     },
   };
 };
+
+export const removeBlockFromField = (id) => {
+  return {
+    type: 'REMOVE_BLOCK_FROM_FIELD',
+    payload: {
+      id,
+    },
+  };
+};

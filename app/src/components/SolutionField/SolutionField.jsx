@@ -93,7 +93,6 @@ function SolutionField({ codeLines }) {
                 { block: movedBlock, indent: atIndent },
                 ...lines.slice(atIndex),
               ];
-              console.log(updatedLines);
               dispatch(setField(updatedLines));
             }
           }

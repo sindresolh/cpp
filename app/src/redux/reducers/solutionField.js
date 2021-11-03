@@ -9,6 +9,12 @@ const solutionFieldReducer = (state = [], action) => {
     case 'SET_FIELD': {
       return action.payload.lines;
     }
+    case 'REMOVE_BLOCK_FROM_FIELD': {
+      const updatedState = state.filter(
+        (line) => line.block.id !== action.payload.id
+      );
+      return updatedState;
+    }
     default:
       return state;
   }
