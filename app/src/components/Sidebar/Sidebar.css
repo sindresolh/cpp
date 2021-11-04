@@ -1,4 +1,10 @@
 .Sidebar {
   background-color: lightgreen;
-  flex: 1;
+  flex: 0.5;
+  position: relative;
+}
+
+.BottomButton {
+  position: absolute;
+  bottom: 0;
 }
