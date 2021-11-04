@@ -3,7 +3,13 @@ import { LioWebRTC } from 'react-liowebrtc';
 import CommunicationListener from './CommunicationListener';
 import store from '../redux/store/store';
 import { connect } from 'react-redux';
-import { increment, decrement } from '../redux/actions';
+import {
+  increment,
+  decrement,
+  setListState,
+  setFieldState,
+} from '../redux/actions';
+import { NEW_COUNT, SET_LIST, SET_FIELD } from './messages';
 
 /**
  * Helper function to let us call dispatch from a class function
@@ -13,6 +19,8 @@ function mapDispatchToProps(dispatch) {
   return {
     dispatch_increment: (...args) => dispatch(increment(...args)),
     dispatch_decrement: (...args) => dispatch(decrement(...args)),
+    dispatch_setList: (...args) => dispatch(setListState(...args)),
+    dispatch_setField: (...args) => dispatch(setFieldState(...args)),
   };
 }
 
@@ -48,8 +56,14 @@ class CommunicationHandler extends Component {
    */
   handlePeerData = (webrtc, type, payload, peer) => {
     switch (type) {
-      case 'new count':
+      case NEW_COUNT:
         this.newCount(payload); // Another player pressed the count
+        break;
+      case SET_LIST:
+        this.setList(payload);
+        break;
+      case SET_FIELD:
+        this.setField(payload);
         break;
       default:
         return;
@@ -74,6 +88,37 @@ class CommunicationHandler extends Component {
     // else counter = payload - do nothing
   }
 
+  /**
+   *  Update the blocks in a hand list.
+   *
+   * @param {*} payload the new state for hand list
+   */
+  setList(payload) {
+    console.log('incoming set list from another peer : ' + payload);
+    const { dispatch_setList } = this.props;
+    const prevState = store.getState().handList;
+    const payloadState = JSON.parse(payload);
+    if (!twoDimensionalArrayIsEqual(prevState, payloadState)) {
+      dispatch_setList(payloadState);
+    }
+  }
+
+  /**
+   *  Update the blocks in the solution field.
+   *
+   * @param {*} payload the new state for solution field
+   */
+  setField(payload) {
+    console.log('incoming set field from another peer : ' + payload);
+    const { dispatch_setField } = this.props;
+    const prevState = store.getState().solutionField;
+    const payloadState = JSON.parse(payload);
+
+    if (!arrayIsEqual(prevState, payloadState)) {
+      dispatch_setField(payloadState);
+    }
+  }
+
   render() {
     return (
       <LioWebRTC
@@ -88,6 +133,65 @@ class CommunicationHandler extends Component {
     );
   }
 }
+/**
+ * Shallow equal check on two dimentional array
+ * @param {array} arr1 previous state
+ * @param {array} arr2  payload state
+ * @returns true the arrays within the 2D array is equal
+ */
+const twoDimensionalArrayIsEqual = (arr1, arr2) => {
+  if (arr1.length !== arr2.length) return false;
+
+  for (var i = 0; i < arr1.length; i++) {
+    if (!arrayIsEqual(arr1[i], arr2[i])) return false;
+  }
+
+  return true;
+};
+
+/**
+ * Shallow equal check on array
+ * @param {array} arr1 previous state
+ * @param {array} arr2 payload state
+ * @returns true if all the objects and values within the array is equal
+ */
+const arrayIsEqual = (arr1, arr2) => {
+  if (arr1.length !== arr2.length) return false;
+  for (var i = 0; i < arr1.length; i++) {
+    if (!objectIsEqual(arr1[i], arr2[i])) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+/**
+ *  Check if all keys in an object is equal.
+ * Since this function is used recursively, check if the object is a value.
+ * @param {object or value} object1 block or indent value
+ * @param {object or value} object2 block or indent value
+ * @returns true if all keys in an object are equal
+ */
+const objectIsEqual = (object1, object2) => {
+  if (typeof object1 !== 'object') {
+    // not an object, check the values
+    return object1 === object2;
+  }
+  const keys1 = Object.keys(object1);
+  const keys2 = Object.keys(object2);
+
+  if (keys1.length !== keys2.length) {
+    return false;
+  }
+
+  for (let key of keys1) {
+    if (!objectIsEqual(object1[key], object2[key])) {
+      return false;
+    }
+  }
+  return true;
+};
 
 export default connect(
   mapStateToProps,

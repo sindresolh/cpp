@@ -15,6 +15,9 @@ const solutionFieldReducer = (state = [], action) => {
       );
       return updatedState;
     }
+    case 'SET_FIELD_STATE': {
+      return action.payload.state;
+    }
     default:
       return state;
   }
