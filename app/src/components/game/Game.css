@@ -1,6 +1,18 @@
 .Game {
   background-color: lightcoral;
-  font-size: 30px;
   flex: 100;
-  float: 'left';
+  display: flex;
+  flex-flow: row;
+}
+
+.GameLeft {
+  display: flex;
+  flex-flow: column;
+  margin: 5vw;
+}
+
+.GameRight {
+  display: flex;
+  flex-flow: column;
+  margin: 5vw;
 }

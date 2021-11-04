@@ -3,8 +3,6 @@
 }
 
 .divHL {
-  max-width: 200px;
   background-color: cornsilk;
-  float: left;
-  margin-left: 50px;
+  margin: 2vw;
 }
