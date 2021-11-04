@@ -1,0 +1,10 @@
+li {
+  background-color: darkorange;
+}
+
+.divSF {
+  max-width: 500px;
+  background-color: darksalmon;
+  float: left;
+  margin-left: 100px;
+}

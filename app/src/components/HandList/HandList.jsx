@@ -3,25 +3,25 @@ import CodeBlock from '../CodeBlock/CodeBlock';
 import PropTypes from 'prop-types';
 import './HandList.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { addBlock, setList } from '../../redux/actions';
+import { addBlock, setList, removeBlockFromField } from '../../redux/actions';
 import update from 'immutability-helper';
 import { ItemTypes } from '../../utils/itemtypes';
 import { useDrop } from 'react-dnd';
+import store from '../../redux/store/store';
 
 /**
  * This component represents a list of code blocks. Each player will have a list.
  * This list can accept dragged codeblocks if it is the correct player.
  *
- * @param {Array} codeBlocks        code blocks in the list
- * @param {Number} player           which player owns the list
- * @returns         a div containing a list of codeblocks
+ * @param {Array} codeBlocks    code blocks in the list
+ * @param {Number} player   which player owns the list
+ * @returns a div containing a list of codeblocks
  */
 function HandList({ codeBlocks, player }) {
-  // TODO: implement droppable
-  // TODO: implement reference?
   const dispatch = useDispatch();
   const handListIndex = player - 1;
   const blocks = useSelector((state) => state.handList[handListIndex]);
+  const emptyList = blocks.length === 0;
 
   // Only set the list on initial render. This might not be an ideal solution -H
   useEffect(() => {
@@ -32,6 +32,8 @@ function HandList({ codeBlocks, player }) {
   const findBlock = useCallback(
     (id) => {
       const block = blocks.filter((block) => block.id === id)[0];
+      if (block === undefined) return undefined; // block came solution field
+
       return {
         block,
         index: blocks.indexOf(block),
@@ -40,27 +42,85 @@ function HandList({ codeBlocks, player }) {
     [blocks]
   );
 
-  // update the position of the block when moved
-  // TODO: implement block moved from solution field and vice versa
+  // update the position of the block when moved inside a list
   const moveBlock = useCallback(
-    (id, atIndex) => {
-      const { block, index } = findBlock(id);
-      const updatedBlocks = update(blocks, {
-        $splice: [
-          [index, 1],
-          [atIndex, 0, block],
-        ],
-      });
-      dispatch(setList(updatedBlocks, handListIndex));
+    (id, atIndex, atIndent = 0, playerNo) => {
+      const block = findBlock(id);
+
+      // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
+      if (block !== undefined) swapBlockPositionInList(block, atIndex);
+      // move block from solution field to hand list
+      else moveBlockFromField(id, atIndex);
     },
     [findBlock, blocks]
   );
 
-  // blocks can be dropped into hand list
-  const [, drop] = useDrop(() => ({ accept: ItemTypes.CODEBLOCK }));
+  /**
+   * Swap the position of the dragged block.
+   * @param {object} block  the moved block and the original index
+   * @param {*} atIndex     the new index of the block
+   */
+  const swapBlockPositionInList = (block, atIndex) => {
+    const updatedBlocks = update(blocks, {
+      $splice: [
+        [block.index, 1],
+        [atIndex, 0, block.block],
+      ],
+    });
+
+    dispatch(setList(updatedBlocks, handListIndex));
+  };
+
+  /**
+   * Move the dragged block from the field
+   * and add it to the player's hand.
+   * @param {string} id     the id of the moved block
+   * @param {number} atIndex    the index the block is moved into
+   */
+  const moveBlockFromField = (id, atIndex) => {
+    let solutionField = store.getState().solutionField;
+    let movedBlock = solutionField.filter((line) => line.block.id === id)[0];
+
+    // players cannot move their own blocks to another player's hand
+    // a player can only move their own block to their own hand from solution field
+    if (movedBlock !== undefined && movedBlock.block.player === player) {
+      movedBlock = movedBlock.block;
+      const updatedBlocks = [
+        ...blocks.slice(0, atIndex),
+        movedBlock,
+        ...blocks.slice(atIndex),
+      ];
+
+      dispatch(setList(updatedBlocks, handListIndex));
+      dispatch(removeBlockFromField(id));
+    }
+  };
+
+  // blocks can be dropped into empty hand list
+  const [, drop] = useDrop(
+    () => ({
+      accept: ItemTypes.CODEBLOCK,
+      canDrop: () => emptyList,
+      hover: (item) => {
+        if (emptyList && item.player === player) {
+          const solutionField = store.getState().solutionField;
+          const line = solutionField.filter(
+            (line) => line.block.id === item.id
+          )[0];
+          const block = line.block;
+
+          // only allow dropping into empty list if it's the player's block
+          dispatch(setList([block], handListIndex));
+          dispatch(removeBlockFromField(item.id));
+        }
+      },
+    }),
+    [blocks, emptyList]
+  );
 
   return (
-    <div ref={drop}>
+    <div className={'divHL'} ref={drop}>
+      <h6>player {player}</h6>
       <ul data-testid={`handList-player${player}`}>
         {blocks.map((codeBlock) => {
           return (

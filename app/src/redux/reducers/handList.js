@@ -23,6 +23,16 @@ const handListReducer = (state = [[], [], [], []], action) => {
       );
       return updatedState;
     }
+    case 'REMOVE_BLOCK_FROM_LIST': {
+      const handList = state[action.payload.handListIndex];
+      const updatedHandList = handList.filter(
+        (block) => block.id !== action.payload.id
+      );
+      const updatedState = state.map((list, index) =>
+        index === action.payload.handListIndex ? updatedHandList : list
+      );
+      return updatedState;
+    }
     default:
       return state;
   }

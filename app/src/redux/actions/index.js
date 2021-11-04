@@ -33,3 +33,31 @@ export const addBlock = (block, handListIndex) => {
     },
   };
 };
+
+export const setField = (lines) => {
+  return {
+    type: 'SET_FIELD',
+    payload: {
+      lines,
+    },
+  };
+};
+
+export const removeBlockFromList = (blockId, handListIndex) => {
+  return {
+    type: 'REMOVE_BLOCK_FROM_LIST',
+    payload: {
+      id: blockId,
+      handListIndex,
+    },
+  };
+};
+
+export const removeBlockFromField = (id) => {
+  return {
+    type: 'REMOVE_BLOCK_FROM_FIELD',
+    payload: {
+      id,
+    },
+  };
+};
