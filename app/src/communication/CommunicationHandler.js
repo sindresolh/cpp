@@ -169,6 +169,8 @@ const arrayIsEqual = (arr1, arr2) => {
 /**
  *  Check if all keys in an object is equal.
  * Since this function is used recursively, check if the object is a value.
+ *
+ * Code is taken from: https://dmitripavlutin.com/how-to-compare-objects-in-javascript/#3-shallow-equality
  * @param {object or value} object1 block or indent value
  * @param {object or value} object2 block or indent value
  * @returns true if all keys in an object are equal
