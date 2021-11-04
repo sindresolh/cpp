@@ -11,6 +11,13 @@
   margin: 5vw;
 }
 
+.GameCenter {
+  flex: 2;
+  display: flex;
+  flex-flow: row;
+  margin: 3vw;
+}
+
 .GameRight {
   display: flex;
   flex-flow: column;

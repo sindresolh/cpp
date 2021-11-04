@@ -4,6 +4,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import HandList from '../HandList/HandList';
 import SolutionField from '../SolutionField/SolutionField';
+import Sidebar from '../Sidebar/Sidebar';
 import {
   sampleHandLists as props,
   sampleField as fieldProps,
@@ -20,7 +21,11 @@ export default function Game() {
           <HandList codeBlocks={props.player2} player={PLAYER.P2} />
         </div>
 
-        <SolutionField codeLines={fieldProps.field} />
+        {/*Middle : Soloutionfield and Sidebar*/}
+        <div className="GameCenter">
+          <SolutionField codeLines={fieldProps.field} />
+          <Sidebar />
+        </div>
 
         {/*Player 3 and 4 on the left side*/}
         <div className="GameRight">
