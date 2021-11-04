@@ -33,6 +33,10 @@ const handListReducer = (state = [[], [], [], []], action) => {
       );
       return updatedState;
     }
+    case 'SET_LIST_STATE': {
+      console.log('inne i reducer handlist');
+      return action.payload.state;
+    }
     default:
       return state;
   }

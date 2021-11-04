@@ -61,3 +61,21 @@ export const removeBlockFromField = (id) => {
     },
   };
 };
+
+export const setListState = (state) => {
+  return {
+    type: 'SET_LIST_STATE',
+    payload: {
+      state,
+    },
+  };
+};
+
+export const setFieldState = (state) => {
+  return {
+    type: 'SET_FIELD_STATE',
+    payload: {
+      state,
+    },
+  };
+};

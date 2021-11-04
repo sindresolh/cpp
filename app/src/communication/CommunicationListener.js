@@ -3,6 +3,7 @@ import { withWebRTC } from 'react-liowebrtc';
 import { connect } from 'react-redux';
 import store from '../redux/store/store';
 import App from '../App';
+import { NEW_COUNT, SET_LIST, SET_FIELD } from './messages';
 
 /**
  * Helper function to retrive data from the redux store.
@@ -12,6 +13,8 @@ import App from '../App';
  */
 const mapStateToProps = (state) => ({
   counter: state.counter, // update from counter to game state later (now gets it form reduxers/index.js)
+  handList: state.handList,
+  solutionField: state.solutionField,
 });
 
 /**
@@ -24,10 +27,19 @@ class CommunicationListener extends Component {
    * @param {*} prevProps : Checks that the new counter value is different
    */
   componentDidUpdate(prevProps) {
+    const state = store.getState();
+
     if (prevProps.counter !== this.props.counter) {
-      console.log('component did update');
-      const state = store.getState();
-      this.props.webrtc.shout('new count', state.counter);
+      this.props.webrtc.shout(NEW_COUNT, state.counter);
+    } else if (prevProps.handList !== this.props.handList) {
+      console.log('component did update', 'handlist');
+
+      const json = JSON.stringify(state.handList);
+      this.props.webrtc.shout(SET_LIST, json);
+    } else if (prevProps.solutionField !== this.props.solutionField) {
+      console.log('component solutionfield did update', 'solution field');
+      const json = JSON.stringify(state.solutionField);
+      this.props.webrtc.shout(SET_FIELD, json);
     }
   }
 
