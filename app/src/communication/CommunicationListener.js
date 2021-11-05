@@ -40,7 +40,10 @@ class CommunicationListener extends Component {
       console.log('component solutionfield did update', 'solution field');
       const json = JSON.stringify(state.solutionField);
       this.props.webrtc.shout(SET_FIELD, json);
-    } else if (prevProps.currentTask !== this.props.currentTask) {
+    } else if (
+      prevProps.currentTask.currentTaskNumber !==
+      this.props.currentTask.currentTaskNumber
+    ) {
       console.log('new task');
       const json = JSON.stringify(state.currentTask);
       this.props.webrtc.shout(NEXT_TASK, json);
