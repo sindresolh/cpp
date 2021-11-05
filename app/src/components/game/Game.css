@@ -18,8 +18,15 @@
   margin: 3vw;
 }
 
+<<<<<<< HEAD
 .GameRight {
   display: flex;
   flex-flow: column;
   margin: 5vw;
+=======
+.middleContainer {
+  flex: 2;
+  border: solid;
+  border-color: slateblue;
+>>>>>>> Player component with tests done.
 }

@@ -2,7 +2,12 @@
 .cb {
   border: solid;
   border-radius: 8px;
+<<<<<<< HEAD
   width: 7vw;
+=======
+  height: 20px;
+  width: 200px;
+>>>>>>> Player component with tests done.
   margin: 2px;
   padding: 7px;
   text-align: left;
