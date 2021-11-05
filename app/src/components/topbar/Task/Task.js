@@ -9,9 +9,11 @@ export default function Task() {
   let currentTaskObject = currentTask.tasks[currentTaskNumber];
 
   return (
-    <div className="Task">
+    <div className="Task" data-testid="Task">
       <div>
-        <label htmlFor="qual">Task {currentTaskObject.id}</label>
+        <label htmlFor="qual" data-testid="label">
+          Task {currentTaskObject.id}
+        </label>
       </div>
       <div>
         <textarea

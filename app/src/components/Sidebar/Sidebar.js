@@ -6,6 +6,10 @@ import { nextTask } from '../../redux/actions';
 
 export default function Sidebar() {
   const dispatch = useDispatch();
+
+  const handleSubmit = () => {
+    dispatch(nextTask());
+  };
   return (
     <div className="Sidebar">
       <div>
@@ -17,7 +21,7 @@ export default function Sidebar() {
       </div>
 
       <div className="BottomButton">
-        <SidebarButton title="Submit" />
+        <SidebarButton title="Submit" handleClick={() => handleSubmit()} />
       </div>
     </div>
   );
