@@ -1,6 +1,6 @@
 .Game {
   background-color: lightcoral;
-  flex: 100;
+  flex: 6;
   display: flex;
   flex-flow: row;
 }

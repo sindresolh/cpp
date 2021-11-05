@@ -6,8 +6,13 @@ import SidebarButton from './SidebarButton/SidebarButton';
 export default function Sidebar() {
   return (
     <div className="Sidebar">
-      <SidebarButton title="Hint" />
-      <SidebarButton title="Clean" />
+      <div>
+        <SidebarButton title="Hint" />
+      </div>
+
+      <div>
+        <SidebarButton title="Clean" />
+      </div>
 
       <div className="BottomButton">
         <SidebarButton title="Submit" />

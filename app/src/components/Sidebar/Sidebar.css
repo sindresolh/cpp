@@ -4,7 +4,12 @@
   position: relative;
 }
 
+.Sidebar > div {
+  float: down;
+}
+
 .BottomButton {
+  margin: 1vw;
   position: absolute;
   bottom: 0;
 }

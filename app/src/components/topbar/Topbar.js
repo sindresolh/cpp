@@ -1,10 +1,11 @@
 import React from 'react';
+import Task from './Task/Task';
 import './Topbar.css';
 
 export default function topbar() {
   return (
     <div className="Topbar">
-      <h1>Topbar</h1> {/* TODO :  Add the topbar elements here */}
+      <Task />
     </div>
   );
 }

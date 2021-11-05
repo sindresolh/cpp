@@ -1,0 +1,18 @@
+.Task {
+  margin: 1vw;
+  text-align: center;
+  background-color: white;
+}
+.Task > div {
+  float: down;
+}
+textarea {
+  margin: 0.5vw;
+  resize: none;
+  border: none;
+  outline: none;
+}
+label {
+  font-weight: bold;
+  background-color: white;
+}
