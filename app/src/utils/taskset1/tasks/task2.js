@@ -1,10 +1,6 @@
-import { logRoles } from '@testing-library/dom';
-import { PLAYER, CATEGORY } from './constants';
+import { PLAYER, CATEGORY } from '../../constants';
 
-export const description =
-  'lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum lorem ipsum';
-
-export const sampleHandLists = {
+const handList = {
   player1: [
     {
       id: 'cb-1',
@@ -18,11 +14,29 @@ export const sampleHandLists = {
       player: PLAYER.P1,
       category: CATEGORY.VARIABLE,
     },
+    {
+      id: 'cb-3',
+      content: 'distractor1',
+      player: PLAYER.P1,
+      category: CATEGORY.FUNCTION,
+    },
   ],
   player2: [
     {
       id: 'cb-4',
       content: 'distractor4',
+      player: PLAYER.P2,
+      category: CATEGORY.VARIABLE,
+    },
+    {
+      id: 'cb-5',
+      content: 'distractor5',
+      player: PLAYER.P2,
+      category: CATEGORY.FUNCTION,
+    },
+    {
+      id: 'cb-6',
+      content: 'distractor3',
       player: PLAYER.P2,
       category: CATEGORY.VARIABLE,
     },
@@ -34,6 +48,18 @@ export const sampleHandLists = {
       player: PLAYER.P3,
       category: CATEGORY.FUNCTION,
     },
+    {
+      id: 'cb-11',
+      content: 'distractor8',
+      player: PLAYER.P3,
+      category: CATEGORY.FUNCTION,
+    },
+    {
+      id: 'cb-12',
+      content: 'distractor9',
+      player: PLAYER.P3,
+      category: CATEGORY.VARIABLE,
+    },
   ],
   player4: [
     {
@@ -42,10 +68,22 @@ export const sampleHandLists = {
       player: PLAYER.P4,
       category: CATEGORY.VARIABLE,
     },
+    {
+      id: 'cb-14',
+      content: 'distractor11',
+      player: PLAYER.P4,
+      category: CATEGORY.VARIABLE,
+    },
+    {
+      id: 'cb-15',
+      content: 'distractor12',
+      player: PLAYER.P4,
+      category: CATEGORY.FUNCTION,
+    },
   ],
 };
 
-export const sampleField = {
+const soloution = {
   field: [
     {
       block: {
@@ -56,14 +94,12 @@ export const sampleField = {
       },
       indent: 1,
     },
-    {
-      block: {
-        id: 'cb-8',
-        content: 'print(z)',
-        player: PLAYER.P2,
-        category: CATEGORY.FUNCTION,
-      },
-      indent: 2,
-    },
   ],
+};
+
+export const task2 = {
+  id: 2,
+  description: 'Dette er en helt annen oppgave.',
+  handList: handList,
+  soloution: soloution,
 };

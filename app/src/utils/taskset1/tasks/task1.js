@@ -1,8 +1,6 @@
-import { PLAYER, CATEGORY } from './constants';
+import { PLAYER, CATEGORY } from '../../constants';
 
-export const description = 'Her er en oppgave til dere.';
-
-export const sampleHandLists = {
+const handList = {
   player1: [
     {
       id: 'cb-1',
@@ -85,7 +83,7 @@ export const sampleHandLists = {
   ],
 };
 
-export const sampleField = {
+const soloution = {
   field: [
     {
       block: {
@@ -96,32 +94,12 @@ export const sampleField = {
       },
       indent: 1,
     },
-    {
-      block: {
-        id: 'cb-8',
-        content: 'print(z)',
-        player: PLAYER.P2,
-        category: CATEGORY.FUNCTION,
-      },
-      indent: 2,
-    },
-    {
-      block: {
-        id: 'cb-9',
-        content: 'distractor2',
-        player: PLAYER.P3,
-        category: CATEGORY.VARIABLE,
-      },
-      indent: 3,
-    },
-    {
-      block: {
-        id: 'cb-16',
-        content: 'distractor13',
-        player: PLAYER.P4,
-        category: CATEGORY.FUNCTION,
-      },
-      indent: 3,
-    },
   ],
+};
+
+export const task1 = {
+  id: 1,
+  description: 'Her er en oppgave til dere.',
+  handList: handList,
+  soloution: soloution,
 };

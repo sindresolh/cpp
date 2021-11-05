@@ -13,7 +13,9 @@ export const decrement = (number) => {
     payload: number,
   };
 };
+// END OF TORTURIAL STUFF - TODO
 
+// START BOARD STATE:
 export const setList = (blocks, handListIndex) => {
   return {
     type: 'SET_LIST',
@@ -77,5 +79,15 @@ export const setFieldState = (state) => {
     payload: {
       state,
     },
+  };
+};
+
+// END BOARD STATE
+
+// START UPDATE TASK
+
+export const nextTask = (state) => {
+  return {
+    type: 'NEXT_TASK',
   };
 };

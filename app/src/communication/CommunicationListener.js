@@ -22,7 +22,7 @@ const mapStateToProps = (state) => ({
  */
 class CommunicationListener extends Component {
   /**
-   * Shouts when the counter changes
+   * Shouts when the state changes
    *
    * @param {*} prevProps : Checks that the new counter value is different
    */
@@ -33,13 +33,14 @@ class CommunicationListener extends Component {
       this.props.webrtc.shout(NEW_COUNT, state.counter);
     } else if (prevProps.handList !== this.props.handList) {
       console.log('component did update', 'handlist');
-
       const json = JSON.stringify(state.handList);
       this.props.webrtc.shout(SET_LIST, json);
     } else if (prevProps.solutionField !== this.props.solutionField) {
       console.log('component solutionfield did update', 'solution field');
       const json = JSON.stringify(state.solutionField);
       this.props.webrtc.shout(SET_FIELD, json);
+    } else if (prevProps.currentTask != this.props.currentTask) {
+      console.log('ny task');
     }
   }
 
