@@ -3,7 +3,7 @@ import { withWebRTC } from 'react-liowebrtc';
 import { connect } from 'react-redux';
 import store from '../redux/store/store';
 import App from '../App';
-import { NEW_COUNT, SET_LIST, SET_FIELD } from './messages';
+import { NEW_COUNT, SET_LIST, SET_FIELD, NEXT_TASK } from './messages';
 
 /**
  * Helper function to retrive data from the redux store.
@@ -41,6 +41,8 @@ class CommunicationListener extends Component {
       this.props.webrtc.shout(SET_FIELD, json);
     } else if (prevProps.currentTask != this.props.currentTask) {
       console.log('ny task');
+      const json = JSON.stringify(state.currentTask);
+      this.props.webrtc.shout(NEXT_TASK, state.json);
     }
   }
 
