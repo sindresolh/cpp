@@ -89,5 +89,8 @@ export const setFieldState = (state) => {
 export const nextTask = (state) => {
   return {
     type: 'NEXT_TASK',
+    payload: {
+      state,
+    },
   };
 };

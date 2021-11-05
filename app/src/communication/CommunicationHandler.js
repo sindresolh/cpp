@@ -68,6 +68,7 @@ class CommunicationHandler extends Component {
         this.setField(payload);
         break;
       case NEXT_TASK:
+        console.log('next task');
         this.nextTask(payload);
       default:
         return;
@@ -123,10 +124,15 @@ class CommunicationHandler extends Component {
     }
   }
 
+  /**
+   * Update the current task
+   *
+   * @param {*} payload new task
+   */
   nextTask(payload) {
     console.log('another player has changed the current task : ' + payload);
     const { dispatch_nextTask } = this.props;
-    const prevState = store.getState().solutionField;
+    const prevState = store.getState().currentTask;
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState) {

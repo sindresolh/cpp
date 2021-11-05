@@ -15,6 +15,7 @@ const mapStateToProps = (state) => ({
   counter: state.counter, // update from counter to game state later (now gets it form reduxers/index.js)
   handList: state.handList,
   solutionField: state.solutionField,
+  currentTask: state.currentTask,
 });
 
 /**
@@ -39,10 +40,10 @@ class CommunicationListener extends Component {
       console.log('component solutionfield did update', 'solution field');
       const json = JSON.stringify(state.solutionField);
       this.props.webrtc.shout(SET_FIELD, json);
-    } else if (prevProps.currentTask != this.props.currentTask) {
-      console.log('ny task');
+    } else if (prevProps.currentTask !== this.props.currentTask) {
+      console.log('new task');
       const json = JSON.stringify(state.currentTask);
-      this.props.webrtc.shout(NEXT_TASK, state.json);
+      this.props.webrtc.shout(NEXT_TASK, json);
     }
   }
 
