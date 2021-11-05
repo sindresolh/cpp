@@ -3,8 +3,6 @@ li {
 }
 
 .divSF {
-  max-width: 500px;
   background-color: darksalmon;
-  float: left;
-  margin-left: 100px;
+  flex: 4;
 }

@@ -1,0 +1,15 @@
+.Sidebar {
+  background-color: lightgreen;
+  flex: 0.5;
+  position: relative;
+}
+
+.Sidebar > div {
+  float: down;
+}
+
+.BottomButton {
+  margin: 1vw;
+  position: absolute;
+  bottom: 0;
+}

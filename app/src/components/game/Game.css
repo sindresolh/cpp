@@ -1,5 +1,25 @@
 .Game {
   background-color: lightcoral;
-  font-size: 30px;
-  flex: 100;
+  flex: 6;
+  display: flex;
+  flex-flow: row;
+}
+
+.GameLeft {
+  display: flex;
+  flex-flow: column;
+  margin: 5vw;
+}
+
+.GameCenter {
+  flex: 2;
+  display: flex;
+  flex-flow: row;
+  margin: 3vw;
+}
+
+.GameRight {
+  display: flex;
+  flex-flow: column;
+  margin: 5vw;
 }

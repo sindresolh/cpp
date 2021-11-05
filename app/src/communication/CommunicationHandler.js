@@ -8,8 +8,9 @@ import {
   decrement,
   setListState,
   setFieldState,
+  nextTask,
 } from '../redux/actions';
-import { NEW_COUNT, SET_LIST, SET_FIELD } from './messages';
+import { NEW_COUNT, SET_LIST, SET_FIELD, NEXT_TASK } from './messages';
 
 /**
  * Helper function to let us call dispatch from a class function
@@ -21,6 +22,7 @@ function mapDispatchToProps(dispatch) {
     dispatch_decrement: (...args) => dispatch(decrement(...args)),
     dispatch_setList: (...args) => dispatch(setListState(...args)),
     dispatch_setField: (...args) => dispatch(setFieldState(...args)),
+    dispatch_nextTask: (...args) => dispatch(nextTask(...args)),
   };
 }
 
@@ -65,6 +67,9 @@ class CommunicationHandler extends Component {
       case SET_FIELD:
         this.setField(payload);
         break;
+      case NEXT_TASK:
+        console.log('next task');
+        this.nextTask(payload);
       default:
         return;
     }
@@ -116,6 +121,22 @@ class CommunicationHandler extends Component {
 
     if (!arrayIsEqual(prevState, payloadState)) {
       dispatch_setField(payloadState);
+    }
+  }
+
+  /**
+   * Update the current task
+   *
+   * @param {*} payload new task
+   */
+  nextTask(payload) {
+    console.log('another player has changed the current task : ' + payload);
+    const { dispatch_nextTask } = this.props;
+    const prevState = store.getState().currentTask;
+    const payloadState = JSON.parse(payload);
+
+    if (prevState !== payloadState) {
+      dispatch_nextTask(payloadState);
     }
   }
 
