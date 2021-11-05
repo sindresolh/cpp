@@ -3,6 +3,12 @@
   list-style-type: none;
 }
 
+ul {
+  margin: 0px;
+  padding: 0px;
+  display: contents;
+}
+
 .divHL {
   background-color: cornsilk;
 }

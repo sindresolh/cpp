@@ -1,0 +1,63 @@
+.player {
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+img {
+  max-width: 60px;
+}
+
+.p2 {
+  flex-direction: row-reverse;
+}
+.p4 {
+  flex-direction: row-reverse;
+}
+
+.leftContainerPlayer {
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.leftRightPlayer {
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.player-1.name {
+  background-color: tomato;
+  border: solid;
+  border-color: rgb(223, 72, 46);
+  border-radius: 8px;
+  padding: 2px;
+  flex: 2;
+}
+
+.player-2.name {
+  background-color: rgb(125, 181, 255);
+  border: solid;
+  border-color: rgb(46, 143, 223);
+  border-radius: 8px;
+  padding: 2px;
+  flex: 2;
+}
+
+.player-3.name {
+  background-color: rgb(84, 235, 146);
+  border: solid;
+  border-color: rgb(40, 185, 77);
+  border-radius: 8px;
+  padding: 2px;
+  flex: 2;
+}
+
+.player-4.name {
+  background-color: rgb(234, 255, 118);
+  border: solid;
+  border-color: rgb(204, 233, 39);
+  border-radius: 8px;
+  padding: 2px;
+  flex: 2;
+}
