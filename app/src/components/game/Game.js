@@ -10,6 +10,7 @@ import {
   sampleField as fieldProps,
 } from '../../utils/sample-data';
 import { PLAYER } from '../../utils/constants';
+import Player from '../Player/Player';
 
 export default function Game() {
   return (
@@ -17,8 +18,16 @@ export default function Game() {
       <div className='Game'>
         {/*Player 1 and 2 on the left side*/}
         <div className='GameLeft'>
-          <HandList codeBlocks={props.player1} player={PLAYER.P1} />
-          <HandList codeBlocks={props.player2} player={PLAYER.P2} />
+          <Player
+            playerNo={PLAYER.P1}
+            name={'Per'}
+            codeBlocks={props.player1}
+          />
+          <Player
+            playerNo={PLAYER.P3}
+            name={'Aase'}
+            codeBlocks={props.player3}
+          />
         </div>
 
         {/*Middle : Soloutionfield and Sidebar*/}
@@ -29,8 +38,16 @@ export default function Game() {
 
         {/*Player 3 and 4 on the left side*/}
         <div className='GameRight'>
-          <HandList codeBlocks={props.player3} player={PLAYER.P3} />
-          <HandList codeBlocks={props.player4} player={PLAYER.P4} />
+          <Player
+            playerNo={PLAYER.P2}
+            name={'Lise'}
+            codeBlocks={props.player2}
+          />
+          <Player
+            playerNo={PLAYER.P4}
+            name={'Kjetil'}
+            codeBlocks={props.player4}
+          />
         </div>
       </div>
     </DndProvider>
