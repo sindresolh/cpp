@@ -1,10 +1,11 @@
 li {
   background-color: darkorange;
+  list-style-type: none;
 }
 
 .divSF {
-  max-width: 500px;
   background-color: darksalmon;
-  float: left;
-  margin-left: 100px;
+  justify-content: center;
+  border: solid;
+  border-color: red;
 }

@@ -1,10 +1,8 @@
 .li {
   background-color: seagreen;
+  list-style-type: none;
 }
 
 .divHL {
-  max-width: 200px;
   background-color: cornsilk;
-  float: left;
-  margin-left: 50px;
 }
