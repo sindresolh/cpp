@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import CodeBlock from '../CodeBlock/CodeBlock';
 import { useCallback } from 'react';
 import { useEffect } from 'react';
-import { setField, removeBlockFromList } from '../../redux/actions';
+import { setField, removeBlockFromList, fieldShoutEvent, listShoutEvent} from '../../redux/actions';
 import update from 'immutability-helper';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from '../../utils/itemtypes';
@@ -55,6 +55,8 @@ function SolutionField({ codeLines }) {
         swapBlockPositionInField(blockObj, atIndex, atIndent);
       // block came from a hand
       else moveBlockFromList(id, atIndex, atIndent);
+
+      dispatch(fieldShoutEvent()); // Move the block for the other players
     },
     [findBlock, lines]
   );
@@ -102,6 +104,7 @@ function SolutionField({ codeLines }) {
           blockIsNotFound = false;
           movedBlock = handLists[handListIndex][block];
           dispatch(removeBlockFromList(id, handListIndex));
+          dispatch(listShoutEvent());
           const updatedLines = [
             ...lines.slice(0, atIndex),
             { block: movedBlock, indent: atIndent },
@@ -134,7 +137,9 @@ function SolutionField({ codeLines }) {
           // only allow dropping into empty list if it's the player's block
           // TODO: indent
           dispatch(setField([{ block, indent: 0 }]));
+          dispatch(fieldShoutEvent()); 
           dispatch(removeBlockFromList(item.id, handListIndex));
+          dispatch(listShoutEvent());
         }
       },
     }),

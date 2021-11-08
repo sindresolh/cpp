@@ -84,6 +84,28 @@ export const setFieldState = (state) => {
 
 // END BOARD STATE
 
+// START SYNCHRONIZATION
+
+export const listShoutEvent = (state) => {
+  return {
+    type: 'LIST_SHOUT_EVENT',
+    payload: {
+      state,
+    },
+  };
+};
+
+export const fieldShoutEvent = (state) => {
+  return {
+    type: 'FIELD_SHOUT_EVENT',
+    payload: {
+      state,
+    },
+  };
+};
+
+// END SYNCHRONIZATION
+
 // START UPDATE TASK
 
 export const nextTask = (state) => {
