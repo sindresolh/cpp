@@ -16,6 +16,8 @@ const mapStateToProps = (state) => ({
   handList: state.handList,
   solutionField: state.solutionField,
   currentTask: state.currentTask,
+  listShoutEvent: state.listShoutEvent,
+  fieldShoutEvent: state.fieldShoutEvent,
 });
 
 /**
@@ -30,7 +32,19 @@ class CommunicationListener extends Component {
   componentDidUpdate(prevProps) {
     const state = store.getState();
 
-    if (prevProps.counter !== this.props.counter) {
+    if (prevProps.listShoutEvent !== this.props.listShoutEvent) {
+      // This peer moved codeblock in an handlist, notify other peers
+      console.log('component did update', 'handlist');
+      const json = JSON.stringify(state.handList);
+      this.props.webrtc.shout(SET_LIST, json);
+    } else if (prevProps.fieldShoutEvent !== this.props.fieldShoutEvent) {
+      // This peer moved codeblock in soloutionfield, notify other peers
+      console.log('component solutionfield did update', 'solution field');
+      const json = JSON.stringify(state.solutionField);
+      this.props.webrtc.shout(SET_FIELD, json);
+    }
+
+    /* if (prevProps.counter !== this.props.counter) {
       this.props.webrtc.shout(NEW_COUNT, state.counter);
     } else if (prevProps.handList !== this.props.handList) {
       console.log('component did update', 'handlist');
@@ -47,7 +61,7 @@ class CommunicationListener extends Component {
       console.log('new task');
       const json = JSON.stringify(state.currentTask);
       this.props.webrtc.shout(NEXT_TASK, json);
-    }
+    } */
   }
 
   render() {

@@ -3,7 +3,7 @@ import CodeBlock from '../CodeBlock/CodeBlock';
 import PropTypes from 'prop-types';
 import './HandList.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { addBlock, setList, removeBlockFromField } from '../../redux/actions';
+import { addBlock, setList, removeBlockFromField, listShoutEvent,fieldShoutEvent} from '../../redux/actions';
 import update from 'immutability-helper';
 import { ItemTypes } from '../../utils/itemtypes';
 import { useDrop } from 'react-dnd';
@@ -51,6 +51,8 @@ function HandList({ codeBlocks, player }) {
       if (block !== undefined) swapBlockPositionInList(block, atIndex);
       // move block from solution field to hand list
       else moveBlockFromField(id, atIndex);
+      
+      dispatch(listShoutEvent());   // Move the block for the other players
     },
     [findBlock, blocks]
   );
@@ -93,6 +95,7 @@ function HandList({ codeBlocks, player }) {
 
       dispatch(setList(updatedBlocks, handListIndex));
       dispatch(removeBlockFromField(id));
+      dispatch(fieldShoutEvent());
     }
   };
 
@@ -111,7 +114,9 @@ function HandList({ codeBlocks, player }) {
 
           // only allow dropping into empty list if it's the player's block
           dispatch(setList([block], handListIndex));
+          dispatch(listShoutEvent());
           dispatch(removeBlockFromField(item.id));
+          dispatch(fieldShoutEvent());
         }
       },
     }),
