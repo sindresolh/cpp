@@ -120,7 +120,6 @@ function HandList({ codeBlocks, player }) {
 
   return (
     <div className={'divHL'} ref={drop}>
-      <h6>player {player}</h6>
       <ul data-testid={`handList-player${player}`}>
         {blocks.map((codeBlock) => {
           return (
