@@ -120,7 +120,7 @@ function SolutionField({ codeLines }) {
   // Rerenders with new codelines
   useEffect(() => {
     dispatch(setField(codeLines));
-  }, [lines]);
+  }, [codeLines]);
 
   // blocks can be dropped into empty solution field
   const [, drop] = useDrop(

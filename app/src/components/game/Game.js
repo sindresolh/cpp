@@ -13,8 +13,6 @@ export default function Game() {
   let currentTaskNumber = currentTask.currentTaskNumber;
   let currentTaskObject = currentTask.tasks[currentTaskNumber];
 
-  console.log('Update');
-
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="Game">

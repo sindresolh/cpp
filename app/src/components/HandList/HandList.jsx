@@ -26,7 +26,7 @@ function HandList({ codeBlocks, player }) {
   // Only set the list on initial render. This might not be an ideal solution -H
   useEffect(() => {
     dispatch(setList(codeBlocks, handListIndex));
-  }, []);
+  }, [codeBlocks]);
 
   // find the block and index based on id
   const findBlock = useCallback(
