@@ -104,6 +104,15 @@ export const fieldShoutEvent = (state) => {
   };
 };
 
+export const newTaskShoutEvent = (state) => {
+  return {
+    type: 'NEW_TASK_SHOUT_EVENT',
+    payload: {
+      state,
+    },
+  };
+};
+
 // END SYNCHRONIZATION
 
 // START UPDATE TASK

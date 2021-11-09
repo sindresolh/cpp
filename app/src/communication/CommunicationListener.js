@@ -18,6 +18,7 @@ const mapStateToProps = (state) => ({
   currentTask: state.currentTask,
   listShoutEvent: state.listShoutEvent,
   fieldShoutEvent: state.fieldShoutEvent,
+  newTaskShoutEvent: state.newTaskShoutEvent,
 });
 
 /**
@@ -43,8 +44,8 @@ class CommunicationListener extends Component {
       const json = JSON.stringify(state.solutionField);
       this.props.webrtc.shout(SET_FIELD, json);
     } else if (
-      prevProps.currentTask.currentTaskNumber !==
-      this.props.currentTask.currentTaskNumber
+      // This peer updated the game state by going to the next task
+      prevProps.newTaskShoutEvent !== this.props.newTaskShoutEvent
     ) {
       console.log('new task');
       const json = JSON.stringify(state.currentTask);

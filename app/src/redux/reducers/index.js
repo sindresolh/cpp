@@ -8,6 +8,7 @@ import solutionFieldReducer from './solutionField';
 import taskReducer from './task';
 import listShoutEventReducer from './listShoutEvent';
 import fieldShoutEventReducer from './fieldShoutEvent';
+import newTaskShoutEventReducer from './newTaskShout';
 
 const allReducers = combineReducers({
   counter: counterReducer,
@@ -17,5 +18,6 @@ const allReducers = combineReducers({
   currentTask: taskReducer,
   listShoutEvent: listShoutEventReducer,
   fieldShoutEvent: fieldShoutEventReducer,
+  newTaskShoutEvent: newTaskShoutEventReducer,
 });
 export default allReducers;

@@ -117,10 +117,10 @@ function SolutionField({ codeLines }) {
     }
   };
 
-  // only set field on initial render. might not be ideal -H
+  // Rerenders with new codelines
   useEffect(() => {
     dispatch(setField(codeLines));
-  }, []);
+  }, [lines]);
 
   // blocks can be dropped into empty solution field
   const [, drop] = useDrop(

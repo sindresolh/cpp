@@ -1,13 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Game.css';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import SolutionField from '../SolutionField/SolutionField';
 import Sidebar from '../Sidebar/Sidebar';
-import {
-  sampleHandLists as props,
-  sampleField as fieldProps,
-} from '../../utils/sample-data';
 import { PLAYER } from '../../utils/constants';
 import Player from '../Player/Player';
 import { useSelector } from 'react-redux';
@@ -16,6 +12,9 @@ export default function Game() {
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
   let currentTaskObject = currentTask.tasks[currentTaskNumber];
+
+  console.log('Update');
+
   return (
     <DndProvider backend={HTML5Backend}>
       <div className="Game">
