@@ -5,6 +5,7 @@
  * @returns true the arrays within the 2D array is equal
  */
 export const twoDimensionalArrayIsEqual = (arr1, arr2) => {
+  if (isNull(arr1, arr2)) return false;
   if (arr1.length !== arr2.length) return false;
 
   for (var i = 0; i < arr1.length; i++) {
@@ -21,6 +22,7 @@ export const twoDimensionalArrayIsEqual = (arr1, arr2) => {
  * @returns true if all the objects and values within the array is equal
  */
 export const arrayIsEqual = (arr1, arr2) => {
+  if (isNull(arr1, arr2)) return false;
   if (arr1.length !== arr2.length) return false;
   for (var i = 0; i < arr1.length; i++) {
     if (!objectIsEqual(arr1[i], arr2[i])) {
@@ -41,6 +43,7 @@ export const arrayIsEqual = (arr1, arr2) => {
  * @returns true if all keys in an object are equal
  */
 export const objectIsEqual = (object1, object2) => {
+  if (isNull(object1, object2)) return false;
   if (typeof object1 !== 'object') {
     // not an object, check the values
     return object1 === object2;
@@ -58,4 +61,17 @@ export const objectIsEqual = (object1, object2) => {
     }
   }
   return true;
+};
+
+/**
+ * Checks if the two inputs are null or undefined
+ *
+ * @param {*} var1
+ * @param {*} var2
+ * @returns
+ */
+const isNull = (var1, var2) => {
+  if (var1 == null || var2 == null) {
+    return true;
+  }
 };
