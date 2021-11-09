@@ -73,6 +73,7 @@ const handList = {
 
 const solutionField = {
   field: [],
+  correct: [],
 };
 
 export const task2 = {
