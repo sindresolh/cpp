@@ -29,36 +29,20 @@ export default function Game() {
       <div className="Game">
         {/*Player 1 and 3 on the left side*/}
         <div className="GameLeft">
-          <Player
-            playerNo={PLAYER.P1}
-            name={'Per'}
-            codeBlocks={currentTaskObject.handList.player1}
-          />
-          <Player
-            playerNo={PLAYER.P3}
-            name={'Aase'}
-            codeBlocks={currentTaskObject.handList.player3}
-          />
+          <Player playerNo={PLAYER.P1} name={'Per'} />
+          <Player playerNo={PLAYER.P3} name={'Aase'} />
         </div>
 
         {/*Middle : Soloutionfield and Sidebar*/}
         <div className="GameCenter">
-          <SolutionField codeLines={currentTaskObject.solutionField.field} />
+          <SolutionField />
           <Sidebar />
         </div>
 
         {/*Player 2 and 4 on the left side*/}
         <div className="GameRight">
-          <Player
-            playerNo={PLAYER.P2}
-            name={'Lise'}
-            codeBlocks={currentTaskObject.handList.player2}
-          />
-          <Player
-            playerNo={PLAYER.P4}
-            name={'Kjetil'}
-            codeBlocks={currentTaskObject.handList.player3}
-          />
+          <Player playerNo={PLAYER.P2} name={'Lise'} />
+          <Player playerNo={PLAYER.P4} name={'Kjetil'} />
         </div>
       </div>
     </DndProvider>
