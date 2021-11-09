@@ -34,6 +34,12 @@ function mapDispatchToProps(dispatch) {
  * Handles all incoming communication
  */
 class CommunicationHandler extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      peers: [],
+    };
+  }
   /**
    * Adds a new client to the room
    *
@@ -58,7 +64,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : Keeps information about the room
    * @param {*} peer : Keeps information about this peer
    */
-  handleRemovedPeer = (webrtc, peer) => {
+  handlePeerLeft = (webrtc, peer) => {
     this.setState({ peers: this.state.peers.filter((p) => !p.closed) });
     console.log(`Peer-${peer.id.substring(0, 5)} disconnected.`);
   };

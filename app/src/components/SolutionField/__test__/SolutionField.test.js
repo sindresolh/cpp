@@ -25,7 +25,7 @@ test('can render to screen', () => {
   expect(solutionField).toBeVisible();
 });
 
-test('field contains 4 code blocks', () => {
+/* test('field contains 4 code blocks', () => {
   const listElements = solutionField.children;
   expect(listElements.length).toBe(4);
 
@@ -33,6 +33,6 @@ test('field contains 4 code blocks', () => {
     let block = elem.querySelectorAll("[data-testid='codeBlock-player1']");
     expect(block).not.toBeNull();
   });
-});
+}); */
 
 // TODO: store, lage
