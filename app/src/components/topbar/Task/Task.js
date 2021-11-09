@@ -1,7 +1,6 @@
 import React from 'react';
 import './Task.css';
-import store from '../../../redux/store/store';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 export default function Task() {
   const currentTask = useSelector((state) => state.currentTask);

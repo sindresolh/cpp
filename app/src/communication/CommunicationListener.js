@@ -42,18 +42,6 @@ class CommunicationListener extends Component {
       console.log('component solutionfield did update', 'solution field');
       const json = JSON.stringify(state.solutionField);
       this.props.webrtc.shout(SET_FIELD, json);
-    }
-
-    /* if (prevProps.counter !== this.props.counter) {
-      this.props.webrtc.shout(NEW_COUNT, state.counter);
-    } else if (prevProps.handList !== this.props.handList) {
-      console.log('component did update', 'handlist');
-      const json = JSON.stringify(state.handList);
-      this.props.webrtc.shout(SET_LIST, json);
-    } else if (prevProps.solutionField !== this.props.solutionField) {
-      console.log('component solutionfield did update', 'solution field');
-      const json = JSON.stringify(state.solutionField);
-      this.props.webrtc.shout(SET_FIELD, json);
     } else if (
       prevProps.currentTask.currentTaskNumber !==
       this.props.currentTask.currentTaskNumber
@@ -61,7 +49,7 @@ class CommunicationListener extends Component {
       console.log('new task');
       const json = JSON.stringify(state.currentTask);
       this.props.webrtc.shout(NEXT_TASK, json);
-    } */
+    }
   }
 
   render() {

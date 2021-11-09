@@ -83,7 +83,7 @@ const handList = {
   ],
 };
 
-const soloution = {
+const solutionField = {
   field: [
     {
       block: {
@@ -94,12 +94,21 @@ const soloution = {
       },
       indent: 1,
     },
+    {
+      block: {
+        id: 'cb-8',
+        content: 'print(z)',
+        player: PLAYER.P2,
+        category: CATEGORY.FUNCTION,
+      },
+      indent: 2,
+    },
   ],
 };
 
 export const task2 = {
   id: 2,
-  description: 'Dette er en helt annen oppgave.',
+  description: 'Her er en oppgave til dere.',
   handList: handList,
-  soloution: soloution,
+  solutionField: solutionField,
 };
