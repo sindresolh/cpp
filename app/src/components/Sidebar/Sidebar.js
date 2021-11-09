@@ -17,9 +17,14 @@ export default function Sidebar() {
    * Make all players go to the next task of the submit is correct
    */
   const handleSubmit = () => {
-    if (arrayIsEqual(field, currentTaskObject.solutionField.correct)) {
+    if (currentTaskNumber === currentTask.tasks.length - 1) {
+      alert('Gratulerer! Dere har fullført alle oppgavene.');
+    } else if (arrayIsEqual(field, currentTaskObject.solutionField.correct)) {
       dispatch(nextTask());
       dispatch(newTaskShoutEvent());
+      alert('Riktig! Går videre til neste oppgave.');
+    } else {
+      alert('Dette ble dessverre ikke riktig. Vennligst prøv igjen.');
     }
   };
   return (
