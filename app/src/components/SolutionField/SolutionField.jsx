@@ -2,7 +2,6 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import CodeBlock from '../CodeBlock/CodeBlock';
 import { useCallback } from 'react';
-import { useEffect } from 'react';
 import { setField, removeBlockFromList, fieldShoutEvent, listShoutEvent} from '../../redux/actions';
 import update from 'immutability-helper';
 import { useDrop } from 'react-dnd';
@@ -16,7 +15,7 @@ import store from '../../redux/store/store';
  * @param {Array} codeLines    an array where each element is a block and it's indent
  * @returns a div containing the blocks players has moved to
  */
-function SolutionField({ codeLines }) {
+function SolutionField({ }) {
   const lines = useSelector((state) => state.solutionField);
   const emptyField = lines.length === 0;
   const dispatch = useDispatch();
@@ -116,11 +115,6 @@ function SolutionField({ codeLines }) {
       handListIndex++;
     }
   };
-
-  // Rerenders with new codelines
-  useEffect(() => {
-    dispatch(setField(codeLines));
-  }, [codeLines]);
 
   // blocks can be dropped into empty solution field
   const [, drop] = useDrop(

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react';
+import React, {useCallback } from 'react';
 import CodeBlock from '../CodeBlock/CodeBlock';
 import PropTypes from 'prop-types';
 import './HandList.css';
@@ -17,16 +17,11 @@ import store from '../../redux/store/store';
  * @param {Number} player   which player owns the list
  * @returns a div containing a list of codeblocks
  */
-function HandList({ codeBlocks, player }) {
+function HandList({ player }) {
   const dispatch = useDispatch();
   const handListIndex = player - 1;
   const blocks = useSelector((state) => state.handList[handListIndex]);
   const emptyList = blocks.length === 0;
-
-  // Only set the list on initial render. This might not be an ideal solution -H
-  useEffect(() => {
-    dispatch(setList(codeBlocks, handListIndex));
-  }, [codeBlocks]);
 
   // find the block and index based on id
   const findBlock = useCallback(
