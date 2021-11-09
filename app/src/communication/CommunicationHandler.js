@@ -49,6 +49,17 @@ class CommunicationHandler extends Component {
   };
 
   /**
+   * Called when a new peer leaves the room
+   *
+   * @param {*} webrtc : Keeps information about the room
+   * @param {*} peer : Keeps information about this peer
+   */
+  handleRemovedPeer = (webrtc, peer) => {
+    this.setState({ peers: this.state.peers.filter((p) => !p.closed) });
+    console.log(`Peer-${peer.id.substring(0, 5)} disconnected.`);
+  };
+
+  /**
    * Called when another peer in the room calls: webrtc.shout
    *
    * @param {*} webrtc : Keeps information about the room
