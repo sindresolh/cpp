@@ -8,7 +8,7 @@ export default function Task() {
   let currentTaskObject = currentTask.tasks[currentTaskNumber];
 
   return (
-    <div className="Task" data-testid="Task">
+    <div className="Task">
       <div>
         <label htmlFor="qual" data-testid="label">
           Task {currentTaskObject.id}
@@ -16,6 +16,7 @@ export default function Task() {
       </div>
       <div>
         <textarea
+          data-testid="textarea"
           id="qual"
           rows="5"
           cols="60"

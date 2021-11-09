@@ -26,7 +26,7 @@ export default function Game() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="Game">
+      <div className="Game" data-testid="Game">
         {/*Player 1 and 3 on the left side*/}
         <div className="GameLeft">
           <Player playerNo={PLAYER.P1} name={'Per'} />

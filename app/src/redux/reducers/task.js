@@ -1,4 +1,5 @@
 // Get the current taskset - mocking this for now
+// IMPORTANT : taskset1 is assumed for all tests
 import { taskset } from '../../utils/taskset1/taskset';
 
 const initialState = {
