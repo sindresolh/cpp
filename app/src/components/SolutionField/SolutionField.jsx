@@ -2,7 +2,12 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import CodeBlock from '../CodeBlock/CodeBlock';
 import { useCallback } from 'react';
-import { setField, removeBlockFromList, fieldShoutEvent, listShoutEvent} from '../../redux/actions';
+import {
+  setField,
+  removeBlockFromList,
+  fieldShoutEvent,
+  listShoutEvent,
+} from '../../redux/actions';
 import update from 'immutability-helper';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from '../../utils/itemtypes';
@@ -15,7 +20,7 @@ import store from '../../redux/store/store';
  * @param {Array} codeLines    an array where each element is a block and it's indent
  * @returns a div containing the blocks players has moved to
  */
-function SolutionField({ }) {
+function SolutionField({}) {
   const lines = useSelector((state) => state.solutionField);
   const emptyField = lines.length === 0;
   const dispatch = useDispatch();
@@ -131,7 +136,7 @@ function SolutionField({ }) {
           // only allow dropping into empty list if it's the player's block
           // TODO: indent
           dispatch(setField([{ block, indent: 0 }]));
-          dispatch(fieldShoutEvent()); 
+          dispatch(fieldShoutEvent());
           dispatch(removeBlockFromList(item.id, handListIndex));
           dispatch(listShoutEvent());
         }
@@ -143,10 +148,10 @@ function SolutionField({ }) {
   return (
     <div className={'divSF'} ref={drop}>
       <h6>solution field</h6>
-      <ul data-testid='solutionField'>
+      <ul data-testid="solutionField">
         {lines.map((line) => {
           return (
-            <li key={line.block.id}>
+            <li key={line.block.id} data-testid="lines">
               <CodeBlock
                 {...line.block}
                 moveBlock={moveBlock}

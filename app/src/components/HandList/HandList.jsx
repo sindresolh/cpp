@@ -1,9 +1,15 @@
-import React, {useCallback } from 'react';
+import React, { useCallback } from 'react';
 import CodeBlock from '../CodeBlock/CodeBlock';
 import PropTypes from 'prop-types';
 import './HandList.css';
 import { useSelector, useDispatch } from 'react-redux';
-import { addBlock, setList, removeBlockFromField, listShoutEvent,fieldShoutEvent} from '../../redux/actions';
+import {
+  addBlock,
+  setList,
+  removeBlockFromField,
+  listShoutEvent,
+  fieldShoutEvent,
+} from '../../redux/actions';
 import update from 'immutability-helper';
 import { ItemTypes } from '../../utils/itemtypes';
 import { useDrop } from 'react-dnd';
@@ -46,8 +52,8 @@ function HandList({ player }) {
       if (block !== undefined) swapBlockPositionInList(block, atIndex);
       // move block from solution field to hand list
       else moveBlockFromField(id, atIndex);
-      
-      dispatch(listShoutEvent());   // Move the block for the other players
+
+      dispatch(listShoutEvent()); // Move the block for the other players
     },
     [findBlock, blocks]
   );
@@ -123,7 +129,11 @@ function HandList({ player }) {
       <ul data-testid={`handList-player${player}`}>
         {blocks.map((codeBlock) => {
           return (
-            <li className={'li'} key={codeBlock.id}>
+            <li
+              className={'li'}
+              key={codeBlock.id}
+              data-testid={`listitem-player${player}`}
+            >
               <CodeBlock
                 {...codeBlock}
                 moveBlock={moveBlock}
