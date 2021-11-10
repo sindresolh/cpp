@@ -6,10 +6,16 @@ import '@testing-library/jest-dom';
 import store from '../../../redux/store/store';
 import { Provider } from 'react-redux';
 import Game from '../Game';
-import SolutionField from '../../SolutionField/SolutionField';
 import { taskset } from '../../../utils/taskset1/taskset';
+import { PLAYER, CATEGORY } from '../../../utils/constants';
 import '@testing-library/jest-dom';
-import { nextTask } from '../../../redux/actions';
+import {
+  nextTask,
+  setField,
+  setList,
+  removeBlockFromField,
+  removeBlockFromList,
+} from '../../../redux/actions';
 
 let game;
 
@@ -109,3 +115,101 @@ describe('can go the next task', () => {
     expect(listItems.length).toBe(3);
   });
 });
+
+describe('can dispatch setField', () => {
+  it('set empty', () => {
+    store.dispatch(setField([]));
+    let lines = screen.queryAllByTestId('lines');
+    expect(lines.length).toBe(0);
+  });
+
+  it('set content', () => {
+    let newField = [
+      {
+        block: {
+          id: 'cb-7',
+          content: 'z = x + y',
+          player: PLAYER.P1,
+          category: CATEGORY.VARIABLE,
+        },
+        indent: 1,
+      },
+      {
+        block: {
+          id: 'cb-8',
+          content: 'print(z)',
+          player: PLAYER.P2,
+          category: CATEGORY.FUNCTION,
+        },
+        indent: 2,
+      },
+      {
+        block: {
+          id: 'cb-9',
+          content: 'distractor2',
+          player: PLAYER.P3,
+          category: CATEGORY.VARIABLE,
+        },
+        indent: 3,
+      },
+      {
+        block: {
+          id: 'cb-16',
+          content: 'distractor13',
+          player: PLAYER.P4,
+          category: CATEGORY.FUNCTION,
+        },
+        indent: 3,
+      },
+    ];
+
+    store.dispatch(setField(newField));
+    let lines = screen.queryAllByTestId('lines');
+    expect(lines.length).toBe(4);
+
+    store.dispatch(removeBlockFromField('cb-7')); // remove a block
+    lines = screen.queryAllByTestId('lines');
+    expect(lines.length).toBe(3);
+  });
+});
+
+describe('can dispatch setList', () => {
+  it('set empty', () => {
+    store.dispatch(setList([], 0));
+    let currentList = store.getState().handList;
+    expect(currentList[0].length).toBe(0);
+  });
+
+  it('set content', () => {
+    let newList = [
+      {
+        id: 'cb-1',
+        content: 'x = 1',
+        player: PLAYER.P1,
+        category: CATEGORY.VARIABLE,
+      },
+      {
+        id: 'cb-2',
+        content: 'y = 2',
+        player: PLAYER.P1,
+        category: CATEGORY.VARIABLE,
+      },
+      {
+        id: 'cb-3',
+        content: 'distractor1',
+        player: PLAYER.P1,
+        category: CATEGORY.FUNCTION,
+      },
+    ];
+
+    store.dispatch(setList(newList, 0));
+    let currentList = store.getState().handList;
+    expect(currentList[0].length).toBe(3);
+
+    store.dispatch(removeBlockFromList('cb-1', 0)); // remove a block
+    currentList = store.getState().handList;
+    expect(currentList[0].length).toBe(2);
+  });
+});
+
+// setList + remove på begge.
