@@ -39,7 +39,7 @@ export default function Game() {
           <Sidebar />
         </div>
 
-        {/*Player 2 and 4 on the left side*/}
+        {/*Player 2 and 4 on the right side*/}
         <div className='GameRight'>
           <Player playerNo={PLAYER.P2} name={'Lise'} />
           <Player playerNo={PLAYER.P4} name={'Kjetil'} />

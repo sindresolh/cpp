@@ -49,10 +49,10 @@ describe('game is initialized', () => {
     let currentList = store.getState().handList;
     let listFromFile = taskset.tasks[0].handList;
 
-    expect(currentList[0]).toBe(listFromFile.player1);
-    expect(currentList[1]).toBe(listFromFile.player2);
-    expect(currentList[2]).toBe(listFromFile.player3);
-    expect(currentList[3]).toBe(listFromFile.player4);
+    expect(currentList[PLAYER.P1 - 1]).toBe(listFromFile.player1);
+    expect(currentList[PLAYER.P2 - 1]).toBe(listFromFile.player2);
+    expect(currentList[PLAYER.P3 - 1]).toBe(listFromFile.player3);
+    expect(currentList[PLAYER.P4 - 1]).toBe(listFromFile.player4);
   });
 
   it('handlist board initalized', () => {
@@ -175,9 +175,9 @@ describe('can dispatch setField', () => {
 
 describe('can dispatch setList', () => {
   it('set empty', () => {
-    store.dispatch(setList([], 0));
+    store.dispatch(setList([], PLAYER.P1 - 1));
     let currentList = store.getState().handList;
-    expect(currentList[0].length).toBe(0);
+    expect(currentList[PLAYER.P1 - 1].length).toBe(0);
   });
 
   it('set content', () => {
@@ -202,13 +202,13 @@ describe('can dispatch setList', () => {
       },
     ];
 
-    store.dispatch(setList(newList, 0));
+    store.dispatch(setList(newList, PLAYER.P1 - 1));
     let currentList = store.getState().handList;
-    expect(currentList[0].length).toBe(3);
+    expect(currentList[PLAYER.P1 - 1].length).toBe(3);
 
     store.dispatch(removeBlockFromList('cb-1', 0)); // remove a block
     currentList = store.getState().handList;
-    expect(currentList[0].length).toBe(2);
+    expect(currentList[PLAYER.P1 - 1].length).toBe(2);
   });
 });
 
