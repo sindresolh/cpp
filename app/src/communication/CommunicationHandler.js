@@ -11,6 +11,10 @@ import {
   nextTask,
 } from '../redux/actions';
 import { NEW_COUNT, SET_LIST, SET_FIELD, NEXT_TASK } from './messages';
+import {
+  twoDimensionalArrayIsEqual,
+  arrayIsEqual,
+} from '../utils/compareArrays/compareArrays';
 
 /**
  * Helper function to let us call dispatch from a class function
@@ -30,6 +34,12 @@ function mapDispatchToProps(dispatch) {
  * Handles all incoming communication
  */
 class CommunicationHandler extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      peers: [],
+    };
+  }
   /**
    * Adds a new client to the room
    *
@@ -46,6 +56,17 @@ class CommunicationHandler extends Component {
    */
   handleCreatedPeer = (webrtc, peer) => {
     console.log(`Peer-${peer.id.substring(0, 5)} joined the room!`);
+  };
+
+  /**
+   * Called when a new peer leaves the room
+   *
+   * @param {*} webrtc : Keeps information about the room
+   * @param {*} peer : Keeps information about this peer
+   */
+  handlePeerLeft = (webrtc, peer) => {
+    this.setState({ peers: this.state.peers.filter((p) => !p.closed) });
+    console.log(`Peer-${peer.id.substring(0, 5)} disconnected.`);
   };
 
   /**
@@ -154,67 +175,6 @@ class CommunicationHandler extends Component {
     );
   }
 }
-/**
- * Shallow equal check on two dimentional array
- * @param {array} arr1 previous state
- * @param {array} arr2  payload state
- * @returns true the arrays within the 2D array is equal
- */
-const twoDimensionalArrayIsEqual = (arr1, arr2) => {
-  if (arr1.length !== arr2.length) return false;
-
-  for (var i = 0; i < arr1.length; i++) {
-    if (!arrayIsEqual(arr1[i], arr2[i])) return false;
-  }
-
-  return true;
-};
-
-/**
- * Shallow equal check on array
- * @param {array} arr1 previous state
- * @param {array} arr2 payload state
- * @returns true if all the objects and values within the array is equal
- */
-const arrayIsEqual = (arr1, arr2) => {
-  if (arr1.length !== arr2.length) return false;
-  for (var i = 0; i < arr1.length; i++) {
-    if (!objectIsEqual(arr1[i], arr2[i])) {
-      return false;
-    }
-  }
-
-  return true;
-};
-
-/**
- *  Check if all keys in an object is equal.
- * Since this function is used recursively, check if the object is a value.
- *
- * Code is taken from: https://dmitripavlutin.com/how-to-compare-objects-in-javascript/#3-shallow-equality
- * @param {object or value} object1 block or indent value
- * @param {object or value} object2 block or indent value
- * @returns true if all keys in an object are equal
- */
-const objectIsEqual = (object1, object2) => {
-  if (typeof object1 !== 'object') {
-    // not an object, check the values
-    return object1 === object2;
-  }
-  const keys1 = Object.keys(object1);
-  const keys2 = Object.keys(object2);
-
-  if (keys1.length !== keys2.length) {
-    return false;
-  }
-
-  for (let key of keys1) {
-    if (!objectIsEqual(object1[key], object2[key])) {
-      return false;
-    }
-  }
-  return true;
-};
 
 export default connect(
   mapStateToProps,

@@ -1,7 +1,3 @@
-import { useSelector } from 'react-redux';
-import CommunicationHandler from './communication/CommunicationHandler';
-import Counter from './redux/testcomponents/counterComponent';
-
 import './App.css';
 import MainPage from './components/MainPage';
 

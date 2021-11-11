@@ -4,7 +4,7 @@ import './Topbar.css';
 
 export default function topbar() {
   return (
-    <div className="Topbar">
+    <div className='Topbar'>
       <Task />
     </div>
   );

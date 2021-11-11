@@ -3,7 +3,7 @@ import { withWebRTC } from 'react-liowebrtc';
 import { connect } from 'react-redux';
 import store from '../redux/store/store';
 import App from '../App';
-import { NEW_COUNT, SET_LIST, SET_FIELD, NEXT_TASK } from './messages';
+import { SET_LIST, SET_FIELD, NEXT_TASK } from './messages';
 
 /**
  * Helper function to retrive data from the redux store.
@@ -18,6 +18,7 @@ const mapStateToProps = (state) => ({
   currentTask: state.currentTask,
   listShoutEvent: state.listShoutEvent,
   fieldShoutEvent: state.fieldShoutEvent,
+  newTaskShoutEvent: state.newTaskShoutEvent,
 });
 
 /**
@@ -42,26 +43,14 @@ class CommunicationListener extends Component {
       console.log('component solutionfield did update', 'solution field');
       const json = JSON.stringify(state.solutionField);
       this.props.webrtc.shout(SET_FIELD, json);
-    }
-
-    /* if (prevProps.counter !== this.props.counter) {
-      this.props.webrtc.shout(NEW_COUNT, state.counter);
-    } else if (prevProps.handList !== this.props.handList) {
-      console.log('component did update', 'handlist');
-      const json = JSON.stringify(state.handList);
-      this.props.webrtc.shout(SET_LIST, json);
-    } else if (prevProps.solutionField !== this.props.solutionField) {
-      console.log('component solutionfield did update', 'solution field');
-      const json = JSON.stringify(state.solutionField);
-      this.props.webrtc.shout(SET_FIELD, json);
     } else if (
-      prevProps.currentTask.currentTaskNumber !==
-      this.props.currentTask.currentTaskNumber
+      // This peer updated the game state by going to the next task
+      prevProps.newTaskShoutEvent !== this.props.newTaskShoutEvent
     ) {
       console.log('new task');
       const json = JSON.stringify(state.currentTask);
       this.props.webrtc.shout(NEXT_TASK, json);
-    } */
+    }
   }
 
   render() {

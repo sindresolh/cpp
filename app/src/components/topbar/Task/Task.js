@@ -1,7 +1,6 @@
 import React from 'react';
 import './Task.css';
-import store from '../../../redux/store/store';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 export default function Task() {
   const currentTask = useSelector((state) => state.currentTask);
@@ -9,7 +8,7 @@ export default function Task() {
   let currentTaskObject = currentTask.tasks[currentTaskNumber];
 
   return (
-    <div className="Task" data-testid="Task">
+    <div className="Task">
       <div>
         <label htmlFor="qual" data-testid="label">
           Task {currentTaskObject.id}
@@ -17,6 +16,7 @@ export default function Task() {
       </div>
       <div>
         <textarea
+          data-testid="textarea"
           id="qual"
           rows="5"
           cols="60"

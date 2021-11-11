@@ -14,12 +14,6 @@ const handList = {
       player: PLAYER.P1,
       category: CATEGORY.VARIABLE,
     },
-    {
-      id: 'cb-3',
-      content: 'distractor1',
-      player: PLAYER.P1,
-      category: CATEGORY.FUNCTION,
-    },
   ],
   player2: [
     {
@@ -33,12 +27,6 @@ const handList = {
       content: 'distractor5',
       player: PLAYER.P2,
       category: CATEGORY.FUNCTION,
-    },
-    {
-      id: 'cb-6',
-      content: 'distractor3',
-      player: PLAYER.P2,
-      category: CATEGORY.VARIABLE,
     },
   ],
   player3: [
@@ -83,23 +71,14 @@ const handList = {
   ],
 };
 
-const soloution = {
-  field: [
-    {
-      block: {
-        id: 'cb-7',
-        content: 'z = x + y',
-        player: PLAYER.P1,
-        category: CATEGORY.VARIABLE,
-      },
-      indent: 1,
-    },
-  ],
+const solutionField = {
+  field: [],
+  correct: [],
 };
 
 export const task2 = {
   id: 2,
   description: 'Dette er en helt annen oppgave.',
   handList: handList,
-  soloution: soloution,
+  solutionField: solutionField,
 };
