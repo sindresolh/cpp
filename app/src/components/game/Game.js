@@ -26,21 +26,21 @@ export default function Game() {
 
   return (
     <DndProvider backend={HTML5Backend}>
-      <div className="Game" data-testid="Game">
+      <div className='Game' data-testid='Game'>
         {/*Player 1 and 3 on the left side*/}
-        <div className="GameLeft">
+        <div className='GameLeft'>
           <Player playerNo={PLAYER.P1} name={'Per'} />
           <Player playerNo={PLAYER.P3} name={'Aase'} />
         </div>
 
         {/*Middle : Soloutionfield and Sidebar*/}
-        <div className="GameCenter">
+        <div className='GameCenter'>
           <SolutionField />
           <Sidebar />
         </div>
 
         {/*Player 2 and 4 on the left side*/}
-        <div className="GameRight">
+        <div className='GameRight'>
           <Player playerNo={PLAYER.P2} name={'Lise'} />
           <Player playerNo={PLAYER.P4} name={'Kjetil'} />
         </div>
