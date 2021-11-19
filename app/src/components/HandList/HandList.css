@@ -11,4 +11,6 @@ ul {
 
 .divHL {
   background-color: cornsilk;
+  min-height: 7vw;
+  min-width: 10vw;
 }
