@@ -33,4 +33,5 @@ jobs:
         cache-dependency-path: '**/package-lock.json'
     #- run: git config --global url."https://${{ secrets.PAT }}@github.com/".insteadOf ssh://git@github.com/
     - run: npm ci                                     # npm install for automated environments
-    - run: npm test                                   # Test application                                 
+    - run: npm test                                   # Test application
+    - run: npm run build                              # Deploy
