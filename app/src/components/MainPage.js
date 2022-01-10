@@ -1,6 +1,6 @@
 import React from 'react';
 import './MainPage.css';
-import Topbar from './Topbar/Topbar';
+import Topbar from './topbar/Topbar';
 import Game from './Game/Game';
 
 export default function MainPage() {
