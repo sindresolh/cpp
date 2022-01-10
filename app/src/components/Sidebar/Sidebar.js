@@ -4,6 +4,9 @@ import SidebarButton from './SidebarButton/SidebarButton';
 import { useDispatch, useSelector } from 'react-redux';
 import { nextTask, newTaskShoutEvent } from '../../redux/actions';
 import { arrayIsEqual } from '../../utils/compareArrays/compareArrays';
+import HintIcon from '../../images/hint.png';
+import ClearIcon from '../../images/clean.png';
+import SubmitIcon from '../../images/submit.png';
 
 export default function Sidebar() {
   const dispatch = useDispatch();
@@ -28,17 +31,22 @@ export default function Sidebar() {
     }
   };
   return (
-    <div className="Sidebar">
+    <div className='Sidebar'>
       <div>
-        <SidebarButton title="Hint" />
+        <SidebarButton title='Hint' icon={HintIcon} color='#CBDA26' />
       </div>
 
       <div>
-        <SidebarButton title="Clean" />
+        <SidebarButton title='Clean' icon={ClearIcon} color='#DAB226' />
       </div>
 
-      <div className="BottomButton">
-        <SidebarButton title="Submit" handleClick={() => handleSubmit()} />
+      <div className='BottomButton'>
+        <SidebarButton
+          title='Submit'
+          icon={SubmitIcon}
+          color='#3FDA26'
+          handleClick={() => handleSubmit()}
+        />
       </div>
     </div>
   );
