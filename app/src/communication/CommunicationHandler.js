@@ -91,6 +91,7 @@ class CommunicationHandler extends Component {
       case NEXT_TASK:
         console.log('next task');
         this.nextTask(payload);
+        break;
       default:
         return;
     }
