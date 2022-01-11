@@ -67,6 +67,7 @@ export default function Sidebar() {
         title={modalTitle}
         description={modalDescription}
         buttonText={modalButtonText}
+        field={field}
         closeModal={() => closeModal()}
       />
 
