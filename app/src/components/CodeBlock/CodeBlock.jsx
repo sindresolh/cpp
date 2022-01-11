@@ -70,6 +70,7 @@ function CodeBlock({ id, content, player, category, moveBlock, findBlock, dragga
   let className = isDragging
     ? `cb ${category} player${player} dragging`
     : `cb ${category} player${player}`;
+    className = !draggable ? className + ' invisible' : className
 
   return (
     <div
@@ -78,7 +79,7 @@ function CodeBlock({ id, content, player, category, moveBlock, findBlock, dragga
       id={id}
       className={className}
     >
-      {draggable ? content : '        '}
+      {content}
     </div>
   );
 }
