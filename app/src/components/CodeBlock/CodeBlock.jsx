@@ -21,7 +21,6 @@ import { useDrop } from 'react-dnd';
  */
 function CodeBlock({ id, content, player, category, moveBlock, findBlock, draggable }) {
   const { index: originalIndex, indent: originalIndent } = findBlock(id); // index and indent before block is moved
-  const draggableTxt = draggable ? ' (d)' : '' 
 
   // implement dragging
   const [{ isDragging }, drag] = useDrag(
@@ -79,7 +78,7 @@ function CodeBlock({ id, content, player, category, moveBlock, findBlock, dragga
       id={id}
       className={className}
     >
-      {content + draggableTxt}
+      {draggable ? content : '        '}
     </div>
   );
 }
