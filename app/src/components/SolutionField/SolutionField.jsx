@@ -22,6 +22,7 @@ import store from '../../redux/store/store';
  */
 function SolutionField({}) {
   const lines = useSelector((state) => state.solutionField);
+  const peers = useSelector((state) => state.peers)
   const emptyField = lines.length === 0;
   const dispatch = useDispatch();
 
@@ -147,7 +148,7 @@ function SolutionField({}) {
 
   return (
     <div className={'divSF'} ref={drop}>
-      <h6>solution field</h6>
+      <h6>{"Connected platers: "+peers.length}</h6>
       <ul data-testid="solutionField">
         {lines.map((line) => {
           return (

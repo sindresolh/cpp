@@ -125,3 +125,30 @@ export const nextTask = (state) => {
     },
   };
 };
+
+export const setPeers = (peers) => {
+  return {
+    type: 'SET_PEERS',
+    payload: {
+      peers,
+    }
+  }
+}
+
+export const addPeer = (peer) => {
+  return {
+    type: 'ADD_PEER',
+    payload: {
+      peer
+    }
+  }
+}
+
+export const removePeer = (peer) => {
+  return {
+    type: 'REMOVE_PEER',
+    payload: {
+      peer
+    }
+  }
+}
