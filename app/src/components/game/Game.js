@@ -11,7 +11,7 @@ import { setField, setList } from '../../redux/actions';
 
 export default function Game() {
   const currentTask = useSelector((state) => state.currentTask);
-  const peers = useSelector((state) => state.peers)
+  const players = useSelector((state) => state.players)
   let currentTaskNumber = currentTask.currentTaskNumber;
   let currentTaskObject = currentTask.tasks[currentTaskNumber];
   const dispatch = useDispatch();
@@ -19,18 +19,18 @@ export default function Game() {
   /**
    * Set the name of the players.
    */
-  const setNames = (peers) => {
+  const setNames = (players) => {
     let names = ['Not connected', 'Not connected', 'Not connected', 'Not connected']
-    for (let peer = 0; peer < peers.length; peer++) {
+    for (let player = 0; player < players.length; player++) {
       // TODO: use nicknames instead
-      console.log("Peer " + peer + ": ", peers[peer]);
-      names[peer] = peers[peer].id.substring(0, 5)
+      console.log("player " + player + ": ", players[player]);
+      names[player] = players[player].id.substring(0, 5)
     }
     // Lastly add this client's name
     return names;
   }
 
-  let names = setNames(peers)
+  let names = setNames(players)
 
 
   // Change the handlists and soloution field when the game renders

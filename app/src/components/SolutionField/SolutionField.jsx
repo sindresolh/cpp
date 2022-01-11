@@ -22,7 +22,7 @@ import store from '../../redux/store/store';
  */
 function SolutionField({}) {
   const lines = useSelector((state) => state.solutionField);
-  const peers = useSelector((state) => state.peers)
+  const players = useSelector((state) => state.players)
   const emptyField = lines.length === 0;
   const dispatch = useDispatch();
 
@@ -148,13 +148,14 @@ function SolutionField({}) {
 
   return (
     <div className={'divSF'} ref={drop}>
-      <h6>{"Connected platers: "+peers.length}</h6>
+      <h6>{"Connected platers: "+players.length}</h6>
       <ul data-testid="solutionField">
         {lines.map((line) => {
           return (
             <li key={line.block.id} data-testid="lines">
               <CodeBlock
                 {...line.block}
+                draggable={true}  // TODO: might not need this
                 moveBlock={moveBlock}
                 findBlock={findBlock}
               />

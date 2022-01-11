@@ -9,9 +9,9 @@ import {
   setListState,
   setFieldState,
   nextTask,
-  setPeers,
-  addPeer,
-  removePeer,
+  setPlayers,
+  addPlayer,
+  removePlayer,
 } from '../redux/actions';
 import { NEW_COUNT, SET_LIST, SET_FIELD, NEXT_TASK } from './messages';
 import {
@@ -30,9 +30,9 @@ function mapDispatchToProps(dispatch) {
     dispatch_setList: (...args) => dispatch(setListState(...args)),
     dispatch_setField: (...args) => dispatch(setFieldState(...args)),
     dispatch_nextTask: (...args) => dispatch(nextTask(...args)),
-    dispatch_setPeers: (...args) => dispatch(setPeers(...args)),
-    dispatch_addPeer: (...args) => dispatch(addPeer(...args)),
-    dispatch_removePeer: (...args) => dispatch(removePeer(...args))
+    dispatch_setPlayers: (...args) => dispatch(setPlayers(...args)),
+    dispatch_addPlayer: (...args) => dispatch(addPlayer(...args)),
+    dispatch_removePlayer: (...args) => dispatch(removePlayer(...args))
   };
 }
 
@@ -43,7 +43,7 @@ class CommunicationHandler extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      peers: [],
+      players: [],
       connected: false
     };
   }
@@ -62,11 +62,10 @@ class CommunicationHandler extends Component {
    * @param {*} peer : Keeps information about this peer
    */
   handleCreatedPeer = (webrtc, peer) => {
-    //this.setState({peers: [...this.state.peers, peer.id]})
-    const { dispatch_addPeer } = this.props;
-    dispatch_addPeer(peer)
+    //this.setState({players: [...this.state.players, peer.id]})
+    const { dispatch_addPlayer} = this.props;
+    dispatch_addPlayer(peer)
     console.log(`Peer-${peer.id.substring(0, 5)} joined the room!`);
-    console.log("webrtc clients", webrtc.getPeers());
   };
 
   /**
@@ -76,11 +75,10 @@ class CommunicationHandler extends Component {
    * @param {*} peer : Keeps information about this peer
    */
   handlePeerLeft = (webrtc, peer) => {
-    //this.setState({ peers: this.state.peers.filter((p) => peer.id !== p) });
-    const { dispatch_removePeer } = this.props;
-    dispatch_removePeer(peer)
+    //this.setState({ players: this.state.players.filter((p) => peer.id !== p) });
+    const { dispatch_removePlayer } = this.props;
+    dispatch_removePlayer(peer)
     console.log(`Peer-${peer.id.substring(0, 5)} disconnected.`);
-    console.log("webrtc clients", webrtc.getPeers());
   };
 
   /**
@@ -112,12 +110,8 @@ class CommunicationHandler extends Component {
   };
 
   joinedRoom = (webrtc) => {
-    console.log("Joined room with id: " + webrtc.getMyId(), "Other peers: "+webrtc.getPeers());
-    const { dispatch_setPeers } = this.props;
-    console.log("peers: " + webrtc.getPeers());
-    // add YOU as a peer
-    // TODO: change peers to players. this includes changing the reducers
-    dispatch_setPeers([...webrtc.getPeers(), {id: 'YOU'}])  
+    const { dispatch_setPlayers } = this.props;
+    dispatch_setPlayers([...webrtc.getPeers(), {id: 'YOU'}])  
     this.setState({connected: true})
   }
 

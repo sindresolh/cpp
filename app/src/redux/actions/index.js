@@ -126,29 +126,29 @@ export const nextTask = (state) => {
   };
 };
 
-export const setPeers = (peers) => {
+export const setPlayers = (players) => {
   return {
-    type: 'SET_PEERS',
+    type: 'SET_PLAYERS',
     payload: {
-      peers,
+      players,
     }
   }
 }
 
-export const addPeer = (peer) => {
+export const addPlayer = (player) => {
   return {
-    type: 'ADD_PEER',
+    type: 'ADD_Player',
     payload: {
-      peer
+      player
     }
   }
 }
 
-export const removePeer = (peer) => {
+export const removePlayer = (player) => {
   return {
-    type: 'REMOVE_PEER',
+    type: 'REMOVE_PLAYER',
     payload: {
-      peer
+      player
     }
   }
 }
