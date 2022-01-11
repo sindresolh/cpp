@@ -13,6 +13,7 @@ const peerReducer = (state = [], action) => {
         const updatedState = [...state, action.payload.peer]
         return updatedState;
       }
+      // TODO: update this so it doesn't remove it from the list entirely, but sets the player as innactive/disconnected.
       case 'REMOVE_PEER': {
         const updatedState = state.filter(
           (peer) => peer.id !== action.payload.peer.id

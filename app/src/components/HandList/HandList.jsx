@@ -23,7 +23,7 @@ import store from '../../redux/store/store';
  * @param {Number} player   which player owns the list
  * @returns a div containing a list of codeblocks
  */
-function HandList({ player }) {
+function HandList({ player, draggable }) {
   const dispatch = useDispatch();
   const handListIndex = player - 1;
   const blocks = useSelector((state) => state.handList[handListIndex]);
@@ -136,6 +136,7 @@ function HandList({ player }) {
             >
               <CodeBlock
                 {...codeBlock}
+                draggable={draggable}
                 moveBlock={moveBlock}
                 findBlock={findBlock}
               />
