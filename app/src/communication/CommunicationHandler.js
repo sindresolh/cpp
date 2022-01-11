@@ -115,7 +115,9 @@ class CommunicationHandler extends Component {
     console.log("Joined room with id: " + webrtc.getMyId(), "Other peers: "+webrtc.getPeers());
     const { dispatch_setPeers } = this.props;
     console.log("peers: " + webrtc.getPeers());
-    dispatch_setPeers(webrtc.getPeers())
+    // add YOU as a peer
+    // TODO: change peers to players. this includes changing the reducers
+    dispatch_setPeers([...webrtc.getPeers(), {id: 'YOU'}])  
     this.setState({connected: true})
   }
 
