@@ -32,6 +32,7 @@ class CommunicationListener extends Component {
    */
   componentDidUpdate(prevProps) {
     const state = store.getState();
+    console.log("How many peers in listener: "+this.props.webrtc.getPeers());
 
     if (prevProps.listShoutEvent !== this.props.listShoutEvent) {
       // This peer moved codeblock in an handlist, notify other peers

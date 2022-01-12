@@ -9,6 +9,10 @@
   font-size: 15px;
 }
 
+.invisible {
+  color: transparent;
+}
+
 .dragging {
   opacity: 0;
 }

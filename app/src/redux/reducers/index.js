@@ -8,6 +8,7 @@ import taskReducer from './task';
 import listShoutEventReducer from './listShoutEvent';
 import fieldShoutEventReducer from './fieldShoutEvent';
 import newTaskShoutEventReducer from './newTaskShout';
+import playerReducer from './players';
 
 const allReducers = combineReducers({
   isLogged: loggedReducer,
@@ -17,5 +18,6 @@ const allReducers = combineReducers({
   listShoutEvent: listShoutEventReducer,
   fieldShoutEvent: fieldShoutEventReducer,
   newTaskShoutEvent: newTaskShoutEventReducer,
+  players: playerReducer,
 });
 export default allReducers;

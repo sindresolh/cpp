@@ -9,6 +9,9 @@ import {
   setListState,
   setFieldState,
   nextTask,
+  setPlayers,
+  addPlayer,
+  removePlayer,
 } from '../redux/actions';
 import { NEW_COUNT, SET_LIST, SET_FIELD, NEXT_TASK } from './messages';
 import {
@@ -27,6 +30,9 @@ function mapDispatchToProps(dispatch) {
     dispatch_setList: (...args) => dispatch(setListState(...args)),
     dispatch_setField: (...args) => dispatch(setFieldState(...args)),
     dispatch_nextTask: (...args) => dispatch(nextTask(...args)),
+    dispatch_setPlayers: (...args) => dispatch(setPlayers(...args)),
+    dispatch_addPlayer: (...args) => dispatch(addPlayer(...args)),
+    dispatch_removePlayer: (...args) => dispatch(removePlayer(...args))
   };
 }
 
@@ -37,7 +43,8 @@ class CommunicationHandler extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      peers: [],
+      players: [],
+      connected: false
     };
   }
   /**
@@ -46,7 +53,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room');
+  join = (webrtc) => webrtc.joinRoom('cpp-room1');
 
   /**
    * Called when a new peer is added to the room
@@ -55,6 +62,9 @@ class CommunicationHandler extends Component {
    * @param {*} peer : Keeps information about this peer
    */
   handleCreatedPeer = (webrtc, peer) => {
+    //this.setState({players: [...this.state.players, peer.id]})
+    const { dispatch_addPlayer} = this.props;
+    dispatch_addPlayer(peer)
     console.log(`Peer-${peer.id.substring(0, 5)} joined the room!`);
   };
 
@@ -65,7 +75,9 @@ class CommunicationHandler extends Component {
    * @param {*} peer : Keeps information about this peer
    */
   handlePeerLeft = (webrtc, peer) => {
-    this.setState({ peers: this.state.peers.filter((p) => !p.closed) });
+    //this.setState({ players: this.state.players.filter((p) => peer.id !== p) });
+    const { dispatch_removePlayer } = this.props;
+    dispatch_removePlayer(peer)
     console.log(`Peer-${peer.id.substring(0, 5)} disconnected.`);
   };
 
@@ -96,6 +108,12 @@ class CommunicationHandler extends Component {
         return;
     }
   };
+
+  joinedRoom = (webrtc) => {
+    const { dispatch_setPlayers } = this.props;
+    dispatch_setPlayers([...webrtc.getPeers(), {id: 'YOU'}])  
+    this.setState({connected: true})
+  }
 
   /**
    * Temporarly function to show how the counter can work in multiplayer
@@ -170,8 +188,9 @@ class CommunicationHandler extends Component {
         onCreatedPeer={this.handleCreatedPeer}
         onReceivedPeerData={this.handlePeerData}
         onRemovedPeer={this.handlePeerLeft}
+        onJoinedRoom={this.joinedRoom}
       >
-        <CommunicationListener />
+        {this.state.connected ? <CommunicationListener /> : <h1>Waiting to connect...</h1>}
       </LioWebRTC>
     );
   }

@@ -125,3 +125,30 @@ export const nextTask = (state) => {
     },
   };
 };
+
+export const setPlayers = (players) => {
+  return {
+    type: 'SET_PLAYERS',
+    payload: {
+      players,
+    }
+  }
+}
+
+export const addPlayer = (player) => {
+  return {
+    type: 'ADD_Player',
+    payload: {
+      player
+    }
+  }
+}
+
+export const removePlayer = (player) => {
+  return {
+    type: 'REMOVE_PLAYER',
+    payload: {
+      player
+    }
+  }
+}

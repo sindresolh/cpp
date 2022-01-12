@@ -19,13 +19,14 @@ import { useDrop } from 'react-dnd';
  * @param {string} placement    reference to where this block is placed (player list or in solution field)
  * @returns a draggable div containing a code block
  */
-function CodeBlock({ id, content, player, category, moveBlock, findBlock }) {
+function CodeBlock({ id, content, player, category, moveBlock, findBlock, draggable }) {
   const { index: originalIndex, indent: originalIndent } = findBlock(id); // index and indent before block is moved
 
   // implement dragging
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: ItemTypes.CODEBLOCK,
+      canDrag: draggable,
       item: { id, originalIndex, originalIndent, player },
 
       collect: (monitor) => ({
@@ -69,6 +70,7 @@ function CodeBlock({ id, content, player, category, moveBlock, findBlock }) {
   let className = isDragging
     ? `cb ${category} player${player} dragging`
     : `cb ${category} player${player}`;
+    className = !draggable ? className + ' invisible' : className
 
   return (
     <div
