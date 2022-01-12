@@ -42,6 +42,8 @@ export const arrayIsEqual = (arr1, arr2) => {
 export const linebasedfeedback = (field, correct) => {
   let equalAtIndex = [];
 
+  if (isNull(field, correct)) return equalAtIndex;
+
   for (var i = 0; i < field.length; i++) {
     if (objectIsEqual(field[i], correct[i])) {
       // codeblock is placed at correct location

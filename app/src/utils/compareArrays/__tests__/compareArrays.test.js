@@ -3,6 +3,7 @@ import {
   objectIsEqual,
   arrayIsEqual,
   twoDimensionalArrayIsEqual,
+  linebasedfeedback,
 } from '../compareArrays';
 
 const somearray = [1, '2', new Date()];
@@ -88,6 +89,44 @@ describe('test the compare array functions', () => {
 
     it('two different 2D arrays', () => {
       expect(twoDimensionalArrayIsEqual(twoDimArr, twoDimArr2)).toBe(false);
+    });
+  });
+
+  describe('test linebasedfeedback', () => {
+    it('solution is null', () => {
+      expect(linebasedfeedback(null, undefined)).toStrictEqual([]);
+    });
+
+    it('solution is undefined', () => {
+      expect(linebasedfeedback(undefined, undefined)).toStrictEqual([]);
+    });
+
+    it('solution is empty', () => {
+      expect(linebasedfeedback([], undefined)).toStrictEqual([]);
+    });
+
+    it('correct is null', () => {
+      expect(linebasedfeedback(['test'], null)).toStrictEqual([]);
+    });
+
+    it('field decide length of 1', () => {
+      expect(linebasedfeedback(['test'], []).length).toBe(1);
+    });
+
+    it('field decide lengtht of 3', () => {
+      expect(linebasedfeedback(somearray, ['test']).length).toBe(3);
+    });
+
+    it('no match gives false', () => {
+      expect(linebasedfeedback(['test'], [])[0].isCorrect).toBe(false);
+    });
+
+    it('wrong match gives false', () => {
+      expect(linebasedfeedback(['test'], ['hallo'])[0].isCorrect).toBe(false);
+    });
+
+    it('correct match gives true', () => {
+      expect(linebasedfeedback(['test'], ['test'])[0].isCorrect).toBe(true);
     });
   });
 });
