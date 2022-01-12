@@ -1,7 +1,11 @@
 .correctItem {
   background: green;
+  width: 10em;
+  margin: auto;
 }
 
 .incorrectItem {
   background: red;
+  width: 10em;
+  margin: auto;
 }

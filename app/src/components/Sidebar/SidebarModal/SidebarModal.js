@@ -8,6 +8,7 @@ export default function SidebarModal({
   title,
   description,
   buttonText,
+  color,
   modalIsOpen,
   field,
   showFeedback,
@@ -18,8 +19,18 @@ export default function SidebarModal({
   let correctSolution =
     currentTask.tasks[currentTaskNumber].solutionField.correct;
   let feedbackArray = linebasedfeedback(field, correctSolution);
+
+  const modalStyle = {
+    content: {
+      width: '20em',
+      height: '25em',
+      margin: 'auto',
+      border: '1em solid ' + color,
+      borderRadius: '3em',
+    },
+  };
   return (
-    <Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
+    <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={modalStyle}>
       <h2>{title}</h2>
       <p>{description}</p>
       <button onClick={closeModal}>{buttonText}</button>
