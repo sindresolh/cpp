@@ -1,2 +1,15 @@
 .SideBarButton {
+  display: inline-flex;
+  width: 7em;
+  height: 3em;
+  margin: 0.2em;
+  border-radius: 1em;
+  font-weight: bold;
+  font-size: 1em;
+}
+
+button > div {
+  position: 'absolute';
+  padding-top: 0.5em;
+  margin-left: 0.5em;
 }

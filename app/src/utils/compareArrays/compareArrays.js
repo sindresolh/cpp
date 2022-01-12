@@ -34,6 +34,30 @@ export const arrayIsEqual = (arr1, arr2) => {
 };
 
 /**
+ * Shallow equal check on array
+ * @param {array} field solution proposal
+ * @param {array} correct solution
+ * @returns array with code and wheter or not it is correctly placed
+ */
+export const linebasedfeedback = (field, correct) => {
+  let equalAtIndex = [];
+
+  if (isNull(field, correct)) return equalAtIndex;
+
+  for (var i = 0; i < field.length; i++) {
+    if (objectIsEqual(field[i], correct[i])) {
+      // codeblock is placed at correct location
+      equalAtIndex.push({ codeBlock: field[i], isCorrect: true });
+    } else {
+      // codeblock is placed incorrectly
+      equalAtIndex.push({ codeBlock: field[i], isCorrect: false });
+    }
+  }
+
+  return equalAtIndex;
+};
+
+/**
  *  Check if all keys in an object is equal.
  * Since this function is used recursively, check if the object is a value.
  *
