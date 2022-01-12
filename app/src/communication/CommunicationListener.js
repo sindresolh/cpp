@@ -19,6 +19,7 @@ const mapStateToProps = (state) => ({
   listShoutEvent: state.listShoutEvent,
   fieldShoutEvent: state.fieldShoutEvent,
   newTaskShoutEvent: state.newTaskShoutEvent,
+  cleanShoutEvent: state.cleanShoutEvent,
 });
 
 /**
@@ -32,7 +33,7 @@ class CommunicationListener extends Component {
    */
   componentDidUpdate(prevProps) {
     const state = store.getState();
-    console.log("How many peers in listener: "+this.props.webrtc.getPeers());
+    console.log('How many peers in listener: ' + this.props.webrtc.getPeers());
 
     if (prevProps.listShoutEvent !== this.props.listShoutEvent) {
       // This peer moved codeblock in an handlist, notify other peers
@@ -51,6 +52,10 @@ class CommunicationListener extends Component {
       console.log('new task');
       const json = JSON.stringify(state.currentTask);
       this.props.webrtc.shout(NEXT_TASK, json);
+    } else if (prevProps.cleanShoutEvent !== this.props.cleanShoutEvent) {
+      console.log('board reset');
+      const json = JSON.stringify(state.currentTask);
+      this.props.webrtc.shout('CLEAN_TASK', json);
     }
   }
 

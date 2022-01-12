@@ -12,13 +12,16 @@ export default function SidebarModal({
   modalIsOpen,
   field,
   showFeedback,
+  showCleanBoardDialog,
   closeModal,
+  cleanBoard,
 }) {
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
   let correctSolution =
     currentTask.tasks[currentTaskNumber].solutionField.correct;
   let feedbackArray = linebasedfeedback(field, correctSolution);
+  Modal.setAppElement('body');
 
   const modalStyle = {
     content: {
@@ -34,6 +37,9 @@ export default function SidebarModal({
       <h2>{title}</h2>
       <p>{description}</p>
       <button onClick={closeModal}>{buttonText}</button>
+      <button onClick={cleanBoard} style={{ visibility: showCleanBoardDialog }}>
+        Yes
+      </button>
       <ul style={{ visibility: showFeedback }}>
         {feedbackArray.map((item) => {
           return (

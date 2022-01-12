@@ -107,9 +107,12 @@ export const fieldShoutEvent = (state) => {
 export const newTaskShoutEvent = (state) => {
   return {
     type: 'NEW_TASK_SHOUT_EVENT',
-    payload: {
-      state,
-    },
+  };
+};
+
+export const cleanShoutEvent = (state) => {
+  return {
+    type: 'CLEAN_TASK',
   };
 };
 
@@ -131,24 +134,24 @@ export const setPlayers = (players) => {
     type: 'SET_PLAYERS',
     payload: {
       players,
-    }
-  }
-}
+    },
+  };
+};
 
 export const addPlayer = (player) => {
   return {
     type: 'ADD_PLAYER',
     payload: {
-      player
-    }
-  }
-}
+      player,
+    },
+  };
+};
 
 export const removePlayer = (player) => {
   return {
     type: 'REMOVE_PLAYER',
     payload: {
-      player
-    }
-  }
-}
+      player,
+    },
+  };
+};

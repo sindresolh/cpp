@@ -12,12 +12,15 @@ import {
   setPlayers,
   addPlayer,
   removePlayer,
+  setField,
+  setList,
 } from '../redux/actions';
 import { NEW_COUNT, SET_LIST, SET_FIELD, NEXT_TASK } from './messages';
 import {
   twoDimensionalArrayIsEqual,
   arrayIsEqual,
 } from '../utils/compareArrays/compareArrays';
+import { PLAYER } from '../utils/constants';
 
 /**
  * Helper function to let us call dispatch from a class function
@@ -32,7 +35,9 @@ function mapDispatchToProps(dispatch) {
     dispatch_nextTask: (...args) => dispatch(nextTask(...args)),
     dispatch_setPlayers: (...args) => dispatch(setPlayers(...args)),
     dispatch_addPlayer: (...args) => dispatch(addPlayer(...args)),
-    dispatch_removePlayer: (...args) => dispatch(removePlayer(...args))
+    dispatch_removePlayer: (...args) => dispatch(removePlayer(...args)),
+    dispatch_setField: (...args) => dispatch(setField(...args)),
+    dispatch_setList: (...args) => dispatch(setList(...args)),
   };
 }
 
@@ -44,7 +49,7 @@ class CommunicationHandler extends Component {
     super(props);
     this.state = {
       players: [],
-      connected: false
+      connected: false,
     };
   }
   /**
@@ -63,8 +68,8 @@ class CommunicationHandler extends Component {
    */
   handleCreatedPeer = (webrtc, peer) => {
     //this.setState({players: [...this.state.players, peer.id]})
-    const { dispatch_addPlayer} = this.props;
-    dispatch_addPlayer(peer)
+    const { dispatch_addPlayer } = this.props;
+    dispatch_addPlayer(peer);
     console.log(`Peer-${peer.id.substring(0, 5)} joined the room!`);
   };
 
@@ -77,7 +82,7 @@ class CommunicationHandler extends Component {
   handlePeerLeft = (webrtc, peer) => {
     //this.setState({ players: this.state.players.filter((p) => peer.id !== p) });
     const { dispatch_removePlayer } = this.props;
-    dispatch_removePlayer(peer)
+    dispatch_removePlayer(peer);
     console.log(`Peer-${peer.id.substring(0, 5)} disconnected.`);
   };
 
@@ -104,6 +109,9 @@ class CommunicationHandler extends Component {
         console.log('next task');
         this.nextTask(payload);
         break;
+      case 'CLEAN_TASK':
+        this.cleanTask(payload);
+        break;
       default:
         return;
     }
@@ -111,9 +119,9 @@ class CommunicationHandler extends Component {
 
   joinedRoom = (webrtc) => {
     const { dispatch_setPlayers } = this.props;
-    dispatch_setPlayers([...webrtc.getPeers(), {id: 'YOU'}])  
-    this.setState({connected: true})
-  }
+    dispatch_setPlayers([...webrtc.getPeers(), { id: 'YOU' }]);
+    this.setState({ connected: true });
+  };
 
   /**
    * Temporarly function to show how the counter can work in multiplayer
@@ -180,6 +188,28 @@ class CommunicationHandler extends Component {
     }
   }
 
+  /**
+   * Clears the board
+   *
+   * @param {*} payload : Payload sent int the webrtc shout
+   */
+  cleanTask(payload) {
+    console.log('incoming board clear from another peer : ' + payload);
+
+    const currentTask = store.getState().currentTask;
+    let currentTaskNumber = currentTask.currentTaskNumber;
+    let currentTaskObject = currentTask.tasks[currentTaskNumber];
+
+    const { dispatch_setField } = this.props;
+    dispatch_setField(currentTaskObject.solutionField.field);
+
+    const { dispatch_setList } = this.props;
+    dispatch_setList(currentTaskObject.handList.player1, PLAYER.P1 - 1);
+    dispatch_setList(currentTaskObject.handList.player2, PLAYER.P2 - 1);
+    dispatch_setList(currentTaskObject.handList.player3, PLAYER.P3 - 1);
+    dispatch_setList(currentTaskObject.handList.player4, PLAYER.P4 - 1);
+  }
+
   render() {
     return (
       <LioWebRTC
@@ -190,7 +220,11 @@ class CommunicationHandler extends Component {
         onRemovedPeer={this.handlePeerLeft}
         onJoinedRoom={this.joinedRoom}
       >
-        {this.state.connected ? <CommunicationListener /> : <h1>Waiting to connect...</h1>}
+        {this.state.connected ? (
+          <CommunicationListener />
+        ) : (
+          <h1>Waiting to connect...</h1>
+        )}
       </LioWebRTC>
     );
   }
