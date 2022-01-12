@@ -15,7 +15,13 @@ import {
   setField,
   setList,
 } from '../redux/actions';
-import { NEW_COUNT, SET_LIST, SET_FIELD, NEXT_TASK } from './messages';
+import {
+  NEW_COUNT,
+  SET_LIST,
+  SET_FIELD,
+  NEXT_TASK,
+  CLEAN_TASK,
+} from './messages';
 import {
   twoDimensionalArrayIsEqual,
   arrayIsEqual,
@@ -109,7 +115,7 @@ class CommunicationHandler extends Component {
         console.log('next task');
         this.nextTask(payload);
         break;
-      case 'CLEAN_TASK':
+      case CLEAN_TASK:
         this.cleanTask(payload);
         break;
       default:
