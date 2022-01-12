@@ -13,6 +13,7 @@ const solutionField = {
 export const task3 = {
   id: 3,
   description: 'Her var det ingenting.',
+  hint: 'Hint for task 3',
   handList: handList,
   solutionField: solutionField,
 };

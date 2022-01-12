@@ -94,7 +94,7 @@ export default function Sidebar() {
           handleClick={() =>
             openModal(
               'Hint',
-              'This is a hint',
+              currentTaskObject.hint,
               'Back to task',
               'yellow',
               'hidden'
