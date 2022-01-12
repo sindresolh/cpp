@@ -137,7 +137,7 @@ export const setPlayers = (players) => {
 
 export const addPlayer = (player) => {
   return {
-    type: 'ADD_Player',
+    type: 'ADD_PLAYER',
     payload: {
       player
     }
