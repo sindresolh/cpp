@@ -9,7 +9,7 @@ export default function SidebarButton({ title, icon, color, handleClick }) {
       className='SideBarButton'
     >
       <img height='30' width='auto' src={icon} alt='Icon' />
-      <div className='buttonText'> {title} </div>
+      <div> {title} </div>
     </button>
   );
 }

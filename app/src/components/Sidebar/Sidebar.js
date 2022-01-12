@@ -8,13 +8,13 @@ import { arrayIsEqual } from '../../utils/compareArrays/compareArrays';
 import HintIcon from '../../images/hint.png';
 import ClearIcon from '../../images/clean.png';
 import SubmitIcon from '../../images/submit.png';
-import Modal from 'react-modal';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalTitle, setModalTitle] = useState('');
   const [modalDescription, setModalDescription] = useState('');
   const [modalButtonText, setModalButtonText] = useState('');
+  const [feedbackVisibility, setFeedbackVisibility] = useState('hidden');
   const dispatch = useDispatch();
   const field = useSelector((state) => state.solutionField);
   const currentTask = useSelector((state) => state.currentTask);
@@ -29,10 +29,11 @@ export default function Sidebar() {
   /**
    * Make all players go to the next task of the submit is correct
    */
-  const openModal = (title, description, buttonText) => {
+  const openModal = (title, description, buttonText, visibility) => {
     setModalTitle(title);
     setModalDescription(description);
     setModalButtonText(buttonText);
+    setFeedbackVisibility(visibility);
     setModalIsOpen(true);
   };
 
@@ -44,17 +45,19 @@ export default function Sidebar() {
       openModal(
         'Task set finished',
         'Congratulations! You finished all the tasks.',
-        'Finish'
+        'Finish',
+        'hidden'
       );
     } else if (arrayIsEqual(field, currentTaskObject.solutionField.correct)) {
       dispatch(nextTask());
       dispatch(newTaskShoutEvent());
-      openModal('Correct', 'Continues to next task', 'Next task');
+      openModal('Correct', 'Continues to next task', 'Next task', 'hidden');
     } else {
       openModal(
         'Incorrect',
         'Unfortunately this is incorrect. Please try again.',
-        'Try again'
+        'Try again',
+        'visible'
       );
     }
   };
@@ -68,6 +71,7 @@ export default function Sidebar() {
         description={modalDescription}
         buttonText={modalButtonText}
         field={field}
+        showFeedback={feedbackVisibility}
         closeModal={() => closeModal()}
       />
 
@@ -77,7 +81,7 @@ export default function Sidebar() {
           icon={HintIcon}
           color='#CBDA26'
           handleClick={() =>
-            openModal('Hint', 'This is a hint', 'Back to task')
+            openModal('Hint', 'This is a hint', 'Back to task', 'hidden')
           }
         />
       </div>
