@@ -67,7 +67,7 @@ export default function Sidebar() {
    */
   const handleClean = () => {
     openModal(
-      'Clean',
+      'Clear',
       'Are you sure you want to empty the board',
       'Cancel',
       'orange',
