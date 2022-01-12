@@ -3,7 +3,13 @@ import './Sidebar.css';
 import SidebarButton from './SidebarButton/SidebarButton';
 import SidebarModal from './SidebarModal/SidebarModal';
 import { useDispatch, useSelector } from 'react-redux';
-import { nextTask, newTaskShoutEvent } from '../../redux/actions';
+import { PLAYER } from '../../utils/constants';
+import {
+  nextTask,
+  newTaskShoutEvent,
+  setField,
+  setList,
+} from '../../redux/actions';
 import { arrayIsEqual } from '../../utils/compareArrays/compareArrays';
 import HintIcon from '../../images/hint.png';
 import ClearIcon from '../../images/clean.png';
@@ -17,10 +23,10 @@ export default function Sidebar() {
   const [modalColor, setModalColor] = useState('white');
   const [feedbackVisibility, setFeedbackVisibility] = useState('hidden');
   const dispatch = useDispatch();
-  const field = useSelector((state) => state.solutionField);
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
   let currentTaskObject = currentTask.tasks[currentTaskNumber];
+  let field = useSelector((state) => state.solutionField);
 
   /* Close the modal. Callback from SideBarModal*/
   const closeModal = () => {
@@ -37,6 +43,19 @@ export default function Sidebar() {
     setModalColor(color);
     setFeedbackVisibility(visibility);
     setModalIsOpen(true);
+  };
+
+  /**
+   * Resets board to initial state
+   */
+  const handleClean = () => {
+    alert('clean');
+
+    dispatch(setField(currentTaskObject.solutionField.field));
+    dispatch(setList(currentTaskObject.handList.player1, PLAYER.P1 - 1));
+    dispatch(setList(currentTaskObject.handList.player2, PLAYER.P2 - 1));
+    dispatch(setList(currentTaskObject.handList.player3, PLAYER.P3 - 1));
+    dispatch(setList(currentTaskObject.handList.player4, PLAYER.P4 - 1));
   };
 
   /**
@@ -104,7 +123,12 @@ export default function Sidebar() {
       </div>
 
       <div>
-        <SidebarButton title='Clean' icon={ClearIcon} color='#DAB226' />
+        <SidebarButton
+          title='Clean'
+          icon={ClearIcon}
+          color='#DAB226'
+          handleClick={() => handleClean()}
+        />
       </div>
 
       <div className='BottomButton'>
