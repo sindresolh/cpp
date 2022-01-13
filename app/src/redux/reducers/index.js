@@ -8,6 +8,7 @@ import taskReducer from './task';
 import listShoutEventReducer from './listShoutEvent';
 import fieldShoutEventReducer from './fieldShoutEvent';
 import newTaskShoutEventReducer from './newTaskShout';
+import clearShoutEventReducer from './clearShoutEvent';
 import playerReducer from './players';
 
 const allReducers = combineReducers({
@@ -18,6 +19,7 @@ const allReducers = combineReducers({
   listShoutEvent: listShoutEventReducer,
   fieldShoutEvent: fieldShoutEventReducer,
   newTaskShoutEvent: newTaskShoutEventReducer,
+  clearShoutEvent: clearShoutEventReducer,
   players: playerReducer,
 });
 export default allReducers;

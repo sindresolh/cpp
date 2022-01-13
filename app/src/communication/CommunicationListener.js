@@ -3,7 +3,7 @@ import { withWebRTC } from 'react-liowebrtc';
 import { connect } from 'react-redux';
 import store from '../redux/store/store';
 import App from '../App';
-import { SET_LIST, SET_FIELD, NEXT_TASK } from './messages';
+import { SET_LIST, SET_FIELD, NEXT_TASK, CLEAR_TASK } from './messages';
 
 /**
  * Helper function to retrive data from the redux store.
@@ -19,6 +19,7 @@ const mapStateToProps = (state) => ({
   listShoutEvent: state.listShoutEvent,
   fieldShoutEvent: state.fieldShoutEvent,
   newTaskShoutEvent: state.newTaskShoutEvent,
+  clearShoutEvent: state.clearShoutEvent,
 });
 
 /**
@@ -32,7 +33,7 @@ class CommunicationListener extends Component {
    */
   componentDidUpdate(prevProps) {
     const state = store.getState();
-    console.log("How many peers in listener: "+this.props.webrtc.getPeers());
+    console.log('How many peers in listener: ' + this.props.webrtc.getPeers());
 
     if (prevProps.listShoutEvent !== this.props.listShoutEvent) {
       // This peer moved codeblock in an handlist, notify other peers
@@ -51,6 +52,10 @@ class CommunicationListener extends Component {
       console.log('new task');
       const json = JSON.stringify(state.currentTask);
       this.props.webrtc.shout(NEXT_TASK, json);
+    } else if (prevProps.clearShoutEvent !== this.props.clearShoutEvent) {
+      console.log('board reset');
+      const json = JSON.stringify(state.currentTask);
+      this.props.webrtc.shout(CLEAR_TASK, json);
     }
   }
 

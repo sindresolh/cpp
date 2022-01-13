@@ -79,6 +79,7 @@ const solutionField = {
 export const task2 = {
   id: 2,
   description: 'Dette er en helt annen oppgave.',
+  hint: 'Hint for task 2',
   handList: handList,
   solutionField: solutionField,
 };
