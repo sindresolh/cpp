@@ -1,9 +1,9 @@
 /*
     Reducer for triggering a board reset
 */
-const cleanShoutEventReducer = (state = new Date(), action) => {
+const clearShoutEventReducer = (state = new Date(), action) => {
   switch (action.type) {
-    case 'CLEAN_TASK': {
+    case 'CLEAR_TASK': {
       return new Date();
     }
     default:
@@ -11,4 +11,4 @@ const cleanShoutEventReducer = (state = new Date(), action) => {
   }
 };
 
-export default cleanShoutEventReducer;
+export default clearShoutEventReducer;

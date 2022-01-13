@@ -12,9 +12,9 @@ export default function SidebarModal({
   modalIsOpen,
   field,
   showFeedback,
-  showCleanBoardDialog,
+  showClearBoardDialog,
   closeModal,
-  cleanBoard,
+  clearBoard,
 }) {
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
@@ -37,7 +37,7 @@ export default function SidebarModal({
       <h2>{title}</h2>
       <p>{description}</p>
       <button onClick={closeModal}>{buttonText}</button>
-      <button onClick={cleanBoard} style={{ visibility: showCleanBoardDialog }}>
+      <button onClick={clearBoard} style={{ visibility: showClearBoardDialog }}>
         Yes
       </button>
       <ul style={{ visibility: showFeedback }}>

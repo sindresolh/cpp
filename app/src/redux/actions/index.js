@@ -110,9 +110,9 @@ export const newTaskShoutEvent = (state) => {
   };
 };
 
-export const cleanShoutEvent = (state) => {
+export const clearShoutEvent = (state) => {
   return {
-    type: 'CLEAN_TASK',
+    type: 'CLEAR_TASK',
   };
 };
 

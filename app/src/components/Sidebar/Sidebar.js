@@ -7,13 +7,13 @@ import { PLAYER } from '../../utils/constants';
 import {
   nextTask,
   newTaskShoutEvent,
-  cleanShoutEvent,
+  clearShoutEvent,
   setField,
   setList,
 } from '../../redux/actions';
 import { arrayIsEqual } from '../../utils/compareArrays/compareArrays';
 import HintIcon from '../../images/hint.png';
-import ClearIcon from '../../images/clean.png';
+import ClearIcon from '../../images/clear.png';
 import SubmitIcon from '../../images/submit.png';
 
 export default function Sidebar() {
@@ -23,7 +23,7 @@ export default function Sidebar() {
   const [modalButtonText, setModalButtonText] = useState('');
   const [modalColor, setModalColor] = useState('white');
   const [feedbackVisibility, setFeedbackVisibility] = useState('hidden');
-  const [hasCleanBoardDialog, setHasCleanBoardDialog] = useState('hidden');
+  const [hasClearBoardDialog, setHasClearBoardDialog] = useState('hidden');
   const dispatch = useDispatch();
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
@@ -43,7 +43,7 @@ export default function Sidebar() {
    * @param {*} buttonText : text for the button that closes the model
    * @param {*} color : border color for the modal
    * @param {*} feedbackVisibility : 'hidden' or 'visible' based on wheter or not is an incorrect solution from submit
-   * @param {*} isClean : 'hidden' or 'visible' based on wheter or not it was triggered from clean
+   * @param {*} isClear : 'hidden' or 'visible' based on wheter or not it was triggered from Clear
    */
   const openModal = (
     title,
@@ -51,21 +51,21 @@ export default function Sidebar() {
     buttonText,
     color,
     feedbackVisibility,
-    isClean = 'hidden'
+    isClear = 'hidden'
   ) => {
     setModalTitle(title);
     setModalDescription(description);
     setModalButtonText(buttonText);
     setModalColor(color);
     setFeedbackVisibility(feedbackVisibility);
-    setHasCleanBoardDialog(isClean);
+    setHasClearBoardDialog(isClear);
     setModalIsOpen(true);
   };
 
   /**
-   * Opens clean board dialog
+   * Opens Clear board dialog
    */
-  const handleClean = () => {
+  const handleClear = () => {
     openModal(
       'Clear',
       'Are you sure you want to empty the board',
@@ -79,7 +79,7 @@ export default function Sidebar() {
   /**
    * Resets board to initial state
    */
-  const cleanBoard = () => {
+  const clearBoard = () => {
     closeModal();
 
     // update for me
@@ -90,7 +90,7 @@ export default function Sidebar() {
     dispatch(setList(currentTaskObject.handList.player4, PLAYER.P4 - 1));
 
     //update for my team
-    dispatch(cleanShoutEvent());
+    dispatch(clearShoutEvent());
   };
 
   /**
@@ -137,9 +137,9 @@ export default function Sidebar() {
         color={modalColor}
         field={field}
         showFeedback={feedbackVisibility}
-        showCleanBoardDialog={hasCleanBoardDialog}
+        showClearBoardDialog={hasClearBoardDialog}
         closeModal={() => closeModal()}
-        cleanBoard={() => cleanBoard()}
+        clearBoard={() => clearBoard()}
       />
 
       <div>
@@ -164,7 +164,7 @@ export default function Sidebar() {
           title='Clear'
           icon={ClearIcon}
           color='#DAB226'
-          handleClick={() => handleClean()}
+          handleClick={() => handleClear()}
         />
       </div>
 

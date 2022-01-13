@@ -20,7 +20,7 @@ import {
   SET_LIST,
   SET_FIELD,
   NEXT_TASK,
-  CLEAN_TASK,
+  CLEAR_TASK,
 } from './messages';
 import {
   twoDimensionalArrayIsEqual,
@@ -115,8 +115,8 @@ class CommunicationHandler extends Component {
         console.log('next task');
         this.nextTask(payload);
         break;
-      case CLEAN_TASK:
-        this.cleanTask(payload);
+      case CLEAR_TASK:
+        this.clearTask(payload);
         break;
       default:
         return;
@@ -199,7 +199,7 @@ class CommunicationHandler extends Component {
    *
    * @param {*} payload : Payload sent int the webrtc shout
    */
-  cleanTask(payload) {
+  clearTask(payload) {
     console.log('incoming board clear from another peer : ' + payload);
 
     const currentTask = store.getState().currentTask;
