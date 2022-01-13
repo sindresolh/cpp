@@ -8,19 +8,20 @@ export default function Task() {
   let currentTaskObject = currentTask.tasks[currentTaskNumber];
 
   return (
-    <div className="Task">
+    <div className='Task'>
       <div>
-        <label htmlFor="qual" data-testid="label">
+        <label htmlFor='qual' data-testid='label'>
           Task {currentTaskObject.id}
         </label>
       </div>
       <div>
         <textarea
-          data-testid="textarea"
-          id="qual"
-          rows="5"
-          cols="60"
-          placeholder="The task description should appear shortly"
+          data-testid='textarea'
+          id='qual'
+          rows='5'
+          cols='60'
+          readOnly='true'
+          placeholder='The task description should appear shortly'
           value={currentTaskObject.description}
           onChange={(event) => this.inputChangedHandler(event)}
         />
