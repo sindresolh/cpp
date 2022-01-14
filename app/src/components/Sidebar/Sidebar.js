@@ -15,6 +15,7 @@ import { arrayIsEqual } from '../../utils/compareArrays/compareArrays';
 import HintIcon from '../../images/hint.png';
 import ClearIcon from '../../images/clear.png';
 import SubmitIcon from '../../images/submit.png';
+import { COLORS } from '../../utils/constants';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -127,7 +128,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className='Sidebar'>
+    <div className='Sidebar' style={{ background: COLORS.sidebar }}>
       {/* Popup for hint or submit */}
       <SidebarModal
         modalIsOpen={modalIsOpen}
