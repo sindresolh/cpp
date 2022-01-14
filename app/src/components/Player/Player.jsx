@@ -40,14 +40,15 @@ function Player({ playerNo, name, codeBlocks }) {
           src={icon}
           alt={`Player ${playerNo} icon`}
         />
-      </div>
-      <div className='rightContainerPlayer'>
-        <div
+           <div
           className={`player-${playerNo} name`}
           data-testid={`player-${playerNo}-name`}
         >
           {name}
         </div>
+      </div>
+      <div className='rightContainerPlayer'>
+     
         <HandList codeBlocks={codeBlocks} player={playerNo} draggable={draggableBlocks} />
       </div>
     </div>

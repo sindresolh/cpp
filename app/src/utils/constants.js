@@ -2,6 +2,8 @@
 export const CATEGORY = {
   VARIABLE: 'variable',
   FUNCTION: 'function',
+  LOOP: 'loop',
+  CONDITION: 'condition',
 };
 
 export const PLAYER = {
@@ -22,7 +24,7 @@ export const COLORS = {
   darkyellow: '#e88e28',
   darkblue: '#3c53cb',
   darkgreen: '#2b6e38',
-  lightred: '#fcc6b',
+  lightred: '#fcc6be',
   lightyellow: '#fbd392',
   lightblue: '#c4ccf5',
   lightgreen: '#8bbe95',
