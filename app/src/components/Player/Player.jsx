@@ -1,10 +1,10 @@
 import React from 'react';
 import HandList from '../HandList/HandList';
 import './Player.css';
-import p1Icon from '../../utils/icons/player_icon_1.png';
-import p2Icon from '../../utils/icons/player_icon_2.png';
-import p3Icon from '../../utils/icons/player_icon_3.png';
-import p4Icon from '../../utils/icons/player_icon_4.png';
+import p1Icon from '../../images/playerIcons/player_icon_1.png';
+import p2Icon from '../../images/playerIcons/player_icon_2.png';
+import p3Icon from '../../images/playerIcons/player_icon_3.png';
+import p4Icon from '../../images/playerIcons/player_icon_4.png';
 
 /**
  * Helper function to get the correct icon.

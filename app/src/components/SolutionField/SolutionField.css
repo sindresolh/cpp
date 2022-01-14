@@ -1,9 +1,7 @@
 li {
-  background-color: darkorange;
   list-style-type: none;
 }
 
 .divSF {
-  background-color: darksalmon;
   flex: 4;
 }

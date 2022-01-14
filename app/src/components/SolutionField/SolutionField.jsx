@@ -148,12 +148,13 @@ function SolutionField({}) {
   );
 
   return (
-    <div className={'divSF'} ref={drop} style={{ background: '#e8e8e8' }}>
+    <div className={'divSF'} ref={drop} style={{ background: COLORS.solutionfield }}>
       <h6>{"Connected platers: "+players.length}</h6>
       <ul data-testid="solutionField"> 
         {lines.map((line) => {
+          let codelineColor = COLORS.codeline;
           return (
-            <li key={line.block.id} data-testid="lines"> 
+            <li key={line.block.id} data-testid="lines" style={{background:codelineColor}}> 
               <CodeBlock
                 {...line.block}
                 draggable={true}  // TODO: might not need this

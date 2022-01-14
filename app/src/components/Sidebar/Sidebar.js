@@ -12,9 +12,9 @@ import {
   setList,
 } from '../../redux/actions';
 import { arrayIsEqual } from '../../utils/compareArrays/compareArrays';
-import HintIcon from '../../images/hint.png';
-import ClearIcon from '../../images/clear.png';
-import SubmitIcon from '../../images/submit.png';
+import HintIcon from '../../images/buttonIcons/hint.png';
+import ClearIcon from '../../images/buttonIcons/clear.png';
+import SubmitIcon from '../../images/buttonIcons/submit.png';
 import { COLORS } from '../../utils/constants';
 
 export default function Sidebar() {
