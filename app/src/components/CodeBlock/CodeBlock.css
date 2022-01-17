@@ -1,4 +1,3 @@
-/* TODO: figure out styling*/
 .cb {
   border: solid;
   border-radius: 8px;
@@ -18,25 +17,33 @@
 }
 
 .variable {
-  background-color: turquoise;
+  background-color: #c4ccf5;
 }
 
 .function {
-  background-color: tomato;
+  background-color: #fcc6be;
+}
+
+.loop {
+  background-color: #fbd392;
+}
+
+.condition {
+  background-color: #8bbe95;
 }
 
 .player1 {
-  border-color: red;
+  border-color: #dd4932;
 }
 
 .player2 {
-  border-color: blue;
+  border-color: #3c53cb;
 }
 
 .player3 {
-  border-color: yellow;
+  border-color: #e88e28;
 }
 
 .player4 {
-  border-color: green;
+  border-color: #2b6e38;
 }

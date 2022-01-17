@@ -14,6 +14,7 @@ import { ItemTypes } from '../../utils/itemtypes';
 import PropTypes from 'prop-types';
 import './SolutionField.css';
 import store from '../../redux/store/store';
+import { COLORS } from '../../utils/constants';
 
 /**
  *
@@ -147,12 +148,13 @@ function SolutionField({}) {
   );
 
   return (
-    <div className={'divSF'} ref={drop}>
+    <div className={'divSF'} ref={drop} style={{ background: COLORS.solutionfield }}>
       <h6>{"Connected platers: "+players.length}</h6>
-      <ul data-testid="solutionField">
+      <ul data-testid="solutionField"> 
         {lines.map((line) => {
+          let codelineColor = COLORS.codeline;
           return (
-            <li key={line.block.id} data-testid="lines">
+            <li key={line.block.id} data-testid="lines" style={{background:codelineColor}}> 
               <CodeBlock
                 {...line.block}
                 draggable={true}  // TODO: might not need this

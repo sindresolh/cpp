@@ -1,11 +1,32 @@
-.correctItem {
-  background: green;
-  width: 10em;
-  margin: auto;
+.correctItem,
+.confirmButton {
+  background: #8bbe95;
 }
 
 .incorrectItem {
-  background: red;
+  background: #fcc6be;
+}
+
+.correctItem,
+.incorrectItem {
   width: 10em;
   margin: auto;
+  margin-top: 0.1em;
+}
+
+.modalContainer {
+  text-align: center;
+  margin: 2em;
+}
+
+.modalContainer > button {
+  border-style: none;
+  width: 7em;
+  height: 3em;
+  margin: 0.4em;
+  border-radius: 1em;
+  font-weight: bold;
+  font-size: 1em;
+  bottom: 2em;
+  position: absolute;
 }

@@ -1,7 +1,7 @@
 .Sidebar {
-  background-color: lightgreen;
   flex: 0.5;
   position: relative;
+  border-radius: 0em 0.5em 0.5em 0em;
 }
 
 .Sidebar > div {

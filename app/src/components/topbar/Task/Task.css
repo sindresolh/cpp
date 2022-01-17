@@ -2,6 +2,7 @@
   margin: 1vw;
   text-align: center;
   background-color: white;
+  border-radius: 0.5em;
 }
 .Task > div {
   float: down;

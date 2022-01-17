@@ -1,9 +1,10 @@
 li {
-  background-color: darkorange;
   list-style-type: none;
+  border-radius: 0.5em;
+  margin: 0.2em 1em;
 }
 
 .divSF {
-  background-color: darksalmon;
   flex: 4;
+  border-radius: 0.5em 0em 0em 0.5em;
 }
