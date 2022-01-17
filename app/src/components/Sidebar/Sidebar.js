@@ -23,8 +23,8 @@ export default function Sidebar() {
   const [modalDescription, setModalDescription] = useState('');
   const [modalButtonText, setModalButtonText] = useState('');
   const [modalColor, setModalColor] = useState('white');
-  const [feedbackVisibility, setFeedbackVisibility] = useState('hidden');
-  const [hasClearBoardDialog, setHasClearBoardDialog] = useState('hidden');
+  const [feedbackVisibility, setFeedbackVisibility] = useState('none');
+  const [hasClearBoardDialog, setHasClearBoardDialog] = useState('none');
   const dispatch = useDispatch();
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
@@ -43,8 +43,8 @@ export default function Sidebar() {
    * @param {*} description : body text
    * @param {*} buttonText : text for the button that closes the model
    * @param {*} color : border color for the modal
-   * @param {*} feedbackVisibility : 'hidden' or 'visible' based on wheter or not is an incorrect solution from submit
-   * @param {*} isClear : 'hidden' or 'visible' based on wheter or not it was triggered from Clear
+   * @param {*} feedbackVisibility : 'none' or 'block' based on wheter or not is an incorrect solution from submit
+   * @param {*} isClear : 'none' or 'block' based on wheter or not it was triggered from Clear
    */
   const openModal = (
     title,
@@ -52,7 +52,7 @@ export default function Sidebar() {
     buttonText,
     color,
     feedbackVisibility,
-    isClear = 'hidden'
+    isClear = 'none'
   ) => {
     setModalTitle(title);
     setModalDescription(description);
@@ -72,8 +72,8 @@ export default function Sidebar() {
       'Are you sure you want to empty the board',
       'Cancel',
       COLORS.darkred,
-      'hidden',
-      'visible'
+      'none',
+      'inline-block'
     );
   };
 
@@ -104,7 +104,7 @@ export default function Sidebar() {
         'Congratulations! You finished all the tasks.',
         'Finish',
         COLORS.darkgreen,
-        'hidden'
+        'none'
       );
     } else if (arrayIsEqual(field, currentTaskObject.solutionField.correct)) {
       dispatch(nextTask());
@@ -114,7 +114,7 @@ export default function Sidebar() {
         'Continues to next task',
         'Next task',
         COLORS.darkgreen,
-        'hidden'
+        'none'
       );
     } else {
       openModal(
@@ -122,7 +122,7 @@ export default function Sidebar() {
         'Unfortunately this is incorrect. Please try again.',
         'Try again',
         COLORS.darkred,
-        'visible'
+        'block'
       );
     }
   };
@@ -154,7 +154,7 @@ export default function Sidebar() {
               currentTaskObject.hint,
               'Back to task',
               COLORS.darkyellow,
-              'hidden'
+              'none'
             )
           }
         />

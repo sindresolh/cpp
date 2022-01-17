@@ -34,24 +34,26 @@ export default function SidebarModal({
   };
   return (
     <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={modalStyle}>
-      <h2>{title}</h2>
-      <p>{description}</p>
-      <button onClick={closeModal}>{buttonText}</button>
-      <button onClick={clearBoard} style={{ visibility: showClearBoardDialog }}>
-        Yes
-      </button>
-      <ul style={{ visibility: showFeedback }}>
-        {feedbackArray.map((item) => {
-          return (
-            <li
-              className={item.isCorrect ? 'correctItem' : 'incorrectItem'}
-              key={item.codeBlock.block.id}
-            >
-              {item.codeBlock.block.content}
-            </li>
-          );
-        })}
-      </ul>
+      <div style={{ textAlign: 'center' }}>
+        <h2>{title}</h2>
+        <p>{description}</p>
+        <button onClick={closeModal}>{buttonText}</button>
+        <button onClick={clearBoard} style={{ display: showClearBoardDialog }}>
+          Yes
+        </button>
+        <ul style={{ display: showFeedback }}>
+          {feedbackArray.map((item) => {
+            return (
+              <li
+                className={item.isCorrect ? 'correctItem' : 'incorrectItem'}
+                key={item.codeBlock.block.id}
+              >
+                {item.codeBlock.block.content}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
     </Modal>
   );
 }
