@@ -18,7 +18,7 @@ export const COLORS = {
   background: 'linear-gradient(to bottom, #e2e2e2, #c2c2c2)',
   sidebar: 'linear-gradient(to bottom, #677edb, #4e67d1)',
   solutionfield: '#eeeeee',
-  codeline: '#c2c2c2',
+  codeline: '#e8e8e8',
   taskfield: '#e8e8e8',
   darkred: '#dd4932',
   darkyellow: '#e88e28',

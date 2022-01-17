@@ -1,6 +1,6 @@
 .li {
-  background-color: seagreen;
   list-style-type: none;
+  margin: 0.2em;
 }
 
 ul {
@@ -10,7 +10,9 @@ ul {
 }
 
 .divHL {
-  background-color: cornsilk;
+  background-color: #e8e8e8;
   min-height: 7vw;
   min-width: 10vw;
+  padding: 0.2em;
+  border-radius: 0.5em;
 }

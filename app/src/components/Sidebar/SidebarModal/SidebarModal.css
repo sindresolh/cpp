@@ -1,11 +1,11 @@
 .correctItem {
-  background: green;
+  background: #8bbe95;
   width: 10em;
   margin: auto;
 }
 
 .incorrectItem {
-  background: red;
+  background: #fcc6be;
   width: 10em;
   margin: auto;
 }

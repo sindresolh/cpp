@@ -28,8 +28,8 @@ export default function SidebarModal({
       width: '20em',
       height: '25em',
       margin: 'auto',
-      border: '1em solid ' + color,
-      borderRadius: '3em',
+      border: '0.5em solid ' + color,
+      borderRadius: '1em',
     },
   };
   return (

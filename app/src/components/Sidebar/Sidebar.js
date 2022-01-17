@@ -71,7 +71,7 @@ export default function Sidebar() {
       'Clear',
       'Are you sure you want to empty the board',
       'Cancel',
-      'orange',
+      COLORS.darkred,
       'hidden',
       'visible'
     );
@@ -103,7 +103,7 @@ export default function Sidebar() {
         'Task set finished',
         'Congratulations! You finished all the tasks.',
         'Finish',
-        'green',
+        COLORS.darkgreen,
         'hidden'
       );
     } else if (arrayIsEqual(field, currentTaskObject.solutionField.correct)) {
@@ -113,7 +113,7 @@ export default function Sidebar() {
         'Correct',
         'Continues to next task',
         'Next task',
-        'green',
+        COLORS.darkgreen,
         'hidden'
       );
     } else {
@@ -121,7 +121,7 @@ export default function Sidebar() {
         'Incorrect',
         'Unfortunately this is incorrect. Please try again.',
         'Try again',
-        'red',
+        COLORS.darkred,
         'visible'
       );
     }
@@ -147,13 +147,13 @@ export default function Sidebar() {
         <SidebarButton
           title='Hint'
           icon={HintIcon}
-          color='#CBDA26'
+          color={COLORS.lightyellow}
           handleClick={() =>
             openModal(
               'Hint',
               currentTaskObject.hint,
               'Back to task',
-              'yellow',
+              COLORS.darkyellow,
               'hidden'
             )
           }
@@ -164,7 +164,7 @@ export default function Sidebar() {
         <SidebarButton
           title='Clear'
           icon={ClearIcon}
-          color='#DAB226'
+          color={COLORS.lightred}
           handleClick={() => handleClear()}
         />
       </div>
@@ -173,7 +173,7 @@ export default function Sidebar() {
         <SidebarButton
           title='Submit'
           icon={SubmitIcon}
-          color='#3FDA26'
+          color={COLORS.lightgreen}
           handleClick={() => handleSubmit()}
         />
       </div>

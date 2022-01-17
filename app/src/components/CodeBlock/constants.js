@@ -2,6 +2,8 @@
 export const CATEGORY = {
   VARIABLE: 'variable',
   FUNCTION: 'function',
+  LOOP: 'loop',
+  CONDITION: 'condition',
 };
 
 export const PLAYER = {
