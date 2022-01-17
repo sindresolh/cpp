@@ -15,14 +15,18 @@ import { arrayIsEqual } from '../../utils/compareArrays/compareArrays';
 import HintIcon from '../../images/buttonIcons/hint.png';
 import ClearIcon from '../../images/buttonIcons/clear.png';
 import SubmitIcon from '../../images/buttonIcons/submit.png';
+import CheckIcon from '../../images/buttonIcons/check.png';
+import CrossIcon from '../../images/buttonIcons/cross.png';
 import { COLORS } from '../../utils/constants';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalIcon, setModalIcon] = useState(HintIcon);
   const [modalTitle, setModalTitle] = useState('');
   const [modalDescription, setModalDescription] = useState('');
   const [modalButtonText, setModalButtonText] = useState('');
-  const [modalColor, setModalColor] = useState('white');
+  const [modalButtonColor, setModalButtonColor] = useState('white');
+  const [modalBorderColor, setModalBorderColor] = useState('white');
   const [feedbackVisibility, setFeedbackVisibility] = useState('none');
   const [hasClearBoardDialog, setHasClearBoardDialog] = useState('none');
   const dispatch = useDispatch();
@@ -39,6 +43,7 @@ export default function Sidebar() {
   /**
    * Opens a new modal with the following parameters
    *
+   * @param {*} icon : icon for the modal
    * @param {*} title : header
    * @param {*} description : body text
    * @param {*} buttonText : text for the button that closes the model
@@ -47,17 +52,21 @@ export default function Sidebar() {
    * @param {*} isClear : 'none' or 'block' based on wheter or not it was triggered from Clear
    */
   const openModal = (
+    icon,
     title,
     description,
     buttonText,
-    color,
+    buttonColor,
+    borderColor,
     feedbackVisibility,
     isClear = 'none'
   ) => {
+    setModalIcon(icon);
     setModalTitle(title);
     setModalDescription(description);
     setModalButtonText(buttonText);
-    setModalColor(color);
+    setModalButtonColor(buttonColor);
+    setModalBorderColor(borderColor);
     setFeedbackVisibility(feedbackVisibility);
     setHasClearBoardDialog(isClear);
     setModalIsOpen(true);
@@ -68,9 +77,11 @@ export default function Sidebar() {
    */
   const handleClear = () => {
     openModal(
+      ClearIcon,
       'Clear',
-      'Are you sure you want to empty the board',
+      'Are you sure you want to empty the board?',
       'Cancel',
+      COLORS.lightred,
       COLORS.darkred,
       'none',
       'inline-block'
@@ -100,9 +111,11 @@ export default function Sidebar() {
   const handleSubmit = () => {
     if (currentTaskNumber === currentTask.tasks.length - 1) {
       openModal(
+        CheckIcon,
         'Task set finished',
         'Congratulations! You finished all the tasks.',
         'Finish',
+        COLORS.lightgreen,
         COLORS.darkgreen,
         'none'
       );
@@ -110,17 +123,21 @@ export default function Sidebar() {
       dispatch(nextTask());
       dispatch(newTaskShoutEvent());
       openModal(
+        CheckIcon,
         'Correct',
         'Continues to next task',
         'Next task',
+        COLORS.lightgreen,
         COLORS.darkgreen,
         'none'
       );
     } else {
       openModal(
+        CrossIcon,
         'Incorrect',
         'Unfortunately this is incorrect. Please try again.',
         'Try again',
+        COLORS.lightred,
         COLORS.darkred,
         'block'
       );
@@ -132,10 +149,12 @@ export default function Sidebar() {
       {/* Popup for hint or submit */}
       <SidebarModal
         modalIsOpen={modalIsOpen}
+        icon={modalIcon}
         title={modalTitle}
         description={modalDescription}
         buttonText={modalButtonText}
-        color={modalColor}
+        buttonColor={modalButtonColor}
+        borderColor={modalBorderColor}
         field={field}
         showFeedback={feedbackVisibility}
         showClearBoardDialog={hasClearBoardDialog}
@@ -150,9 +169,11 @@ export default function Sidebar() {
           color={COLORS.lightyellow}
           handleClick={() =>
             openModal(
+              HintIcon,
               'Hint',
               currentTaskObject.hint,
               'Back to task',
+              COLORS.lightyellow,
               COLORS.darkyellow,
               'none'
             )
