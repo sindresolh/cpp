@@ -34,7 +34,7 @@ export default function SidebarModal({
   };
   return (
     <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={modalStyle}>
-      <div style={{ textAlign: 'center' }}>
+      <div className='modalContainer'>
         <h2>{title}</h2>
         <p>{description}</p>
         <button onClick={closeModal}>{buttonText}</button>
