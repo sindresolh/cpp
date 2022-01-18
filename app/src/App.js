@@ -7,6 +7,11 @@ import { startGame, setList } from './redux/actions';
 import { PLAYER } from './utils/constants';
 import { shuffleCodeblocks } from './utils/shuffleCodeblocks/shuffleCodeblocks';
 
+/**
+ * Shows a lobby or the game based on wheter or not someone started the game from the lobby
+ *
+ * @returns
+ */
 function App() {
   const dispatch = useDispatch();
   const currentTask = useSelector((state) => state.currentTask);

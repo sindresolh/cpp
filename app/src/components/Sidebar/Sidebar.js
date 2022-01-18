@@ -18,6 +18,8 @@ import SubmitIcon from '../../images/buttonIcons/submit.png';
 import CheckIcon from '../../images/buttonIcons/check.png';
 import CrossIcon from '../../images/buttonIcons/cross.png';
 import { COLORS } from '../../utils/constants';
+import { clearBoard as clearBoardHelper } from '../../utils/shuffleCodeblocks/shuffleCodeblocks';
+import store from '../../redux/store/store';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -94,14 +96,20 @@ export default function Sidebar() {
   const clearBoard = () => {
     closeModal();
 
-    // update for me
-    dispatch(setField(currentTaskObject.solutionField.field));
-    dispatch(setList(currentTaskObject.handList.player1, PLAYER.P1 - 1));
-    dispatch(setList(currentTaskObject.handList.player2, PLAYER.P2 - 1));
-    dispatch(setList(currentTaskObject.handList.player3, PLAYER.P3 - 1));
-    dispatch(setList(currentTaskObject.handList.player4, PLAYER.P4 - 1));
+    let initalfield = currentTaskObject.solutionField.field;
 
-    //update for my team
+    let field = store.getState().solutionField;
+    let handList = store.getState().handList;
+    handList = clearBoardHelper(field, handList);
+
+    // Update board
+    dispatch(setField([])); // TODO: Add unnasigned property to initial codeblocks
+    dispatch(setList(handList[PLAYER.P1 - 1], PLAYER.P1 - 1));
+    dispatch(setList(handList[PLAYER.P2 - 1], PLAYER.P2 - 1));
+    dispatch(setList(handList[PLAYER.P3 - 1], PLAYER.P3 - 1));
+    dispatch(setList(handList[PLAYER.P4 - 1], PLAYER.P4 - 1));
+
+    // Tell my team to reset solutionfield
     dispatch(clearShoutEvent());
   };
 

@@ -88,3 +88,23 @@ export const shuffleCodeblocks = (
 
   return codeblocks;
 };
+
+/**
+ * Take the field blocks and give them to the correct player
+ *
+ * @param {*} field
+ * @param {*} handList
+ * @returns
+ */
+export const clearBoard = (field, handList) => {
+  while (field.length > 0) {
+    var codeblock = field.pop().block;
+    var player = codeblock.player - 1;
+
+    if (player > -1) {
+      handList[player].push(codeblock);
+    }
+  }
+
+  return handList;
+};

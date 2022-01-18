@@ -24,6 +24,7 @@ import {
   arrayIsEqual,
 } from '../utils/compareArrays/compareArrays';
 import { PLAYER } from '../utils/constants';
+import { clearBoard } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
 
 /**
  * Helper function to let us call dispatch from a class function
@@ -50,6 +51,7 @@ class CommunicationHandler extends Component {
     this.state = {
       players: [],
       connected: false,
+      clearedBoard: [],
     };
   }
   /**
@@ -178,18 +180,28 @@ class CommunicationHandler extends Component {
   clearTask(payload) {
     console.log('incoming board clear from another peer : ' + payload);
 
-    const currentTask = store.getState().currentTask;
+    // Get the initial solution field from file
+    let currentTask = store.getState().currentTask;
     let currentTaskNumber = currentTask.currentTaskNumber;
     let currentTaskObject = currentTask.tasks[currentTaskNumber];
+    let initialfield = currentTaskObject.solutionField.field;
+
+    // Get current board state
+    let field = store.getState().solutionField;
+    let handList = store.getState().handList;
+
+    // Update board
+
+    handList = clearBoard(field, handList);
 
     const { dispatch_setField } = this.props;
-    dispatch_setField(currentTaskObject.solutionField.field);
+    dispatch_setField([]); // TODO: Assign unnasigned player properties to intial board.
 
-    const { dispatch_setList } = this.props;
-    dispatch_setList(currentTaskObject.handList.player1, PLAYER.P1 - 1);
-    dispatch_setList(currentTaskObject.handList.player2, PLAYER.P2 - 1);
-    dispatch_setList(currentTaskObject.handList.player3, PLAYER.P3 - 1);
-    dispatch_setList(currentTaskObject.handList.player4, PLAYER.P4 - 1);
+    /* const { dispatch_setList } = this.props;
+    dispatch_setList(handList[PLAYER.P1 - 1], PLAYER.P1 - 1);
+    dispatch_setList(handList[PLAYER.P2 - 1], PLAYER.P2 - 1);
+    dispatch_setList(handList[PLAYER.P3 - 1], PLAYER.P3 - 1);
+    dispatch_setList(handList[PLAYER.P4 - 1], PLAYER.P4 - 1); */
   }
 
   startGame(payload) {

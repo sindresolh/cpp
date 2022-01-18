@@ -7,7 +7,7 @@ export const CATEGORY = {
 };
 
 export const PLAYER = {
-  UNNASIGNED: -1, // Before a codeblock is assigned to a player
+  UNASSIGNED: 0,
   P1: 1,
   P2: 2,
   P3: 3,
