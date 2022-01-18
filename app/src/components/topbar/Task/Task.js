@@ -26,7 +26,7 @@ export default function Task() {
           id='qual'
           rows='5'
           cols='60'
-          readOnly='true'
+          readOnly
           placeholder='The task description should appear shortly'
           value={currentTaskObject.description}
           onChange={(event) => this.inputChangedHandler(event)}

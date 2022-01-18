@@ -4,16 +4,12 @@ import CommunicationListener from './CommunicationListener';
 import store from '../redux/store/store';
 import { connect } from 'react-redux';
 import {
-  increment,
-  decrement,
   setListState,
   setFieldState,
   nextTask,
   setPlayers,
   addPlayer,
   removePlayer,
-  setField,
-  setList,
 } from '../redux/actions';
 import { SET_LIST, SET_FIELD, NEXT_TASK, CLEAR_TASK } from './messages';
 import {
@@ -34,8 +30,6 @@ function mapDispatchToProps(dispatch) {
     dispatch_setPlayers: (...args) => dispatch(setPlayers(...args)),
     dispatch_addPlayer: (...args) => dispatch(addPlayer(...args)),
     dispatch_removePlayer: (...args) => dispatch(removePlayer(...args)),
-    dispatch_setField: (...args) => dispatch(setField(...args)),
-    dispatch_setList: (...args) => dispatch(setList(...args)),
   };
 }
 
@@ -119,24 +113,6 @@ class CommunicationHandler extends Component {
   };
 
   /**
-   * Temporarly function to show how the counter can work in multiplayer
-   *
-   * @param {*} payload : Payload send int the webrtc shout
-   */
-  newCount(payload) {
-    console.log('incoming count change from another peer : ' + payload);
-    const counter = store.getState().counter;
-    const { dispatch_increment, dispatch_decrement } = this.props;
-
-    if (payload > counter) {
-      dispatch_increment(5);
-    } else if (payload < counter) {
-      dispatch_decrement(5);
-    }
-    // else counter = payload - do nothing
-  }
-
-  /**
    *  Update the blocks in a hand list.
    *
    * @param {*} payload the new state for hand list
@@ -218,7 +194,7 @@ class CommunicationHandler extends Component {
         {this.state.connected ? (
           <CommunicationListener />
         ) : (
-          <h1>Waiting to connect...</h1>
+          <h1>Waiting to connect</h1>
         )}
       </LioWebRTC>
     );

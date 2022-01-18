@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component } from 'react';
 import { withWebRTC } from 'react-liowebrtc';
 import { connect } from 'react-redux';
 import store from '../redux/store/store';
@@ -19,6 +19,7 @@ const mapStateToProps = (state) => ({
   fieldShoutEvent: state.fieldShoutEvent,
   newTaskShoutEvent: state.newTaskShoutEvent,
   clearShoutEvent: state.clearShoutEvent,
+  inProgress: state.inProgress,
 });
 
 /**
@@ -55,15 +56,13 @@ class CommunicationListener extends Component {
       console.log('board reset');
       const json = JSON.stringify(state.currentTask);
       this.props.webrtc.shout(CLEAR_TASK, json);
+    } else if (prevProps.inProgress !== this.props.inProgress) {
+      console.log('game started');
     }
   }
 
   render() {
-    return (
-      <>
-        <App />
-      </>
-    );
+    return <App />;
   }
 }
 
