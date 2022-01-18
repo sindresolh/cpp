@@ -40,7 +40,8 @@ const wrongFormat = (blocks) => {
     if (
       !block.hasOwnProperty('id') ||
       !block.hasOwnProperty('content') ||
-      !block.hasOwnProperty('category')
+      !block.hasOwnProperty('category') ||
+      !block.hasOwnProperty('player')
     ) {
       return true;
     }
@@ -70,6 +71,7 @@ export const shuffleCodeblocks = (
   if (correctBlocks.length >= numberOfPlayers) {
     for (let i = 0; i < numberOfPlayers; i++) {
       let block = correctBlocks.pop();
+      block.player = i + 1;
       codeblocks[i].push(block);
     }
   }
@@ -79,7 +81,8 @@ export const shuffleCodeblocks = (
 
   // Give the players the remaining blocks
   for (var block of remainingBlocks) {
-    let player = Math.floor(Math.random() * 3); // random int between 0 and 3
+    let player = Math.floor(Math.random() * numberOfPlayers); // random int between 0 and 3
+    block.player = player + 1;
     codeblocks[player].push(block);
   }
 
