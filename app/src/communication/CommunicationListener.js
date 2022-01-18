@@ -3,7 +3,13 @@ import { withWebRTC } from 'react-liowebrtc';
 import { connect } from 'react-redux';
 import store from '../redux/store/store';
 import App from '../App';
-import { SET_LIST, SET_FIELD, NEXT_TASK, CLEAR_TASK } from './messages';
+import {
+  SET_LIST,
+  SET_FIELD,
+  NEXT_TASK,
+  CLEAR_TASK,
+  START_GAME,
+} from './messages';
 
 /**
  * Helper function to retrive data from the redux store.
@@ -58,6 +64,8 @@ class CommunicationListener extends Component {
       this.props.webrtc.shout(CLEAR_TASK, json);
     } else if (prevProps.inProgress !== this.props.inProgress) {
       console.log('game started');
+      const json = JSON.stringify(state.inProgress);
+      this.props.webrtc.shout(START_GAME, json);
     }
   }
 

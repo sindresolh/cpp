@@ -10,8 +10,15 @@ import {
   setPlayers,
   addPlayer,
   removePlayer,
+  startGame,
 } from '../redux/actions';
-import { SET_LIST, SET_FIELD, NEXT_TASK, CLEAR_TASK } from './messages';
+import {
+  SET_LIST,
+  SET_FIELD,
+  NEXT_TASK,
+  CLEAR_TASK,
+  START_GAME,
+} from './messages';
 import {
   twoDimensionalArrayIsEqual,
   arrayIsEqual,
@@ -30,6 +37,7 @@ function mapDispatchToProps(dispatch) {
     dispatch_setPlayers: (...args) => dispatch(setPlayers(...args)),
     dispatch_addPlayer: (...args) => dispatch(addPlayer(...args)),
     dispatch_removePlayer: (...args) => dispatch(removePlayer(...args)),
+    dispatch_startGame: (...args) => dispatch(startGame(...args)),
   };
 }
 
@@ -100,6 +108,9 @@ class CommunicationHandler extends Component {
         break;
       case CLEAR_TASK:
         this.clearTask(payload);
+        break;
+      case START_GAME:
+        this.startGame(payload);
         break;
       default:
         return;
@@ -179,6 +190,18 @@ class CommunicationHandler extends Component {
     dispatch_setList(currentTaskObject.handList.player2, PLAYER.P2 - 1);
     dispatch_setList(currentTaskObject.handList.player3, PLAYER.P3 - 1);
     dispatch_setList(currentTaskObject.handList.player4, PLAYER.P4 - 1);
+  }
+
+  startGame(payload) {
+    console.log('Another game iniatated the start of a new game');
+
+    const { dispatch_startGame } = this.props;
+    const prevState = store.getState().inProgress;
+    const payloadState = JSON.parse(payload);
+
+    if (prevState !== payloadState) {
+      dispatch_startGame();
+    }
   }
 
   render() {
