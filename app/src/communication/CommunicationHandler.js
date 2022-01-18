@@ -15,13 +15,7 @@ import {
   setField,
   setList,
 } from '../redux/actions';
-import {
-  NEW_COUNT,
-  SET_LIST,
-  SET_FIELD,
-  NEXT_TASK,
-  CLEAR_TASK,
-} from './messages';
+import { SET_LIST, SET_FIELD, NEXT_TASK, CLEAR_TASK } from './messages';
 import {
   twoDimensionalArrayIsEqual,
   arrayIsEqual,
@@ -34,8 +28,6 @@ import { PLAYER } from '../utils/constants';
 const mapStateToProps = null;
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch_increment: (...args) => dispatch(increment(...args)),
-    dispatch_decrement: (...args) => dispatch(decrement(...args)),
     dispatch_setList: (...args) => dispatch(setListState(...args)),
     dispatch_setField: (...args) => dispatch(setFieldState(...args)),
     dispatch_nextTask: (...args) => dispatch(nextTask(...args)),
@@ -102,9 +94,6 @@ class CommunicationHandler extends Component {
    */
   handlePeerData = (webrtc, type, payload, peer) => {
     switch (type) {
-      case NEW_COUNT:
-        this.newCount(payload); // Another player pressed the count
-        break;
       case SET_LIST:
         this.setList(payload);
         break;

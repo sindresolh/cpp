@@ -38,6 +38,14 @@ export default function Game() {
 
   let names = setNames(players);
 
+  // shuffle codeblocks
+  let codeblocks = currentTaskObject.handList.player1.concat(
+    currentTaskObject.handList.player2,
+    currentTaskObject.handList.player3,
+    currentTaskObject.handList.player4
+  );
+  //
+
   // Change the handlists and soloution field when the game renders
   useEffect(() => {
     dispatch(setField(currentTaskObject.solutionField.field));

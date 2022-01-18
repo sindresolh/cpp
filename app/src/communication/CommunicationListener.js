@@ -12,7 +12,6 @@ import { SET_LIST, SET_FIELD, NEXT_TASK, CLEAR_TASK } from './messages';
  * @returns
  */
 const mapStateToProps = (state) => ({
-  counter: state.counter, // update from counter to game state later (now gets it form reduxers/index.js)
   handList: state.handList,
   solutionField: state.solutionField,
   currentTask: state.currentTask,
@@ -29,7 +28,7 @@ class CommunicationListener extends Component {
   /**
    * Shouts when the state changes
    *
-   * @param {*} prevProps : Checks that the new counter value is different
+   * @param {*} prevProps : Checks that the new value is different
    */
   componentDidUpdate(prevProps) {
     const state = store.getState();

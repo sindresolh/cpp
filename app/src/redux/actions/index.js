@@ -1,21 +1,15 @@
 // DISPATCH -> ACTION (Here) -> REDUCER
 
-// COUNTER - FROM THE TUTORIAL
-export const increment = (number) => {
-  return {
-    type: 'INCREMENT',
-    payload: number,
-  };
-};
-export const decrement = (number) => {
-  return {
-    type: 'DECREMENT',
-    payload: number,
-  };
-};
-// END OF TORTURIAL STUFF - TODO
-
 // START BOARD STATE:
+export const startGame = (state) => {
+  return {
+    type: 'START_GAME',
+    payload: {
+      state,
+    },
+  };
+};
+
 export const setList = (blocks, handListIndex) => {
   return {
     type: 'SET_LIST',
