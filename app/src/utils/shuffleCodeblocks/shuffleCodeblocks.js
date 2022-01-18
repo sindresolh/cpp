@@ -1,6 +1,6 @@
 /**
  * Fisher-Yates algorithm
- * Stolen from: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+ * Taken from: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
  *
  * @param {*} array
  * @returns
