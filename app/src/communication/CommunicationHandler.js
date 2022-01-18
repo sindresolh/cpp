@@ -195,11 +195,11 @@ class CommunicationHandler extends Component {
   startGame(payload) {
     console.log('Another game iniatated the start of a new game');
 
-    const { dispatch_startGame } = this.props;
     const prevState = store.getState().inProgress;
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState) {
+      const { dispatch_startGame } = this.props;
       dispatch_startGame();
     }
   }
