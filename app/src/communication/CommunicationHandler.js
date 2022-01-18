@@ -4,8 +4,8 @@ import CommunicationListener from './CommunicationListener';
 import store from '../redux/store/store';
 import { connect } from 'react-redux';
 import {
-  setListState,
-  setFieldState,
+  setList,
+  setField,
   nextTask,
   setPlayers,
   addPlayer,
@@ -31,8 +31,8 @@ import { PLAYER } from '../utils/constants';
 const mapStateToProps = null;
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch_setList: (...args) => dispatch(setListState(...args)),
-    dispatch_setField: (...args) => dispatch(setFieldState(...args)),
+    dispatch_setList: (...args) => dispatch(setList(...args)),
+    dispatch_setField: (...args) => dispatch(setField(...args)),
     dispatch_nextTask: (...args) => dispatch(nextTask(...args)),
     dispatch_setPlayers: (...args) => dispatch(setPlayers(...args)),
     dispatch_addPlayer: (...args) => dispatch(addPlayer(...args)),
@@ -198,9 +198,15 @@ class CommunicationHandler extends Component {
     const prevState = store.getState().inProgress;
     const payloadState = JSON.parse(payload);
 
-    if (prevState !== payloadState) {
+    if (prevState !== payloadState.inProgress) {
       const { dispatch_startGame } = this.props;
       dispatch_startGame();
+
+      const { dispatch_setList } = this.props;
+      dispatch_setList(payloadState.handList[PLAYER.P1 - 1], PLAYER.P1 - 1);
+      dispatch_setList(payloadState.handList[PLAYER.P2 - 1], PLAYER.P2 - 1);
+      dispatch_setList(payloadState.handList[PLAYER.P3 - 1], PLAYER.P3 - 1);
+      dispatch_setList(payloadState.handList[PLAYER.P4 - 1], PLAYER.P4 - 1);
     }
   }
 

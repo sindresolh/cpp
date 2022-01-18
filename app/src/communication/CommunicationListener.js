@@ -64,7 +64,10 @@ class CommunicationListener extends Component {
       this.props.webrtc.shout(CLEAR_TASK, json);
     } else if (prevProps.inProgress !== this.props.inProgress) {
       console.log('game started');
-      const json = JSON.stringify(state.inProgress);
+      const json = JSON.stringify({
+        inProgress: state.inProgress,
+        handList: state.handList,
+      });
       this.props.webrtc.shout(START_GAME, json);
     }
   }
