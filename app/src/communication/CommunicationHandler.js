@@ -4,8 +4,8 @@ import CommunicationListener from './CommunicationListener';
 import store from '../redux/store/store';
 import { connect } from 'react-redux';
 import {
-  setList,
-  setField,
+  setListState,
+  setFieldState,
   nextTask,
   setPlayers,
   addPlayer,
@@ -32,8 +32,8 @@ import { clearBoard } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
 const mapStateToProps = null;
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch_setList: (...args) => dispatch(setList(...args)),
-    dispatch_setField: (...args) => dispatch(setField(...args)),
+    dispatch_setListState: (...args) => dispatch(setListState(...args)),
+    dispatch_setFieldState: (...args) => dispatch(setFieldState(...args)),
     dispatch_nextTask: (...args) => dispatch(nextTask(...args)),
     dispatch_setPlayers: (...args) => dispatch(setPlayers(...args)),
     dispatch_addPlayer: (...args) => dispatch(addPlayer(...args)),
@@ -132,11 +132,11 @@ class CommunicationHandler extends Component {
    */
   setList(payload) {
     console.log('incoming set list from another peer : ' + payload);
-    const { dispatch_setList } = this.props;
+    const { dispatch_setListState } = this.props;
     const prevState = store.getState().handList;
     const payloadState = JSON.parse(payload);
     if (!twoDimensionalArrayIsEqual(prevState, payloadState)) {
-      dispatch_setList(payloadState);
+      dispatch_setListState(payloadState);
     }
   }
 
@@ -147,12 +147,12 @@ class CommunicationHandler extends Component {
    */
   setField(payload) {
     console.log('incoming set field from another peer : ' + payload);
-    const { dispatch_setField } = this.props;
+    const { dispatch_setFieldState } = this.props;
     const prevState = store.getState().solutionField;
     const payloadState = JSON.parse(payload);
 
     if (!arrayIsEqual(prevState, payloadState)) {
-      dispatch_setField(payloadState);
+      dispatch_setFieldState(payloadState);
     }
   }
 
@@ -196,12 +196,6 @@ class CommunicationHandler extends Component {
 
     const { dispatch_setField } = this.props;
     dispatch_setField([]); // TODO: Assign unnasigned player properties to intial board.
-
-    /* const { dispatch_setList } = this.props;
-    dispatch_setList(handList[PLAYER.P1 - 1], PLAYER.P1 - 1);
-    dispatch_setList(handList[PLAYER.P2 - 1], PLAYER.P2 - 1);
-    dispatch_setList(handList[PLAYER.P3 - 1], PLAYER.P3 - 1);
-    dispatch_setList(handList[PLAYER.P4 - 1], PLAYER.P4 - 1); */
   }
 
   startGame(payload) {
@@ -214,11 +208,8 @@ class CommunicationHandler extends Component {
       const { dispatch_startGame } = this.props;
       dispatch_startGame();
 
-      const { dispatch_setList } = this.props;
-      dispatch_setList(payloadState.handList[PLAYER.P1 - 1], PLAYER.P1 - 1);
-      dispatch_setList(payloadState.handList[PLAYER.P2 - 1], PLAYER.P2 - 1);
-      dispatch_setList(payloadState.handList[PLAYER.P3 - 1], PLAYER.P3 - 1);
-      dispatch_setList(payloadState.handList[PLAYER.P4 - 1], PLAYER.P4 - 1);
+      const { dispatch_setListState } = this.props;
+      dispatch_setListState(payloadState.handList);
     }
   }
 
