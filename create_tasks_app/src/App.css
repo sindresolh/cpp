@@ -2,5 +2,9 @@ html,
 body,
 #root,
 .App {
+  display: flex;
   height: 100%;
+  width: 100%;
+  justify-content: space-around;
+  background-color: #e2e2e2;
 }
