@@ -3,11 +3,12 @@ import { render, fireEvent, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import CreateTask from '../CreateTask';
 import { SAMPLE_TEXT } from '../constants';
+import { MemoryRouter } from 'react-router-dom';
 
 let createTask;
 
 beforeEach(() => {
-  createTask = render(<CreateTask />);
+  createTask = render(<CreateTask />, { wrapper: MemoryRouter });
   createTask.getByTestId('createTask');
 });
 

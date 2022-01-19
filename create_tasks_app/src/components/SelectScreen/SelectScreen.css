@@ -1,4 +1,4 @@
-.container {
+.selectScreen {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -6,7 +6,7 @@
 }
 
 .button {
-  background-color: #0092c3; /* Green */
+  background-color: #0092c3;
   border: none;
   color: white;
   padding: 15px 30px;
@@ -23,12 +23,14 @@
   background-color: #017aa2;
 }
 
+.disabled {
+  pointer-events: none;
+}
+
 .buttonContainer {
   display: flex;
-  height: 100%;
   flex-direction: row;
   justify-content: space-between;
-  border: tomato;
   border-width: 50px;
   gap: 2vw;
 }

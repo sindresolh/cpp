@@ -2,11 +2,12 @@ import React from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
 import SelectScreen from '../SelectScreen';
 import '@testing-library/jest-dom';
+import { MemoryRouter } from 'react-router-dom';
 
 let selectScreen;
 
 beforeEach(() => {
-  selectScreen = render(<SelectScreen />);
+  selectScreen = render(<SelectScreen />, { wrapper: MemoryRouter });
   selectScreen.getByTestId('selectScreen');
 });
 

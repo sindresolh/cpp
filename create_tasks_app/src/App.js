@@ -1,6 +1,7 @@
 import './App.css';
 import SelectScreen from './components/SelectScreen/SelectScreen';
 import CreateTask from './components/CreateTask/CreateTask';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 /**
  * App for creating new tasks and task-sets for CPP.
@@ -8,10 +9,12 @@ import CreateTask from './components/CreateTask/CreateTask';
 function App() {
   return (
     <div className='App'>
-      {
-        //SelectScreen />
-      }
-      <CreateTask />
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<SelectScreen />} />
+          <Route path='createTask' element={<CreateTask />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
