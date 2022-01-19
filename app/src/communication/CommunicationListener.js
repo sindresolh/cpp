@@ -100,6 +100,7 @@ class CommunicationListener extends Component {
       prevProps.newTaskShoutEvent !== this.props.newTaskShoutEvent
     ) {
       console.log('new task');
+      this.initialize_board();
       const json = JSON.stringify({
         currentTask: state.currentTask,
         handList: state.handList,
