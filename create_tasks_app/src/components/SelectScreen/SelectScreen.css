@@ -1,0 +1,38 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 2vw;
+}
+
+.button {
+  background-color: #0092c3; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 4vh;
+  border-radius: 30px;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+}
+
+.button:hover {
+  background-color: #017aa2;
+}
+
+.buttonContainer {
+  display: flex;
+  height: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  border: tomato;
+  border-width: 50px;
+  gap: 2vw;
+}
+
+.title {
+  font-size: 7vh;
+}
