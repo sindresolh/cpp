@@ -1,0 +1,31 @@
+.container {
+  display: flex;
+  align-items: flex-start;
+  height: 100%;
+  border: dodgerblue;
+  border-width: 5px;
+  flex-direction: row;
+}
+
+.leftContainer {
+  border: gold;
+  border-width: 5px;
+  height: 100%;
+  width: 50%;
+  background-color: rgb(251, 230, 188);
+  padding-left: 2vw;
+  padding-right: 2vw;
+  padding-top: 2vh;
+  justify-content: center;
+}
+
+.rightContainer {
+  height: 100%;
+  width: 50%;
+  background-color: rgb(224, 251, 188);
+}
+
+.editor {
+  height: 95%;
+  background-color: honeydew;
+}
