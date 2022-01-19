@@ -10,6 +10,10 @@ import {
   CLEAR_TASK,
   START_GAME,
 } from './messages';
+import { startGame, setList } from '../redux/actions';
+import { shuffleCodeblocks } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
+import { PLAYER } from '../utils/constants';
+import Lobby from '../components/Lobby/Lobby';
 
 /**
  * Helper function to retrive data from the redux store.
@@ -27,6 +31,12 @@ const mapStateToProps = (state) => ({
   clearShoutEvent: state.clearShoutEvent,
   inProgress: state.inProgress,
 });
+function mapDispatchToProps(dispatch) {
+  return {
+    dispatch_setList: (...args) => dispatch(setList(...args)),
+    dispatch_startGame: (...args) => dispatch(startGame(...args)),
+  };
+}
 
 /**
  * Listens to changes in the redux store and sends new messages to all peers.
@@ -37,6 +47,40 @@ class CommunicationListener extends Component {
    *
    * @param {*} prevProps : Checks that the new value is different
    */
+  /**
+   * Distribute cards to all players, including yourself
+   */
+  initialize_board() {
+    const state = store.getState();
+    const currentTask = state.currentTask;
+    let currentTaskNumber = currentTask.currentTaskNumber;
+    let currentTaskObject = currentTask.tasks[currentTaskNumber];
+    // TODO: update task format
+    let codeblocks = currentTaskObject.handList.player1.concat(
+      currentTaskObject.handList.player2,
+      currentTaskObject.handList.player3,
+      currentTaskObject.handList.player4
+    );
+
+    // shuffle codeblocks
+    codeblocks = shuffleCodeblocks(codeblocks, [], 4);
+
+    const { dispatch_setList } = this.props;
+    dispatch_setList(codeblocks[PLAYER.P1 - 1], PLAYER.P1 - 1);
+    dispatch_setList(codeblocks[PLAYER.P2 - 1], PLAYER.P2 - 1);
+    dispatch_setList(codeblocks[PLAYER.P3 - 1], PLAYER.P3 - 1);
+    dispatch_setList(codeblocks[PLAYER.P4 - 1], PLAYER.P4 - 1);
+  }
+
+  /**
+   * Start the game for all players
+   */
+  start() {
+    this.initialize_board();
+    const { dispatch_startGame } = this.props;
+    dispatch_startGame();
+  }
+
   componentDidUpdate(prevProps) {
     const state = store.getState();
     console.log('How many peers in listener: ' + this.props.webrtc.getPeers());
@@ -56,7 +100,10 @@ class CommunicationListener extends Component {
       prevProps.newTaskShoutEvent !== this.props.newTaskShoutEvent
     ) {
       console.log('new task');
-      const json = JSON.stringify(state.currentTask);
+      const json = JSON.stringify({
+        currentTask: state.currentTask,
+        handList: state.handList,
+      });
       this.props.webrtc.shout(NEXT_TASK, json);
     } else if (prevProps.clearShoutEvent !== this.props.clearShoutEvent) {
       console.log('board reset');
@@ -73,8 +120,19 @@ class CommunicationListener extends Component {
   }
 
   render() {
-    return <App />;
+    return (
+      <>
+        {store.getState().inProgress ? (
+          <App />
+        ) : (
+          <Lobby handleClick={() => this.start()} />
+        )}
+      </>
+    );
   }
 }
 
-export default connect(mapStateToProps)(withWebRTC(CommunicationListener));
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(withWebRTC(CommunicationListener));

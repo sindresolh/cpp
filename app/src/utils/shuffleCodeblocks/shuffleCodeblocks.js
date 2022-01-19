@@ -86,6 +86,11 @@ export const shuffleCodeblocks = (
     codeblocks[player].push(block);
   }
 
+  // Make sure that the correct codeblocks is not always the first ones
+  for (let player = 0; player < numberOfPlayers; player++) {
+    codeblocks[player] = shuffle(codeblocks[player]);
+  }
+
   return codeblocks;
 };
 
