@@ -8,7 +8,7 @@ import './prism.css';
 import './CreateTask.css';
 import { useNavigate } from 'react-router-dom';
 
-const setHint = (value, index) => {};
+const DEFAULT_ATTEMPTS = 3;
 
 /**
  * Includes a code editor to write/add code. This code can be turned into a task.
@@ -17,33 +17,26 @@ const setHint = (value, index) => {};
  * @returns Create task component
  */
 function CreateTask() {
-  const Hint = ({ number }) => {
-    return (
-      <div
-        className='textAreaContainer'
-        id={`hint-${number}`}
-        key={`hint-${number}`}
-      >
-        <div className='textAreaFlex' key={`hint-${number}`}>
-          <textarea
-            className='hintInput'
-            rows={3}
-            key={`hint-${number}`}
-            placeholder='Give a hint to the players'
-          />
-        </div>
-      </div>
-    );
-  };
-
   const [code, setCode] = useState(SAMPLE_TEXT);
-  const [description, setDescription] = useState();
-  const [unlimitedAttempts, setUnlimitedAttempts] = useState(true);
-  let navigate = useNavigate();
-  const hintAmount = 4;
+  const [description, setDescription] = useState('');
   const [hints, setHints] = useState(['']);
+  const [unlimitedAttempts, setUnlimitedAttempts] = useState(true);
+  const [amountOfAttempts, setAmountOfAttempts] = useState(DEFAULT_ATTEMPTS);
+  let navigate = useNavigate();
 
-  console.log(hints);
+  /**
+   * @returns all inputs as JSON
+   */
+  const getInputsAsJSON = () => {
+    const hintsJson = JSON.stringify(hints);
+    const inputs = {
+      code,
+      description,
+      hints: hintsJson,
+      attempts: unlimitedAttempts ? 'unlimited' : amountOfAttempts,
+    };
+    return JSON.stringify(inputs);
+  };
 
   return (
     <div className='container' data-testid={'createTask'}>
@@ -126,9 +119,10 @@ function CreateTask() {
               name='attempts'
               min='1'
               step='1'
-              defaultValue={'3'}
+              defaultValue={DEFAULT_ATTEMPTS}
               disabled={unlimitedAttempts}
               required={!unlimitedAttempts}
+              onChange={(event) => setAmountOfAttempts(event.target.value)}
             />
             <div className='checkboxDiv'>
               <input
@@ -150,7 +144,10 @@ function CreateTask() {
             <button className='cancelButton' onClick={() => navigate('/')}>
               Cancel
             </button>
-            <button className='saveButton' onClick={() => console.log('Saved')}>
+            <button
+              className='saveButton'
+              onClick={() => console.log(getInputsAsJSON())}
+            >
               Save
             </button>
           </div>
