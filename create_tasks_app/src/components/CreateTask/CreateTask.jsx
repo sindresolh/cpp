@@ -8,25 +8,7 @@ import './prism.css';
 import './CreateTask.css';
 import { useNavigate } from 'react-router-dom';
 
-const Hint = (props) => {
-  const number = props.number;
-  return (
-    <div
-      className='textAreaContainer'
-      id={`hint-${number}`}
-      key={`hint-${number}`}
-    >
-      <div className='textAreaFlex' key={`hint-${number}`}>
-        <textarea
-          className='hintInput'
-          rows={3}
-          key={`hint-${number}`}
-          placeholder='Give a hint to the players'
-        />
-      </div>
-    </div>
-  );
-};
+const setHint = (value, index) => {};
 
 /**
  * Includes a code editor to write/add code. This code can be turned into a task.
@@ -35,11 +17,33 @@ const Hint = (props) => {
  * @returns Create task component
  */
 function CreateTask() {
+  const Hint = ({ number }) => {
+    return (
+      <div
+        className='textAreaContainer'
+        id={`hint-${number}`}
+        key={`hint-${number}`}
+      >
+        <div className='textAreaFlex' key={`hint-${number}`}>
+          <textarea
+            className='hintInput'
+            rows={3}
+            key={`hint-${number}`}
+            placeholder='Give a hint to the players'
+          />
+        </div>
+      </div>
+    );
+  };
+
   const [code, setCode] = useState(SAMPLE_TEXT);
-  const [hints, setHints] = useState([<Hint number={1} />]);
+  const [description, setDescription] = useState();
   const [unlimitedAttempts, setUnlimitedAttempts] = useState(true);
-  const hintLength = hints.length;
   let navigate = useNavigate();
+  const hintAmount = 4;
+  const [hints, setHints] = useState(['']);
+
+  console.log(hints);
 
   return (
     <div className='container' data-testid={'createTask'}>
@@ -66,16 +70,39 @@ function CreateTask() {
                 rows={5}
                 placeholder='Description for the task'
                 id='description'
+                onChange={(event) => setDescription(event.target.value)}
               />
             </div>
           </div>
           <div className='hints'>
             <h3>Hints</h3>
-            {hints}
+            {hints.map((hint, index) => {
+              let updatedHints = [...hints];
+
+              return (
+                <div
+                  className='textAreaContainer'
+                  id={`hint-${index}`}
+                  key={`hint-${index}`}
+                >
+                  <div className='textAreaFlex' key={`hint-${index}`}>
+                    <textarea
+                      className='hintInput'
+                      rows={3}
+                      key={`hint-${index}`}
+                      placeholder='Give a hint to the players'
+                      value={hint}
+                      onChange={(event) => {
+                        updatedHints[index] = event.target.value;
+                        setHints([...updatedHints]);
+                      }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
             <button
-              onClick={() =>
-                setHints([...hints, <Hint number={hints.length + 1} />])
-              }
+              onClick={() => setHints([...hints, ''])}
               disabled={hints.length > 4} // max 5 hints for now
             >
               +

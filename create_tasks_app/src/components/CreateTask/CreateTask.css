@@ -75,13 +75,13 @@
   flex-direction: column;
   justify-content: flex-start;
   flex: 2;
-  width: 80%;
+  width: 85%;
   gap: 2vh;
 }
 
 .rightContainerBottom {
   flex: 1;
-  width: 80%;
+  width: 85%;
 }
 
 .textAreaContainer > div {
