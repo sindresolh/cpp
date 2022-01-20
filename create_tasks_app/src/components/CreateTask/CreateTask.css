@@ -1,7 +1,7 @@
 .container {
   display: flex;
   height: 100%;
-  width: 75%;
+  width: 100%;
   flex-direction: row;
   justify-content: center;
 }
@@ -56,7 +56,7 @@
 .textAreaFlex {
   display: flex;
   flex-direction: column;
-  padding-bottom: 1vh;
+  padding-bottom: 0.5vh;
 }
 
 .textAreaFlex > textarea {
@@ -67,4 +67,19 @@
 
 h3 {
   color: rgb(249, 249, 249);
+}
+
+.attemptsDiv {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5vh;
+}
+
+.attemptsDiv > input {
+  max-width: 20%;
+}
+
+.checkboxDiv {
+  display: flex;
+  flex-direction: row;
 }
