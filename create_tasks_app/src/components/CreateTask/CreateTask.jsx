@@ -42,23 +42,23 @@ function CreateTask() {
   let navigate = useNavigate();
 
   return (
-    <form>
-      <div className='container' data-testid={'createTask'}>
-        <div className='leftContainer'>
-          <Editor
-            data-testid={'editor'}
-            className='editor'
-            value={code}
-            onValueChange={(code) => setCode(code)}
-            highlight={(code) => highlight(code, languages.py)}
-            padding={10}
-            style={{
-              fontFamily: "'Fira code', 'Fira Mono', monospace",
-              fontSize: 16, // TODO: adaptive font size based on screen size
-            }}
-          />
-        </div>
-        <div className='rightContainer'>
+    <div className='container' data-testid={'createTask'}>
+      <div className='leftContainer'>
+        <Editor
+          data-testid={'editor'}
+          className='editor'
+          value={code}
+          onValueChange={(code) => setCode(code)}
+          highlight={(code) => highlight(code, languages.py)}
+          padding={10}
+          style={{
+            fontFamily: "'Fira code', 'Fira Mono', monospace",
+            fontSize: 16, // TODO: adaptive font size based on screen size
+          }}
+        />
+      </div>
+      <div className='rightContainer'>
+        <div className='rightContainerTop'>
           <div className='textAreaContainer'>
             <div className='textAreaFlex'>
               <textarea
@@ -114,16 +114,22 @@ function CreateTask() {
                   setUnlimitedAttempts(!unlimitedAttempts);
                 }}
               />
-              <label for='unlimitedAttempts'>Unlimited attempts</label>
+              <label for='unlimitedAttempts'>Unlimited</label>
             </div>
           </div>
-          <button className='cancelButton' onClick={() => navigate('/')}>
-            Cancel
-          </button>
-          TODO: description, hints, attempts, save/export
+        </div>
+        <div className='rightContainerBottom'>
+          <div className='buttonDiv'>
+            <button className='cancelButton' onClick={() => navigate('/')}>
+              Cancel
+            </button>
+            <button className='saveButton' onClick={() => console.log('Saved')}>
+              Save
+            </button>
+          </div>
         </div>
       </div>
-    </form>
+    </div>
   );
 }
 
