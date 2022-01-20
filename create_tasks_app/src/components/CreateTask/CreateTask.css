@@ -15,17 +15,6 @@
   justify-content: center;
 }
 
-.rightContainer {
-  display: flex;
-  align-items: flex-start;
-  flex-direction: column;
-  height: 100%;
-  width: 50%;
-  background-color: #677edb;
-  padding: 5vh 3vw 3vw;
-  gap: 2vh;
-}
-
 .editor {
   min-height: 80%;
   background-color: rgb(251, 251, 251);
@@ -44,7 +33,38 @@
   cursor: pointer;
   box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
-
 .cancelButton:hover {
   background-color: #747474;
+}
+.rightContainer {
+  display: flex;
+  align-items: stretch;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 100%;
+  width: 50%;
+  background-color: #677edb;
+  padding: 5vh 3vw 3vw;
+  gap: 2vh;
+}
+
+.textAreaContainer > div {
+  flex: 0 0 50%;
+  max-width: 100%;
+}
+
+.textAreaFlex {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 1vh;
+}
+
+.textAreaFlex > textarea {
+  flex: 1;
+  font-size: 16px; /* TODO: Adaptive? */
+  resize: none;
+}
+
+h3 {
+  color: rgb(249, 249, 249);
 }
