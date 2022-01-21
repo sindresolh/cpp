@@ -1,6 +1,5 @@
 // DISPATCH -> ACTION -> REDUCER (Here)
 
-import loggedReducer from './isLogged';
 import { combineReducers } from 'redux';
 import handListReducer from './handList';
 import solutionFieldReducer from './solutionField';
@@ -10,9 +9,9 @@ import fieldShoutEventReducer from './fieldShoutEvent';
 import newTaskShoutEventReducer from './newTaskShout';
 import clearShoutEventReducer from './clearShoutEvent';
 import playerReducer from './players';
+import inProgressReducer from './inProgess';
 
 const allReducers = combineReducers({
-  isLogged: loggedReducer,
   handList: handListReducer,
   solutionField: solutionFieldReducer,
   currentTask: taskReducer,
@@ -21,5 +20,6 @@ const allReducers = combineReducers({
   newTaskShoutEvent: newTaskShoutEventReducer,
   clearShoutEvent: clearShoutEventReducer,
   players: playerReducer,
+  inProgress: inProgressReducer,
 });
 export default allReducers;

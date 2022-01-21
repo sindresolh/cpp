@@ -4,29 +4,27 @@ import CommunicationListener from './CommunicationListener';
 import store from '../redux/store/store';
 import { connect } from 'react-redux';
 import {
-  increment,
-  decrement,
   setListState,
   setFieldState,
   nextTask,
   setPlayers,
   addPlayer,
   removePlayer,
-  setField,
-  setList,
+  startGame,
 } from '../redux/actions';
 import {
-  NEW_COUNT,
   SET_LIST,
   SET_FIELD,
   NEXT_TASK,
   CLEAR_TASK,
+  START_GAME,
 } from './messages';
 import {
   twoDimensionalArrayIsEqual,
   arrayIsEqual,
 } from '../utils/compareArrays/compareArrays';
 import { PLAYER } from '../utils/constants';
+import { clearBoard } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
 
 /**
  * Helper function to let us call dispatch from a class function
@@ -34,16 +32,13 @@ import { PLAYER } from '../utils/constants';
 const mapStateToProps = null;
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch_increment: (...args) => dispatch(increment(...args)),
-    dispatch_decrement: (...args) => dispatch(decrement(...args)),
-    dispatch_setList: (...args) => dispatch(setListState(...args)),
-    dispatch_setField: (...args) => dispatch(setFieldState(...args)),
+    dispatch_setListState: (...args) => dispatch(setListState(...args)),
+    dispatch_setFieldState: (...args) => dispatch(setFieldState(...args)),
     dispatch_nextTask: (...args) => dispatch(nextTask(...args)),
     dispatch_setPlayers: (...args) => dispatch(setPlayers(...args)),
     dispatch_addPlayer: (...args) => dispatch(addPlayer(...args)),
     dispatch_removePlayer: (...args) => dispatch(removePlayer(...args)),
-    dispatch_setField: (...args) => dispatch(setField(...args)),
-    dispatch_setList: (...args) => dispatch(setList(...args)),
+    dispatch_startGame: (...args) => dispatch(startGame(...args)),
   };
 }
 
@@ -56,6 +51,7 @@ class CommunicationHandler extends Component {
     this.state = {
       players: [],
       connected: false,
+      clearedBoard: [],
     };
   }
   /**
@@ -102,9 +98,6 @@ class CommunicationHandler extends Component {
    */
   handlePeerData = (webrtc, type, payload, peer) => {
     switch (type) {
-      case NEW_COUNT:
-        this.newCount(payload); // Another player pressed the count
-        break;
       case SET_LIST:
         this.setList(payload);
         break;
@@ -118,6 +111,9 @@ class CommunicationHandler extends Component {
       case CLEAR_TASK:
         this.clearTask(payload);
         break;
+      case START_GAME:
+        this.startGame(payload);
+        break;
       default:
         return;
     }
@@ -130,35 +126,17 @@ class CommunicationHandler extends Component {
   };
 
   /**
-   * Temporarly function to show how the counter can work in multiplayer
-   *
-   * @param {*} payload : Payload send int the webrtc shout
-   */
-  newCount(payload) {
-    console.log('incoming count change from another peer : ' + payload);
-    const counter = store.getState().counter;
-    const { dispatch_increment, dispatch_decrement } = this.props;
-
-    if (payload > counter) {
-      dispatch_increment(5);
-    } else if (payload < counter) {
-      dispatch_decrement(5);
-    }
-    // else counter = payload - do nothing
-  }
-
-  /**
    *  Update the blocks in a hand list.
    *
    * @param {*} payload the new state for hand list
    */
   setList(payload) {
     console.log('incoming set list from another peer : ' + payload);
-    const { dispatch_setList } = this.props;
+    const { dispatch_setListState } = this.props;
     const prevState = store.getState().handList;
     const payloadState = JSON.parse(payload);
     if (!twoDimensionalArrayIsEqual(prevState, payloadState)) {
-      dispatch_setList(payloadState);
+      dispatch_setListState(payloadState);
     }
   }
 
@@ -169,12 +147,12 @@ class CommunicationHandler extends Component {
    */
   setField(payload) {
     console.log('incoming set field from another peer : ' + payload);
-    const { dispatch_setField } = this.props;
+    const { dispatch_setFieldState } = this.props;
     const prevState = store.getState().solutionField;
     const payloadState = JSON.parse(payload);
 
     if (!arrayIsEqual(prevState, payloadState)) {
-      dispatch_setField(payloadState);
+      dispatch_setFieldState(payloadState);
     }
   }
 
@@ -185,12 +163,12 @@ class CommunicationHandler extends Component {
    */
   nextTask(payload) {
     console.log('another player has changed the current task : ' + payload);
-    const { dispatch_nextTask } = this.props;
     const prevState = store.getState().currentTask;
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState) {
-      dispatch_nextTask(payloadState);
+      const { dispatch_nextTask } = this.props;
+      dispatch_nextTask();
     }
   }
 
@@ -202,18 +180,37 @@ class CommunicationHandler extends Component {
   clearTask(payload) {
     console.log('incoming board clear from another peer : ' + payload);
 
-    const currentTask = store.getState().currentTask;
+    // Get the initial solution field from file
+    let currentTask = store.getState().currentTask;
     let currentTaskNumber = currentTask.currentTaskNumber;
     let currentTaskObject = currentTask.tasks[currentTaskNumber];
+    let initialfield = currentTaskObject.solutionField.field;
 
-    const { dispatch_setField } = this.props;
-    dispatch_setField(currentTaskObject.solutionField.field);
+    // Get current board state
+    let field = store.getState().solutionField;
+    let handList = store.getState().handList;
 
-    const { dispatch_setList } = this.props;
-    dispatch_setList(currentTaskObject.handList.player1, PLAYER.P1 - 1);
-    dispatch_setList(currentTaskObject.handList.player2, PLAYER.P2 - 1);
-    dispatch_setList(currentTaskObject.handList.player3, PLAYER.P3 - 1);
-    dispatch_setList(currentTaskObject.handList.player4, PLAYER.P4 - 1);
+    // Update board
+
+    handList = clearBoard(field, handList);
+
+    const { dispatch_setFieldState } = this.props;
+    dispatch_setFieldState([]); // TODO: Assign unnasigned player properties to intial board.
+  }
+
+  startGame(payload) {
+    console.log('Another game iniatated the start of a new game');
+
+    const prevState = store.getState().inProgress;
+    const payloadState = JSON.parse(payload);
+
+    if (prevState !== payloadState.inProgress) {
+      const { dispatch_startGame } = this.props;
+      dispatch_startGame();
+
+      const { dispatch_setListState } = this.props;
+      dispatch_setListState(payloadState.handList);
+    }
   }
 
   render() {
@@ -229,7 +226,7 @@ class CommunicationHandler extends Component {
         {this.state.connected ? (
           <CommunicationListener />
         ) : (
-          <h1>Waiting to connect...</h1>
+          <h1>Waiting to connect</h1>
         )}
       </LioWebRTC>
     );

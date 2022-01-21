@@ -38,13 +38,9 @@ export default function Game() {
 
   let names = setNames(players);
 
-  // Change the handlists and soloution field when the game renders
+  // Change the soloution field when the game renders
   useEffect(() => {
     dispatch(setField(currentTaskObject.solutionField.field));
-    dispatch(setList(currentTaskObject.handList.player1, PLAYER.P1 - 1));
-    dispatch(setList(currentTaskObject.handList.player2, PLAYER.P2 - 1));
-    dispatch(setList(currentTaskObject.handList.player3, PLAYER.P3 - 1));
-    dispatch(setList(currentTaskObject.handList.player4, PLAYER.P4 - 1));
   }, [currentTaskObject]);
 
   return (

@@ -6,7 +6,7 @@
 */
 const handListReducer = (state = [[], [], [], []], action) => {
   switch (action.type) {
-    // Update the list for a player.
+    // Update the list for A player.
     case 'SET_LIST': {
       const updatedState = state.map((list, index) =>
         index === action.payload.handListIndex ? action.payload.blocks : list
@@ -33,6 +33,7 @@ const handListReducer = (state = [[], [], [], []], action) => {
       );
       return updatedState;
     }
+    // Update handlist for ALL players
     case 'SET_LIST_STATE': {
       console.log('inne i reducer handlist');
       return action.payload.state;

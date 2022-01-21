@@ -24,6 +24,7 @@ export const twoDimensionalArrayIsEqual = (arr1, arr2) => {
 export const arrayIsEqual = (arr1, arr2) => {
   if (isNull(arr1, arr2)) return false;
   if (arr1.length !== arr2.length) return false;
+
   for (var i = 0; i < arr1.length; i++) {
     if (!objectIsEqual(arr1[i], arr2[i])) {
       return false;
@@ -41,7 +42,6 @@ export const arrayIsEqual = (arr1, arr2) => {
  */
 export const linebasedfeedback = (field, correct) => {
   let equalAtIndex = [];
-
   if (isNull(field, correct)) return equalAtIndex;
 
   for (var i = 0; i < field.length; i++) {
@@ -72,6 +72,9 @@ export const objectIsEqual = (object1, object2) => {
     // not an object, check the values
     return object1 === object2;
   }
+  object1 = removePlayerProperty(object1);
+  object2 = removePlayerProperty(object2);
+
   const keys1 = Object.keys(object1);
   const keys2 = Object.keys(object2);
 
@@ -98,4 +101,28 @@ const isNull = (var1, var2) => {
   if (var1 == null || var2 == null) {
     return true;
   }
+};
+
+/**
+ * Remove the propery player from an object
+ *
+ * @param {*} obj
+ * @returns
+ */
+const removePlayerProperty = (obj) => {
+  if (obj.hasOwnProperty('player')) {
+    const objCopy = deepCopy(obj);
+    delete objCopy.player;
+    return objCopy;
+  }
+  return obj;
+};
+
+/** Create a deep copy of a variable
+ *
+ * @param {} element
+ * @returns
+ */
+const deepCopy = (element) => {
+  return JSON.parse(JSON.stringify(element));
 };

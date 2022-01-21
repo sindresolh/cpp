@@ -1,16 +1,18 @@
 import '@testing-library/jest-dom';
 import { shuffleCodeblocks } from '../shuffleCodeblocks';
-import { CATEGORY } from '../../constants';
+import { CATEGORY, PLAYER } from '../../constants';
 
 const emptyArray = [[], [], [], []];
 const someCodeblock = {
   id: 'cb-1',
   content: 'x = 1',
+  player: PLAYER.UNASSIGNED,
   category: CATEGORY.VARIABLE,
 };
 const someDistractor = {
   id: 'cb-2',
   content: 'distractor',
+  player: PLAYER.UNASSIGNED,
   category: CATEGORY.FUNCTION,
 };
 const wrongFormatArray = [1, '2', new Date()];
@@ -41,7 +43,7 @@ describe('test shuffleCodeBlocks function', () => {
     });
   });
 
-  describe('test that all players get at least 1 correct block', () => {
+  describe('test that all players get at least one correct block', () => {
     it('assign the correct codeblock to the only players', () => {
       expect(shuffleCodeblocks(correctFormatArray, [], 1)).toStrictEqual([
         [someCodeblock],
@@ -57,7 +59,7 @@ describe('test shuffleCodeBlocks function', () => {
       ).toStrictEqual([[someCodeblock], [someCodeblock], [], []]);
     });
 
-    it('assign the correct codeblocks to the 3 players', () => {
+    it('assign the correct codeblocks to the 4 players', () => {
       expect(
         shuffleCodeblocks(
           [someCodeblock, someCodeblock, someCodeblock, someCodeblock],

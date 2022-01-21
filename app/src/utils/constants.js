@@ -7,6 +7,7 @@ export const CATEGORY = {
 };
 
 export const PLAYER = {
+  UNASSIGNED: 0,
   P1: 1,
   P2: 2,
   P3: 3,

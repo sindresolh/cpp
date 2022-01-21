@@ -40,7 +40,8 @@ const wrongFormat = (blocks) => {
     if (
       !block.hasOwnProperty('id') ||
       !block.hasOwnProperty('content') ||
-      !block.hasOwnProperty('category')
+      !block.hasOwnProperty('category') ||
+      !block.hasOwnProperty('player')
     ) {
       return true;
     }
@@ -70,6 +71,7 @@ export const shuffleCodeblocks = (
   if (correctBlocks.length >= numberOfPlayers) {
     for (let i = 0; i < numberOfPlayers; i++) {
       let block = correctBlocks.pop();
+      block.player = i + 1;
       codeblocks[i].push(block);
     }
   }
@@ -79,9 +81,35 @@ export const shuffleCodeblocks = (
 
   // Give the players the remaining blocks
   for (var block of remainingBlocks) {
-    let player = Math.floor(Math.random() * 3); // random int between 0 and 3
+    let player = Math.floor(Math.random() * numberOfPlayers); // random int between 0 and 3
+    block.player = player + 1;
     codeblocks[player].push(block);
   }
 
+  // Make sure that the correct codeblocks is not always the first ones
+  for (let player = 0; player < numberOfPlayers; player++) {
+    codeblocks[player] = shuffle(codeblocks[player]);
+  }
+
   return codeblocks;
+};
+
+/**
+ * Take the field blocks and give them to the correct player
+ *
+ * @param {*} field
+ * @param {*} handList
+ * @returns
+ */
+export const clearBoard = (field, handList) => {
+  while (field.length > 0) {
+    var codeblock = field.pop().block;
+    var player = codeblock.player - 1;
+
+    if (player > -1) {
+      handList[player].push(codeblock);
+    }
+  }
+
+  return handList;
 };

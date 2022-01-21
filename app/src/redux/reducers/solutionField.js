@@ -16,7 +16,7 @@ const solutionFieldReducer = (state = [], action) => {
       return updatedState;
     }
     case 'SET_FIELD_STATE': {
-      return action.payload.state;
+      return action.payload.state; // WARNING: Duplicate SET_FIELD above. This is sed troughout the code. TODO: Refactor
     }
     default:
       return state;
