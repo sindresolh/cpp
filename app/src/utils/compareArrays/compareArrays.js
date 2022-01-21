@@ -25,11 +25,8 @@ export const arrayIsEqual = (arr1, arr2) => {
   if (isNull(arr1, arr2)) return false;
   if (arr1.length !== arr2.length) return false;
 
-  let arr1Copy = removePlayerProperty(arr1);
-  let arr2Copy = removePlayerProperty(arr2);
-
-  for (var i = 0; i < arr1Copy.length; i++) {
-    if (!objectIsEqual(arr1Copy[i], arr2Copy[i])) {
+  for (var i = 0; i < arr1.length; i++) {
+    if (!objectIsEqual(arr1[i], arr2[i])) {
       return false;
     }
   }
@@ -45,21 +42,15 @@ export const arrayIsEqual = (arr1, arr2) => {
  */
 export const linebasedfeedback = (field, correct) => {
   let equalAtIndex = [];
-  const fieldCopy = removePlayerProperty(field);
+  if (isNull(field, correct)) return equalAtIndex;
 
-  if (isNull(fieldCopy, correct)) return equalAtIndex;
-
-  for (var i = 0; i < fieldCopy.length; i++) {
-    // Remove player from comparision
-    if (fieldCopy[i].block.hasOwnProperty('player')) {
-      delete fieldCopy[i].block.player;
-    }
-    if (objectIsEqual(fieldCopy[i], correct[i])) {
+  for (var i = 0; i < field.length; i++) {
+    if (objectIsEqual(field[i], correct[i])) {
       // codeblock is placed at correct location
-      equalAtIndex.push({ codeBlock: fieldCopy[i], isCorrect: true });
+      equalAtIndex.push({ codeBlock: field[i], isCorrect: true });
     } else {
       // codeblock is placed incorrectly
-      equalAtIndex.push({ codeBlock: fieldCopy[i], isCorrect: false });
+      equalAtIndex.push({ codeBlock: field[i], isCorrect: false });
     }
   }
 
@@ -81,6 +72,9 @@ export const objectIsEqual = (object1, object2) => {
     // not an object, check the values
     return object1 === object2;
   }
+  object1 = removePlayerProperty(object1);
+  object2 = removePlayerProperty(object2);
+
   const keys1 = Object.keys(object1);
   const keys2 = Object.keys(object2);
 
@@ -109,15 +103,26 @@ const isNull = (var1, var2) => {
   }
 };
 
-const removePlayerProperty = (arr) => {
-  const arrCopy = JSON.parse(JSON.stringify(arr)); // make a deepcopy of field
-
-  for (var i = 0; i < arrCopy.length; i++) {
-    // Remove player from comparision
-    if (arrCopy[i].block != null && arrCopy[i].block.hasOwnProperty('player')) {
-      delete arrCopy[i].block.player;
-    }
+/**
+ * Remove the propery player from an object
+ *
+ * @param {*} obj
+ * @returns
+ */
+const removePlayerProperty = (obj) => {
+  if (obj.hasOwnProperty('player')) {
+    const objCopy = deepCopy(obj);
+    delete objCopy.player;
+    return objCopy;
   }
+  return obj;
+};
 
-  return arrCopy;
+/** Create a deep copy of a variable
+ *
+ * @param {} element
+ * @returns
+ */
+const deepCopy = (element) => {
+  return JSON.parse(JSON.stringify(element));
 };
