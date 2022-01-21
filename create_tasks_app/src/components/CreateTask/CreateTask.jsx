@@ -12,7 +12,7 @@ import exportFromJSON from 'export-from-json';
 const DEFAULT_ATTEMPTS = 3;
 
 /**
- * Sorts an array into two
+ * Sorts an array into two based on condition
  *
  * Taken from: https://stackoverflow.com/a/38863774
  */
