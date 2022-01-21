@@ -24,8 +24,12 @@ export const twoDimensionalArrayIsEqual = (arr1, arr2) => {
 export const arrayIsEqual = (arr1, arr2) => {
   if (isNull(arr1, arr2)) return false;
   if (arr1.length !== arr2.length) return false;
-  for (var i = 0; i < arr1.length; i++) {
-    if (!objectIsEqual(arr1[i], arr2[i])) {
+
+  let arr1Copy = removePlayerProperty(arr1);
+  let arr2Copy = removePlayerProperty(arr2);
+
+  for (var i = 0; i < arr1Copy.length; i++) {
+    if (!objectIsEqual(arr1Copy[i], arr2Copy[i])) {
       return false;
     }
   }
@@ -41,16 +45,21 @@ export const arrayIsEqual = (arr1, arr2) => {
  */
 export const linebasedfeedback = (field, correct) => {
   let equalAtIndex = [];
+  const fieldCopy = removePlayerProperty(field);
 
-  if (isNull(field, correct)) return equalAtIndex;
+  if (isNull(fieldCopy, correct)) return equalAtIndex;
 
-  for (var i = 0; i < field.length; i++) {
-    if (objectIsEqual(field[i], correct[i])) {
+  for (var i = 0; i < fieldCopy.length; i++) {
+    // Remove player from comparision
+    if (fieldCopy[i].block.hasOwnProperty('player')) {
+      delete fieldCopy[i].block.player;
+    }
+    if (objectIsEqual(fieldCopy[i], correct[i])) {
       // codeblock is placed at correct location
-      equalAtIndex.push({ codeBlock: field[i], isCorrect: true });
+      equalAtIndex.push({ codeBlock: fieldCopy[i], isCorrect: true });
     } else {
       // codeblock is placed incorrectly
-      equalAtIndex.push({ codeBlock: field[i], isCorrect: false });
+      equalAtIndex.push({ codeBlock: fieldCopy[i], isCorrect: false });
     }
   }
 
@@ -98,4 +107,17 @@ const isNull = (var1, var2) => {
   if (var1 == null || var2 == null) {
     return true;
   }
+};
+
+const removePlayerProperty = (arr) => {
+  const arrCopy = JSON.parse(JSON.stringify(arr)); // make a deepcopy of field
+
+  for (var i = 0; i < arrCopy.length; i++) {
+    // Remove player from comparision
+    if (arrCopy[i].block != null && arrCopy[i].block.hasOwnProperty('player')) {
+      delete arrCopy[i].block.player;
+    }
+  }
+
+  return arrCopy;
 };
