@@ -60,6 +60,7 @@ function CreateTask() {
             <div className='textAreaFlex'>
               <textarea
                 className='textarea'
+                data-testid={'description'}
                 rows={5}
                 placeholder='Description for the task'
                 id='description'
@@ -67,22 +68,19 @@ function CreateTask() {
               />
             </div>
           </div>
-          <div className='hints'>
+          <div className='hints' data-testid={'hints'}>
             <h3>Hints</h3>
             {hints.map((hint, index) => {
               let updatedHints = [...hints];
 
               return (
-                <div
-                  className='textAreaContainer'
-                  id={`hint-${index}`}
-                  key={`hint-${index}`}
-                >
+                <div className='textAreaContainer' key={`hint-${index}`}>
                   <div className='textAreaFlex' key={`hint-${index}`}>
                     <textarea
                       className='hintInput'
                       rows={3}
                       key={`hint-${index}`}
+                      id={`hint-${index}`}
                       placeholder='Give a hint to the players'
                       value={hint}
                       onChange={(event) => {
@@ -111,7 +109,7 @@ function CreateTask() {
               -
             </button>
           </div>
-          <div className='attemptsDiv'>
+          <div className='attemptsDiv' data-testid={'attempts'}>
             <h3>Amount of attempts</h3>
             <input
               type='number'
