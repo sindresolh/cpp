@@ -194,8 +194,8 @@ class CommunicationHandler extends Component {
 
     handList = clearBoard(field, handList);
 
-    const { dispatch_setField } = this.props;
-    dispatch_setField([]); // TODO: Assign unnasigned player properties to intial board.
+    const { dispatch_setFieldState } = this.props;
+    dispatch_setFieldState([]); // TODO: Assign unnasigned player properties to intial board.
   }
 
   startGame(payload) {
