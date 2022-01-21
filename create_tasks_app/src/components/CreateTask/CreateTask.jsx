@@ -7,6 +7,7 @@ import { SAMPLE_TEXT } from './constants';
 import './prism.css';
 import './CreateTask.css';
 import { useNavigate } from 'react-router-dom';
+import exportFromJSON from 'export-from-json';
 
 const DEFAULT_ATTEMPTS = 3;
 
@@ -28,14 +29,13 @@ function CreateTask() {
    * @returns all inputs as JSON
    */
   const getInputsAsJSON = () => {
-    const hintsJson = JSON.stringify(hints);
     const inputs = {
       code,
       description,
-      hints: hintsJson,
+      hints,
       attempts: unlimitedAttempts ? 'unlimited' : amountOfAttempts,
     };
-    return JSON.stringify(inputs);
+    return [inputs];
   };
 
   return (
@@ -144,7 +144,14 @@ function CreateTask() {
             </button>
             <button
               className='button save'
-              onClick={() => console.log(getInputsAsJSON())}
+              onClick={() => {
+                const data = getInputsAsJSON();
+                console.log(data);
+                const fileName = 'task';
+                const exportType = exportFromJSON.types.csv;
+
+                exportFromJSON({ data, fileName, exportType });
+              }}
             >
               Save
             </button>
