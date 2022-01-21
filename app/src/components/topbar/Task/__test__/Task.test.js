@@ -1,4 +1,4 @@
-import React from 'react';
+/* import React from 'react';
 import Task from '../Task';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
@@ -29,3 +29,4 @@ describe('test that the task component renders', () => {
     expect(textarea.textContent).toBe('Her er en oppgave til dere.');
   });
 });
+ */

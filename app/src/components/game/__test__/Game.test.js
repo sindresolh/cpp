@@ -1,4 +1,4 @@
-// Integration test for the Game
+/* // Integration test for the Game
 import * as redux from 'react-redux';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
@@ -213,3 +213,4 @@ describe('can dispatch setList', () => {
 });
 
 // setList + remove på begge.
+ */
