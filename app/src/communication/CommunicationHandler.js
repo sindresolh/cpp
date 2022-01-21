@@ -166,7 +166,7 @@ class CommunicationHandler extends Component {
     const prevState = store.getState().currentTask;
     const payloadState = JSON.parse(payload);
 
-    if (prevState !== payloadState.currentTask) {
+    if (prevState !== payloadState) {
       const { dispatch_nextTask } = this.props;
       dispatch_nextTask();
     }

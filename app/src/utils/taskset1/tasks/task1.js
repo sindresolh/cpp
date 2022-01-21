@@ -1,7 +1,7 @@
 import { PLAYER, CATEGORY } from '../../constants';
 
 const handList = {
-  player1: [
+  correct: [
     {
       id: 'cb-1',
       content: 'x = 1',
@@ -15,13 +15,25 @@ const handList = {
       category: CATEGORY.VARIABLE,
     },
     {
+      id: 'cb-7',
+      content: 'z = x + y',
+      player: PLAYER.P1,
+      category: CATEGORY.VARIABLE,
+    },
+    {
+      id: 'cb-8',
+      content: 'print(z)',
+      player: PLAYER.P2,
+      category: CATEGORY.FUNCTION,
+    },
+  ],
+  distractors: [
+    {
       id: 'cb-3',
       content: 'distractor1',
       player: PLAYER.P1,
       category: CATEGORY.FUNCTION,
     },
-  ],
-  player2: [
     {
       id: 'cb-4',
       content: 'distractor4',
@@ -40,8 +52,6 @@ const handList = {
       player: PLAYER.P2,
       category: CATEGORY.VARIABLE,
     },
-  ],
-  player3: [
     {
       id: 'cb-10',
       content: 'distractor7',
@@ -60,8 +70,6 @@ const handList = {
       player: PLAYER.P3,
       category: CATEGORY.VARIABLE,
     },
-  ],
-  player4: [
     {
       id: 'cb-13',
       content: 'distractor10',
@@ -84,29 +92,27 @@ const handList = {
 };
 
 const solutionField = {
-  field: [
-    {
-      block: {
-        id: 'cb-7',
-        content: 'z = x + y',
-        player: PLAYER.P1,
-        category: CATEGORY.VARIABLE,
-      },
-      indent: 1,
-    },
-    {
-      block: {
-        id: 'cb-8',
-        content: 'print(z)',
-        player: PLAYER.P2,
-        category: CATEGORY.FUNCTION,
-      },
-      indent: 2,
-    },
-  ],
   correct: [
     {
       block: {
+        id: 'cb-1',
+        content: 'x = 1',
+        player: PLAYER.P1,
+        category: CATEGORY.VARIABLE,
+      },
+      indent: 1,
+    },
+    {
+      block: {
+        id: 'cb-2',
+        content: 'y = 2',
+        player: PLAYER.P1,
+        category: CATEGORY.VARIABLE,
+      },
+      indent: 1,
+    },
+    {
+      block: {
         id: 'cb-7',
         content: 'z = x + y',
         player: PLAYER.P1,
@@ -121,15 +127,16 @@ const solutionField = {
         player: PLAYER.P2,
         category: CATEGORY.FUNCTION,
       },
-      indent: 2,
+      indent: 1,
     },
   ],
+  field: [],
 };
 
 export const task1 = {
   id: 1,
-  description: 'Her er en oppgave til dere.',
-  hint: 'Hint for task 1',
+  description: 'Skriv et program som summerer to tall',
+  hint: 'Begynn med å deklarere x',
   handList: handList,
   solutionField: solutionField,
 };

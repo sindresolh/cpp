@@ -10,7 +10,12 @@ import {
   CLEAR_TASK,
   START_GAME,
 } from './messages';
-import { startGame, setListState, listShoutEvent } from '../redux/actions';
+import {
+  startGame,
+  setListState,
+  setFieldState,
+  listShoutEvent,
+} from '../redux/actions';
 import { shuffleCodeblocks } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
 import Lobby from '../components/Lobby/Lobby';
 
@@ -33,6 +38,7 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     dispatch_setListState: (...args) => dispatch(setListState(...args)),
+    dispatch_setFieldState: (...args) => dispatch(setFieldState(...args)),
     dispatch_startGame: (...args) => dispatch(startGame(...args)),
     dispatch_listShoutEvent: (...args) => dispatch(listShoutEvent(...args)),
   };
@@ -51,20 +57,26 @@ class CommunicationListener extends Component {
    * Distribute cards to all players, including yourself
    */
   initialize_board() {
+    // Read task information from redux store
     const state = store.getState();
     const currentTask = state.currentTask;
     let currentTaskNumber = currentTask.currentTaskNumber;
     let currentTaskObject = currentTask.tasks[currentTaskNumber];
-    // TODO: update task format
-    let codeblocks = currentTaskObject.handList.player1.concat(
-      currentTaskObject.handList.player2,
-      currentTaskObject.handList.player3,
-      currentTaskObject.handList.player4
-    );
+    let solutionField = currentTaskObject.solutionField.field;
+    let handList = currentTaskObject.handList;
+
+    // initalize solutionfield
+    const { dispatch_setFieldState } = this.props;
+    dispatch_setFieldState(solutionField);
 
     // shuffle codeblocks
-    codeblocks = shuffleCodeblocks(codeblocks, [], 4);
+    let codeblocks = shuffleCodeblocks(
+      handList.correct,
+      handList.distractors,
+      4
+    );
 
+    // initialize handLists
     const { dispatch_setListState } = this.props;
     dispatch_setListState(codeblocks);
   }
@@ -98,9 +110,7 @@ class CommunicationListener extends Component {
     ) {
       console.log('new task');
       this.initialize_board();
-      const json = JSON.stringify({
-        currentTask: state.currentTask,
-      });
+      const json = JSON.stringify(state.currentTask);
       this.props.webrtc.shout(NEXT_TASK, json);
       const { dispatch_listShoutEvent } = this.props;
       dispatch_listShoutEvent(state.handList);

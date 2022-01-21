@@ -1,7 +1,7 @@
 import { PLAYER, CATEGORY } from '../../constants';
 
 const handList = {
-  player1: [
+  correct: [
     {
       id: 'cb-1',
       content: 'x = 1',
@@ -14,8 +14,26 @@ const handList = {
       player: PLAYER.P1,
       category: CATEGORY.VARIABLE,
     },
+    {
+      id: 'cb-7',
+      content: 'z = x + y',
+      player: PLAYER.P1,
+      category: CATEGORY.VARIABLE,
+    },
+    {
+      id: 'cb-8',
+      content: 'print(z)',
+      player: PLAYER.P2,
+      category: CATEGORY.FUNCTION,
+    },
   ],
-  player2: [
+  distractors: [
+    {
+      id: 'cb-3',
+      content: 'distractor1',
+      player: PLAYER.P1,
+      category: CATEGORY.FUNCTION,
+    },
     {
       id: 'cb-4',
       content: 'distractor4',
@@ -28,8 +46,12 @@ const handList = {
       player: PLAYER.P2,
       category: CATEGORY.FUNCTION,
     },
-  ],
-  player3: [
+    {
+      id: 'cb-6',
+      content: 'distractor3',
+      player: PLAYER.P2,
+      category: CATEGORY.VARIABLE,
+    },
     {
       id: 'cb-10',
       content: 'distractor7',
@@ -48,8 +70,6 @@ const handList = {
       player: PLAYER.P3,
       category: CATEGORY.VARIABLE,
     },
-  ],
-  player4: [
     {
       id: 'cb-13',
       content: 'distractor10',
@@ -72,13 +92,54 @@ const handList = {
 };
 
 const solutionField = {
-  field: [],
-  correct: [],
+  correct: [
+    {
+      id: 'cb-1',
+      content: 'x = 1',
+      player: PLAYER.P1,
+      category: CATEGORY.VARIABLE,
+    },
+    {
+      id: 'cb-2',
+      content: 'y = 2',
+      player: PLAYER.P1,
+      category: CATEGORY.VARIABLE,
+    },
+    {
+      block: {
+        id: 'cb-7',
+        content: 'z = x + y',
+        player: PLAYER.P1,
+        category: CATEGORY.VARIABLE,
+      },
+      indent: 1,
+    },
+    {
+      block: {
+        id: 'cb-8',
+        content: 'print(z)',
+        player: PLAYER.P2,
+        category: CATEGORY.FUNCTION,
+      },
+      indent: 2,
+    },
+  ],
+  field: [
+    {
+      block: {
+        id: 'cb-16',
+        content: 'distractor 16',
+        player: PLAYER.P2,
+        category: CATEGORY.FUNCTION,
+      },
+      indent: 2,
+    },
+  ],
 };
 
 export const task2 = {
   id: 2,
-  description: 'Dette er en helt annen oppgave.',
+  description: 'Dette er oppgave 2',
   hint: 'Hint for task 2',
   handList: handList,
   solutionField: solutionField,
