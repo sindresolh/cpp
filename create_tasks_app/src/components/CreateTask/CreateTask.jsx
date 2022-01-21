@@ -12,6 +12,38 @@ import exportFromJSON from 'export-from-json';
 const DEFAULT_ATTEMPTS = 3;
 
 /**
+ * Sorts an array into two
+ *
+ * Taken from: https://stackoverflow.com/a/38863774
+ */
+const bifilter = (f, xs) => {
+  return xs.reduce(
+    ([T, F], x, i, arr) => {
+      if (f(x, i, arr) === false) return [T, [...F, x]];
+      else return [[...T, x], F];
+    },
+    [[], []]
+  );
+};
+
+/**
+ * Trims and checks for '$' to check if it's a distractor
+ *
+ * @param {String} line
+ * @returns whether the line is a distractor or not
+ */
+const isADistractor = (line) => {
+  if (line.startsWith('$', 0)) return true; // check first character in case '#' got removed earlier
+  let trimmedLine = line.trim();
+  trimmedLine = trimmedLine.substring(1, trimmedLine.length).trim(); // remove '#' from comment and any blank spaces after
+  if (trimmedLine.substring(0, 1) === '$') {
+    return true;
+  } else {
+    return false;
+  }
+};
+
+/**
  * Includes a code editor to write/add code. This code can be turned into a task.
  * User can properties such as description, hints, amount of attempts.
  *
@@ -29,13 +61,36 @@ function CreateTask() {
    * @returns all inputs as JSON
    */
   const getInputsAsJSON = () => {
+    const [codeBlocks, distractors] = getCodeBlocksAndDistractors(code);
     const inputs = {
-      code,
+      codeBlocks,
+      distractors,
       description,
       hints,
       attempts: unlimitedAttempts ? 'unlimited' : amountOfAttempts,
     };
     return [inputs];
+  };
+
+  /**
+   * @returns two arrays: codeblocks and distractors
+   */
+  const getCodeBlocksAndDistractors = (code) => {
+    let lines = code.split('\n');
+    lines = lines.map((line) => line.trimEnd());
+    lines = lines.filter(
+      (line) => !line.startsWith('#', 0) || line.startsWith('#$', 0)
+    );
+    lines = lines.filter((line) => line.length !== 0);
+    let [distractors, codeBlocks] = bifilter(
+      (line) => isADistractor(line),
+      lines
+    );
+
+    distractors = distractors.map((distractor) => distractor.replace('#', ''));
+    distractors = distractors.map((distractor) => distractor.replace('$', ''));
+
+    return [codeBlocks, distractors];
   };
 
   return (
