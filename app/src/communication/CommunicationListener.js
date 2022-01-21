@@ -10,9 +10,8 @@ import {
   CLEAR_TASK,
   START_GAME,
 } from './messages';
-import { startGame, setList } from '../redux/actions';
+import { startGame, setListState, listShoutEvent } from '../redux/actions';
 import { shuffleCodeblocks } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
-import { PLAYER } from '../utils/constants';
 import Lobby from '../components/Lobby/Lobby';
 
 /**
@@ -33,8 +32,9 @@ const mapStateToProps = (state) => ({
 });
 function mapDispatchToProps(dispatch) {
   return {
-    dispatch_setList: (...args) => dispatch(setList(...args)),
+    dispatch_setListState: (...args) => dispatch(setListState(...args)),
     dispatch_startGame: (...args) => dispatch(startGame(...args)),
+    dispatch_listShoutEvent: (...args) => dispatch(listShoutEvent(...args)),
   };
 }
 
@@ -65,11 +65,10 @@ class CommunicationListener extends Component {
     // shuffle codeblocks
     codeblocks = shuffleCodeblocks(codeblocks, [], 4);
 
-    const { dispatch_setList } = this.props;
-    dispatch_setList(codeblocks[PLAYER.P1 - 1], PLAYER.P1 - 1);
-    dispatch_setList(codeblocks[PLAYER.P2 - 1], PLAYER.P2 - 1);
-    dispatch_setList(codeblocks[PLAYER.P3 - 1], PLAYER.P3 - 1);
-    dispatch_setList(codeblocks[PLAYER.P4 - 1], PLAYER.P4 - 1);
+    const { dispatch_setListState } = this.props;
+    dispatch_setListState(codeblocks);
+    const { dispatch_listShoutEvent } = this.props;
+    dispatch_listShoutEvent(codeblocks);
   }
 
   /**
@@ -108,7 +107,10 @@ class CommunicationListener extends Component {
       this.props.webrtc.shout(NEXT_TASK, json);
     } else if (prevProps.clearShoutEvent !== this.props.clearShoutEvent) {
       console.log('board reset');
-      const json = JSON.stringify(state.currentTask);
+      const json = JSON.stringify({
+        currentTask: state.currentTask,
+        handList: state.handList,
+      });
       this.props.webrtc.shout(CLEAR_TASK, json);
     } else if (prevProps.inProgress !== this.props.inProgress) {
       console.log('game started');

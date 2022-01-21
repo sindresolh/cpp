@@ -163,12 +163,12 @@ class CommunicationHandler extends Component {
    */
   nextTask(payload) {
     console.log('another player has changed the current task : ' + payload);
-    const { dispatch_nextTask } = this.props;
     const prevState = store.getState().currentTask;
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState.currentTask) {
-      dispatch_nextTask(payloadState);
+      const { dispatch_nextTask } = this.props;
+      dispatch_nextTask();
     }
   }
 

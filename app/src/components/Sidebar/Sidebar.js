@@ -8,8 +8,8 @@ import {
   nextTask,
   newTaskShoutEvent,
   clearShoutEvent,
-  setField,
-  setList,
+  setFieldState,
+  setListState,
 } from '../../redux/actions';
 import { arrayIsEqual } from '../../utils/compareArrays/compareArrays';
 import HintIcon from '../../images/buttonIcons/hint.png';
@@ -103,11 +103,8 @@ export default function Sidebar() {
     handList = clearBoardHelper(field, handList);
 
     // Update board
-    dispatch(setField([])); // TODO: Add unnasigned property to initial codeblocks
-    dispatch(setList(handList[PLAYER.P1 - 1], PLAYER.P1 - 1));
-    dispatch(setList(handList[PLAYER.P2 - 1], PLAYER.P2 - 1));
-    dispatch(setList(handList[PLAYER.P3 - 1], PLAYER.P3 - 1));
-    dispatch(setList(handList[PLAYER.P4 - 1], PLAYER.P4 - 1));
+    dispatch(setFieldState([])); // TODO: Add unnasigned property to initial codeblocks
+    dispatch(setListState(handList));
 
     // Tell my team to reset solutionfield
     dispatch(clearShoutEvent());
@@ -153,7 +150,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className='Sidebar' style={{ background: COLORS.sidebar }}>
+    <div className="Sidebar" style={{ background: COLORS.sidebar }}>
       {/* Popup for hint or submit */}
       <SidebarModal
         modalIsOpen={modalIsOpen}
@@ -172,7 +169,7 @@ export default function Sidebar() {
 
       <div>
         <SidebarButton
-          title='Hint'
+          title="Hint"
           icon={HintIcon}
           color={COLORS.lightyellow}
           handleClick={() =>
@@ -191,16 +188,16 @@ export default function Sidebar() {
 
       <div>
         <SidebarButton
-          title='Clear'
+          title="Clear"
           icon={ClearIcon}
           color={COLORS.lightred}
           handleClick={() => handleClear()}
         />
       </div>
 
-      <div className='BottomButton'>
+      <div className="BottomButton">
         <SidebarButton
-          title='Submit'
+          title="Submit"
           icon={SubmitIcon}
           color={COLORS.lightgreen}
           handleClick={() => handleSubmit()}
