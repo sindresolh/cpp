@@ -133,7 +133,7 @@ function CreateTask() {
                   setUnlimitedAttempts(!unlimitedAttempts);
                 }}
               />
-              <label for='unlimitedAttempts'>Unlimited</label>
+              <label htmlFor='unlimitedAttempts'>Unlimited</label>
             </div>
           </div>
         </div>
