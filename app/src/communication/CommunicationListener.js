@@ -67,8 +67,6 @@ class CommunicationListener extends Component {
 
     const { dispatch_setListState } = this.props;
     dispatch_setListState(codeblocks);
-    const { dispatch_listShoutEvent } = this.props;
-    dispatch_listShoutEvent(codeblocks);
   }
 
   /**
@@ -102,9 +100,10 @@ class CommunicationListener extends Component {
       this.initialize_board();
       const json = JSON.stringify({
         currentTask: state.currentTask,
-        handList: state.handList,
       });
       this.props.webrtc.shout(NEXT_TASK, json);
+      const { dispatch_listShoutEvent } = this.props;
+      dispatch_listShoutEvent(state.handList);
     } else if (prevProps.clearShoutEvent !== this.props.clearShoutEvent) {
       console.log('board reset');
       const json = JSON.stringify({
