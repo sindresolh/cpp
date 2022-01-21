@@ -139,11 +139,11 @@ function CreateTask() {
         </div>
         <div className='rightContainerBottom'>
           <div className='buttonDiv'>
-            <button className='cancelButton' onClick={() => navigate('/')}>
+            <button className='button cancel' onClick={() => navigate('/')}>
               Cancel
             </button>
             <button
-              className='saveButton'
+              className='button save'
               onClick={() => console.log(getInputsAsJSON())}
             >
               Save

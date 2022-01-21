@@ -20,45 +20,6 @@
   background-color: rgb(251, 251, 251);
 }
 
-.cancelButton {
-  background-color: #9d9d9d;
-  border: none;
-  color: white;
-  padding: 15px 30px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 2vw;
-
-  border-radius: 30px;
-  cursor: pointer;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-  flex: 1;
-}
-
-.saveButton {
-  background-color: #58ba6a;
-  border: none;
-  color: white;
-  padding: 15px 30px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 2vw;
-  border-radius: 30px;
-  cursor: pointer;
-  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-  flex: 1;
-}
-
-.saveButton:hover {
-  background-color: #4ea55e;
-}
-
-.cancelButton:hover {
-  background-color: #747474;
-}
-
 .rightContainer {
   display: flex;
   flex-direction: column;
@@ -101,10 +62,6 @@
   resize: none;
 }
 
-h3 {
-  color: rgb(249, 249, 249);
-}
-
 .attemptsDiv {
   display: flex;
   flex-direction: column;
@@ -127,6 +84,65 @@ h3 {
   gap: 1vw;
 }
 
+.button {
+  border: none;
+  color: white;
+  padding: 15px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 2vw;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  flex: 1;
+}
+
+.cancel {
+  background-color: #9d9d9d;
+}
+
+.save {
+  background-color: #58ba6a;
+}
+
+.save:hover {
+  background-color: #4ea55e;
+}
+
+.cancel:hover {
+  background-color: #747474;
+}
+.button {
+  border: none;
+  color: white;
+  padding: 15px 30px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 2vw;
+  cursor: pointer;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  flex: 1;
+}
+
+.cancel {
+  background-color: #9d9d9d;
+}
+
+.save {
+  background-color: #58ba6a;
+}
+
+.save:hover {
+  background-color: #4ea55e;
+}
+
+.cancel:hover {
+  background-color: #747474;
+}
+h3 {
+  color: rgb(249, 249, 249);
+}
 label {
   color: rgb(249, 249, 249);
 }
