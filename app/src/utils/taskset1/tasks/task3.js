@@ -92,54 +92,13 @@ const handList = {
 };
 
 const solutionField = {
-  correct: [
-    {
-      id: 'cb-1',
-      content: 'x = 1',
-      player: PLAYER.P1,
-      category: CATEGORY.VARIABLE,
-    },
-    {
-      id: 'cb-2',
-      content: 'y = 2',
-      player: PLAYER.P1,
-      category: CATEGORY.VARIABLE,
-    },
-    {
-      block: {
-        id: 'cb-7',
-        content: 'z = x + y',
-        player: PLAYER.P1,
-        category: CATEGORY.VARIABLE,
-      },
-      indent: 1,
-    },
-    {
-      block: {
-        id: 'cb-8',
-        content: 'print(z)',
-        player: PLAYER.P2,
-        category: CATEGORY.FUNCTION,
-      },
-      indent: 2,
-    },
-  ],
-  field: [
-    {
-      block: {
-        id: 'cb-16',
-        content: 'distractor 16',
-        player: PLAYER.P2,
-        category: CATEGORY.FUNCTION,
-      },
-      indent: 2,
-    },
-  ],
+  correct: [],
+  field: [],
 };
 
 export const task3 = {
   id: 2,
-  description: 'Dette er oppgave 3',
+  description: 'Task 3',
   hint: 'Hint for task 3',
   handList: handList,
   solutionField: solutionField,
