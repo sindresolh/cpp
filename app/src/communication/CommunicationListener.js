@@ -73,7 +73,7 @@ class CommunicationListener extends Component {
     let codeblocks = shuffleCodeblocks(
       handList.correct,
       handList.distractors,
-      4
+      state.players.length
     );
 
     // initialize handLists
