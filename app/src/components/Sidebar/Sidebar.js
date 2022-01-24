@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   nextTask,
   taskEvent,
-  clearShoutEvent,
+  clearEvent,
   setFieldState,
   setListState,
 } from '../../redux/actions';
@@ -106,7 +106,7 @@ export default function Sidebar() {
     dispatch(setListState(handList));
 
     // Tell my team to reset solutionfield
-    dispatch(clearShoutEvent());
+    dispatch(clearEvent());
   };
 
   /**

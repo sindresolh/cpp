@@ -15,6 +15,7 @@ import {
   setListState,
   setFieldState,
   listEvent,
+  fieldEvent,
 } from '../redux/actions';
 import { shuffleCodeblocks } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
 import Lobby from '../components/Lobby/Lobby';
@@ -30,9 +31,9 @@ const mapStateToProps = (state) => ({
   solutionField: state.solutionField,
   currentTask: state.currentTask,
   listEvent: state.listEvent,
-  fieldShoutEvent: state.fieldShoutEvent,
-  newTaskShoutEvent: state.newTaskShoutEvent,
-  clearShoutEvent: state.clearShoutEvent,
+  fieldEvent: state.fieldEvent,
+  taskEvent: state.taskEvent,
+  clearEvent: state.clearEvent,
   inProgress: state.inProgress,
 });
 
@@ -47,6 +48,7 @@ function mapDispatchToProps(dispatch) {
     dispatch_setFieldState: (...args) => dispatch(setFieldState(...args)),
     dispatch_startGame: (...args) => dispatch(startGame(...args)),
     dispatch_listEvent: (...args) => dispatch(listEvent(...args)),
+    dispatch_fieldEvent: (...args) => dispatch(fieldEvent(...args)),
   };
 }
 
@@ -103,20 +105,24 @@ class CommunicationListener extends Component {
       // This peer moved codeblock in an handlist
       const json = JSON.stringify(state.handList);
       this.props.webrtc.shout(SET_LIST, json);
-    } else if (prevProps.fieldShoutEvent !== this.props.fieldShoutEvent) {
+    } else if (prevProps.fieldEvent !== this.props.fieldEvent) {
       // This peer moved codeblock in soloutionfield
       const json = JSON.stringify(state.solutionField);
       this.props.webrtc.shout(SET_FIELD, json);
     } else if (
       // This peer updated the game state by going to the next task
-      prevProps.newTaskShoutEvent !== this.props.newTaskShoutEvent
+      prevProps.taskEvent !== this.props.taskEvent
     ) {
       this.initialize_board();
-      const json = JSON.stringify(state.currentTask);
+      const json = JSON.stringify({
+        currentTask: state.currentTask,
+        handList: state.handList,
+        solutionField: state.solutionField,
+      });
       this.props.webrtc.shout(NEXT_TASK, json);
       const { dispatch_listEvent } = this.props;
-      dispatch_listEvent(state.handList);
-    } else if (prevProps.clearShoutEvent !== this.props.clearShoutEvent) {
+      dispatch_listEvent();
+    } else if (prevProps.clearEvent !== this.props.clearEvent) {
       // This peer cleared the board
       const json = JSON.stringify(state.currentTask);
       this.props.webrtc.shout(CLEAR_TASK, json);
@@ -125,6 +131,7 @@ class CommunicationListener extends Component {
       const json = JSON.stringify({
         inProgress: state.inProgress,
         handList: state.handList,
+        solutionField: state.solutionField,
       });
       this.props.webrtc.shout(START_GAME, json);
     }

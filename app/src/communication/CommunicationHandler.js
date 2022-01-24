@@ -158,6 +158,18 @@ class CommunicationHandler extends Component {
   }
 
   /**
+   * Get the initial solution field from file
+   */
+  initialFieldFromFile() {
+    let currentTask = store.getState().currentTask;
+    let currentTaskNumber = currentTask.currentTaskNumber;
+    let currentTaskObject = currentTask.tasks[currentTaskNumber];
+    let initialfield = currentTaskObject.solutionField.field;
+    const { dispatch_setFieldState } = this.props;
+    dispatch_setFieldState(initialfield);
+  }
+
+  /**
    * Update the current task
    *
    * @param {*} payload new task
@@ -166,9 +178,10 @@ class CommunicationHandler extends Component {
     const prevState = store.getState().currentTask;
     const payloadState = JSON.parse(payload);
 
-    if (prevState !== payloadState) {
+    if (prevState !== payloadState.currentTask) {
       const { dispatch_nextTask } = this.props;
       dispatch_nextTask();
+      this.initialFieldFromFile();
     }
   }
 
@@ -176,20 +189,15 @@ class CommunicationHandler extends Component {
    * Clears the board
    */
   clearTask() {
-    // Get the initial solution field from file
-    let currentTask = store.getState().currentTask;
-    let currentTaskNumber = currentTask.currentTaskNumber;
-    let currentTaskObject = currentTask.tasks[currentTaskNumber];
-    let initialfield = currentTaskObject.solutionField.field;
-
     // Get current board state
     let field = store.getState().solutionField;
     let handList = store.getState().handList;
 
     // Update board
     handList = clearBoard(field, handList);
-    const { dispatch_setFieldState } = this.props;
-    dispatch_setFieldState(initialfield);
+    const { dispatch_setListState } = this.props;
+    dispatch_setListState(handList);
+    this.initialFieldFromFile();
   }
 
   /** Another player started the game from the lobby
@@ -201,11 +209,14 @@ class CommunicationHandler extends Component {
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState.inProgress) {
-      const { dispatch_startGame } = this.props;
-      dispatch_startGame();
-
       const { dispatch_setListState } = this.props;
       dispatch_setListState(payloadState.handList);
+
+      const { dispatch_setFieldState } = this.props;
+      dispatch_setFieldState(payloadState.solutionField);
+
+      const { dispatch_startGame } = this.props;
+      dispatch_startGame();
     }
   }
 

@@ -118,7 +118,7 @@ export const removeBlockFromField = (id) => {
  * @param {*} state : Date when this reducer was called last time
  * @returns
  */
-export const clearShoutEvent = (state) => {
+export const clearEvent = (state) => {
   return {
     type: ACTIONS.CLEAR_EVENT,
     payload: {
