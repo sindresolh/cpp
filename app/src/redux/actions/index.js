@@ -84,14 +84,14 @@ export const addBlock = (block, handListIndex) => {
 /** Sets the solutionfield to a given array of lines. Lines consist of codeblocks and indent data.
  *  See reducers/gameLogic/solutionField
  *
- * @param {*} lines : array with codeblocks and indent information
+ * @param {*} state: array with codeblocks and indent information
  * @returns
  */
-export const setFieldState = (lines) => {
+export const setFieldState = (state) => {
   return {
-    type: ACTIONS.SET_LIST_STATE,
+    type: ACTIONS.SET_FIELD_STATE,
     payload: {
-      lines,
+      state,
     },
   };
 };

@@ -83,9 +83,9 @@ export const shuffleCodeblocks = (
 
   // Give the players the remaining blocks
   for (var block of remainingBlocks) {
-    let player = Math.floor(Math.random() * numberOfPlayers); // random int between 0 and 3
-    block.player = player + 1;
-    codeblocks[player].push(block);
+    let player = Math.floor(Math.random() * numberOfPlayers) + 1; // random int between 1 and 4
+    block.player = player;
+    codeblocks[player - 1].push(block);
   }
 
   // Make sure that the correct codeblocks is not always the first ones

@@ -12,7 +12,7 @@ import { ACTIONS } from '../../actions/ACTIONS';
 const solutionFieldReducer = (state = [], action) => {
   switch (action.type) {
     case ACTIONS.SET_FIELD_STATE: {
-      return action.payload.lines;
+      return action.payload.state;
     }
     case ACTIONS.REMOVE_BLOCK_FROM_FIELD: {
       const updatedState = state.filter(
