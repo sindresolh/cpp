@@ -35,6 +35,12 @@ const mapStateToProps = (state) => ({
   clearShoutEvent: state.clearShoutEvent,
   inProgress: state.inProgress,
 });
+
+/** Helper function to let us call dispatch from a class function
+ *
+ * @param {*} dispatch
+ * @returns
+ */
 function mapDispatchToProps(dispatch) {
   return {
     dispatch_setListState: (...args) => dispatch(setListState(...args)),
@@ -48,11 +54,6 @@ function mapDispatchToProps(dispatch) {
  * Listens to changes in the redux store and sends new messages to all peers.
  */
 class CommunicationListener extends Component {
-  /**
-   * Shouts when the state changes
-   *
-   * @param {*} prevProps : Checks that the new value is different
-   */
   /**
    * Distribute cards to all players, including yourself
    */
@@ -73,7 +74,7 @@ class CommunicationListener extends Component {
     let codeblocks = shuffleCodeblocks(
       handList.correct,
       handList.distractors,
-      4
+      state.players.length
     );
 
     // initialize handLists
@@ -90,39 +91,37 @@ class CommunicationListener extends Component {
     dispatch_startGame();
   }
 
+  /**
+   * Notifies other peers when this player changes the state
+   *
+   * @param {*} prevProps : Checks that the new value is different
+   */
   componentDidUpdate(prevProps) {
     const state = store.getState();
-    console.log('How many peers in listener: ' + this.props.webrtc.getPeers());
 
     if (prevProps.listShoutEvent !== this.props.listShoutEvent) {
-      // This peer moved codeblock in an handlist, notify other peers
-      console.log('component did update', 'handlist');
+      // This peer moved codeblock in an handlist
       const json = JSON.stringify(state.handList);
       this.props.webrtc.shout(SET_LIST, json);
     } else if (prevProps.fieldShoutEvent !== this.props.fieldShoutEvent) {
-      // This peer moved codeblock in soloutionfield, notify other peers
-      console.log('component solutionfield did update', 'solution field');
+      // This peer moved codeblock in soloutionfield
       const json = JSON.stringify(state.solutionField);
       this.props.webrtc.shout(SET_FIELD, json);
     } else if (
       // This peer updated the game state by going to the next task
       prevProps.newTaskShoutEvent !== this.props.newTaskShoutEvent
     ) {
-      console.log('new task');
       this.initialize_board();
       const json = JSON.stringify(state.currentTask);
       this.props.webrtc.shout(NEXT_TASK, json);
       const { dispatch_listShoutEvent } = this.props;
       dispatch_listShoutEvent(state.handList);
     } else if (prevProps.clearShoutEvent !== this.props.clearShoutEvent) {
-      console.log('board reset');
-      const json = JSON.stringify({
-        currentTask: state.currentTask,
-        handList: state.handList,
-      });
+      // This peer cleared the board
+      const json = JSON.stringify(state.currentTask);
       this.props.webrtc.shout(CLEAR_TASK, json);
     } else if (prevProps.inProgress !== this.props.inProgress) {
-      console.log('game started');
+      // This player started the game from the lobby
       const json = JSON.stringify({
         inProgress: state.inProgress,
         handList: state.handList,

@@ -7,7 +7,7 @@ import Sidebar from '../Sidebar/Sidebar';
 import { PLAYER } from '../../utils/constants';
 import Player from '../Player/Player';
 import { useSelector, useDispatch } from 'react-redux';
-import { setField, setList } from '../../redux/actions';
+import { setField } from '../../redux/actions';
 import { COLORS } from '../../utils/constants';
 
 export default function Game() {
@@ -17,8 +17,10 @@ export default function Game() {
   let currentTaskObject = currentTask.tasks[currentTaskNumber];
   const dispatch = useDispatch();
 
-  /**
-   * Set the name of the players.
+  /** Set the name of the players.
+   *
+   * @param {*} players : redux stored information about the players
+   * @returns
    */
   const setNames = (players) => {
     let names = [
@@ -37,11 +39,6 @@ export default function Game() {
   };
 
   let names = setNames(players);
-
-  // Change the soloution field when the game renders
-  useEffect(() => {
-    dispatch(setField(currentTaskObject.solutionField.field));
-  }, [currentTaskObject]);
 
   return (
     <DndProvider backend={HTML5Backend}>

@@ -1,3 +1,5 @@
+import { deepCopy } from '../compareArrays/compareArrays';
+
 /**
  * Fisher-Yates algorithm
  * Taken from: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
@@ -102,6 +104,7 @@ export const shuffleCodeblocks = (
  * @returns
  */
 export const clearBoard = (field, handList) => {
+  field = deepCopy(field);
   while (field.length > 0) {
     var codeblock = field.pop().block;
     var player = codeblock.player - 1;

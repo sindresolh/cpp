@@ -53,7 +53,6 @@ class CommunicationHandler extends Component {
     this.state = {
       players: [],
       connected: false,
-      clearedBoard: [],
     };
   }
   /**
@@ -115,11 +114,10 @@ class CommunicationHandler extends Component {
         this.setField(payload);
         break;
       case NEXT_TASK:
-        console.log('next task');
         this.nextTask(payload);
         break;
       case CLEAR_TASK:
-        this.clearTask(payload);
+        this.clearTask();
         break;
       case START_GAME:
         this.startGame(payload);
@@ -176,10 +174,8 @@ class CommunicationHandler extends Component {
 
   /**
    * Clears the board
-   *
-   * @param {*} payload : Payload sent int the webrtc shout
    */
-  clearTask(payload) {
+  clearTask() {
     // Get the initial solution field from file
     let currentTask = store.getState().currentTask;
     let currentTaskNumber = currentTask.currentTaskNumber;
@@ -191,16 +187,16 @@ class CommunicationHandler extends Component {
     let handList = store.getState().handList;
 
     // Update board
-
     handList = clearBoard(field, handList);
-
     const { dispatch_setFieldState } = this.props;
-    dispatch_setFieldState(initialfield); // TODO: Assign unnasigned player properties to intial board.
+    dispatch_setFieldState(initialfield);
   }
 
+  /** Another player started the game from the lobby
+   *
+   * @param {*} payload
+   */
   startGame(payload) {
-    console.log('Another game iniatated the start of a new game');
-
     const prevState = store.getState().inProgress;
     const payloadState = JSON.parse(payload);
 
