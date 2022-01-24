@@ -5,7 +5,7 @@ import SidebarModal from './SidebarModal/SidebarModal';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   nextTask,
-  newTaskShoutEvent,
+  taskEvent,
   clearShoutEvent,
   setFieldState,
   setListState,
@@ -125,7 +125,7 @@ export default function Sidebar() {
       );
     } else if (arrayIsEqual(field, currentTaskObject.solutionField.correct)) {
       dispatch(nextTask());
-      dispatch(newTaskShoutEvent());
+      dispatch(taskEvent());
       openModal(
         CheckIcon,
         'Correct',

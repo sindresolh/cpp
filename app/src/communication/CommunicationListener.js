@@ -14,7 +14,7 @@ import {
   startGame,
   setListState,
   setFieldState,
-  listShoutEvent,
+  listEvent,
 } from '../redux/actions';
 import { shuffleCodeblocks } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
 import Lobby from '../components/Lobby/Lobby';
@@ -29,7 +29,7 @@ const mapStateToProps = (state) => ({
   handList: state.handList,
   solutionField: state.solutionField,
   currentTask: state.currentTask,
-  listShoutEvent: state.listShoutEvent,
+  listEvent: state.listEvent,
   fieldShoutEvent: state.fieldShoutEvent,
   newTaskShoutEvent: state.newTaskShoutEvent,
   clearShoutEvent: state.clearShoutEvent,
@@ -46,7 +46,7 @@ function mapDispatchToProps(dispatch) {
     dispatch_setListState: (...args) => dispatch(setListState(...args)),
     dispatch_setFieldState: (...args) => dispatch(setFieldState(...args)),
     dispatch_startGame: (...args) => dispatch(startGame(...args)),
-    dispatch_listShoutEvent: (...args) => dispatch(listShoutEvent(...args)),
+    dispatch_listEvent: (...args) => dispatch(listEvent(...args)),
   };
 }
 
@@ -99,7 +99,7 @@ class CommunicationListener extends Component {
   componentDidUpdate(prevProps) {
     const state = store.getState();
 
-    if (prevProps.listShoutEvent !== this.props.listShoutEvent) {
+    if (prevProps.listEvent !== this.props.listEvent) {
       // This peer moved codeblock in an handlist
       const json = JSON.stringify(state.handList);
       this.props.webrtc.shout(SET_LIST, json);
@@ -114,8 +114,8 @@ class CommunicationListener extends Component {
       this.initialize_board();
       const json = JSON.stringify(state.currentTask);
       this.props.webrtc.shout(NEXT_TASK, json);
-      const { dispatch_listShoutEvent } = this.props;
-      dispatch_listShoutEvent(state.handList);
+      const { dispatch_listEvent } = this.props;
+      dispatch_listEvent(state.handList);
     } else if (prevProps.clearShoutEvent !== this.props.clearShoutEvent) {
       // This peer cleared the board
       const json = JSON.stringify(state.currentTask);

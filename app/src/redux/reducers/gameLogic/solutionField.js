@@ -6,7 +6,7 @@
 */
 const solutionFieldReducer = (state = [], action) => {
   switch (action.type) {
-    case 'SET_FIELD': {
+    case 'SET_FIELD_STATE': {
       return action.payload.lines;
     }
     case 'REMOVE_BLOCK_FROM_FIELD': {
@@ -14,9 +14,6 @@ const solutionFieldReducer = (state = [], action) => {
         (line) => line.block.id !== action.payload.id
       );
       return updatedState;
-    }
-    case 'SET_FIELD_STATE': {
-      return action.payload.state; // WARNING: Duplicate SET_FIELD above. This is sed troughout the code. TODO: Refactor
     }
     default:
       return state;

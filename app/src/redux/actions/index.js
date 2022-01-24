@@ -1,15 +1,26 @@
-// DISPATCH -> ACTION (Here) -> REDUCER
+import { ACTIONS } from './ACTIONS';
 
-// START BOARD STATE:
+/** Called to start the game for all connected players
+ * See reducers/gameState/inProgress
+ *
+ * @param {*} state : boolean, is the game in progresS?
+ * @returns
+ */
 export const startGame = (state) => {
   return {
-    type: 'START_GAME',
+    type: ACTIONS.START_GAME,
     payload: {
       state,
     },
   };
 };
 
+/** Called to set the handlist for a spesific player
+ *
+ * @param {*} blocks : array of codeblocks
+ * @param {*} handListIndex : player 1 has index 0, player 2 has index 1 etc.
+ * @returns
+ */
 export const setList = (blocks, handListIndex) => {
   return {
     type: 'SET_LIST',
@@ -20,21 +31,21 @@ export const setList = (blocks, handListIndex) => {
   };
 };
 
+export const setFieldState = (lines) => {
+  return {
+    type: 'SET_FIELD_STATE',
+    payload: {
+      lines,
+    },
+  };
+};
+
 export const addBlock = (block, handListIndex) => {
   return {
     type: 'ADD_BLOCK',
     payload: {
       block,
       handListIndex,
-    },
-  };
-};
-
-export const setField = (lines) => {
-  return {
-    type: 'SET_FIELD',
-    payload: {
-      lines,
     },
   };
 };
@@ -67,52 +78,69 @@ export const setListState = (state) => {
   };
 };
 
-export const setFieldState = (state) => {
-  return {
-    type: 'SET_FIELD_STATE',
-    payload: {
-      state,
-    },
-  };
-};
-
-// END BOARD STATE
-
-// START SYNCHRONIZATION
-
-export const listShoutEvent = (state) => {
-  return {
-    type: 'LIST_SHOUT_EVENT',
-    payload: {
-      state,
-    },
-  };
-};
-
-export const fieldShoutEvent = (state) => {
-  return {
-    type: 'FIELD_SHOUT_EVENT',
-    payload: {
-      state,
-    },
-  };
-};
-
-export const newTaskShoutEvent = (state) => {
-  return {
-    type: 'NEW_TASK_SHOUT_EVENT',
-  };
-};
-
+/** Notify other peers in CommunicationListener ComponentDidUpdate
+ * The board is cleared to the initial state
+ * See reducers/webrtc/clearEvent
+ *
+ * @param {*} state : Date when this reducer was called last time
+ * @returns
+ */
 export const clearShoutEvent = (state) => {
   return {
-    type: 'CLEAR_TASK',
+    type: ACTIONS.CLEAR_EVENT,
+    payload: {
+      state,
+    },
   };
 };
 
-// END SYNCHRONIZATION
+/** Notify other peers in CommunicationListener ComponentDidUpdate
+ * The handlist is updated
+ * See reducers/webrtc/listEvent
+ *
+ * @param {*} state : Date when this reducer was called last time
+ * @returns
+ */
+export const listEvent = (state) => {
+  return {
+    type: ACTIONS.LIST_EVENT,
+    payload: {
+      state,
+    },
+  };
+};
 
-// START UPDATE TASK
+/** Notify other peers in CommunicationListener ComponentDidUpdate
+ *  The solutionfield is updated
+ * See reducers/webrtc/field
+ *
+ * @param {*} state : Date when this reducer was called last time
+ * @returns
+ */
+export const fieldEvent = (state) => {
+  return {
+    type: ACTIONS.FIELD_EVENT,
+    payload: {
+      state,
+    },
+  };
+};
+
+/** Notify other peers in CommunicationListener ComponentDidUpdate
+ *  The task is updated
+ * See reducers/webrtc/field
+ *
+ * @param {*} state : Date when this reducer was called last time
+ * @returns
+ */
+export const taskEvent = (state) => {
+  return {
+    type: ACTIONS.TASK_EVENT,
+    payload: {
+      state,
+    },
+  };
+};
 
 export const nextTask = (state) => {
   return {
