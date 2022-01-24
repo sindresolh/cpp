@@ -16,7 +16,7 @@ const DEFAULT_ATTEMPTS = 3;
  *
  * Taken from: https://stackoverflow.com/a/38863774
  */
-const bifilter = (f, xs) => {
+export const bifilter = (f, xs) => {
   return xs.reduce(
     ([T, F], x, i, arr) => {
       if (f(x, i, arr) === false) return [T, [...F, x]];
@@ -32,11 +32,43 @@ const bifilter = (f, xs) => {
  * @param {String} line
  * @returns whether the line is a distractor or not
  */
-const isADistractor = (line) => {
+export const isADistractor = (line) => {
   if (line.startsWith('$', 0)) return true; // check first character in case '#' got removed earlier
   let trimmedLine = line.trim(); // remove empty spaces at the start
   trimmedLine = trimmedLine.substring(1, trimmedLine.length).trim(); // remove '#' from comment and any blank spaces after
   return trimmedLine.substring(0, 1) === '$'; // line starting with '$' means distractor
+};
+
+/**
+ * Checks if the line is NOT a comment.
+ * The line is trimmed to remove tabs or spaces. Then the first character is checked to be a '#'.
+ * The line could still be a distractor, so the next character also has to be checked.
+ *
+ * @param {String} line
+ * @returns whether the line is a comment or not
+ */
+export const isNotAComment = (line) => {
+  const trimmed = line.trim();
+  return !trimmed.startsWith('#', 0) || trimmed.startsWith('$', 1);
+};
+
+/**
+ * @returns two arrays: codeblocks and distractors
+ */
+export const getCodeBlocksAndDistractors = (code) => {
+  let lines = code.split('\n'); // split string on new line
+  lines = lines.map((line) => line.trimEnd()); // remove any excess spaces at the end
+  lines = lines.filter(isNotAComment); // remove comments, but check for '$' in case it is a distractor
+  lines = lines.filter((line) => line.length !== 0); // remove empty lines
+  let [distractors, codeBlocks] = bifilter(
+    (line) => isADistractor(line),
+    lines
+  ); // split lines into codeblocks and distracors
+  // remove '#' and '$' from distractors
+  distractors = distractors.map((distractor) => distractor.replace('#', ''));
+  distractors = distractors.map((distractor) => distractor.replace('$', ''));
+
+  return [codeBlocks, distractors];
 };
 
 /**
@@ -68,27 +100,6 @@ function CreateTask() {
       attempts: unlimitedAttempts ? 'unlimited' : amountOfAttempts,
     };
     return [inputs];
-  };
-
-  /**
-   * @returns two arrays: codeblocks and distractors
-   */
-  const getCodeBlocksAndDistractors = (code) => {
-    let lines = code.split('\n'); // split string on new line
-    lines = lines.map((line) => line.trimEnd()); // remove any excess spaces at the end
-    lines = lines.filter(
-      (line) => !line.startsWith('#', 0) || line.startsWith('#$', 0)
-    ); // remove comments, but check for '$' in case it is a distractor
-    lines = lines.filter((line) => line.length !== 0); // remove empty lines
-    let [distractors, codeBlocks] = bifilter(
-      (line) => isADistractor(line),
-      lines
-    ); // split lines into codeblocks and distracors
-    // remove '#' and '$' from distractors
-    distractors = distractors.map((distractor) => distractor.replace('#', ''));
-    distractors = distractors.map((distractor) => distractor.replace('$', ''));
-
-    return [codeBlocks, distractors];
   };
 
   return (
