@@ -1,4 +1,4 @@
-import { PLAYER, CATEGORY } from '../constants';
+import { PLAYER, CATEGORY } from '../../../utils/constants';
 
 export const sampleHandLists = {
   player1: [

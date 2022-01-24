@@ -109,7 +109,7 @@ export const clearBoard = (field, handList) => {
     var codeblock = field.pop().block;
     var player = codeblock.player - 1;
 
-    if (player > -1) {
+    if (player > 0) {
       handList[player].push(codeblock);
     }
   }

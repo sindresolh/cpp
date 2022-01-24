@@ -17,12 +17,15 @@ import {
   removeBlockFromList,
 } from '../../../redux/actions';
 
-// Midlertidig tulletes slik at ikke github skal lage. TODO: Skrive testene på nytt
-test('it is raining', () => {
-  expect(1).toBeGreaterThan(0);
-});
+function initialize_board(list, field) {
+  // initialize handLists
+  const { dispatch_setListState } = this.props;
+  dispatch_setListState(list);
 
-/*
+  // initalize solutionfield
+  const { dispatch_setFieldState } = this.props;
+  dispatch_setFieldState(field);
+}
 
 let game;
 
@@ -39,13 +42,12 @@ describe('game is initialized', () => {
   it('can render to screen', () => {
     expect(game).toBeVisible();
   });
+});
 
-  it('soloutionfield redux store initalized', () => {
-    let currentField = store.getState().solutionField;
+/*
 
-    let fieldFromFile = taskset.tasks[0].solutionField.field;
-    expect(currentField).toBe(fieldFromFile);
-  });
+describe('game is initialized', () => {
+  
 
   it('soloutionfield board initalized', () => {
     let lines = screen.getAllByTestId('lines');
