@@ -1,3 +1,5 @@
+import { ACTIONS } from '../../actions/ACTIONS';
+
 /** Reducer for updating the task for the other peers in the room
  * Triggers componentDidUpdate in CommunicationListener
  *
@@ -7,7 +9,7 @@
  */
 const taskEventReducer = (state = new Date(), action) => {
   switch (action.type) {
-    case 'TASK_EVENT': {
+    case ACTIONS.TASK_EVENT: {
       return new Date();
     }
     default:

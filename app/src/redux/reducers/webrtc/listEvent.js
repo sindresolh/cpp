@@ -1,3 +1,5 @@
+import { ACTIONS } from '../../actions/ACTIONS';
+
 /** Reducer for updating the handList for the other peers in the room
  * Triggers componentDidUpdate in CommunicationListener
  *
@@ -7,7 +9,7 @@
  */
 const listEventReducer = (state = new Date(), action) => {
   switch (action.type) {
-    case 'LIST_EVENT': {
+    case ACTIONS.LIST_EVENT: {
       return new Date();
     }
     default:
