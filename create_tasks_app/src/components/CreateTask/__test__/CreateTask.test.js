@@ -194,9 +194,9 @@ describe('hints', () => {
       expect(isADistractor(codeWithDistractor)).toBe(false);
     });
 
-    it('distractor with space between # and $', () => {
-      const codeWithDistractor = '# $This is a distractor';
-      expect(isADistractor(codeWithDistractor)).toBe(true);
+    it('$ must come right after #', () => {
+      const line = '# $This is NOT a distractor';
+      expect(isADistractor(line)).toBe(false);
     });
   });
 
@@ -256,10 +256,10 @@ describe('hints', () => {
 
     it('remove comments and blank lines', () => {
       const sampleCode =
-        '#comment1\n# comment2\n\t# comment3\n\n\n\n\ncodeline1';
+        '#comment1\n# comment2\n\t# comment3\n\n\n\n\ncodeline\n#$distractor';
       const [codeBlocks, distractors] = getCodeBlocksAndDistractors(sampleCode);
-      const codeBlockArray = ['codeline1'];
-      const distractorArray = [];
+      const codeBlockArray = ['codeline'];
+      const distractorArray = ['distractor'];
       expect(codeBlocks).toStrictEqual(codeBlockArray);
       expect(distractors).toStrictEqual(distractorArray);
     });

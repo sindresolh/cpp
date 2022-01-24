@@ -33,10 +33,8 @@ export const bifilter = (f, xs) => {
  * @returns whether the line is a distractor or not
  */
 export const isADistractor = (line) => {
-  if (line.startsWith('$', 0)) return true; // check first character in case '#' got removed earlier
   let trimmedLine = line.trim(); // remove empty spaces at the start
-  trimmedLine = trimmedLine.substring(1, trimmedLine.length).trim(); // remove '#' from comment and any blank spaces after
-  return trimmedLine.substring(0, 1) === '$'; // line starting with '$' means distractor
+  return trimmedLine.startsWith('$', 1);
 };
 
 /**
