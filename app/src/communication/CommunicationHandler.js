@@ -23,13 +23,15 @@ import {
   twoDimensionalArrayIsEqual,
   arrayIsEqual,
 } from '../utils/compareArrays/compareArrays';
-import { PLAYER } from '../utils/constants';
 import { clearBoard } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
 
-/**
- * Helper function to let us call dispatch from a class function
- */
 const mapStateToProps = null;
+
+/** Helper function to let us call dispatch from a class function
+ *
+ * @param {*} dispatch
+ * @returns
+ */
 function mapDispatchToProps(dispatch) {
   return {
     dispatch_setListState: (...args) => dispatch(setListState(...args)),
@@ -43,7 +45,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 /**
- * Handles all incoming communication
+ * Handles all incoming communication.
  */
 class CommunicationHandler extends Component {
   constructor(props) {
@@ -69,7 +71,6 @@ class CommunicationHandler extends Component {
    * @param {*} peer : Keeps information about this peer
    */
   handleCreatedPeer = (webrtc, peer) => {
-    //this.setState({players: [...this.state.players, peer.id]})
     const { dispatch_addPlayer } = this.props;
     dispatch_addPlayer(peer);
     console.log(`Peer-${peer.id.substring(0, 5)} joined the room!`);
@@ -82,10 +83,19 @@ class CommunicationHandler extends Component {
    * @param {*} peer : Keeps information about this peer
    */
   handlePeerLeft = (webrtc, peer) => {
-    //this.setState({ players: this.state.players.filter((p) => peer.id !== p) });
     const { dispatch_removePlayer } = this.props;
     dispatch_removePlayer(peer);
     console.log(`Peer-${peer.id.substring(0, 5)} disconnected.`);
+  };
+
+  /** Called when a new peer successfully joins the room
+   *
+   * @param {*} webrtc : Keeps information about the room
+   */
+  joinedRoom = (webrtc) => {
+    const { dispatch_setPlayers } = this.props;
+    dispatch_setPlayers([...webrtc.getPeers(), { id: 'YOU' }]);
+    this.setState({ connected: true });
   };
 
   /**
@@ -119,22 +129,16 @@ class CommunicationHandler extends Component {
     }
   };
 
-  joinedRoom = (webrtc) => {
-    const { dispatch_setPlayers } = this.props;
-    dispatch_setPlayers([...webrtc.getPeers(), { id: 'YOU' }]);
-    this.setState({ connected: true });
-  };
-
   /**
    *  Update the blocks in a hand list.
    *
    * @param {*} payload the new state for hand list
    */
   setList(payload) {
-    console.log('incoming set list from another peer : ' + payload);
     const { dispatch_setListState } = this.props;
     const prevState = store.getState().handList;
     const payloadState = JSON.parse(payload);
+
     if (!twoDimensionalArrayIsEqual(prevState, payloadState)) {
       dispatch_setListState(payloadState);
     }
@@ -146,7 +150,6 @@ class CommunicationHandler extends Component {
    * @param {*} payload the new state for solution field
    */
   setField(payload) {
-    console.log('incoming set field from another peer : ' + payload);
     const { dispatch_setFieldState } = this.props;
     const prevState = store.getState().solutionField;
     const payloadState = JSON.parse(payload);
@@ -162,7 +165,6 @@ class CommunicationHandler extends Component {
    * @param {*} payload new task
    */
   nextTask(payload) {
-    console.log('another player has changed the current task : ' + payload);
     const prevState = store.getState().currentTask;
     const payloadState = JSON.parse(payload);
 
@@ -178,8 +180,6 @@ class CommunicationHandler extends Component {
    * @param {*} payload : Payload sent int the webrtc shout
    */
   clearTask(payload) {
-    console.log('incoming board clear from another peer : ' + payload);
-
     // Get the initial solution field from file
     let currentTask = store.getState().currentTask;
     let currentTaskNumber = currentTask.currentTaskNumber;
@@ -195,7 +195,7 @@ class CommunicationHandler extends Component {
     handList = clearBoard(field, handList);
 
     const { dispatch_setFieldState } = this.props;
-    dispatch_setFieldState([]); // TODO: Assign unnasigned player properties to intial board.
+    dispatch_setFieldState(initialfield); // TODO: Assign unnasigned player properties to intial board.
   }
 
   startGame(payload) {

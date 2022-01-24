@@ -126,7 +126,17 @@ const solutionField = {
       indent: 0,
     },
   ],
-  field: [],
+  field: [
+    {
+      block: {
+        id: 'cb-1',
+        player: PLAYER.UNASSIGNED,
+        content: 'x = 1',
+        category: CATEGORY.VARIABLE,
+      },
+      indent: 0,
+    },
+  ],
 };
 
 export const task1 = {

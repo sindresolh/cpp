@@ -3,7 +3,6 @@ import './Sidebar.css';
 import SidebarButton from './SidebarButton/SidebarButton';
 import SidebarModal from './SidebarModal/SidebarModal';
 import { useDispatch, useSelector } from 'react-redux';
-import { PLAYER } from '../../utils/constants';
 import {
   nextTask,
   newTaskShoutEvent,
@@ -103,7 +102,7 @@ export default function Sidebar() {
     handList = clearBoardHelper(field, handList);
 
     // Update board
-    dispatch(setFieldState([])); // TODO: Add unnasigned property to initial codeblocks
+    dispatch(setFieldState(initalfield));
     dispatch(setListState(handList));
 
     // Tell my team to reset solutionfield
@@ -150,7 +149,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="Sidebar" style={{ background: COLORS.sidebar }}>
+    <div className='Sidebar' style={{ background: COLORS.sidebar }}>
       {/* Popup for hint or submit */}
       <SidebarModal
         modalIsOpen={modalIsOpen}
@@ -169,7 +168,7 @@ export default function Sidebar() {
 
       <div>
         <SidebarButton
-          title="Hint"
+          title='Hint'
           icon={HintIcon}
           color={COLORS.lightyellow}
           handleClick={() =>
@@ -188,16 +187,16 @@ export default function Sidebar() {
 
       <div>
         <SidebarButton
-          title="Clear"
+          title='Clear'
           icon={ClearIcon}
           color={COLORS.lightred}
           handleClick={() => handleClear()}
         />
       </div>
 
-      <div className="BottomButton">
+      <div className='BottomButton'>
         <SidebarButton
-          title="Submit"
+          title='Submit'
           icon={SubmitIcon}
           color={COLORS.lightgreen}
           handleClick={() => handleSubmit()}
