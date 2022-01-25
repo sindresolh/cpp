@@ -5,12 +5,6 @@ import '@testing-library/jest-dom';
 import store from '../../../../redux/store/store';
 import { Provider } from 'react-redux';
 
-// Midlertidig tulletes slik at ikke github skal lage. TODO: Skrive testene på nytt
-test('it is raining', () => {
-  expect(1).toBeGreaterThan(0);
-});
-
-/*
 beforeEach(() => {
   render(
     <Provider store={store}>
@@ -32,7 +26,6 @@ describe('test that the task component renders', () => {
 
   it('has a correct description', () => {
     let textarea = screen.getByTestId('textarea');
-    expect(textarea.textContent).toBe('Her er en oppgave til dere.');
+    expect(textarea.textContent).toBe('Skriv et program som summerer to tall');
   });
 });
- */

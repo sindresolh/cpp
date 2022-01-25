@@ -7,8 +7,8 @@ import {
   addBlock,
   setList,
   removeBlockFromField,
-  listShoutEvent,
-  fieldShoutEvent,
+  listEvent,
+  fieldEvent,
 } from '../../redux/actions';
 import update from 'immutability-helper';
 import { ItemTypes } from '../../utils/itemtypes';
@@ -53,7 +53,7 @@ function HandList({ player, draggable }) {
       // move block from solution field to hand list
       else moveBlockFromField(id, atIndex);
 
-      dispatch(listShoutEvent()); // Move the block for the other players
+      dispatch(listEvent()); // Move the block for the other players
     },
     [findBlock, blocks]
   );
@@ -96,7 +96,7 @@ function HandList({ player, draggable }) {
 
       dispatch(setList(updatedBlocks, handListIndex));
       dispatch(removeBlockFromField(id));
-      dispatch(fieldShoutEvent());
+      dispatch(fieldEvent());
     }
   };
 
@@ -115,9 +115,9 @@ function HandList({ player, draggable }) {
 
           // only allow dropping into empty list if it's the player's block
           dispatch(setList([block], handListIndex));
-          dispatch(listShoutEvent());
+          dispatch(listEvent());
           dispatch(removeBlockFromField(item.id));
-          dispatch(fieldShoutEvent());
+          dispatch(fieldEvent());
         }
       },
     }),

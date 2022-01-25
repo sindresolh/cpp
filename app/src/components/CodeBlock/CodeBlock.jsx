@@ -1,7 +1,6 @@
 import React from 'react';
 import './CodeBlock.css';
 import { ItemTypes } from '../../utils/itemtypes';
-import { useRef } from 'react';
 import { useDrag } from 'react-dnd';
 import PropTypes from 'prop-types';
 import { useDrop } from 'react-dnd';

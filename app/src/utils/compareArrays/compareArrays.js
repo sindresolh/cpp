@@ -123,6 +123,6 @@ const removePlayerProperty = (obj) => {
  * @param {} element
  * @returns
  */
-const deepCopy = (element) => {
+export const deepCopy = (element) => {
   return JSON.parse(JSON.stringify(element));
 };

@@ -1,11 +1,13 @@
-// TODO: discuss different types of category
+// Different types of codeblocks. Decides codeblock background-colors.
 export const CATEGORY = {
+  UNDEFINED: 'undefined',
   VARIABLE: 'variable',
   FUNCTION: 'function',
   LOOP: 'loop',
   CONDITION: 'condition',
 };
 
+// Decides the player that owns the codeblock and the codeblock border-colors.
 export const PLAYER = {
   UNASSIGNED: 0,
   P1: 1,
@@ -14,6 +16,7 @@ export const PLAYER = {
   P4: 4,
 };
 
+// Colors used troughout the application, see the design guide in README
 export const COLORS = {
   header: 'linear-gradient(to bottom, #3148bc, #2c41ac)',
   background: 'linear-gradient(to bottom, #e2e2e2, #c2c2c2)',

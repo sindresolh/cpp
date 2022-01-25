@@ -1,4 +1,3 @@
-import React, { useEffect } from 'react';
 import './Game.css';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
@@ -6,19 +5,16 @@ import SolutionField from '../SolutionField/SolutionField';
 import Sidebar from '../Sidebar/Sidebar';
 import { PLAYER } from '../../utils/constants';
 import Player from '../Player/Player';
-import { useSelector, useDispatch } from 'react-redux';
-import { setField, setList } from '../../redux/actions';
+import { useSelector } from 'react-redux';
 import { COLORS } from '../../utils/constants';
 
 export default function Game() {
-  const currentTask = useSelector((state) => state.currentTask);
   const players = useSelector((state) => state.players);
-  let currentTaskNumber = currentTask.currentTaskNumber;
-  let currentTaskObject = currentTask.tasks[currentTaskNumber];
-  const dispatch = useDispatch();
 
-  /**
-   * Set the name of the players.
+  /** Set the name of the players.
+   *
+   * @param {*} players : redux stored information about the players
+   * @returns
    */
   const setNames = (players) => {
     let names = [
@@ -37,11 +33,6 @@ export default function Game() {
   };
 
   let names = setNames(players);
-
-  // Change the soloution field when the game renders
-  useEffect(() => {
-    dispatch(setField(currentTaskObject.solutionField.field));
-  }, [currentTaskObject]);
 
   return (
     <DndProvider backend={HTML5Backend}>

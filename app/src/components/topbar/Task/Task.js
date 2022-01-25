@@ -3,6 +3,10 @@ import './Task.css';
 import { useSelector } from 'react-redux';
 import { COLORS } from '../../../utils/constants';
 
+/** Component for the task description
+ *
+ * @returns
+ */
 export default function Task() {
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;

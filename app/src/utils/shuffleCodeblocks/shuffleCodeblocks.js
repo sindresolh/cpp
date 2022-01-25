@@ -1,3 +1,5 @@
+import { deepCopy } from '../compareArrays/compareArrays';
+
 /**
  * Fisher-Yates algorithm
  * Taken from: https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
@@ -81,9 +83,9 @@ export const shuffleCodeblocks = (
 
   // Give the players the remaining blocks
   for (var block of remainingBlocks) {
-    let player = Math.floor(Math.random() * numberOfPlayers); // random int between 0 and 3
-    block.player = player + 1;
-    codeblocks[player].push(block);
+    let player = Math.floor(Math.random() * numberOfPlayers) + 1; // random int between 1 and 4
+    block.player = player;
+    codeblocks[player - 1].push(block);
   }
 
   // Make sure that the correct codeblocks is not always the first ones
@@ -102,11 +104,12 @@ export const shuffleCodeblocks = (
  * @returns
  */
 export const clearBoard = (field, handList) => {
+  field = deepCopy(field);
   while (field.length > 0) {
     var codeblock = field.pop().block;
     var player = codeblock.player - 1;
 
-    if (player > -1) {
+    if (player > 0) {
       handList[player].push(codeblock);
     }
   }

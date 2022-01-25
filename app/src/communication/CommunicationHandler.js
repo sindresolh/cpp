@@ -23,13 +23,15 @@ import {
   twoDimensionalArrayIsEqual,
   arrayIsEqual,
 } from '../utils/compareArrays/compareArrays';
-import { PLAYER } from '../utils/constants';
 import { clearBoard } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
 
-/**
- * Helper function to let us call dispatch from a class function
- */
 const mapStateToProps = null;
+
+/** Helper function to let us call dispatch from a class function
+ *
+ * @param {*} dispatch
+ * @returns
+ */
 function mapDispatchToProps(dispatch) {
   return {
     dispatch_setListState: (...args) => dispatch(setListState(...args)),
@@ -43,7 +45,7 @@ function mapDispatchToProps(dispatch) {
 }
 
 /**
- * Handles all incoming communication
+ * Handles all incoming communication.
  */
 class CommunicationHandler extends Component {
   constructor(props) {
@@ -51,7 +53,6 @@ class CommunicationHandler extends Component {
     this.state = {
       players: [],
       connected: false,
-      clearedBoard: [],
     };
   }
   /**
@@ -69,7 +70,6 @@ class CommunicationHandler extends Component {
    * @param {*} peer : Keeps information about this peer
    */
   handleCreatedPeer = (webrtc, peer) => {
-    //this.setState({players: [...this.state.players, peer.id]})
     const { dispatch_addPlayer } = this.props;
     dispatch_addPlayer(peer);
     console.log(`Peer-${peer.id.substring(0, 5)} joined the room!`);
@@ -82,10 +82,19 @@ class CommunicationHandler extends Component {
    * @param {*} peer : Keeps information about this peer
    */
   handlePeerLeft = (webrtc, peer) => {
-    //this.setState({ players: this.state.players.filter((p) => peer.id !== p) });
     const { dispatch_removePlayer } = this.props;
     dispatch_removePlayer(peer);
     console.log(`Peer-${peer.id.substring(0, 5)} disconnected.`);
+  };
+
+  /** Called when a new peer successfully joins the room
+   *
+   * @param {*} webrtc : Keeps information about the room
+   */
+  joinedRoom = (webrtc) => {
+    const { dispatch_setPlayers } = this.props;
+    dispatch_setPlayers([...webrtc.getPeers(), { id: 'YOU' }]);
+    this.setState({ connected: true });
   };
 
   /**
@@ -105,11 +114,10 @@ class CommunicationHandler extends Component {
         this.setField(payload);
         break;
       case NEXT_TASK:
-        console.log('next task');
         this.nextTask(payload);
         break;
       case CLEAR_TASK:
-        this.clearTask(payload);
+        this.clearTask();
         break;
       case START_GAME:
         this.startGame(payload);
@@ -119,22 +127,16 @@ class CommunicationHandler extends Component {
     }
   };
 
-  joinedRoom = (webrtc) => {
-    const { dispatch_setPlayers } = this.props;
-    dispatch_setPlayers([...webrtc.getPeers(), { id: 'YOU' }]);
-    this.setState({ connected: true });
-  };
-
   /**
    *  Update the blocks in a hand list.
    *
    * @param {*} payload the new state for hand list
    */
   setList(payload) {
-    console.log('incoming set list from another peer : ' + payload);
     const { dispatch_setListState } = this.props;
     const prevState = store.getState().handList;
     const payloadState = JSON.parse(payload);
+
     if (!twoDimensionalArrayIsEqual(prevState, payloadState)) {
       dispatch_setListState(payloadState);
     }
@@ -146,7 +148,6 @@ class CommunicationHandler extends Component {
    * @param {*} payload the new state for solution field
    */
   setField(payload) {
-    console.log('incoming set field from another peer : ' + payload);
     const { dispatch_setFieldState } = this.props;
     const prevState = store.getState().solutionField;
     const payloadState = JSON.parse(payload);
@@ -157,59 +158,65 @@ class CommunicationHandler extends Component {
   }
 
   /**
+   * Get the initial solution field from file
+   */
+  initialFieldFromFile() {
+    let currentTask = store.getState().currentTask;
+    let currentTaskNumber = currentTask.currentTaskNumber;
+    let currentTaskObject = currentTask.tasks[currentTaskNumber];
+    let initialfield = currentTaskObject.solutionField.field;
+    const { dispatch_setFieldState } = this.props;
+    dispatch_setFieldState(initialfield);
+  }
+
+  /**
    * Update the current task
    *
    * @param {*} payload new task
    */
   nextTask(payload) {
-    console.log('another player has changed the current task : ' + payload);
     const prevState = store.getState().currentTask;
     const payloadState = JSON.parse(payload);
 
-    if (prevState !== payloadState) {
+    if (prevState !== payloadState.currentTask) {
       const { dispatch_nextTask } = this.props;
       dispatch_nextTask();
+      this.initialFieldFromFile();
     }
   }
 
   /**
    * Clears the board
-   *
-   * @param {*} payload : Payload sent int the webrtc shout
    */
-  clearTask(payload) {
-    console.log('incoming board clear from another peer : ' + payload);
-
-    // Get the initial solution field from file
-    let currentTask = store.getState().currentTask;
-    let currentTaskNumber = currentTask.currentTaskNumber;
-    let currentTaskObject = currentTask.tasks[currentTaskNumber];
-    let initialfield = currentTaskObject.solutionField.field;
-
+  clearTask() {
     // Get current board state
     let field = store.getState().solutionField;
     let handList = store.getState().handList;
 
     // Update board
-
     handList = clearBoard(field, handList);
-
-    const { dispatch_setFieldState } = this.props;
-    dispatch_setFieldState([]); // TODO: Assign unnasigned player properties to intial board.
+    const { dispatch_setListState } = this.props;
+    dispatch_setListState(handList);
+    this.initialFieldFromFile();
   }
 
+  /** Another player started the game from the lobby
+   *
+   * @param {*} payload
+   */
   startGame(payload) {
-    console.log('Another game iniatated the start of a new game');
-
     const prevState = store.getState().inProgress;
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState.inProgress) {
-      const { dispatch_startGame } = this.props;
-      dispatch_startGame();
-
       const { dispatch_setListState } = this.props;
       dispatch_setListState(payloadState.handList);
+
+      const { dispatch_setFieldState } = this.props;
+      dispatch_setFieldState(payloadState.solutionField);
+
+      const { dispatch_startGame } = this.props;
+      dispatch_startGame();
     }
   }
 

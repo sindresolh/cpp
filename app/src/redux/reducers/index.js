@@ -1,24 +1,30 @@
 // DISPATCH -> ACTION -> REDUCER (Here)
 
 import { combineReducers } from 'redux';
-import handListReducer from './handList';
-import solutionFieldReducer from './solutionField';
-import taskReducer from './task';
-import listShoutEventReducer from './listShoutEvent';
-import fieldShoutEventReducer from './fieldShoutEvent';
-import newTaskShoutEventReducer from './newTaskShout';
-import clearShoutEventReducer from './clearShoutEvent';
-import playerReducer from './players';
-import inProgressReducer from './inProgess';
+
+import clearEventReducer from './webrtc/clearEvent';
+import fieldEventReducer from './webrtc/fieldEvent';
+import listEventReducer from './webrtc/listEvent';
+import taskEventReducer from './webrtc/taskEvent';
+import handListReducer from './gameLogic/handList';
+import solutionFieldReducer from './gameLogic/solutionField';
+import taskReducer from './gameState/task';
+import playerReducer from './gameState/players';
+import inProgressReducer from './gameState/inProgess';
 
 const allReducers = combineReducers({
+  // Handles communicication to the other peers
+  clearEvent: clearEventReducer,
+  fieldEvent: fieldEventReducer,
+  listEvent: listEventReducer,
+  taskEvent: taskEventReducer,
+
+  // Controls the game board
   handList: handListReducer,
   solutionField: solutionFieldReducer,
+
+  // Controls the state of the game
   currentTask: taskReducer,
-  listShoutEvent: listShoutEventReducer,
-  fieldShoutEvent: fieldShoutEventReducer,
-  newTaskShoutEvent: newTaskShoutEventReducer,
-  clearShoutEvent: clearShoutEventReducer,
   players: playerReducer,
   inProgress: inProgressReducer,
 });
