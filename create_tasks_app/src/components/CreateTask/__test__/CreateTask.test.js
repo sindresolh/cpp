@@ -356,5 +356,53 @@ describe('hints', () => {
       category = categorizeCode('my_function(123):');
       expect(category).toBe(CATEGORY.FUNCTION);
     });
+
+    it('is a for loop', () => {
+      let category;
+      category = categorizeCode('for my_item in some_array:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('for my_item in ["1", "2"]:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('for my_item in range(5):');
+      expect(category).toBe(CATEGORY.LOOP);
+    });
+
+    it('is a while loop', () => {
+      let category;
+      category = categorizeCode('while some_variable<2:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while some_variable < 2:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while some_variable<len(array):');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while (count<2):');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while a == 2:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while a != 2:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while a > 2:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while a >= 2:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while a <= 2:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while True:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while some_function(variable):');
+      expect(category).toBe(CATEGORY.LOOP);
+    });
   });
 });

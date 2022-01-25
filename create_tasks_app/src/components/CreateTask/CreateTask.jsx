@@ -77,6 +77,7 @@ export const getCodeBlocksAndDistractors = (code) => {
 export const categorizeCode = (code) => {
   let category;
   if (isAVariable(code)) category = CATEGORY.VARIABLE;
+  else if (isALoop(code)) category = CATEGORY.LOOP;
   else if (isAFunction(code)) category = CATEGORY.FUNCTION;
   else category = CATEGORY.UNDEFINED;
 
@@ -102,8 +103,14 @@ const isAVariable = (string) => {
  */
 const isAFunction = (string) => {
   const regexFuncDecleration = /^def\s*?[a-zA-Z0-9'_()\[\]=":\s,*]+$/;
-  const regexFuncCall = /^[a-zA-Z0-9_]+[a-zA-Z0-9'_()\[\]=":\s,*]+$/;
+  const regexFuncCall = /^[a-zA-Z0-9_]+[a-zA-Z0-9'_()\[\]="\s,*]+:$/;
   return regexFuncDecleration.test(string) || regexFuncCall.test(string);
+};
+
+const isALoop = (string) => {
+  const regexForLoop = /^for [a-zA-Z0-9_]+ in [a-zA-Z0-9'_()\[\]="\s,*]+:$/;
+  const regexWhileLoop = /^while [a-zA-Z0-9_()]+\s*[!=<>]*\s*[a-zA-Z0-9_()]+:$/;
+  return regexForLoop.test(string) || regexWhileLoop.test(string);
 };
 
 /**
