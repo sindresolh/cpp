@@ -94,7 +94,7 @@ const isAVariable = (string) => {
 /**
  * Tests whether a string is a Python function.
  * A line of code falls into the function category if it is a
- * function decleration OR a function.
+ * function decleration OR a function call.
  * E.g.: def my_function(arg): and my_function(arg) are both accepted.
  * @param {String} string a line of code
  * @returns true if the string is a function
