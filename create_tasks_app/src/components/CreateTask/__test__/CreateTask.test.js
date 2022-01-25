@@ -11,7 +11,7 @@ import {
   getCodeBlocksAndDistractors,
   isNotAComment,
   categorizeCode,
-} from '../CreateTask';
+} from '../util';
 
 let createTask;
 
