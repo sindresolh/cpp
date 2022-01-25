@@ -88,7 +88,7 @@ export const categorizeCode = (code) => {
  * @returns true if the string is a variable decleration
  */
 const isAVariable = (string) => {
-  const regex = /^[a-zA-z0-9]+\s*?=\s*?[a-zA-Z0-9'"_()]+$/;
+  const regex = /^[a-zA-z0-9]+\s*?=\s*?[a-zA-Z0-9'"_\(\)\\\s:]+$/;
   return regex.test(string);
 };
 /**
