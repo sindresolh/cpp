@@ -156,7 +156,7 @@ function CreateTask() {
                 const data = getInputsAsJSON();
                 console.log(data);
                 const fileName = 'task';
-                const exportType = exportFromJSON.types.csv;
+                const exportType = exportFromJSON.types.json;
 
                 exportFromJSON({ data, fileName, exportType });
               }}
