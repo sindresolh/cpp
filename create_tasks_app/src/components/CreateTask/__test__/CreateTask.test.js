@@ -335,25 +335,25 @@ describe('hints', () => {
 
     it('is a function call', () => {
       let category;
-      category = categorizeCode('my_function():');
+      category = categorizeCode('my_function()');
       expect(category).toBe(CATEGORY.FUNCTION);
 
-      category = categorizeCode('my_function123():');
+      category = categorizeCode('my_function123()');
       expect(category).toBe(CATEGORY.FUNCTION);
 
-      category = categorizeCode('my_function(arg1, arg2):');
+      category = categorizeCode('my_function(arg1, arg2)');
       expect(category).toBe(CATEGORY.FUNCTION);
 
-      category = categorizeCode('my_function("string"):');
+      category = categorizeCode('my_function("string")');
       expect(category).toBe(CATEGORY.FUNCTION);
 
-      category = categorizeCode("my_function('string'):");
+      category = categorizeCode("my_function('string')");
       expect(category).toBe(CATEGORY.FUNCTION);
 
-      category = categorizeCode('my_function([]):');
+      category = categorizeCode('my_function([])');
       expect(category).toBe(CATEGORY.FUNCTION);
 
-      category = categorizeCode('my_function(123):');
+      category = categorizeCode('my_function(123)');
       expect(category).toBe(CATEGORY.FUNCTION);
     });
 
@@ -403,6 +403,57 @@ describe('hints', () => {
 
       category = categorizeCode('while some_function(variable):');
       expect(category).toBe(CATEGORY.LOOP);
+    });
+
+    it('is a condition', () => {
+      let category;
+      category = categorizeCode('if a<123:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a < 123:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a<=123:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a==123:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a>123:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a>=123:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a!=123:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if string="string":');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode("if string='string':");
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if string="string":');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if abc < def:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a < len(b):');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('elif a<2:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('else:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a < 2 and b >= 3:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a < 2 or b >= 3:');
+      expect(category).toBe(CATEGORY.CONDITION);
     });
   });
 });

@@ -79,6 +79,7 @@ export const categorizeCode = (code) => {
   if (isAVariable(code)) category = CATEGORY.VARIABLE;
   else if (isALoop(code)) category = CATEGORY.LOOP;
   else if (isAFunction(code)) category = CATEGORY.FUNCTION;
+  else if (isACondition(code)) category = CATEGORY.CONDITION;
   else category = CATEGORY.UNDEFINED;
 
   return category;
@@ -103,14 +104,31 @@ const isAVariable = (string) => {
  */
 const isAFunction = (string) => {
   const regexFuncDecleration = /^def\s*?[a-zA-Z0-9'_()\[\]=":\s,*]+$/;
-  const regexFuncCall = /^[a-zA-Z0-9_]+[a-zA-Z0-9'_()\[\]="\s,*]+:$/;
+  const regexFuncCall = /^[a-zA-Z0-9_]+\([a-zA-Z0-9'_\[\]="\s,*]*\)$/;
   return regexFuncDecleration.test(string) || regexFuncCall.test(string);
 };
 
+/**
+ * Tests whether a string is a Python loop.
+ * A line of code falls into the loop category if it is a
+ * for- or a while loop.
+ * @param {String} string a line of code
+ * @returns true if the string is a loop
+ */
 const isALoop = (string) => {
   const regexForLoop = /^for [a-zA-Z0-9_]+ in [a-zA-Z0-9'_()\[\]="\s,*]+:$/;
   const regexWhileLoop = /^while [a-zA-Z0-9_()]+\s*[!=<>]*\s*[a-zA-Z0-9_()]+:$/;
   return regexForLoop.test(string) || regexWhileLoop.test(string);
+};
+
+/**
+ * Tests whether a string is a Python condition.
+ * @param {String} string a line of code
+ * @returns true if the string is a condition
+ */
+const isACondition = (string) => {
+  const regex = /^\bif\b|\belif\b|\belse\b:?$/;
+  return regex.test(string);
 };
 
 /**
