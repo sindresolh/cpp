@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import CreateTask from '../CreateTask';
-import { SAMPLE_TEXT } from '../constants';
+import { CATEGORY, SAMPLE_TEXT } from '../constants';
 import { MemoryRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import {
@@ -10,6 +10,7 @@ import {
   isADistractor,
   getCodeBlocksAndDistractors,
   isNotAComment,
+  categorizeCode,
 } from '../CreateTask';
 
 let createTask;
@@ -262,6 +263,56 @@ describe('hints', () => {
       const distractorArray = ['distractor'];
       expect(codeBlocks).toStrictEqual(codeBlockArray);
       expect(distractors).toStrictEqual(distractorArray);
+    });
+  });
+
+  describe('categorise code', () => {
+    it("is a variable WITH space between '='", () => {
+      let category;
+      category = categorizeCode('variable = 2');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('under_score = 2');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode("variable = 'string'");
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('variable = 0');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('variable = 123');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('variable = function()');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('abc = zxw');
+      expect(category).toBe(CATEGORY.VARIABLE);
+    });
+
+    it("is a variable WITHOUT space between '='", () => {
+      let category;
+      category = categorizeCode('variable=2');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('under_score=2');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode("variable='string'");
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('variable=0');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('variable=123');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('variable=function()');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('abc=zxw');
+      expect(category).toBe(CATEGORY.VARIABLE);
     });
   });
 });

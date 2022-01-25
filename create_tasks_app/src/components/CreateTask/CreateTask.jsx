@@ -3,7 +3,7 @@ import Editor from 'react-simple-code-editor';
 import { useState } from 'react';
 import { highlight, languages } from 'prismjs/components/prism-core';
 import 'prismjs/components/prism-python';
-import { SAMPLE_TEXT } from './constants';
+import { SAMPLE_TEXT, CATEGORY } from './constants';
 import './prism.css';
 import './CreateTask.css';
 import { useNavigate } from 'react-router-dom';
@@ -67,6 +67,38 @@ export const getCodeBlocksAndDistractors = (code) => {
   distractors = distractors.map((distractor) => distractor.replace('$', ''));
 
   return [codeBlocks, distractors];
+};
+
+/**
+ * Categorises a line of code.
+ * @param {String} code
+ * @returns {Number} category of code
+ */
+export const categorizeCode = (code) => {
+  let category;
+  if (isAVariable(code)) category = CATEGORY.VARIABLE;
+  else category = CATEGORY.UNDEFINED;
+
+  return category;
+};
+
+/**
+ * Tests whether a string is a Python variable.
+ * @param {String} string a line of code
+ * @returns true if the string is a variable decleration
+ */
+const isAVariable = (string) => {
+  const regex = /^[a-zA-z0-9]+\s*?=\s*?[a-zA-Z0-9'_()]+$/;
+  return regex.test(string);
+};
+/**
+ * Tests whether a string is a Python function.
+ * @param {String} string a line of code
+ * @returns true if the string is a function
+ */
+const isAFunction = (string) => {
+  const regex = /TODO/;
+  return regex.test(string);
 };
 
 /**
