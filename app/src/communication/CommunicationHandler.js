@@ -52,16 +52,19 @@ class CommunicationHandler extends Component {
     this.state = {
       players: [],
       connected: false,
-      clearedBoard: [],
+      nick: this.props.nick,
     };
   }
+
   /**
    * Adds a new client to the room
    *
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room1');
+  join = (webrtc) => {
+    webrtc.joinRoom('cpp-room1');
+  };
 
   /**
    * Called when a new peer is added to the room

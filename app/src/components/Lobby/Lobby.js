@@ -12,7 +12,11 @@ function Lobby({ handleClick }) {
       <h1>Lobby</h1>
       <ul className='playerList'>
         {players.map((player) => {
-          return <li>{player.id.substring(0, 5)}</li>;
+          return (
+            <li key={player.id}>
+              {player.id === 'YOU' ? player.id : player.parent.config.nick}
+            </li>
+          );
         })}
       </ul>
       <div>
