@@ -25,6 +25,7 @@ import {
 } from '../utils/compareArrays/compareArrays';
 import { PLAYER } from '../utils/constants';
 import { clearBoard } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
+import PuzzleGif from '../components/Lobby/PuzzleGif';
 
 /**
  * Helper function to let us call dispatch from a class function
@@ -223,11 +224,7 @@ class CommunicationHandler extends Component {
         onRemovedPeer={this.handlePeerLeft}
         onJoinedRoom={this.joinedRoom}
       >
-        {this.state.connected ? (
-          <CommunicationListener />
-        ) : (
-          <h1>Waiting to connect</h1>
-        )}
+        {this.state.connected ? <CommunicationListener /> : <PuzzleGif />}
       </LioWebRTC>
     );
   }
