@@ -48,7 +48,7 @@ function Player({ playerNo, name, codeBlocks }) {
         </div>
       </div>
       <div className='rightContainerPlayer'>
-     
+
         <HandList codeBlocks={codeBlocks} player={playerNo} draggable={draggableBlocks} />
       </div>
     </div>

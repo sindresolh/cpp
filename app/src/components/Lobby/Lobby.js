@@ -3,24 +3,27 @@ import SidebarButton from '../Sidebar/SidebarButton/SidebarButton';
 import SubmitIcon from '../../images/buttonIcons/submit.png';
 import { COLORS } from '../../utils/constants';
 import store from '../../redux/store/store';
+import './Lobby.css';
 
 function Lobby({ handleClick }) {
   const players = store.getState().players;
   return (
-    <div style={{ position: 'absolute', top: '10%', left: '20%' }}>
+    <div className='Lobby'>
       <h1>Lobby</h1>
-      <ul>
+      <ul className='playerList'>
         {players.map((player) => {
-          return <li>{player.id}</li>;
+          return <li>{player.id.substring(0, 5)}</li>;
         })}
       </ul>
-      <SidebarButton
-        title='Start game'
-        icon={SubmitIcon}
-        color={COLORS.lightgreen}
-        handleClick={handleClick}
-        width='9em'
-      />
+      <div>
+        <SidebarButton
+          title='Start game'
+          icon={SubmitIcon}
+          color={COLORS.lightgreen}
+          handleClick={handleClick}
+          width='9em'
+        />
+      </div>
     </div>
   );
 }

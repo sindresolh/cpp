@@ -1,0 +1,23 @@
+.Lobby {
+  position: absolute;
+  top: 10%;
+  left: 20%;
+}
+
+.Lobby > h1 {
+  margin-bottom: 2em;
+}
+
+.Lobby > div {
+  margin-top: 4em;
+}
+
+.playerList > li {
+  border: solid;
+  border-radius: 8px;
+  width: 7vw;
+  margin: 2px;
+  padding: 7px;
+  text-align: left;
+  font-size: 15px;
+}
