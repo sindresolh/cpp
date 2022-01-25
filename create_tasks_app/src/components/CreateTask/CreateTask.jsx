@@ -66,7 +66,15 @@ export const getCodeBlocksAndDistractors = (code) => {
   distractors = distractors.map((distractor) => distractor.replace('#', ''));
   distractors = distractors.map((distractor) => distractor.replace('$', ''));
 
-  return [codeBlocks, distractors];
+  // get categories for code blocks and distractors
+  const codeBlocksCategories = codeBlocks.map((block) =>
+    categorizeCode(block.trim())
+  );
+  const distractorsCategories = distractors.map((distractor) =>
+    categorizeCode(distractor.trim())
+  );
+
+  return [codeBlocks, distractors, codeBlocksCategories, distractorsCategories];
 };
 
 /**
@@ -151,10 +159,13 @@ function CreateTask() {
    * @returns all inputs as JSON
    */
   const getInputsAsJSON = () => {
-    const [codeBlocks, distractors] = getCodeBlocksAndDistractors(code);
+    const [codeBlocks, distractors, blocksCategories, distractorsCategories] =
+      getCodeBlocksAndDistractors(code);
     const inputs = {
       codeBlocks,
+      blocksCategories,
       distractors,
+      distractorsCategories,
       description,
       hints,
       attempts: unlimitedAttempts ? 'unlimited' : amountOfAttempts,
