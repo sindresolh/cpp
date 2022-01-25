@@ -2,7 +2,7 @@ import React from 'react';
 import { render, fireEvent, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import CreateTask from '../CreateTask';
-import { SAMPLE_TEXT } from '../constants';
+import { CATEGORY, SAMPLE_TEXT } from '../constants';
 import { MemoryRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import {
@@ -10,7 +10,8 @@ import {
   isADistractor,
   getCodeBlocksAndDistractors,
   isNotAComment,
-} from '../CreateTask';
+  categorizeCode,
+} from '../util';
 
 let createTask;
 
@@ -262,6 +263,197 @@ describe('hints', () => {
       const distractorArray = ['distractor'];
       expect(codeBlocks).toStrictEqual(codeBlockArray);
       expect(distractors).toStrictEqual(distractorArray);
+    });
+  });
+
+  describe('categorise code', () => {
+    it("is a variable WITH space between '='", () => {
+      let category;
+      category = categorizeCode('variable = 2');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('under_score = 2');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode("variable = 'string'");
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('variable = 0');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('variable = 123');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('variable = function()');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('abc = zxw');
+      expect(category).toBe(CATEGORY.VARIABLE);
+    });
+
+    it("is a variable WITHOUT space between '='", () => {
+      let category;
+      category = categorizeCode('variable=2');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('under_score=2');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode("variable='string'");
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('variable=0');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('variable=123');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('variable=function()');
+      expect(category).toBe(CATEGORY.VARIABLE);
+
+      category = categorizeCode('abc=zxw');
+      expect(category).toBe(CATEGORY.VARIABLE);
+    });
+
+    it('is a function decleration', () => {
+      let category;
+      category = categorizeCode('def my_function():');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('def my_function(a = 2):');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('def my_function(a = "string"):');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('def my_function(one, two):');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('def my_function(*args):');
+      expect(category).toBe(CATEGORY.FUNCTION);
+    });
+
+    it('is a function call', () => {
+      let category;
+      category = categorizeCode('my_function()');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('my_function123()');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('my_function(arg1, arg2)');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('my_function("string")');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode("my_function('string')");
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('my_function([])');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('my_function(123)');
+      expect(category).toBe(CATEGORY.FUNCTION);
+    });
+
+    it('is a for loop', () => {
+      let category;
+      category = categorizeCode('for my_item in some_array:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('for my_item in ["1", "2"]:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('for my_item in range(5):');
+      expect(category).toBe(CATEGORY.LOOP);
+    });
+
+    it('is a while loop', () => {
+      let category;
+      category = categorizeCode('while some_variable<2:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while some_variable < 2:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while some_variable<len(array):');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while (count<2):');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while a == 2:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while a != 2:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while a > 2:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while a >= 2:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while a <= 2:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while True:');
+      expect(category).toBe(CATEGORY.LOOP);
+
+      category = categorizeCode('while some_function(variable):');
+      expect(category).toBe(CATEGORY.LOOP);
+    });
+
+    it('is a condition', () => {
+      let category;
+      category = categorizeCode('if a<123:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a < 123:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a<=123:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a==123:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a>123:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a>=123:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a!=123:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if string="string":');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode("if string='string':");
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if string="string":');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if abc < def:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a < len(b):');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('elif a<2:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('else:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a < 2 and b >= 3:');
+      expect(category).toBe(CATEGORY.CONDITION);
+
+      category = categorizeCode('if a < 2 or b >= 3:');
+      expect(category).toBe(CATEGORY.CONDITION);
     });
   });
 });

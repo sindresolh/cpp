@@ -8,66 +8,9 @@ import './prism.css';
 import './CreateTask.css';
 import { useNavigate } from 'react-router-dom';
 import exportFromJSON from 'export-from-json';
+import { getCodeBlocksAndDistractors } from './util';
 
 const DEFAULT_ATTEMPTS = 3;
-
-/**
- * Sorts an array into two based on condition
- *
- * Taken from: https://stackoverflow.com/a/38863774
- */
-export const bifilter = (f, xs) => {
-  return xs.reduce(
-    ([T, F], x, i, arr) => {
-      if (f(x, i, arr) === false) return [T, [...F, x]];
-      else return [[...T, x], F];
-    },
-    [[], []]
-  );
-};
-
-/**
- * Trims and checks for '$' to check if it's a distractor
- *
- * @param {String} line
- * @returns whether the line is a distractor or not
- */
-export const isADistractor = (line) => {
-  let trimmedLine = line.trim(); // remove empty spaces at the start
-  return trimmedLine.startsWith('$', 1);
-};
-
-/**
- * Checks if the line is NOT a comment.
- * The line is trimmed to remove tabs or spaces. Then the first character is checked to be a '#'.
- * The line could still be a distractor, so the next character also has to be checked.
- *
- * @param {String} line
- * @returns whether the line is a comment or not
- */
-export const isNotAComment = (line) => {
-  const trimmed = line.trim();
-  return !trimmed.startsWith('#', 0) || trimmed.startsWith('$', 1);
-};
-
-/**
- * @returns two arrays: codeblocks and distractors
- */
-export const getCodeBlocksAndDistractors = (code) => {
-  let lines = code.split('\n'); // split string on new line
-  lines = lines.map((line) => line.trimEnd()); // remove any excess spaces at the end
-  lines = lines.filter(isNotAComment); // remove comments, but check for '$' in case it is a distractor
-  lines = lines.filter((line) => line.length !== 0); // remove empty lines
-  let [distractors, codeBlocks] = bifilter(
-    (line) => isADistractor(line),
-    lines
-  ); // split lines into codeblocks and distracors
-  // remove '#' and '$' from distractors
-  distractors = distractors.map((distractor) => distractor.replace('#', ''));
-  distractors = distractors.map((distractor) => distractor.replace('$', ''));
-
-  return [codeBlocks, distractors];
-};
 
 /**
  * Includes a code editor to write/add code. This code can be turned into a task.
@@ -89,10 +32,13 @@ function CreateTask() {
    * @returns all inputs as JSON
    */
   const getInputsAsJSON = () => {
-    const [codeBlocks, distractors] = getCodeBlocksAndDistractors(code);
+    const [codeBlocks, distractors, blocksCategories, distractorsCategories] =
+      getCodeBlocksAndDistractors(code);
     const inputs = {
       codeBlocks,
+      blocksCategories,
       distractors,
+      distractorsCategories,
       description,
       hints,
       attempts: unlimitedAttempts ? 'unlimited' : amountOfAttempts,
