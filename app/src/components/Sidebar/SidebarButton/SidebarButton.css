@@ -1,6 +1,5 @@
 .SideBarButton {
   display: inline-flex;
-  width: 7em;
   height: 3em;
   margin: 0.4em;
   border-radius: 1em;
@@ -13,6 +12,8 @@ button > div {
   position: 'absolute';
   padding-top: 0.7em;
   margin-left: 0.5em;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 button > img {
