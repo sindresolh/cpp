@@ -32,13 +32,11 @@ function CreateTask() {
    * @returns all inputs as JSON
    */
   const getInputsAsJSON = () => {
-    const [codeBlocks, distractors, blocksCategories, distractorsCategories] =
-      getCodeBlocksAndDistractors(code);
+    const [codeBlocks, distractors] = getCodeBlocksAndDistractors(code);
+
     const inputs = {
       codeBlocks,
-      blocksCategories,
       distractors,
-      distractorsCategories,
       description,
       hints,
       attempts: unlimitedAttempts ? 'unlimited' : amountOfAttempts,

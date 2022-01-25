@@ -55,15 +55,19 @@ export const getCodeBlocksAndDistractors = (code) => {
   distractors = distractors.map((distractor) => distractor.replace('#', ''));
   distractors = distractors.map((distractor) => distractor.replace('$', ''));
 
-  // get categories for code blocks and distractors
-  const codeBlocksCategories = codeBlocks.map((block) =>
-    categorizeCode(block.trim())
-  );
-  const distractorsCategories = distractors.map((distractor) =>
-    categorizeCode(distractor.trim())
-  );
+  let codeBlockJSON = [];
+  let distractorJSON = [];
+  // categorize the code and create json objects
+  codeBlocks.map((block) => {
+    let blockCategory = categorizeCode(block.trim());
+    codeBlockJSON.push({ code: block, category: blockCategory });
+  });
+  distractors.map((distractor) => {
+    let distractorCategory = categorizeCode(distractor.trim());
+    distractorJSON.push({ code: distractor, category: distractorCategory });
+  });
 
-  return [codeBlocks, distractors, codeBlocksCategories, distractorsCategories];
+  return [codeBlockJSON, distractorJSON];
 };
 
 /**
