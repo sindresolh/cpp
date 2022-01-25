@@ -77,6 +77,7 @@ export const getCodeBlocksAndDistractors = (code) => {
 export const categorizeCode = (code) => {
   let category;
   if (isAVariable(code)) category = CATEGORY.VARIABLE;
+  else if (isAFunction(code)) category = CATEGORY.FUNCTION;
   else category = CATEGORY.UNDEFINED;
 
   return category;
@@ -88,17 +89,21 @@ export const categorizeCode = (code) => {
  * @returns true if the string is a variable decleration
  */
 const isAVariable = (string) => {
-  const regex = /^[a-zA-z0-9]+\s*?=\s*?[a-zA-Z0-9'_()]+$/;
+  const regex = /^[a-zA-z0-9]+\s*?=\s*?[a-zA-Z0-9'"_()]+$/;
   return regex.test(string);
 };
 /**
  * Tests whether a string is a Python function.
+ * A line of code falls into the function category if it is a
+ * function decleration OR a function.
+ * E.g.: def my_function(arg): and my_function(arg) are both accepted.
  * @param {String} string a line of code
  * @returns true if the string is a function
  */
 const isAFunction = (string) => {
-  const regex = /TODO/;
-  return regex.test(string);
+  const regexFuncDecleration = /^def\s*?[a-zA-Z0-9'_()\[\]=":\s,*]+$/;
+  const regexFuncCall = /^[a-zA-Z0-9_]+[a-zA-Z0-9'_()\[\]=":\s,*]+$/;
+  return regexFuncDecleration.test(string) || regexFuncCall.test(string);
 };
 
 /**

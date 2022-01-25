@@ -314,5 +314,47 @@ describe('hints', () => {
       category = categorizeCode('abc=zxw');
       expect(category).toBe(CATEGORY.VARIABLE);
     });
+
+    it('is a function decleration', () => {
+      let category;
+      category = categorizeCode('def my_function():');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('def my_function(a = 2):');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('def my_function(a = "string"):');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('def my_function(one, two):');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('def my_function(*args):');
+      expect(category).toBe(CATEGORY.FUNCTION);
+    });
+
+    it('is a function call', () => {
+      let category;
+      category = categorizeCode('my_function():');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('my_function123():');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('my_function(arg1, arg2):');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('my_function("string"):');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode("my_function('string'):");
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('my_function([]):');
+      expect(category).toBe(CATEGORY.FUNCTION);
+
+      category = categorizeCode('my_function(123):');
+      expect(category).toBe(CATEGORY.FUNCTION);
+    });
   });
 });
