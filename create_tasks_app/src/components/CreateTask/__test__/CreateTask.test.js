@@ -5,6 +5,12 @@ import CreateTask from '../CreateTask';
 import { SAMPLE_TEXT } from '../constants';
 import { MemoryRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
+import {
+  bifilter,
+  isADistractor,
+  getCodeBlocksAndDistractors,
+  isNotAComment,
+} from '../CreateTask';
 
 let createTask;
 
@@ -160,6 +166,102 @@ describe('hints', () => {
       attemptsInput = attempts.querySelector('input[type="number"]');
       fireEvent.change(attemptsInput, { target: { value: 1 } });
       expect(attemptsInput).toHaveValue(1);
+    });
+  });
+
+  describe('bifilter function', () => {
+    it('correectly split array into two', () => {
+      const numbers = [1, 2, 3, 4, 5];
+      const [arr1, arr2] = bifilter((number) => number >= 3, numbers);
+      expect(arr1).toStrictEqual([3, 4, 5]);
+      expect(arr2).toStrictEqual([1, 2]);
+    });
+  });
+
+  describe('isADistractor function', () => {
+    it('distractor starts at indent 0', () => {
+      const codeWithDistractor = '#$This is a distractor';
+      expect(isADistractor(codeWithDistractor)).toBe(true);
+    });
+
+    it('distractor is at indent bigger than 0', () => {
+      const codeWithDistractor = '      #$This is a distractor';
+      expect(isADistractor(codeWithDistractor)).toBe(true);
+    });
+
+    it('comment is not a distractor', () => {
+      const codeWithDistractor = '#This is NOT a comment';
+      expect(isADistractor(codeWithDistractor)).toBe(false);
+    });
+
+    it('$ must come right after #', () => {
+      const line = '# $This is NOT a distractor';
+      expect(isADistractor(line)).toBe(false);
+    });
+  });
+
+  describe('isNotAComment function', () => {
+    it('not a comment', () => {
+      expect(isNotAComment('not a comment')).toBe(true);
+      expect(isNotAComment('#$distractor')).toBe(true);
+      expect(isNotAComment('  #$distractor')).toBe(true);
+    });
+
+    it('is a comment', () => {
+      expect(isNotAComment('#a comment')).toBe(false);
+      expect(isNotAComment('# a comment')).toBe(false);
+      expect(isNotAComment('      # a comment')).toBe(false);
+    });
+  });
+
+  describe('seperate code blocks and distractors', () => {
+    it('only code blocks and no distractors', () => {
+      const sampleCode = 'codeline1\ncodeline2\n\tcodeline3\n\t\tcodeline4';
+      const [codeBlocks, distractors] = getCodeBlocksAndDistractors(sampleCode);
+      const codeBlockArray = [
+        'codeline1',
+        'codeline2',
+        '\tcodeline3',
+        '\t\tcodeline4',
+      ];
+      const distractorArray = [];
+      expect(codeBlocks).toStrictEqual(codeBlockArray);
+      expect(distractors).toStrictEqual(distractorArray);
+    });
+
+    it('no code blocks and ONLY distractors', () => {
+      const sampleCode =
+        '#$distractor1\n#$distractor2\n\t#$distractor3\n\t\t#$distractor4';
+      const [codeBlocks, distractors] = getCodeBlocksAndDistractors(sampleCode);
+      const distractorArray = [
+        'distractor1',
+        'distractor2',
+        '\tdistractor3',
+        '\t\tdistractor4',
+      ];
+      const codeBlockArray = [];
+      expect(codeBlocks).toStrictEqual(codeBlockArray);
+      expect(distractors).toStrictEqual(distractorArray);
+    });
+
+    it('codeblocks AND distractors', () => {
+      const sampleCode =
+        'codeBlock1\n#$distractor1\n\tcodeBlock2\n\t\t#$distractor2';
+      const [codeBlocks, distractors] = getCodeBlocksAndDistractors(sampleCode);
+      const codeBlockArray = ['codeBlock1', '\tcodeBlock2'];
+      const distractorArray = ['distractor1', '\t\tdistractor2'];
+      expect(codeBlocks).toStrictEqual(codeBlockArray);
+      expect(distractors).toStrictEqual(distractorArray);
+    });
+
+    it('remove comments and blank lines', () => {
+      const sampleCode =
+        '#comment1\n# comment2\n\t# comment3\n\n\n\n\ncodeline\n#$distractor';
+      const [codeBlocks, distractors] = getCodeBlocksAndDistractors(sampleCode);
+      const codeBlockArray = ['codeline'];
+      const distractorArray = ['distractor'];
+      expect(codeBlocks).toStrictEqual(codeBlockArray);
+      expect(distractors).toStrictEqual(distractorArray);
     });
   });
 });
