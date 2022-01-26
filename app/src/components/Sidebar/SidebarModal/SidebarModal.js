@@ -38,8 +38,7 @@ export default function SidebarModal({
 }) {
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
-  let correctSolution =
-    currentTask.tasks[currentTaskNumber].solutionField.correct;
+  let correctSolution = currentTask.tasks[currentTaskNumber];
   let feedbackArray = linebasedfeedback(field, correctSolution);
   Modal.setAppElement('body');
 

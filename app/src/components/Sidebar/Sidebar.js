@@ -123,7 +123,7 @@ export default function Sidebar() {
         COLORS.darkgreen,
         'none'
       );
-    } else if (arrayIsEqual(field, currentTaskObject.solutionField.correct)) {
+    } else if (arrayIsEqual(field, currentTaskObject)) {
       dispatch(nextTask());
       dispatch(taskEvent());
       openModal(

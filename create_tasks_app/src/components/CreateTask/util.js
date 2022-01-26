@@ -43,6 +43,7 @@ export const isNotAComment = (line) => {
  * @returns two arrays: codeblocks and distractors
  */
 export const getCodeBlocksAndDistractors = (code) => {
+  // TODO: set indent in this function
   let lines = code.split('\n'); // split string on new line
   lines = lines.map((line) => line.trimEnd()); // remove any excess spaces at the end
   lines = lines.filter(isNotAComment); // remove comments, but check for '$' in case it is a distractor

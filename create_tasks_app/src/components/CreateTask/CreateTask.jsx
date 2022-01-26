@@ -40,6 +40,7 @@ function CreateTask() {
       description,
       hints,
       attempts: unlimitedAttempts ? 'unlimited' : amountOfAttempts,
+      field: [], // TODO: mulighet til å lage oppgaver med initielt field
     };
     return [inputs];
   };

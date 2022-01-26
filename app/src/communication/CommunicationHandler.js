@@ -61,7 +61,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room1');
+  join = (webrtc) => webrtc.joinRoom('cpp-room2');
 
   /**
    * Called when a new peer is added to the room
@@ -164,7 +164,7 @@ class CommunicationHandler extends Component {
     let currentTask = store.getState().currentTask;
     let currentTaskNumber = currentTask.currentTaskNumber;
     let currentTaskObject = currentTask.tasks[currentTaskNumber];
-    let initialfield = currentTaskObject.solutionField.field;
+    let initialfield = currentTaskObject.field;
     const { dispatch_setFieldState } = this.props;
     dispatch_setFieldState(initialfield);
   }

@@ -23,15 +23,18 @@ import { COLORS } from '../../utils/constants';
  */
 function SolutionField({}) {
   const lines = useSelector((state) => state.solutionField);
-  const players = useSelector((state) => state.players)
+  const players = useSelector((state) => state.players);
   const emptyField = lines.length === 0;
   const dispatch = useDispatch();
 
   // finds the block, it's index and indent based on id
   const findBlock = useCallback(
     (id) => {
-      const blocks = lines.map((line) => line.block);
+      console.log('lines', lines);
+      const blocks = lines.map((line) => line);
+      console.log('blocks', blocks);
       const block = blocks.filter((block) => block.id === id)[0];
+      console.log('block', block);
 
       if (block === undefined) return undefined; // block came from a hand list
 
@@ -75,7 +78,7 @@ function SolutionField({}) {
    */
   const swapBlockPositionInField = (blockObj, atIndex, atIndent) => {
     const line = {
-      block: blockObj.block,
+      block: blockObj,
       indent: atIndent,
     };
     const updatedLines = update(lines, {
@@ -101,6 +104,8 @@ function SolutionField({}) {
     let handListIndex = 0;
     let movedBlock;
     const AMOUNT_OF_PLAYERS = 4;
+
+    console.log('move from hand');
 
     // find block and update the correct hand list
     while (blockIsNotFound && handListIndex < AMOUNT_OF_PLAYERS) {
@@ -148,16 +153,24 @@ function SolutionField({}) {
   );
 
   return (
-    <div className={'divSF'} ref={drop} style={{ background: COLORS.solutionfield }}>
-      <h6>{"Connected platers: "+players.length}</h6>
-      <ul data-testid="solutionField"> 
+    <div
+      className={'divSF'}
+      ref={drop}
+      style={{ background: COLORS.solutionfield }}
+    >
+      <h6>{'Connected platers: ' + players.length}</h6>
+      <ul data-testid='solutionField'>
         {lines.map((line) => {
           let codelineColor = COLORS.codeline;
           return (
-            <li key={line.block.id} data-testid="lines" style={{background:codelineColor}}> 
+            <li
+              key={line.block.id}
+              data-testid='lines'
+              style={{ background: codelineColor }}
+            >
               <CodeBlock
                 {...line.block}
-                draggable={true}  // TODO: might not need this
+                draggable={true} // TODO: might not need this
                 moveBlock={moveBlock}
                 findBlock={findBlock}
               />

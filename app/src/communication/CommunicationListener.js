@@ -65,22 +65,26 @@ class CommunicationListener extends Component {
     const currentTask = state.currentTask;
     let currentTaskNumber = currentTask.currentTaskNumber;
     let currentTaskObject = currentTask.tasks[currentTaskNumber];
-    let solutionField = currentTaskObject.solutionField.field;
-    let handList = currentTaskObject.handList;
+    let solutionField = currentTaskObject.field;
+    //let handList = currentTaskObject.handList;
 
     // initalize solutionfield
     const { dispatch_setFieldState } = this.props;
     dispatch_setFieldState(solutionField);
 
+    console.log('blocks', currentTaskObject.codeBlocks);
+    console.log('distractors', currentTaskObject.distractors);
+
     // shuffle codeblocks
     let codeblocks = shuffleCodeblocks(
-      handList.correct,
-      handList.distractors,
+      currentTaskObject.codeBlocks,
+      currentTaskObject.distractors,
       state.players.length
     );
 
     // initialize handLists
     const { dispatch_setListState } = this.props;
+    console.log('blocks', codeblocks);
     dispatch_setListState(codeblocks);
   }
 

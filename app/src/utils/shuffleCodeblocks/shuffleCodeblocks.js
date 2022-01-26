@@ -41,9 +41,9 @@ const wrongFormat = (blocks) => {
   for (var block of blocks) {
     if (
       !block.hasOwnProperty('id') ||
-      !block.hasOwnProperty('content') ||
-      !block.hasOwnProperty('category') ||
-      !block.hasOwnProperty('player')
+      !block.hasOwnProperty('code') ||
+      !block.hasOwnProperty('category') //||
+      //!block.hasOwnProperty('player')
     ) {
       return true;
     }
@@ -58,6 +58,7 @@ export const shuffleCodeblocks = (
 ) => {
   let codeblocks = [[], [], [], []]; // codeblocks for all 4 players
 
+  console.log('-----shuffle');
   // Verify input
   if (
     wrongFormat(correctBlocks) ||
@@ -66,6 +67,7 @@ export const shuffleCodeblocks = (
   ) {
     return codeblocks;
   }
+  console.log('etter verify');
 
   correctBlocks = shuffle(correctBlocks);
 
