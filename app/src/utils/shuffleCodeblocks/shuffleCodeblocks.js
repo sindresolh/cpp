@@ -58,7 +58,6 @@ export const shuffleCodeblocks = (
 ) => {
   let codeblocks = [[], [], [], []]; // codeblocks for all 4 players
 
-  console.log('-----shuffle');
   // Verify input
   if (
     wrongFormat(correctBlocks) ||
@@ -67,7 +66,6 @@ export const shuffleCodeblocks = (
   ) {
     return codeblocks;
   }
-  console.log('etter verify');
 
   correctBlocks = shuffle(correctBlocks);
 

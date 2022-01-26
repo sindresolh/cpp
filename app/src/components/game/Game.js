@@ -25,7 +25,7 @@ export default function Game() {
     ];
     for (let player = 0; player < players.length; player++) {
       // TODO: use nicknames instead
-      console.log('player ' + player + ': ', players[player]);
+      //console.log('player ' + player + ': ', players[player]);
       names[player] = players[player].id.substring(0, 5);
     }
     // Lastly add this client's name

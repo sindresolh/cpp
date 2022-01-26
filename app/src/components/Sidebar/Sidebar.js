@@ -95,7 +95,7 @@ export default function Sidebar() {
   const clearBoard = () => {
     closeModal();
 
-    let initalfield = currentTaskObject.solutionField.field;
+    let initalfield = currentTaskObject.field;
 
     let field = store.getState().solutionField;
     let handList = store.getState().handList;
@@ -175,7 +175,7 @@ export default function Sidebar() {
             openModal(
               HintIcon,
               'Hint',
-              currentTaskObject.hint,
+              currentTaskObject.hints[0], // TODO: allow getting more than 1 hint
               'Back to task',
               COLORS.lightyellow,
               COLORS.darkyellow,

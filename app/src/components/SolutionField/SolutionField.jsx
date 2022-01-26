@@ -30,11 +30,8 @@ function SolutionField({}) {
   // finds the block, it's index and indent based on id
   const findBlock = useCallback(
     (id) => {
-      console.log('lines', lines);
-      const blocks = lines.map((line) => line);
-      console.log('blocks', blocks);
+      const blocks = lines.map((line) => line.block);
       const block = blocks.filter((block) => block.id === id)[0];
-      console.log('block', block);
 
       if (block === undefined) return undefined; // block came from a hand list
 
@@ -58,10 +55,13 @@ function SolutionField({}) {
       let line;
       // get block if it exists in solutionfield
       const blockObj = findBlock(id);
+      console.log('move block', id);
 
       // update the block position in the solution field
-      if (blockObj !== undefined)
+      if (blockObj !== undefined) {
+        console.log('block obj', blockObj);
         swapBlockPositionInField(blockObj, atIndex, atIndent);
+      }
       // block came from a hand
       else moveBlockFromList(id, atIndex, atIndent);
 
@@ -77,8 +77,9 @@ function SolutionField({}) {
    * @param {number} atIndent     the indent the block was dragged into
    */
   const swapBlockPositionInField = (blockObj, atIndex, atIndent) => {
+    console.log('swap block', blockObj, atIndex, atIndent);
     const line = {
-      block: blockObj,
+      block: blockObj.block,
       indent: atIndent,
     };
     const updatedLines = update(lines, {
@@ -87,6 +88,7 @@ function SolutionField({}) {
         [atIndex, 0, line],
       ],
     });
+    console.log('updated lines', updatedLines);
 
     dispatch(setFieldState(updatedLines));
   };
@@ -104,8 +106,6 @@ function SolutionField({}) {
     let handListIndex = 0;
     let movedBlock;
     const AMOUNT_OF_PLAYERS = 4;
-
-    console.log('move from hand');
 
     // find block and update the correct hand list
     while (blockIsNotFound && handListIndex < AMOUNT_OF_PLAYERS) {

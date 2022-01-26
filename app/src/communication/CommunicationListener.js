@@ -72,9 +72,6 @@ class CommunicationListener extends Component {
     const { dispatch_setFieldState } = this.props;
     dispatch_setFieldState(solutionField);
 
-    console.log('blocks', currentTaskObject.codeBlocks);
-    console.log('distractors', currentTaskObject.distractors);
-
     // shuffle codeblocks
     let codeblocks = shuffleCodeblocks(
       currentTaskObject.codeBlocks,
@@ -84,7 +81,6 @@ class CommunicationListener extends Component {
 
     // initialize handLists
     const { dispatch_setListState } = this.props;
-    console.log('blocks', codeblocks);
     dispatch_setListState(codeblocks);
   }
 
