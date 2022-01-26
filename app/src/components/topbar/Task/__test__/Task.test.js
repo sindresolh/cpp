@@ -20,7 +20,7 @@ describe('test that the task component renders', () => {
   });
 
   it('starts on the first task', () => {
-    let label = screen.getByTestId('label');
+    let label = screen.getByTqestId('label');
     expect(label.textContent).toBe('Task 1');
   });
 
