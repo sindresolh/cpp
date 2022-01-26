@@ -12,8 +12,6 @@ import { ACTIONS } from '../../actions/ACTIONS';
 const solutionFieldReducer = (state = [], action) => {
   switch (action.type) {
     case ACTIONS.SET_FIELD_STATE: {
-      console.log('set field state');
-      console.log(action.payload.state);
       return action.payload.state;
     }
     case ACTIONS.REMOVE_BLOCK_FROM_FIELD: {

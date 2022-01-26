@@ -55,11 +55,9 @@ function SolutionField({}) {
       let line;
       // get block if it exists in solutionfield
       const blockObj = findBlock(id);
-      console.log('move block', id);
 
       // update the block position in the solution field
       if (blockObj !== undefined) {
-        console.log('block obj', blockObj);
         swapBlockPositionInField(blockObj, atIndex, atIndent);
       }
       // block came from a hand
@@ -77,7 +75,6 @@ function SolutionField({}) {
    * @param {number} atIndent     the indent the block was dragged into
    */
   const swapBlockPositionInField = (blockObj, atIndex, atIndent) => {
-    console.log('swap block', blockObj, atIndex, atIndent);
     const line = {
       block: blockObj.block,
       indent: atIndent,
@@ -88,7 +85,6 @@ function SolutionField({}) {
         [atIndex, 0, line],
       ],
     });
-    console.log('updated lines', updatedLines);
 
     dispatch(setFieldState(updatedLines));
   };

@@ -12,7 +12,6 @@ import tasksets from '../../../utils/taskset2/tasksets.json';
  */
 const getTasksFromSet = (number) => {
   const set = tasksets[number - 1];
-  console.log(set);
   return set;
 };
 
