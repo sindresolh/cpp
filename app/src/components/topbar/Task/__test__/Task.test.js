@@ -26,6 +26,8 @@ describe('test that the task component renders', () => {
 
   it('has a correct description', () => {
     let textarea = screen.getByTestId('textarea');
-    expect(textarea.textContent).toBe('Skriv et program som summerer to tall');
+    expect(textarea.textContent).toBe(
+      'Create a simple calculator. The program should first ask for an integer, then an operator (+,-,*,/), and lastly a second integer. The answer shall be printed back to the user.'
+    );
   });
 });

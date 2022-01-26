@@ -20,7 +20,7 @@ export default function Task() {
           data-testid='label'
           style={{ background: COLORS.taskfield }}
         >
-          Task {currentTaskObject.id}
+          Task {currentTaskNumber + 1}
         </label>
       </div>
       <div>

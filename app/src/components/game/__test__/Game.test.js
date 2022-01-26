@@ -43,15 +43,12 @@ describe('game is initialized', () => {
     expect(game).toBeVisible();
   });
 });
-
 /*
-
 describe('game is initialized', () => {
-  
-
   it('soloutionfield board initalized', () => {
     let lines = screen.getAllByTestId('lines');
-    expect(lines.length).toBe(2);
+    expect(lines.length).toBe(0); 
+    
   });
 
   it('handlist redux store initalized', () => {
@@ -222,4 +219,4 @@ describe('can dispatch setList', () => {
 });
 
 // setList + remove på begge.
- */
+*/
