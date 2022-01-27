@@ -75,7 +75,7 @@ class CommunicationHandler extends Component {
     const { dispatch_addPlayer } = this.props;
     dispatch_addPlayer(peer);
     console.log(`Peer-${peer.id.substring(0, 5)} joined the room!`);
-    console.log(peer);
+    //console.log(peer);
   };
 
   /**
@@ -96,7 +96,10 @@ class CommunicationHandler extends Component {
    */
   joinedRoom = (webrtc) => {
     const { dispatch_setPlayers } = this.props;
-    dispatch_setPlayers([...webrtc.getPeers(), { id: 'YOU' }]);
+    dispatch_setPlayers([
+      ...webrtc.getPeers(),
+      { id: 'YOU', nick: this.state.nick },
+    ]);
     this.setState({ connected: true });
   };
 

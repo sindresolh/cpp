@@ -2,27 +2,29 @@ import React from 'react';
 import SidebarButton from '../Sidebar/SidebarButton/SidebarButton';
 import SubmitIcon from '../../images/buttonIcons/submit.png';
 import { COLORS } from '../../utils/constants';
-import store from '../../redux/store/store';
 import './Lobby.css';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useState } from 'react';
 
-function mapStateToProps(state) {
-  return { players: state.players };
-}
+/** Show the players in the lobby based on their nickname
+ *
+ * @param {*} param0
+ * @returns
+ */
+function Lobby({ handleClick, peers }) {
+  const players = useSelector((state) => state.players);
 
-function Lobby({ handleClick }) {
-  const players = store.getState().players;
+  // Se på dette tullet her. Players har nick, men ikke p
+  // Bytt ut med peers (prop.webrtc.getPeers()) og jeg har det samme problemet
   console.log(players);
+  for (var p of players) console.log(p.nick);
+
   return (
     <div className='Lobby'>
       <h1>Lobby</h1>
       <ul className='playerList'>
         {players.map((player) => {
-          return (
-            <li key={player.id}>
-              {player.id === 'YOU' ? player.id : player.nick}
-            </li>
-          );
+          return <li key={player.id}>{player.id}</li>;
         })}
       </ul>
       <div>
@@ -38,4 +40,4 @@ function Lobby({ handleClick }) {
   );
 }
 
-export default connect(mapStateToProps)(Lobby);
+export default Lobby;
