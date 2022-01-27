@@ -4,15 +4,25 @@ import SubmitIcon from '../../images/buttonIcons/submit.png';
 import { COLORS } from '../../utils/constants';
 import store from '../../redux/store/store';
 import './Lobby.css';
+import { connect } from 'react-redux';
+
+function mapStateToProps(state) {
+  return { players: state.players };
+}
 
 function Lobby({ handleClick }) {
   const players = store.getState().players;
+  console.log(players);
   return (
     <div className='Lobby'>
       <h1>Lobby</h1>
       <ul className='playerList'>
         {players.map((player) => {
-          return <li key={player.id}>{player.id.substring(0, 5)}</li>;
+          return (
+            <li key={player.id}>
+              {player.id === 'YOU' ? player.id : player.nick}
+            </li>
+          );
         })}
       </ul>
       <div>
@@ -28,4 +38,4 @@ function Lobby({ handleClick }) {
   );
 }
 
-export default Lobby;
+export default connect(mapStateToProps)(Lobby);

@@ -226,7 +226,7 @@ class CommunicationHandler extends Component {
   render() {
     return (
       <LioWebRTC
-        options={{ dataOnly: true, nick: 'dette er et nick', debug: false }}
+        options={{ dataOnly: true, nick: this.state.nick, debug: false }}
         onReady={this.join}
         onCreatedPeer={this.handleCreatedPeer}
         onReceivedPeerData={this.handlePeerData}
