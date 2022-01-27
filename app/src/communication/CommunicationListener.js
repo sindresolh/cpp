@@ -72,10 +72,14 @@ class CommunicationListener extends Component {
     const { dispatch_setFieldState } = this.props;
     dispatch_setFieldState(solutionField);
 
+    // Create new arrays to prevent mutation
+    let shuffleBlocks = [...currentTaskObject.codeBlocks];
+    let shuffleDistractors = [...currentTaskObject.distractors];
+
     // shuffle codeblocks
     let codeblocks = shuffleCodeblocks(
-      currentTaskObject.codeBlocks,
-      currentTaskObject.distractors,
+      shuffleBlocks,
+      shuffleDistractors,
       state.players.length
     );
 

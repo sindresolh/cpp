@@ -38,8 +38,9 @@ export default function SidebarModal({
 }) {
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
-  let correctSolution = currentTask.tasks[currentTaskNumber];
-  let feedbackArray = linebasedfeedback(field, correctSolution);
+  let correctSolution = currentTask.tasks[currentTaskNumber].codeBlocks;
+  let fieldBlocks = field.map((line) => line.block);
+  let feedbackArray = linebasedfeedback(fieldBlocks, correctSolution);
   Modal.setAppElement('body');
 
   let cancelButtonPosition = '7.5em';
@@ -83,9 +84,9 @@ export default function SidebarModal({
             return (
               <li
                 className={item.isCorrect ? 'correctItem' : 'incorrectItem'}
-                key={item.codeBlock.block.id}
+                key={item.codeBlock.id}
               >
-                {item.codeBlock.block.content}
+                {item.codeBlock.code}
               </li>
             );
           })}

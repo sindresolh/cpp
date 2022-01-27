@@ -29,7 +29,6 @@ function CodeBlock({
 }) {
   const { index: originalIndex, indent: originalIndent } = findBlock(id); // index and indent before block is moved
 
-  //console.log('block id ' + id, originalIndex, originalIndent);
   // implement dragging
   const [{ isDragging }, drag] = useDrag(
     () => ({

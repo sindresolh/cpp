@@ -3,6 +3,54 @@
     {
       "codeBlocks": [
         {
+          "code": "def sum_list(items):",
+          "category": "function",
+          "id": "1"
+        },
+        {
+          "code": "    sum_numbers = 0",
+          "category": "variable",
+          "id": "2"
+        },
+        {
+          "code": "    for x in items:",
+          "category": "loop",
+          "id": "3"
+        },
+        {
+          "code": "        sum_numbers += x",
+          "category": "undefined",
+          "id": "4"
+        },
+        {
+          "code": "    return sum_numbers",
+          "category": "undefined",
+          "id": "5"
+        }
+      ],
+      "distractors": [
+        {
+          "code": "function sum_list(items):",
+          "category": "undefined",
+          "id": "6"
+        },
+        {
+          "code": "    for x in items.length:",
+          "category": "undefined",
+          "id": "7"
+        }
+      ],
+      "description": "Create a function that sums elements in an array and returns the sum.",
+      "hints": [
+        "Declare the function using def.",
+        "Use a for loop to iterate through the items."
+      ],
+      "attempts": "unlimited",
+      "field": []
+    },
+    {
+      "codeBlocks": [
+        {
           "code": "number_1 = int(input(\"Enter first number: \"))",
           "category": "variable",
           "id": "1"
@@ -89,47 +137,6 @@
       "hints": [
         "Get the input from the user using 'input()'",
         "Check operators using '=='"
-      ],
-      "attempts": "unlimited",
-      "field": []
-    },
-    {
-      "codeBlocks": [
-        {
-          "code": "def sum_list(items):",
-          "category": "function"
-        },
-        {
-          "code": "    sum_numbers = 0",
-          "category": "variable"
-        },
-        {
-          "code": "    for x in items:",
-          "category": "loop"
-        },
-        {
-          "code": "        sum_numbers += x",
-          "category": "undefined"
-        },
-        {
-          "code": "    return sum_numbers",
-          "category": "undefined"
-        }
-      ],
-      "distractors": [
-        {
-          "code": "function sum_list(items):",
-          "category": "undefined"
-        },
-        {
-          "code": "    for x in items.length:",
-          "category": "undefined"
-        }
-      ],
-      "description": "Create a function that sums elements in an array and returns the sum.",
-      "hints": [
-        "Declare the function using def.",
-        "Use a for loop to iterate through the items."
       ],
       "attempts": "unlimited",
       "field": []
