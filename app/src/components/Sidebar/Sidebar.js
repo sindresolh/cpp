@@ -113,6 +113,7 @@ export default function Sidebar() {
    * Make all players go to the next task of the submit is correct
    */
   const handleSubmit = () => {
+    const fieldBlocks = field.map((line) => line.block);
     if (currentTaskNumber === currentTask.tasks.length - 1) {
       openModal(
         CheckIcon,
@@ -123,7 +124,7 @@ export default function Sidebar() {
         COLORS.darkgreen,
         'none'
       );
-    } else if (arrayIsEqual(field, currentTaskObject)) {
+    } else if (arrayIsEqual(fieldBlocks, currentTaskObject.codeBlocks)) {
       dispatch(nextTask());
       dispatch(taskEvent());
       openModal(
