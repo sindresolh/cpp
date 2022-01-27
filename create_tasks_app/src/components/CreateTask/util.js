@@ -43,7 +43,6 @@ export const isNotAComment = (line) => {
  * @returns two arrays: codeblocks and distractors
  */
 export const getCodeBlocksAndDistractors = (code) => {
-  // TODO: set indent in this function
   let lines = code.split('\n'); // split string on new line
   lines = lines.map((line) => line.trimEnd()); // remove any excess spaces at the end
   lines = lines.filter(isNotAComment); // remove comments, but check for '$' in case it is a distractor
@@ -58,17 +57,30 @@ export const getCodeBlocksAndDistractors = (code) => {
 
   let codeBlockJSON = [];
   let distractorJSON = [];
+  let id = 1;
   // categorize the code and create json objects
-  codeBlocks.map((block) => {
-    let blockCategory = categorizeCode(block.trim());
-    codeBlockJSON.push({ code: block, category: blockCategory });
+  codeBlocks.map((code) => {
+    codeBlockJSON.push(getBlockAsObject(code, id));
+    id++;
   });
-  distractors.map((distractor) => {
-    let distractorCategory = categorizeCode(distractor.trim());
-    distractorJSON.push({ code: distractor, category: distractorCategory });
+  distractors.map((code) => {
+    distractorJSON.push(getBlockAsObject(code, id));
+    id++;
   });
-
   return [codeBlockJSON, distractorJSON];
+};
+/**
+ * Get the block as an object.
+ * @param {String} code the code of the block
+ * @param {Number} id the id of the block
+ */
+const getBlockAsObject = (code, id) => {
+  let category = categorizeCode(code.trim());
+  //let indent = getIndent(code);
+  let indent = 0; // TODO: hardcoded to be 0 for now until we add indenting
+  id = String(id);
+  code = code.trim();
+  return { code, category, indent, id };
 };
 
 /**
@@ -131,4 +143,17 @@ const isALoop = (string) => {
 const isACondition = (string) => {
   const regex = /^\bif\b|\belif\b|\belse\b:?$/;
   return regex.test(string);
+};
+/**
+ * Find the amount of spaces at the beginning of a string. 1 tab = 2 spaces.
+ * @param {String} text
+ * @returns how many tabs (indents) was found
+ */
+const getIndent = (text) => {
+  var count = 0;
+  var index = 0;
+  while (text.charAt(index++) === ' ') {
+    count++;
+  }
+  return count / 2;
 };

@@ -153,7 +153,6 @@ function CreateTask() {
               className='button save'
               onClick={() => {
                 const data = getInputsAsJSON();
-                console.log(data);
                 const fileName = 'task';
                 const exportType = exportFromJSON.types.json;
 
