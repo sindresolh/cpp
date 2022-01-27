@@ -4,7 +4,6 @@ import SubmitIcon from '../../images/buttonIcons/submit.png';
 import { COLORS } from '../../utils/constants';
 import './Lobby.css';
 import { useSelector } from 'react-redux';
-import { useState } from 'react';
 
 /** Show the players in the lobby based on their nickname
  *
@@ -16,6 +15,7 @@ function Lobby({ handleClick, peers }) {
 
   // Se på dette tullet her. Players har nick, men ikke p
   // Bytt ut med peers (prop.webrtc.getPeers()) og jeg har det samme problemet
+  // Bytt ut med id og problemet er borte
   console.log(players);
   for (var p of players) console.log(p.nick);
 
