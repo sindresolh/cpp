@@ -24,6 +24,7 @@ import {
   arrayIsEqual,
 } from '../utils/compareArrays/compareArrays';
 import { clearBoard } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
+import PuzzleGif from '../components/Lobby/PuzzleGif';
 
 const mapStateToProps = null;
 
@@ -230,11 +231,7 @@ class CommunicationHandler extends Component {
         onRemovedPeer={this.handlePeerLeft}
         onJoinedRoom={this.joinedRoom}
       >
-        {this.state.connected ? (
-          <CommunicationListener />
-        ) : (
-          <h1>Waiting to connect</h1>
-        )}
+        {this.state.connected ? <CommunicationListener /> : <PuzzleGif />}
       </LioWebRTC>
     );
   }
