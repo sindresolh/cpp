@@ -233,8 +233,8 @@ describe('hints', () => {
       const codeBlockArray = [
         'codeline1',
         'codeline2',
-        '\tcodeline3',
-        '\t\tcodeline4',
+        'codeline3',
+        'codeline4',
       ];
       const distractorArray = [];
       expect(codeBlocks).toStrictEqual(codeBlockArray);
@@ -250,8 +250,8 @@ describe('hints', () => {
       const distractorArray = [
         'distractor1',
         'distractor2',
-        '\tdistractor3',
-        '\t\tdistractor4',
+        'distractor3',
+        'distractor4',
       ];
       const codeBlockArray = [];
       expect(codeBlocks).toStrictEqual(codeBlockArray);
@@ -264,8 +264,8 @@ describe('hints', () => {
       let [codeBlocks, distractors] = getCodeBlocksAndDistractors(sampleCode);
       codeBlocks = getCodeFromObject(codeBlocks);
       distractors = getCodeFromObject(distractors);
-      const codeBlockArray = ['codeBlock1', '\tcodeBlock2'];
-      const distractorArray = ['distractor1', '\t\tdistractor2'];
+      const codeBlockArray = ['codeBlock1', 'codeBlock2'];
+      const distractorArray = ['distractor1', 'distractor2'];
       expect(codeBlocks).toStrictEqual(codeBlockArray);
       expect(distractors).toStrictEqual(distractorArray);
     });
