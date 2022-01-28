@@ -22,7 +22,13 @@ function Lobby({ handleClick }) {
   const hasNick = (p) => {
     return new Promise(function (resolve) {
       (function waitForNick() {
-        if (p.hasOwnProperty('nick')) return resolve(); // Resolve if nick is present
+        if (p.hasOwnProperty('nick')) {
+          if (!p.nick) {
+            p.nick = p.id.substring(0, 5);
+          }
+          console.log('id : ' + p.id + ' , nick: ' + p.nick);
+          return resolve(); // Resolve if nick is present
+        }
         setTimeout(waitForNick, 30); // Wait 30 ms and check again
       })();
     });
@@ -64,7 +70,7 @@ function Lobby({ handleClick }) {
         {players.map((player) => {
           return (
             <li key={player.id}>
-              {player.nick ? (
+              {player.nick !== null && player.nick !== undefined ? (
                 <div>{player.nick}</div>
               ) : (
                 '' // Do not render anything if nick is undefined
