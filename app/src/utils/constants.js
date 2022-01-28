@@ -33,3 +33,5 @@ export const COLORS = {
   lightblue: '#c4ccf5',
   lightgreen: '#8bbe95',
 };
+
+export const X_INDENT = 50;

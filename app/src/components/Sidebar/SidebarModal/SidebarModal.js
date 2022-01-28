@@ -81,7 +81,6 @@ export default function SidebarModal({
 
         <ul style={{ display: showFeedback }}>
           {feedbackArray.map((item) => {
-            console.log('is correct', item.codeBlock.code, item.isCorrect);
             return (
               <li
                 className={item.isCorrect ? 'correctItem' : 'incorrectItem'}

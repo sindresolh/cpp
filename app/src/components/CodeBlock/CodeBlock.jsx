@@ -4,6 +4,7 @@ import { ItemTypes } from '../../utils/itemtypes';
 import { useDrag } from 'react-dnd';
 import PropTypes from 'prop-types';
 import { useDrop } from 'react-dnd';
+import { useState } from 'react';
 
 /**
  * This component represents a code block. Can be either in a player list or in a code line in the solution field.
@@ -28,17 +29,30 @@ function CodeBlock({
   draggable,
 }) {
   const { index: originalIndex, indent: originalIndent } = findBlock(id); // index and indent before block is moved
-
+  const [indent, setIndent] = useState(0);
   // implement dragging
   const [{ isDragging }, drag] = useDrag(
     () => ({
       type: ItemTypes.CODEBLOCK,
       canDrag: draggable,
-      item: { id, originalIndex, originalIndent, player },
+      item: {
+        id,
+        originalIndex,
+        originalIndent,
+        player,
+      },
 
       collect: (monitor) => ({
         isDragging: monitor.isDragging(),
       }),
+
+      isDragging: (monitor) => {
+        // SE PÅ X
+        console.log(
+          //monitor.getClientOffset(),
+          monitor.getDifferenceFromInitialOffset().x
+        );
+      },
 
       end: (item, monitor) => {
         const { id: droppedId, originalIndex, originalIndent } = item;
@@ -63,11 +77,16 @@ function CodeBlock({
       accept: ItemTypes.CODEBLOCK,
 
       canDrop: () => false, // list updates on hover, not on drop
-      hover({ id: draggedId }) {
+      hover({ id: draggedId }, monitor) {
         // real-time update list while dragging is happening
+        //console.log(monitor.getDifferenceFromInitialOffset().x);
         if (draggedId !== id) {
           const { index: overIndex, indent: overIndent } = findBlock(id);
           moveBlock(draggedId, overIndex, overIndent);
+        } else if (monitor.getDifferenceFromInitialOffset().x > 30) {
+          console.log('mer enn 30 wow');
+        } else if (monitor.getDifferenceFromInitialOffset().x < 30) {
+          console.log('mindre enn 30');
         }
       },
     }),

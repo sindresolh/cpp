@@ -14,7 +14,8 @@ import { ItemTypes } from '../../utils/itemtypes';
 import PropTypes from 'prop-types';
 import './SolutionField.css';
 import store from '../../redux/store/store';
-import { COLORS } from '../../utils/constants';
+import { COLORS, X_INDENT } from '../../utils/constants';
+import { useRef } from 'react';
 
 /**
  *
@@ -26,6 +27,8 @@ function SolutionField({}) {
   const players = useSelector((state) => state.players);
   const emptyField = lines.length === 0;
   const dispatch = useDispatch();
+  // const lineRef = useRef(null);
+  // console.log(lineRef);
 
   // finds the block, it's index and indent based on id
   const findBlock = useCallback(
@@ -129,13 +132,12 @@ function SolutionField({}) {
     () => ({
       accept: ItemTypes.CODEBLOCK,
       canDrop: () => emptyField,
-      hover: (item) => {
+      hover: (item, monitor) => {
         if (emptyField) {
           const handListIndex = item.player - 1;
           const handLists = store.getState().handList;
           const handList = handLists[handListIndex];
           const block = handList.filter((block) => block.id === item.id)[0];
-
           // only allow dropping into empty list if it's the player's block
           // TODO: indent
           dispatch(setFieldState([{ block, indent: 0 }]));
@@ -163,6 +165,10 @@ function SolutionField({}) {
               key={line.block.id}
               data-testid='lines'
               style={{ background: codelineColor }}
+              // ref={(el) => {
+              //   if (!el) return;
+              //   console.log(el.getBoundingClientRect());
+              // }}
             >
               <CodeBlock
                 {...line.block}
