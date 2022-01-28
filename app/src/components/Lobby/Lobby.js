@@ -62,7 +62,15 @@ function Lobby({ handleClick }) {
       <h1>Lobby</h1>
       <ul className='playerList'>
         {players.map((player) => {
-          return <li key={player.id}>{player.nick}</li>;
+          return (
+            <li key={player.id}>
+              {player.nick ? (
+                <div>{player.nick}</div>
+              ) : (
+                '' // Do not render anything if nick is undefined
+              )}
+            </li>
+          );
         })}
       </ul>
       <div>
