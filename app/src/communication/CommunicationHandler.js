@@ -75,7 +75,6 @@ class CommunicationHandler extends Component {
     const { dispatch_addPlayer } = this.props;
     dispatch_addPlayer(peer);
     console.log(`Peer-${peer.id.substring(0, 5)} joined the room!`);
-    //console.log(peer);
   };
 
   /**
@@ -229,7 +228,7 @@ class CommunicationHandler extends Component {
   render() {
     return (
       <LioWebRTC
-        options={{ dataOnly: true, nick: this.state.nick, debug: false }}
+        options={{ dataOnly: true, nick: this.state.nick }}
         onReady={this.join}
         onCreatedPeer={this.handleCreatedPeer}
         onReceivedPeerData={this.handlePeerData}

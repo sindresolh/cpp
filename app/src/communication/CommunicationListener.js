@@ -143,10 +143,7 @@ class CommunicationListener extends Component {
         {store.getState().inProgress ? (
           <App />
         ) : (
-          <Lobby
-            handleClick={() => this.start()}
-            peers={this.props.webrtc.getPeers()}
-          />
+          <Lobby handleClick={() => this.start()} />
         )}
       </>
     );
