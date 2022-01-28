@@ -114,7 +114,13 @@ export default function Sidebar() {
    */
   const handleSubmit = () => {
     const fieldBlocks = field.map((line) => line.block);
-    if (currentTaskNumber === currentTask.tasks.length - 1) {
+    const correctSolution = arrayIsEqual(
+      fieldBlocks,
+      currentTaskObject.codeBlocks
+    );
+    const lastTask = currentTaskNumber === currentTask.tasks.length - 1;
+
+    if (correctSolution && lastTask) {
       openModal(
         CheckIcon,
         'Task set finished',
@@ -124,7 +130,7 @@ export default function Sidebar() {
         COLORS.darkgreen,
         'none'
       );
-    } else if (arrayIsEqual(fieldBlocks, currentTaskObject.codeBlocks)) {
+    } else if (correctSolution) {
       dispatch(nextTask());
       dispatch(taskEvent());
       openModal(

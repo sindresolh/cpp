@@ -51,6 +51,21 @@
       "hints": ["Use 'def' to set up the function."],
       "attempts": "unlimited",
       "field": []
+    },
+    {
+      "codeBlocks": [
+        {
+          "code": "put me in",
+          "category": "function",
+          "indent": 0,
+          "id": "1"
+        }
+      ],
+      "distractors": [],
+      "description": "I copy pasted the task lol",
+      "hints": ["Use 'def' to set up the function."],
+      "attempts": "unlimited",
+      "field": []
     }
   ]
 ]
