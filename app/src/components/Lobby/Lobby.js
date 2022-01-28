@@ -36,7 +36,7 @@ function Lobby({ handleClick }) {
     const promises = [];
 
     // Checks that each individual player has player.nick
-    for (var p of players) {
+    for (let p of players) {
       promises.push(hasNick(p));
     }
 
