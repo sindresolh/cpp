@@ -22,7 +22,7 @@ function Lobby({ handleClick, peers }) {
   useEffect(() => {
     setData(false);
     let unmounted = false;
-    sleep(1000)
+    sleep(500)
       .then(() => !unmounted && setData(true))
       .catch(console.error);
     return () => (unmounted = true);
