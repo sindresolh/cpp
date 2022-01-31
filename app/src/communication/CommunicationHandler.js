@@ -204,6 +204,45 @@ class CommunicationHandler extends Component {
     this.initialFieldFromFile();
   }
 
+  /**
+   * Finds a player with a given player id.
+   * Defaults to myself if not found.
+   *
+   * @returns
+   */
+  getPeer(players, pid) {
+    for (let p of players) {
+      if (p.id === pid) {
+        return p;
+      }
+    }
+    return { id: 'YOU', nick: this.state.nick };
+  }
+
+  /**
+   * Takes the players from store and rearranges them in the order of the playerIds
+   *
+   * @param {*} players : array of peers from store
+   * @param {*} playerIds : order of the players sent from the player that initated the game
+   * @param {*} peer : the player that initiated the game
+   */
+  assignPlayerOrder(players, playerIds, peer) {
+    let newPlayers = [];
+
+    while (playerIds.length > 0) {
+      let pid = playerIds.shift(); // Takes out first id
+
+      if (pid === 'YOU') {
+        // This is the sender
+        newPlayers.push(peer);
+        continue;
+      }
+      newPlayers.push(this.getPeer(players, pid));
+    }
+    const { dispatch_setPlayers } = this.props;
+    dispatch_setPlayers(newPlayers);
+  }
+
   /** Another player started the game from the lobby
    *
    * @param {*} payload : Data sent with this message
@@ -224,37 +263,7 @@ class CommunicationHandler extends Component {
       const { dispatch_startGame } = this.props;
       dispatch_startGame();
 
-      console.log(peer);
-
-      // Change the order of the players so that everyone has the same name to the same color
-      let newPlayers = [];
-      let playerIds = payloadState.playerIds;
-      console.log(playerIds);
-
-      while (playerIds.lenght > 0) {
-        let pid = playerIds.pop();
-        if (pid === 'YOU') {
-          // This is the player that sent the message
-          newPlayers.push(peer);
-          continue;
-        }
-
-        for (let p of state.players) {
-          if (pid === p.id) {
-            // This player is not me and not the sender
-            newPlayers.push(p);
-            continue;
-          }
-        }
-
-        // This is me
-        let me = { id: 'YOU', nick: this.state.nick };
-        newPlayers.push(me);
-      }
-
-      console.log(newPlayers);
-      const { dispatch_setPlayers } = this.props;
-      dispatch_setPlayers(newPlayers);
+      this.assignPlayerOrder(state.players, payloadState.playerIds, peer);
     }
   }
 

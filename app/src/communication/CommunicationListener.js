@@ -131,7 +131,6 @@ class CommunicationListener extends Component {
     } else if (prevProps.inProgress !== this.props.inProgress) {
       // This player started the game from the lobby
       let playerIds = state.players.map((p) => p.id);
-      console.log(playerIds);
 
       const json = JSON.stringify({
         inProgress: state.inProgress,
