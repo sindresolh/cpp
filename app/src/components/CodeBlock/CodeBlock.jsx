@@ -7,7 +7,7 @@ import { useDrop } from 'react-dnd';
 import { useState } from 'react';
 import { useEffect } from 'react';
 
-const OFFSET = 50;
+const OFFSET = 30;
 const MAX_INDENT = 7; // TODO: random value for now
 
 /**
@@ -35,10 +35,8 @@ function CodeBlock({
   blockIndent,
 }) {
   const { index: originalIndex, indent: originalIndent } = findBlock(id); // index and indent before block is moved
-  const [indent, setIndent] = useState(blockIndent);
-  useEffect(() => {
-    console.log('indent', indent);
-  }, [indent]);
+  //const [indent, setIndent] = useState(blockIndent);
+  //useEffect(() => {}, [indent]);
 
   // implement dragging
   const [{ isDragging }, drag] = useDrag(
@@ -83,23 +81,24 @@ function CodeBlock({
       canDrop: () => false, // list updates on hover, not on drop
       hover({ id: draggedId }, monitor) {
         // real-time update list while dragging is happening
-        console.log(monitor.getDifferenceFromInitialOffset().x);
+        //console.log(monitor.getDifferenceFromInitialOffset().x);
         if (draggedId !== id) {
           const { index: overIndex, indent: overIndent } = findBlock(id);
           moveBlock(draggedId, overIndex, overIndent);
-        } else if (monitor.getDifferenceFromInitialOffset().x >= OFFSET) {
-          console.log('mer enn 30 wow', indent);
-          if (indent <= MAX_INDENT) setIndent((prevIndent) => prevIndent + 1);
-        } else if (monitor.getDifferenceFromInitialOffset().x < -OFFSET) {
-          //console.log('mindre enn 30');
-          if (indent > 0) setIndent((prevIndent) => prevIndent - 1);
         }
+        // } else if (monitor.getDifferenceFromInitialOffset().x >= OFFSET) {
+        //   //console.log('mer enn 30 wow', indent);
+        //   //if (indent <= MAX_INDENT) setIndent((prevIndent) => prevIndent + 1);
+        // } else if (monitor.getDifferenceFromInitialOffset().x < -OFFSET) {
+        //   //console.log('mindre enn 30');
+        //   //if (indent > 0) setIndent((prevIndent) => prevIndent - 1);
+        // }
       },
     }),
-    [findBlock, moveBlock, indent]
+    [findBlock, moveBlock]
   );
 
-  let indentMargin = `${indent * OFFSET}px`;
+  let indentMargin = `${blockIndent * OFFSET}px`;
 
   let className = isDragging
     ? `cb ${category} player${player} dragging`

@@ -17,6 +17,9 @@ import store from '../../redux/store/store';
 import { COLORS, X_INDENT } from '../../utils/constants';
 import { useRef } from 'react';
 
+const OFFSET = 30;
+const MAX_INDENT = 7; // TODO: random value for now
+
 /**
  *
  * @param {Array} codeLines    an array where each element is a block and it's indent
@@ -58,14 +61,16 @@ function SolutionField({}) {
       let line;
       // get block if it exists in solutionfield
       const blockObj = findBlock(id);
-
       // update the block position in the solution field
       if (blockObj !== undefined) {
         swapBlockPositionInField(blockObj, atIndex, atIndent);
+        console.log('swap');
       }
       // block came from a hand
-      else moveBlockFromList(id, atIndex, atIndent);
-
+      else {
+        moveBlockFromList(id, atIndex, atIndent);
+        console.log('move from list');
+      }
       dispatch(fieldEvent()); // Move the block for the other players
     },
     [findBlock, lines]
@@ -82,6 +87,7 @@ function SolutionField({}) {
       block: blockObj.block,
       indent: atIndent,
     };
+    //console.log('swap pos', line);
     const updatedLines = update(lines, {
       $splice: [
         [blockObj.index, 1],
@@ -127,48 +133,86 @@ function SolutionField({}) {
     }
   };
 
-  // blocks can be dropped into empty solution field
-  const [, drop] = useDrop(
+  // // blocks can be dropped into empty solution field
+  // const [, fieldDrop] = useDrop(
+  //   () => ({
+  //     accept: ItemTypes.CODEBLOCK,
+  //     //canDrop: () => emptyField,
+  //     hover: (item, monitor) => {
+  //       console.log('field');
+  //       if (lines.length === 0) {
+  //         moveBlock(item.id, 0, 0);
+  //       }
+  //     },
+  //   }),
+  //   [lines]
+  // );
+
+  const [, lineDrop] = useDrop(
     () => ({
       accept: ItemTypes.CODEBLOCK,
-      canDrop: () => emptyField,
+      canDrop: (item, monitor) => {
+        return true; // TODO: yes for now
+      },
       hover: (item, monitor) => {
-        if (emptyField) {
-          const handListIndex = item.player - 1;
-          const handLists = store.getState().handList;
-          const handList = handLists[handListIndex];
-          const block = handList.filter((block) => block.id === item.id)[0];
-          // only allow dropping into empty list if it's the player's block
-          // TODO: indent
-          dispatch(setFieldState([{ block, indent: 0 }]));
-          dispatch(fieldEvent());
-          dispatch(removeBlockFromList(item.id, handListIndex));
-          dispatch(listEvent());
+        console.log('line');
+        let block = findBlock(item.id);
+        if (block === undefined) {
+          console.log('fra hånda');
+          moveBlock(item.id, lines.length, 0);
         }
+        //   if (item.id !== block.id) {
+        //     console.log(item.id, block.id);
+        //     moveBlock(item.id, lines.length, 0);
+        //   }
+        // }
+
+        //if (draggedId !== id) {
+        // const { index: overIndex, indent: overIndent } = findBlock(id);
+        // moveBlock(draggedId, overIndex, overIndent);
+        // if (monitor.getDifferenceFromInitialOffset().x >= OFFSET) {
+        //console.log('increase indent', indent);
+        // if (block.indent <= MAX_INDENT) {
+        // }
+        //moveBlock(item.id, block.index, block.indent + 1);
+        //if (indent <= MAX_INDENT) setIndent((prevIndent) => prevIndent + 1);
+        // } else if (monitor.getDifferenceFromInitialOffset().x < -OFFSET) {
+        //console.log('decrease indent', indent);
+        // if (block.indent > 0) {
+        // }
+        //moveBlock(item.id, block.index, block.indent - 1);
       },
     }),
-    [lines, emptyField]
+    [lines]
+  );
+
+  const [, emptyLineDrop] = useDrop(
+    () => ({
+      accept: ItemTypes.CODEBLOCK,
+      canDrop: (item, monitor) => {
+        return true; // TODO: yes for now
+      },
+      hover: (item, monitor) => {
+        console.log('empty');
+        moveBlock(item.id, lines.length, 0);
+      },
+    }),
+    [lines]
   );
 
   return (
-    <div
-      className={'divSF'}
-      ref={drop}
-      style={{ background: COLORS.solutionfield }}
-    >
+    <div className={'divSF'} style={{ background: COLORS.solutionfield }}>
       <h6>{'Connected platers: ' + players.length}</h6>
       <ul data-testid='solutionField'>
         {lines.map((line) => {
+          //console.log('update lines', line);
           let codelineColor = COLORS.codeline;
           return (
             <li
               key={line.block.id}
               data-testid='lines'
               style={{ background: codelineColor }}
-              // ref={(el) => {
-              //   if (!el) return;
-              //   console.log(el.getBoundingClientRect());
-              // }}
+              ref={lineDrop}
             >
               <CodeBlock
                 {...line.block}
@@ -180,6 +224,11 @@ function SolutionField({}) {
             </li>
           );
         })}
+        <li
+          className='empty'
+          style={{ background: COLORS.codeline }}
+          ref={emptyLineDrop}
+        />
       </ul>
     </div>
   );
