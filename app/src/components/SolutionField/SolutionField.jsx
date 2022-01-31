@@ -172,6 +172,7 @@ function SolutionField({}) {
             >
               <CodeBlock
                 {...line.block}
+                blockIndent={line.indent}
                 draggable={true} // TODO: might not need this
                 moveBlock={moveBlock}
                 findBlock={findBlock}

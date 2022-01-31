@@ -5,6 +5,10 @@ import { useDrag } from 'react-dnd';
 import PropTypes from 'prop-types';
 import { useDrop } from 'react-dnd';
 import { useState } from 'react';
+import { useEffect } from 'react';
+
+const OFFSET = 50;
+const MAX_INDENT = 7; // TODO: random value for now
 
 /**
  * This component represents a code block. Can be either in a player list or in a code line in the solution field.
@@ -17,6 +21,7 @@ import { useState } from 'react';
  *  @param {function} moveBlock move the block to a a new position
  * @param {function} findBlock find the current position of the block
  * @param {string} placement    reference to where this block is placed (player list or in solution field)
+ * @param {number} indent   what indent the block is in
  * @returns a draggable div containing a code block
  */
 function CodeBlock({
@@ -27,9 +32,14 @@ function CodeBlock({
   moveBlock,
   findBlock,
   draggable,
+  blockIndent,
 }) {
   const { index: originalIndex, indent: originalIndent } = findBlock(id); // index and indent before block is moved
-  const [indent, setIndent] = useState(0);
+  const [indent, setIndent] = useState(blockIndent);
+  useEffect(() => {
+    console.log('indent', indent);
+  }, [indent]);
+
   // implement dragging
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -46,13 +56,7 @@ function CodeBlock({
         isDragging: monitor.isDragging(),
       }),
 
-      isDragging: (monitor) => {
-        // SE PÅ X
-        console.log(
-          //monitor.getClientOffset(),
-          monitor.getDifferenceFromInitialOffset().x
-        );
-      },
+      isDragging: (monitor) => {},
 
       end: (item, monitor) => {
         const { id: droppedId, originalIndex, originalIndent } = item;
@@ -79,19 +83,23 @@ function CodeBlock({
       canDrop: () => false, // list updates on hover, not on drop
       hover({ id: draggedId }, monitor) {
         // real-time update list while dragging is happening
-        //console.log(monitor.getDifferenceFromInitialOffset().x);
+        console.log(monitor.getDifferenceFromInitialOffset().x);
         if (draggedId !== id) {
           const { index: overIndex, indent: overIndent } = findBlock(id);
           moveBlock(draggedId, overIndex, overIndent);
-        } else if (monitor.getDifferenceFromInitialOffset().x > 30) {
-          console.log('mer enn 30 wow');
-        } else if (monitor.getDifferenceFromInitialOffset().x < 30) {
-          console.log('mindre enn 30');
+        } else if (monitor.getDifferenceFromInitialOffset().x >= OFFSET) {
+          console.log('mer enn 30 wow', indent);
+          if (indent <= MAX_INDENT) setIndent((prevIndent) => prevIndent + 1);
+        } else if (monitor.getDifferenceFromInitialOffset().x < -OFFSET) {
+          //console.log('mindre enn 30');
+          if (indent > 0) setIndent((prevIndent) => prevIndent - 1);
         }
       },
     }),
-    [findBlock, moveBlock]
+    [findBlock, moveBlock, indent]
   );
+
+  let indentMargin = `${indent * OFFSET}px`;
 
   let className = isDragging
     ? `cb ${category} player${player} dragging`
@@ -104,6 +112,7 @@ function CodeBlock({
       data-testid={`codeBlock-player${player}`}
       id={id}
       className={className}
+      style={{ marginLeft: indentMargin }}
     >
       {code}
     </div>
