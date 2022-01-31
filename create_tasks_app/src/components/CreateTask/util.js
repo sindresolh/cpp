@@ -55,15 +55,32 @@ export const getCodeBlocksAndDistractors = (code) => {
   distractors = distractors.map((distractor) => distractor.replace('#', ''));
   distractors = distractors.map((distractor) => distractor.replace('$', ''));
 
-  // get categories for code blocks and distractors
-  const codeBlocksCategories = codeBlocks.map((block) =>
-    categorizeCode(block.trim())
-  );
-  const distractorsCategories = distractors.map((distractor) =>
-    categorizeCode(distractor.trim())
-  );
-
-  return [codeBlocks, distractors, codeBlocksCategories, distractorsCategories];
+  let codeBlockJSON = [];
+  let distractorJSON = [];
+  let id = 1;
+  // categorize the code and create json objects
+  codeBlocks.map((code) => {
+    codeBlockJSON.push(getBlockAsObject(code, id));
+    id++;
+  });
+  distractors.map((code) => {
+    distractorJSON.push(getBlockAsObject(code, id));
+    id++;
+  });
+  return [codeBlockJSON, distractorJSON];
+};
+/**
+ * Get the block as an object.
+ * @param {String} code the code of the block
+ * @param {Number} id the id of the block
+ */
+const getBlockAsObject = (code, id) => {
+  let category = categorizeCode(code.trim());
+  //let indent = getIndent(code);
+  let indent = 0; // TODO: hardcoded to be 0 for now until we add indenting
+  id = String(id);
+  code = code.trim();
+  return { code, category, indent, id };
 };
 
 /**
@@ -88,7 +105,7 @@ export const categorizeCode = (code) => {
  * @returns true if the string is a variable decleration
  */
 const isAVariable = (string) => {
-  const regex = /^[a-zA-z0-9]+\s*?=\s*?[a-zA-Z0-9'"_()]+$/;
+  const regex = /^[a-zA-z0-9]+\s*?=\s*?[a-zA-Z0-9'"_\(\)\\\s:]+$/;
   return regex.test(string);
 };
 /**
@@ -126,4 +143,17 @@ const isALoop = (string) => {
 const isACondition = (string) => {
   const regex = /^\bif\b|\belif\b|\belse\b:?$/;
   return regex.test(string);
+};
+/**
+ * Find the amount of spaces at the beginning of a string. 1 tab = 2 spaces.
+ * @param {String} text
+ * @returns how many tabs (indents) was found
+ */
+const getIndent = (text) => {
+  var count = 0;
+  var index = 0;
+  while (text.charAt(index++) === ' ') {
+    count++;
+  }
+  return count / 2;
 };

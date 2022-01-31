@@ -26,6 +26,8 @@ describe('test that the task component renders', () => {
 
   it('has a correct description', () => {
     let textarea = screen.getByTestId('textarea');
-    expect(textarea.textContent).toBe('Skriv et program som summerer to tall');
+    expect(textarea.textContent).toBe(
+      'Create a function that sums elements in an array and returns the sum.'
+    );
   });
 });

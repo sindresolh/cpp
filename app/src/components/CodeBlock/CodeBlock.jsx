@@ -10,7 +10,7 @@ import { useDrop } from 'react-dnd';
  * This code block can be dragged into a player'shand or into the solution field.
  *
  * @param {string} id   id of the code block, e.g. 'cb-1'
- * @param {string} content   content of the code block, e.g. 'x = 1'
+ * @param {string} code   code of the code block, e.g. 'x = 1'
  * @param {number} player   the player number who owns this block
  * @param {string} category   the category, e.g. 'variable' or 'function'
  *  @param {function} moveBlock move the block to a a new position
@@ -18,7 +18,15 @@ import { useDrop } from 'react-dnd';
  * @param {string} placement    reference to where this block is placed (player list or in solution field)
  * @returns a draggable div containing a code block
  */
-function CodeBlock({ id, content, player, category, moveBlock, findBlock, draggable }) {
+function CodeBlock({
+  id,
+  code,
+  player,
+  category,
+  moveBlock,
+  findBlock,
+  draggable,
+}) {
   const { index: originalIndex, indent: originalIndent } = findBlock(id); // index and indent before block is moved
 
   // implement dragging
@@ -69,7 +77,7 @@ function CodeBlock({ id, content, player, category, moveBlock, findBlock, dragga
   let className = isDragging
     ? `cb ${category} player${player} dragging`
     : `cb ${category} player${player}`;
-    className = !draggable ? className + ' invisible' : className
+  className = !draggable ? className + ' invisible' : className;
 
   return (
     <div
@@ -78,14 +86,14 @@ function CodeBlock({ id, content, player, category, moveBlock, findBlock, dragga
       id={id}
       className={className}
     >
-      {content}
+      {code}
     </div>
   );
 }
 
 CodeBlock.propTypes = {
   id: PropTypes.string,
-  content: PropTypes.string,
+  code: PropTypes.string,
   player: PropTypes.number,
   category: PropTypes.string,
   placement: PropTypes.element, // TODO: reference the element the block is in

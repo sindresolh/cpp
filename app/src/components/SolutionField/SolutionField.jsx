@@ -23,7 +23,7 @@ import { COLORS } from '../../utils/constants';
  */
 function SolutionField({}) {
   const lines = useSelector((state) => state.solutionField);
-  const players = useSelector((state) => state.players)
+  const players = useSelector((state) => state.players);
   const emptyField = lines.length === 0;
   const dispatch = useDispatch();
 
@@ -57,8 +57,9 @@ function SolutionField({}) {
       const blockObj = findBlock(id);
 
       // update the block position in the solution field
-      if (blockObj !== undefined)
+      if (blockObj !== undefined) {
         swapBlockPositionInField(blockObj, atIndex, atIndent);
+      }
       // block came from a hand
       else moveBlockFromList(id, atIndex, atIndent);
 
@@ -148,16 +149,24 @@ function SolutionField({}) {
   );
 
   return (
-    <div className={'divSF'} ref={drop} style={{ background: COLORS.solutionfield }}>
-      <h6>{"Connected platers: "+players.length}</h6>
-      <ul data-testid="solutionField"> 
+    <div
+      className={'divSF'}
+      ref={drop}
+      style={{ background: COLORS.solutionfield }}
+    >
+      <h6>{'Connected platers: ' + players.length}</h6>
+      <ul data-testid='solutionField'>
         {lines.map((line) => {
           let codelineColor = COLORS.codeline;
           return (
-            <li key={line.block.id} data-testid="lines" style={{background:codelineColor}}> 
+            <li
+              key={line.block.id}
+              data-testid='lines'
+              style={{ background: codelineColor }}
+            >
               <CodeBlock
                 {...line.block}
-                draggable={true}  // TODO: might not need this
+                draggable={true} // TODO: might not need this
                 moveBlock={moveBlock}
                 findBlock={findBlock}
               />

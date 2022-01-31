@@ -32,16 +32,15 @@ function CreateTask() {
    * @returns all inputs as JSON
    */
   const getInputsAsJSON = () => {
-    const [codeBlocks, distractors, blocksCategories, distractorsCategories] =
-      getCodeBlocksAndDistractors(code);
+    const [codeBlocks, distractors] = getCodeBlocksAndDistractors(code);
+
     const inputs = {
       codeBlocks,
-      blocksCategories,
       distractors,
-      distractorsCategories,
       description,
       hints,
       attempts: unlimitedAttempts ? 'unlimited' : amountOfAttempts,
+      field: [], // TODO: mulighet til å lage oppgaver med initielt field
     };
     return [inputs];
   };
@@ -154,7 +153,6 @@ function CreateTask() {
               className='button save'
               onClick={() => {
                 const data = getInputsAsJSON();
-                console.log(data);
                 const fileName = 'task';
                 const exportType = exportFromJSON.types.json;
 

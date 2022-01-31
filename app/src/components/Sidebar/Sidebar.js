@@ -95,7 +95,7 @@ export default function Sidebar() {
   const clearBoard = () => {
     closeModal();
 
-    let initalfield = currentTaskObject.solutionField.field;
+    let initalfield = currentTaskObject.field;
 
     let field = store.getState().solutionField;
     let handList = store.getState().handList;
@@ -113,7 +113,14 @@ export default function Sidebar() {
    * Make all players go to the next task of the submit is correct
    */
   const handleSubmit = () => {
-    if (currentTaskNumber === currentTask.tasks.length - 1) {
+    const fieldBlocks = field.map((line) => line.block);
+    const correctSolution = arrayIsEqual(
+      fieldBlocks,
+      currentTaskObject.codeBlocks
+    );
+    const lastTask = currentTaskNumber === currentTask.tasks.length - 1;
+
+    if (correctSolution && lastTask) {
       openModal(
         CheckIcon,
         'Task set finished',
@@ -123,7 +130,7 @@ export default function Sidebar() {
         COLORS.darkgreen,
         'none'
       );
-    } else if (arrayIsEqual(field, currentTaskObject.solutionField.correct)) {
+    } else if (correctSolution) {
       dispatch(nextTask());
       dispatch(taskEvent());
       openModal(
@@ -175,7 +182,7 @@ export default function Sidebar() {
             openModal(
               HintIcon,
               'Hint',
-              currentTaskObject.hint,
+              currentTaskObject.hints[0], // TODO: allow getting more than 1 hint
               'Back to task',
               COLORS.lightyellow,
               COLORS.darkyellow,

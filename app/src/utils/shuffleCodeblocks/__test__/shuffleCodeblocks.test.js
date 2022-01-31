@@ -5,13 +5,13 @@ import { CATEGORY, PLAYER } from '../../constants';
 const emptyArray = [[], [], [], []];
 const someCodeblock = {
   id: 'cb-1',
-  content: 'x = 1',
+  code: 'x = 1',
   player: PLAYER.UNASSIGNED,
   category: CATEGORY.VARIABLE,
 };
 const someDistractor = {
   id: 'cb-2',
-  content: 'distractor',
+  code: 'distractor',
   player: PLAYER.UNASSIGNED,
   category: CATEGORY.FUNCTION,
 };
