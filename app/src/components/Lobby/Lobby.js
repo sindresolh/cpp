@@ -26,7 +26,6 @@ function Lobby({ handleClick }) {
           if (!p.nick) {
             p.nick = p.id.substring(0, 5);
           }
-          console.log('id : ' + p.id + ' , nick: ' + p.nick);
           return resolve(); // Resolve if nick is present
         }
         setTimeout(waitForNick, 30); // Wait 30 ms and check again

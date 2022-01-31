@@ -27,7 +27,6 @@ import { clearBoard } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
 import PuzzleGif from '../components/Lobby/PuzzleGif';
 
 const mapStateToProps = null;
-
 /** Helper function to let us call dispatch from a class function
  *
  * @param {*} dispatch
@@ -69,7 +68,7 @@ class CommunicationHandler extends Component {
    * Called when a new peer is added to the room
    *
    * @param {*} webrtc : Keeps information about the room
-   * @param {*} peer : Keeps information about this peer
+   * @param {*} peer : Keeps information about the peer that sent this message
    */
   handleCreatedPeer = (webrtc, peer) => {
     const { dispatch_addPlayer } = this.props;
@@ -81,7 +80,7 @@ class CommunicationHandler extends Component {
    * Called when a new peer leaves the room
    *
    * @param {*} webrtc : Keeps information about the room
-   * @param {*} peer : Keeps information about this peer
+   * @param {*} peer : Keeps information about the peer that sent this message
    */
   handlePeerLeft = (webrtc, peer) => {
     const { dispatch_removePlayer } = this.props;
@@ -108,7 +107,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : Keeps information about the room
    * @param {*} type : The type of event that was called
    * @param {*} payload : Receiving data
-   * @param {*} peer : Keeps information about this peer
+   * @param {*} peer : Keeps information about the peer that sent this message
    */
   handlePeerData = (webrtc, type, payload, peer) => {
     switch (type) {
@@ -125,7 +124,7 @@ class CommunicationHandler extends Component {
         this.clearTask();
         break;
       case START_GAME:
-        this.startGame(payload);
+        this.startGame(payload, peer);
         break;
       default:
         return;
@@ -207,10 +206,12 @@ class CommunicationHandler extends Component {
 
   /** Another player started the game from the lobby
    *
-   * @param {*} payload
+   * @param {*} payload : Data sent with this message
+   * @param {*} peer : Keeps information about the peer that sent this message
    */
-  startGame(payload) {
-    const prevState = store.getState().inProgress;
+  startGame(payload, peer) {
+    const state = store.getState();
+    const prevState = state.inProgress;
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState.inProgress) {
@@ -222,6 +223,38 @@ class CommunicationHandler extends Component {
 
       const { dispatch_startGame } = this.props;
       dispatch_startGame();
+
+      console.log(peer);
+
+      // Change the order of the players so that everyone has the same name to the same color
+      let newPlayers = [];
+      let playerIds = payloadState.playerIds;
+      console.log(playerIds);
+
+      while (playerIds.lenght > 0) {
+        let pid = playerIds.pop();
+        if (pid === 'YOU') {
+          // This is the player that sent the message
+          newPlayers.push(peer);
+          continue;
+        }
+
+        for (let p of state.players) {
+          if (pid === p.id) {
+            // This player is not me and not the sender
+            newPlayers.push(p);
+            continue;
+          }
+        }
+
+        // This is me
+        let me = { id: 'YOU', nick: this.state.nick };
+        newPlayers.push(me);
+      }
+
+      console.log(newPlayers);
+      const { dispatch_setPlayers } = this.props;
+      dispatch_setPlayers(newPlayers);
     }
   }
 

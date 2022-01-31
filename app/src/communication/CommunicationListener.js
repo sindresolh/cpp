@@ -19,6 +19,7 @@ import {
 } from '../redux/actions';
 import { shuffleCodeblocks } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
 import Lobby from '../components/Lobby/Lobby';
+import Player from '../components/Player/Player';
 
 /**
  * Helper function to retrive data from the redux store.
@@ -35,6 +36,7 @@ const mapStateToProps = (state) => ({
   taskEvent: state.taskEvent,
   clearEvent: state.clearEvent,
   inProgress: state.inProgress,
+  players: state.players,
 });
 
 /** Helper function to let us call dispatch from a class function
@@ -128,10 +130,14 @@ class CommunicationListener extends Component {
       this.props.webrtc.shout(CLEAR_TASK, json);
     } else if (prevProps.inProgress !== this.props.inProgress) {
       // This player started the game from the lobby
+      let playerIds = state.players.map((p) => p.id);
+      console.log(playerIds);
+
       const json = JSON.stringify({
         inProgress: state.inProgress,
         handList: state.handList,
         solutionField: state.solutionField,
+        playerIds: playerIds,
       });
       this.props.webrtc.shout(START_GAME, json);
     }
