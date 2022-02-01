@@ -1,5 +1,4 @@
-.SideBarButton,
-.SideBarButton:disabled {
+.SideBarButton {
   display: inline-flex;
   width: 7em;
   height: 3em;
