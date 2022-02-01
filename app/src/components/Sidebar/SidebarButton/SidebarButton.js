@@ -1,7 +1,6 @@
 import React from 'react';
 import './SidebarButton.css';
 
-
 /** Standard button. Used in the Sidebar component.
  *
  * @param {title} : Button text
@@ -11,7 +10,14 @@ import './SidebarButton.css';
  *
  * @returns
  */
-export default function SidebarButton({ title, icon, color, handleClick }) {
+export default function SidebarButton({
+  title,
+  icon,
+  color,
+  handleClick,
+  width = '7em',
+  disabled = false,
+}) {
   /**
    * Sets the backround color of the button. CSS hover cannot be used since color is set inline from a prop.
    *
@@ -27,7 +33,7 @@ export default function SidebarButton({ title, icon, color, handleClick }) {
       onClick={handleClick}
       onMouseEnter={(e) => setBackground(e, '#c2c2c2')}
       onMouseLeave={(e) => setBackground(e, color)}
-      style={{ background: color }}
+      style={{ background: color, width: width }}
       className='SideBarButton'
       disabled={disabled}
     >
