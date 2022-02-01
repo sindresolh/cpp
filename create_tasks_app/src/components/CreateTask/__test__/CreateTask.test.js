@@ -15,6 +15,14 @@ import {
 
 let createTask;
 
+const getCodeFromObject = (object) => {
+  let items = [];
+  object.map((object) => {
+    items.push(object.code);
+  });
+  return items;
+};
+
 beforeEach(() => {
   createTask = render(<CreateTask />, { wrapper: MemoryRouter });
   createTask.getByTestId('createTask');
@@ -218,12 +226,15 @@ describe('hints', () => {
   describe('seperate code blocks and distractors', () => {
     it('only code blocks and no distractors', () => {
       const sampleCode = 'codeline1\ncodeline2\n\tcodeline3\n\t\tcodeline4';
-      const [codeBlocks, distractors] = getCodeBlocksAndDistractors(sampleCode);
+      let [codeBlocks, distractors] = getCodeBlocksAndDistractors(sampleCode);
+      codeBlocks = getCodeFromObject(codeBlocks);
+      distractors = getCodeFromObject(distractors);
+
       const codeBlockArray = [
         'codeline1',
         'codeline2',
-        '\tcodeline3',
-        '\t\tcodeline4',
+        'codeline3',
+        'codeline4',
       ];
       const distractorArray = [];
       expect(codeBlocks).toStrictEqual(codeBlockArray);
@@ -233,12 +244,14 @@ describe('hints', () => {
     it('no code blocks and ONLY distractors', () => {
       const sampleCode =
         '#$distractor1\n#$distractor2\n\t#$distractor3\n\t\t#$distractor4';
-      const [codeBlocks, distractors] = getCodeBlocksAndDistractors(sampleCode);
+      let [codeBlocks, distractors] = getCodeBlocksAndDistractors(sampleCode);
+      codeBlocks = getCodeFromObject(codeBlocks);
+      distractors = getCodeFromObject(distractors);
       const distractorArray = [
         'distractor1',
         'distractor2',
-        '\tdistractor3',
-        '\t\tdistractor4',
+        'distractor3',
+        'distractor4',
       ];
       const codeBlockArray = [];
       expect(codeBlocks).toStrictEqual(codeBlockArray);
@@ -248,9 +261,11 @@ describe('hints', () => {
     it('codeblocks AND distractors', () => {
       const sampleCode =
         'codeBlock1\n#$distractor1\n\tcodeBlock2\n\t\t#$distractor2';
-      const [codeBlocks, distractors] = getCodeBlocksAndDistractors(sampleCode);
-      const codeBlockArray = ['codeBlock1', '\tcodeBlock2'];
-      const distractorArray = ['distractor1', '\t\tdistractor2'];
+      let [codeBlocks, distractors] = getCodeBlocksAndDistractors(sampleCode);
+      codeBlocks = getCodeFromObject(codeBlocks);
+      distractors = getCodeFromObject(distractors);
+      const codeBlockArray = ['codeBlock1', 'codeBlock2'];
+      const distractorArray = ['distractor1', 'distractor2'];
       expect(codeBlocks).toStrictEqual(codeBlockArray);
       expect(distractors).toStrictEqual(distractorArray);
     });
@@ -258,7 +273,9 @@ describe('hints', () => {
     it('remove comments and blank lines', () => {
       const sampleCode =
         '#comment1\n# comment2\n\t# comment3\n\n\n\n\ncodeline\n#$distractor';
-      const [codeBlocks, distractors] = getCodeBlocksAndDistractors(sampleCode);
+      let [codeBlocks, distractors] = getCodeBlocksAndDistractors(sampleCode);
+      codeBlocks = getCodeFromObject(codeBlocks);
+      distractors = getCodeFromObject(distractors);
       const codeBlockArray = ['codeline'];
       const distractorArray = ['distractor'];
       expect(codeBlocks).toStrictEqual(codeBlockArray);

@@ -25,6 +25,9 @@ import {
 } from '../utils/compareArrays/compareArrays';
 import { clearBoard } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
 import PuzzleGif from '../components/Lobby/PuzzleGif';
+import SidebarModal from '../components/Sidebar/SidebarModal/SidebarModal';
+import SubmitIcon from '../images/buttonIcons/submit.png';
+import { COLORS } from '../utils/constants';
 
 const mapStateToProps = null;
 /** Helper function to let us call dispatch from a class function
@@ -54,15 +57,22 @@ class CommunicationHandler extends Component {
       players: [],
       connected: false,
       nick: props.nick.trim(),
+      isModalOpen: false,
     };
   }
+
+  /* Close the modal. Callback from SideBarModal*/
+  closeModal() {
+    this.setState({ isModalOpen: false });
+  }
+
   /**
    * Adds a new client to the room
    *
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room1');
+  join = (webrtc) => webrtc.joinRoom('cpp-room3');
 
   /**
    * Called when a new peer is added to the room
@@ -168,7 +178,7 @@ class CommunicationHandler extends Component {
     let currentTask = store.getState().currentTask;
     let currentTaskNumber = currentTask.currentTaskNumber;
     let currentTaskObject = currentTask.tasks[currentTaskNumber];
-    let initialfield = currentTaskObject.solutionField.field;
+    let initialfield = currentTaskObject.field;
     const { dispatch_setFieldState } = this.props;
     dispatch_setFieldState(initialfield);
   }
@@ -183,6 +193,7 @@ class CommunicationHandler extends Component {
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState.currentTask) {
+      this.setState({ isModalOpen: true });
       const { dispatch_nextTask } = this.props;
       dispatch_nextTask();
       this.initialFieldFromFile();
@@ -277,7 +288,20 @@ class CommunicationHandler extends Component {
         onRemovedPeer={this.handlePeerLeft}
         onJoinedRoom={this.joinedRoom}
       >
+
         {this.state.connected ? <CommunicationListener /> : <PuzzleGif />}
+
+        {/* Fancy alert for new events, for now only shows when there is a new task*/}
+        <SidebarModal
+          modalIsOpen={this.state.isModalOpen}
+          icon={SubmitIcon}
+          title={'New task'}
+          description={'Another player initiated a new task.'}
+          buttonText={'Ok'}
+          buttonColor={COLORS.lightgreen}
+          borderColor={COLORS.darkgreen}
+          closeModal={() => this.closeModal()}
+        />
       </LioWebRTC>
     );
   }

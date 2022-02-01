@@ -1,0 +1,42 @@
+[
+    {
+        "codeBlocks": [
+            {
+                "code": "def sum_list(items):",
+                "category": "function"
+            },
+            {
+                "code": "    sum_numbers = 0",
+                "category": "variable"
+            },
+            {
+                "code": "    for x in items:",
+                "category": "loop"
+            },
+            {
+                "code": "        sum_numbers += x",
+                "category": "undefined"
+            },
+            {
+                "code": "    return sum_numbers",
+                "category": "undefined"
+            }
+        ],
+        "distractors": [
+            {
+                "code": "function sum_list(items):",
+                "category": "undefined"
+            },
+            {
+                "code": "    for x in items.length:",
+                "category": "undefined"
+            }
+        ],
+        "description": "Create a function that sums elements in an array and returns the sum.",
+        "hints": [
+            "Declare the function using def.",
+            "Use a for loop to iterate through the items."
+        ],
+        "attempts": "unlimited"
+    }
+]

@@ -25,7 +25,6 @@ export default function Game() {
       'Not connected',
     ];
     for (let player = 0; player < players.length; player++) {
-      console.log('player ' + player + ': ', players[player]);
       names[player] =
         players[player].id === 'YOU'
           ? players[player].id

@@ -41,9 +41,9 @@ const wrongFormat = (blocks) => {
   for (var block of blocks) {
     if (
       !block.hasOwnProperty('id') ||
-      !block.hasOwnProperty('content') ||
-      !block.hasOwnProperty('category') ||
-      !block.hasOwnProperty('player')
+      !block.hasOwnProperty('code') ||
+      !block.hasOwnProperty('category') //||
+      //!block.hasOwnProperty('player')
     ) {
       return true;
     }
