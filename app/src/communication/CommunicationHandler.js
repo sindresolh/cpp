@@ -24,6 +24,9 @@ import {
   arrayIsEqual,
 } from '../utils/compareArrays/compareArrays';
 import { clearBoard } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
+import SidebarModal from '../components/Sidebar/SidebarModal/SidebarModal';
+import SubmitIcon from '../images/buttonIcons/submit.png';
+import { COLORS } from '../utils/constants';
 
 const mapStateToProps = null;
 
@@ -53,8 +56,15 @@ class CommunicationHandler extends Component {
     this.state = {
       players: [],
       connected: false,
+      isModalOpen: false,
     };
   }
+
+  /* Close the modal. Callback from SideBarModal*/
+  closeModal() {
+    this.setState({ isModalOpen: false });
+  }
+
   /**
    * Adds a new client to the room
    *
@@ -179,6 +189,7 @@ class CommunicationHandler extends Component {
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState.currentTask) {
+      this.setState({ isModalOpen: true });
       const { dispatch_nextTask } = this.props;
       dispatch_nextTask();
       this.initialFieldFromFile();
@@ -230,6 +241,17 @@ class CommunicationHandler extends Component {
         onRemovedPeer={this.handlePeerLeft}
         onJoinedRoom={this.joinedRoom}
       >
+        {/* Fancy alert for new events, for now only shows when there is a new task*/}
+        <SidebarModal
+          modalIsOpen={this.state.isModalOpen}
+          icon={SubmitIcon}
+          title={'New task'}
+          description={'Another player initiated a new task.'}
+          buttonText={'Ok'}
+          buttonColor={COLORS.lightgreen}
+          borderColor={COLORS.darkgreen}
+          closeModal={() => this.closeModal()}
+        />
         {this.state.connected ? (
           <CommunicationListener />
         ) : (
