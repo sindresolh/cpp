@@ -10,14 +10,20 @@ import './SidebarButton.css';
  * @returns
  */
 export default function SidebarButton({ title, icon, color, handleClick }) {
+  function setBackground(e, backgroundColor) {
+    e.target.style.background = backgroundColor;
+  }
+
   return (
     <button
       onClick={handleClick}
+      onMouseEnter={(e) => setBackground(e, '#c2c2c2')}
+      onMouseLeave={(e) => setBackground(e, color)}
       style={{ background: color }}
       className='SideBarButton'
     >
       <img height='30' width='auto' src={icon} alt='Icon' />
-      <div> {title} </div>
+      <div>{title}</div>
     </button>
   );
 }
