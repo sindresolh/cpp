@@ -55,7 +55,6 @@ function Lobby({ handleClick }) {
   useEffect(() => {
     setData(false);
     let unmounted = false;
-
     ensureAllNicksAreSet()
       .then(() => !unmounted && setData(true))
       .catch(console.error);
@@ -63,29 +62,32 @@ function Lobby({ handleClick }) {
   }, [players]);
 
   return (
-    <div className='Lobby'>
-      <h1>Lobby</h1>
-      <ul className='playerList'>
-        {players.map((player) => {
-          return (
-            <li key={player.id}>
-              {player.nick !== null && player.nick !== undefined ? (
-                <div>{player.nick}</div>
-              ) : (
-                '' // Do not render anything if nick is undefined
-              )}
-            </li>
-          );
-        })}
-      </ul>
-      <div>
-        <SidebarButton
-          title='Start game'
-          icon={SubmitIcon}
-          color={COLORS.lightgreen}
-          handleClick={handleClick}
-          width='9em'
-        />
+    <div style={{ background: COLORS.background }}>
+      <div className='Lobby'>
+        <h1>Lobby</h1>
+        <ul className='playerList'>
+          {players.map((player) => {
+            return (
+              <li key={player.id}>
+                {player.nick !== null && player.nick !== undefined ? (
+                  <div>{player.nick}</div>
+                ) : (
+                  '' // Do not render anything if nick is undefined
+                )}
+              </li>
+            );
+          })}
+        </ul>
+        <div>
+          <SidebarButton
+            title='Start game'
+            icon={SubmitIcon}
+            color={COLORS.lightgreen}
+            handleClick={handleClick}
+            width='9em'
+            disabled={!data} // Disable if data is not loaded
+          />
+        </div>
       </div>
     </div>
   );

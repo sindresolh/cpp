@@ -19,3 +19,7 @@ button > img {
   position: 'absolute';
   padding-top: 0.3em;
 }
+
+.SideBarButton:disabled {
+  cursor: no-drop;
+}
