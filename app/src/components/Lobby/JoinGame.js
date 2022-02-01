@@ -18,24 +18,43 @@ export default function JoinGame() {
       {ready ? (
         <CommunicationHandler nick={nick} />
       ) : (
-        <div style={{ position: 'absolute', top: '10%', left: '42%' }}>
-          <label>
-            Nickname :
-            <input
-              type='text'
-              name={nick}
-              onChange={(e) => setNick(e.target.value)}
-              style={{ margin: '1em' }}
-            />
-          </label>
-          <div>
-            <SidebarButton
-              title='Join game'
-              icon={SubmitIcon}
-              color={COLORS.lightgreen}
-              handleClick={handleSubmit}
-              width='9em'
-            />
+        <div
+          style={{
+            position: 'absolute',
+            top: '0',
+            left: '0',
+            right: '0',
+            bottom: '0',
+            background: COLORS.background,
+            zoom: 1.1,
+          }}
+        >
+          <div
+            style={{
+              position: 'absolute',
+              top: '20%',
+              left: '40%',
+              background: COLORS.backgroundChild,
+            }}
+          >
+            <label style={{ background: ' none' }}>
+              Nickname :
+              <input
+                type='text'
+                name={nick}
+                onChange={(e) => setNick(e.target.value)}
+                style={{ margin: '1em', background: COLORS.solutionfield }}
+              />
+            </label>
+            <div style={{ paddingTop: '3em' }}>
+              <SidebarButton
+                title='Join game'
+                icon={SubmitIcon}
+                color={COLORS.lightgreen}
+                handleClick={handleSubmit}
+                width='9em'
+              />
+            </div>
           </div>
         </div>
       )}

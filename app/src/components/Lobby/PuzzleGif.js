@@ -10,7 +10,7 @@ export default function PuzzleGif() {
         backgroundPosition: 'center top',
       }}
     >
-      <h1 style={{ position: 'absolute', top: '50%', left: '42%' }}>
+      <h1 style={{ position: 'absolute', top: '35%', left: '42%' }}>
         Waiting to connect
       </h1>
     </div>
