@@ -1,4 +1,5 @@
-.SideBarButton {
+.SideBarButton,
+.SideBarButton:disabled {
   display: inline-flex;
   width: 7em;
   height: 3em;
@@ -18,4 +19,8 @@ button > div {
 button > img {
   position: 'absolute';
   padding-top: 0.3em;
+}
+
+.SideBarButton:disabled {
+  cursor: no-drop;
 }

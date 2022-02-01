@@ -55,7 +55,6 @@ function Lobby({ handleClick }) {
   useEffect(() => {
     setData(false);
     let unmounted = false;
-
     ensureAllNicksAreSet()
       .then(() => !unmounted && setData(true))
       .catch(console.error);
@@ -85,6 +84,7 @@ function Lobby({ handleClick }) {
           color={COLORS.lightgreen}
           handleClick={handleClick}
           width='9em'
+          disabled={!data} // Disable if data is not loaded
         />
       </div>
     </div>
