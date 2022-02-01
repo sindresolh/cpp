@@ -7,6 +7,7 @@ import { PLAYER } from '../../utils/constants';
 import Player from '../Player/Player';
 import { useSelector } from 'react-redux';
 import { COLORS } from '../../utils/constants';
+import playerReducer from '../../redux/reducers/gameState/players';
 
 export default function Game() {
   const players = useSelector((state) => state.players);
@@ -24,8 +25,10 @@ export default function Game() {
       'Not connected',
     ];
     for (let player = 0; player < players.length; player++) {
-      // TODO: use nicknames instead
-      names[player] = players[player].id.substring(0, 5);
+      names[player] =
+        players[player].id === 'YOU'
+          ? players[player].id
+          : players[player].nick;
     }
     // Lastly add this client's name
     return names;

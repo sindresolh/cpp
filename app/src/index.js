@@ -5,11 +5,12 @@ import CommunicationHandler from './communication/CommunicationHandler';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './redux/store/store';
+import JoinGame from './components/Lobby/JoinGame';
 
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <CommunicationHandler />
+      <JoinGame />
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

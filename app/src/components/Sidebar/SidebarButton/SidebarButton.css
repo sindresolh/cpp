@@ -28,3 +28,7 @@
 .SideBarButton > img {
   padding-top: 0.3em;
 }
+
+.SideBarButton:disabled {
+  cursor: no-drop;
+}

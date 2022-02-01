@@ -1,6 +1,7 @@
 import React from 'react';
 import './SidebarButton.css';
 
+
 /** Standard button. Used in the Sidebar component.
  *
  * @param {title} : Button text
@@ -28,6 +29,7 @@ export default function SidebarButton({ title, icon, color, handleClick }) {
       onMouseLeave={(e) => setBackground(e, color)}
       style={{ background: color }}
       className='SideBarButton'
+      disabled={disabled}
     >
       <img height='30' width='auto' src={icon} alt='Icon' />
       <div>{title}</div>
