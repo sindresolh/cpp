@@ -9,8 +9,16 @@ export default function JoinGame() {
   const [nick, setNick] = useState('');
   const [ready, setReady] = useState(false);
 
+  /**
+   * Join game with buttonclick or enter
+   */
   const handleSubmit = () => {
     setReady(true);
+  };
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    }
   };
 
   return (
@@ -40,6 +48,7 @@ export default function JoinGame() {
             <label style={{ background: ' none' }}>
               Nickname :
               <input
+                onKeyDown={handleKeyDown}
                 type='text'
                 name={nick}
                 onChange={(e) => setNick(e.target.value)}
