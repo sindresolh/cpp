@@ -4,12 +4,12 @@ li {
   margin: 0.2em 1em;
 }
 
-.divSF {
-  flex: 4;
-  border-radius: 0.5em 0em 0em 0.5em;
-}
-
 li.empty {
   flex: 1;
   height: 3vh;
+}
+
+.divSF {
+  flex: 4;
+  border-radius: 0.5em 0em 0em 0.5em;
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import CodeBlock from '../CodeBlock/CodeBlock';
+import CodeLine from '../CodeLine/CodeLine';
 import { useCallback } from 'react';
 import {
   setFieldState,
@@ -16,6 +17,7 @@ import './SolutionField.css';
 import store from '../../redux/store/store';
 import { COLORS, X_INDENT } from '../../utils/constants';
 import { useRef } from 'react';
+import { useEffect } from 'react';
 
 const OFFSET = 30;
 const MAX_INDENT = 7; // TODO: random value for now
@@ -28,10 +30,11 @@ const MAX_INDENT = 7; // TODO: random value for now
 function SolutionField({}) {
   const lines = useSelector((state) => state.solutionField);
   const players = useSelector((state) => state.players);
-  const emptyField = lines.length === 0;
   const dispatch = useDispatch();
-  // const lineRef = useRef(null);
-  // console.log(lineRef);
+
+  useEffect(() => {
+    console.log('lines in SF', lines);
+  }, [lines]);
 
   // finds the block, it's index and indent based on id
   const findBlock = useCallback(
@@ -57,19 +60,19 @@ function SolutionField({}) {
   // TODO: make sure it works with indents
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0) => {
+      console.log('move block with id', id, 'to index', atIndex);
       let updatedLines;
       let line;
       // get block if it exists in solutionfield
       const blockObj = findBlock(id);
-      // update the block position in the solution field
-      if (blockObj !== undefined) {
-        swapBlockPositionInField(blockObj, atIndex, atIndent);
-        console.log('swap');
-      }
-      // block came from a hand
-      else {
+      if (blockObj === undefined) {
+        // block does not exist in field, get from hand
         moveBlockFromList(id, atIndex, atIndent);
         console.log('move from list');
+      } else {
+        // block came from the field, swap position
+        swapBlockPositionInField(blockObj, atIndex, atIndent);
+        console.log('swap');
       }
       dispatch(fieldEvent()); // Move the block for the other players
     },
@@ -106,6 +109,7 @@ function SolutionField({}) {
    * @param {number} atIndent   the indent it was dragged into
    */
   const moveBlockFromList = (id, atIndex, atIndent) => {
+    console.log(lines);
     const handLists = store.getState().handList;
     let blockIsNotFound = true;
     let handListIndex = 0;
@@ -126,6 +130,7 @@ function SolutionField({}) {
             { block: movedBlock, indent: atIndent },
             ...lines.slice(atIndex),
           ];
+          console.log();
           dispatch(setFieldState(updatedLines));
         }
       }
@@ -133,79 +138,13 @@ function SolutionField({}) {
     }
   };
 
-  // // blocks can be dropped into empty solution field
-  // const [, fieldDrop] = useDrop(
-  //   () => ({
-  //     accept: ItemTypes.CODEBLOCK,
-  //     //canDrop: () => emptyField,
-  //     hover: (item, monitor) => {
-  //       console.log('field');
-  //       if (lines.length === 0) {
-  //         moveBlock(item.id, 0, 0);
-  //       }
-  //     },
-  //   }),
-  //   [lines]
-  // );
-
-  const [, lineDrop] = useDrop(
-    () => ({
-      accept: ItemTypes.CODEBLOCK,
-      canDrop: (item, monitor) => {
-        return true; // TODO: yes for now
-      },
-      hover: (item, monitor) => {
-        console.log('line');
-        let blockObj = findBlock(item.id);
-        console.log('id', item.id, blockObj.block.id);
-
-        if (blockObj === undefined) {
-          // fra hånda
-          console.log('fra hånda');
-          moveBlockFromList(item.id, lines.length, 0);
-        } else if (item.id !== blockObj.block.id) {
-          // bytte plass mellom blocks i field
-          console.log('annet id');
-          swapBlockPositionInField(
-            blockObj,
-            item.originalIndex,
-            item.originalIndent
-          );
-        } else {
-          console.log('samme id');
-        }
-
-        //   if (item.id !== block.id) {
-        //     console.log(item.id, block.id);
-        //     moveBlock(item.id, lines.length, 0);
-        //   }
-        // }
-
-        //if (draggedId !== id) {
-        // const { index: overIndex, indent: overIndent } = findBlock(id);
-        // moveBlock(draggedId, overIndex, overIndent);
-        // if (monitor.getDifferenceFromInitialOffset().x >= OFFSET) {
-        //console.log('increase indent', indent);
-        // if (block.indent <= MAX_INDENT) {
-        // }
-        //moveBlock(item.id, block.index, block.indent + 1);
-        //if (indent <= MAX_INDENT) setIndent((prevIndent) => prevIndent + 1);
-        // } else if (monitor.getDifferenceFromInitialOffset().x < -OFFSET) {
-        //console.log('decrease indent', indent);
-        // if (block.indent > 0) {
-        // }
-        //moveBlock(item.id, block.index, block.indent - 1);
-      },
-    }),
-    [lines]
-  );
-
   const [, emptyLineDrop] = useDrop(
     () => ({
       accept: ItemTypes.CODEBLOCK,
       hover: (item, monitor) => {
-        console.log('empty');
-        moveBlock(item.id, lines.length, 0);
+        if (findBlock(item.id) === undefined)
+          console.log('move to EMPTY at index', lines.length);
+        moveBlock(item.id, lines.length, 0); // only allow drop in empty field if it comes from hand
       },
     }),
     [lines]
@@ -215,27 +154,18 @@ function SolutionField({}) {
     <div className={'divSF'} style={{ background: COLORS.solutionfield }}>
       <h6>{'Connected platers: ' + players.length}</h6>
       <ul data-testid='solutionField'>
-        {lines.map((line) => {
-          //console.log('update lines', line);
-          let codelineColor = COLORS.codeline;
+        {lines.map((line, index) => {
           return (
-            <li
-              key={line.block.id}
-              data-testid='lines'
-              style={{ background: codelineColor }}
-              ref={lineDrop}
-            >
-              <CodeBlock
-                {...line.block}
-                blockIndent={line.indent}
-                draggable={true} // TODO: might not need this
-                moveBlock={moveBlock}
-                findBlock={findBlock}
-              />
-            </li>
+            <CodeLine
+              {...line}
+              index={index}
+              moveBlock={moveBlock}
+              key={`line-${index}`}
+            />
           );
         })}
         <li
+          key={'emptyField'}
           className='empty'
           style={{ background: COLORS.codeline }}
           ref={emptyLineDrop}
