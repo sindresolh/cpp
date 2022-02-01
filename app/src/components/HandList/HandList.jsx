@@ -102,26 +102,13 @@ function HandList({ player, draggable }) {
   };
 
   // blocks can be dropped into empty hand list
-  const [, drop] = useDrop(
+  const [, emptyListDrop] = useDrop(
     () => ({
       accept: ItemTypes.CODEBLOCK,
       canDrop: () => emptyList,
       hover: (item) => {
-        if (item.player === player) {
+        if (item.player === player && emptyList) {
           moveBlock(item.id);
-          // // if (emptyList && item.player === player) {
-          // console.log('drop?');
-          // const solutionField = store.getState().solutionField;
-          // const line = solutionField.filter(
-          //   (line) => line.block.id === item.id
-          // )[0];
-          // const block = line.block;
-
-          // // only allow dropping into empty list if it's the player's block
-          // dispatch(setList([block], handListIndex));
-          // dispatch(listEvent());
-          // dispatch(removeBlockFromField(item.id));
-          // dispatch(fieldEvent());
         }
       },
     }),
@@ -129,7 +116,7 @@ function HandList({ player, draggable }) {
   );
 
   return (
-    <div className={'divHL'}>
+    <div className={'divHL'} ref={emptyListDrop}>
       <ul data-testid={`handList-player${player}`}>
         {blocks.map((block, index) => {
           return (

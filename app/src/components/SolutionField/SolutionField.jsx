@@ -142,8 +142,6 @@ function SolutionField({}) {
     () => ({
       accept: ItemTypes.CODEBLOCK,
       hover: (item, monitor) => {
-        if (findBlock(item.id) === undefined)
-          console.log('move to EMPTY at index', lines.length);
         moveBlock(item.id, lines.length, 0); // only allow drop in empty field if it comes from hand
       },
     }),
