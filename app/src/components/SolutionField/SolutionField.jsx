@@ -156,11 +156,25 @@ function SolutionField({}) {
       },
       hover: (item, monitor) => {
         console.log('line');
-        let block = findBlock(item.id);
-        if (block === undefined) {
+        let blockObj = findBlock(item.id);
+        console.log('id', item.id, blockObj.block.id);
+
+        if (blockObj === undefined) {
+          // fra hånda
           console.log('fra hånda');
-          moveBlock(item.id, lines.length, 0);
+          moveBlockFromList(item.id, lines.length, 0);
+        } else if (item.id !== blockObj.block.id) {
+          // bytte plass mellom blocks i field
+          console.log('annet id');
+          swapBlockPositionInField(
+            blockObj,
+            item.originalIndex,
+            item.originalIndent
+          );
+        } else {
+          console.log('samme id');
         }
+
         //   if (item.id !== block.id) {
         //     console.log(item.id, block.id);
         //     moveBlock(item.id, lines.length, 0);
@@ -189,9 +203,6 @@ function SolutionField({}) {
   const [, emptyLineDrop] = useDrop(
     () => ({
       accept: ItemTypes.CODEBLOCK,
-      canDrop: (item, monitor) => {
-        return true; // TODO: yes for now
-      },
       hover: (item, monitor) => {
         console.log('empty');
         moveBlock(item.id, lines.length, 0);

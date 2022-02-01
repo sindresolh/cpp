@@ -21,7 +21,7 @@ const MAX_INDENT = 7; // TODO: random value for now
  *  @param {function} moveBlock move the block to a a new position
  * @param {function} findBlock find the current position of the block
  * @param {string} placement    reference to where this block is placed (player list or in solution field)
- * @param {number} indent   what indent the block is in
+ * @param {number} blockIndent   what indent the block is in
  * @returns a draggable div containing a code block
  */
 function CodeBlock({
@@ -74,29 +74,29 @@ function CodeBlock({
   );
 
   // implement dropping
-  const [, drop] = useDrop(
-    () => ({
-      accept: ItemTypes.CODEBLOCK,
+  // const [, drop] = useDrop(
+  //   () => ({
+  //     accept: ItemTypes.CODEBLOCK,
 
-      canDrop: () => false, // list updates on hover, not on drop
-      hover({ id: draggedId }, monitor) {
-        // real-time update list while dragging is happening
-        //console.log(monitor.getDifferenceFromInitialOffset().x);
-        if (draggedId !== id) {
-          const { index: overIndex, indent: overIndent } = findBlock(id);
-          moveBlock(draggedId, overIndex, overIndent);
-        }
-        // } else if (monitor.getDifferenceFromInitialOffset().x >= OFFSET) {
-        //   //console.log('mer enn 30 wow', indent);
-        //   //if (indent <= MAX_INDENT) setIndent((prevIndent) => prevIndent + 1);
-        // } else if (monitor.getDifferenceFromInitialOffset().x < -OFFSET) {
-        //   //console.log('mindre enn 30');
-        //   //if (indent > 0) setIndent((prevIndent) => prevIndent - 1);
-        // }
-      },
-    }),
-    [findBlock, moveBlock]
-  );
+  //     canDrop: () => false, // list updates on hover, not on drop
+  //     hover({ id: draggedId }, monitor) {
+  //       // // real-time update list while dragging is happening
+  //       // //console.log(monitor.getDifferenceFromInitialOffset().x);
+  //       // const { index: overIndex, indent: overIndent } = findBlock(id);
+  //       // if (draggedId !== id) {
+  //       //   moveBlock(draggedId, overIndex, overIndent);
+  //       // } else if (monitor.getDifferenceFromInitialOffset().x >= OFFSET) {
+  //       //   //console.log('mer enn 30 wow', indent);
+  //       //   if (blockIndent <= MAX_INDENT)
+  //       //     moveBlock(id, overIndex, blockIndent + 1);
+  //       // } else if (monitor.getDifferenceFromInitialOffset().x < -OFFSET) {
+  //       //   //console.log('mindre enn 30');
+  //       //   if (blockIndent > 0) moveBlock(id, overIndex, blockIndent - 1);
+  //       // }
+  //     },
+  //   }),
+  //   [findBlock, moveBlock, blockIndent]
+  // );
 
   let indentMargin = `${blockIndent * OFFSET}px`;
 
@@ -107,7 +107,8 @@ function CodeBlock({
 
   return (
     <div
-      ref={(node) => drag(drop(node))}
+      // ref={(node) => drag(drop(node))}
+      ref={drag}
       data-testid={`codeBlock-player${player}`}
       id={id}
       className={className}
