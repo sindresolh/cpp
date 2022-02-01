@@ -13,7 +13,9 @@
 }
 
 .dragging {
-  opacity: 0;
+  /*opacity: 0;  TODO: visual bug where a block would not be visible 
+  while drag was happening and a block was swapping position. 
+  Removing this fixed it, but make sure it doesn't look weird on PC */
 }
 
 .variable {
