@@ -45,7 +45,12 @@ function CodeBlock({
         blockIndent,
         player,
       },
-      collect: (monitor) => ({ isDragging: monitor.isDragging() }),
+      isDragging(monitor) {
+        return id === monitor.getItem().id;
+      },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
       end: (item, monitor) => {
         //const { id: droppedId, originalIndex, originalIndent } = item;
         const didDrop = monitor.didDrop();
