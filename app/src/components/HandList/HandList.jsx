@@ -14,6 +14,7 @@ import update from 'immutability-helper';
 import { ItemTypes } from '../../utils/itemtypes';
 import { useDrop } from 'react-dnd';
 import store from '../../redux/store/store';
+import CodeLine from '../CodeLine/CodeLine';
 
 /**
  * This component represents a list of code blocks. Each player will have a list.
@@ -106,18 +107,21 @@ function HandList({ player, draggable }) {
       accept: ItemTypes.CODEBLOCK,
       canDrop: () => emptyList,
       hover: (item) => {
-        if (emptyList && item.player === player) {
-          const solutionField = store.getState().solutionField;
-          const line = solutionField.filter(
-            (line) => line.block.id === item.id
-          )[0];
-          const block = line.block;
+        if (item.player === player) {
+          moveBlock(item.id);
+          // // if (emptyList && item.player === player) {
+          // console.log('drop?');
+          // const solutionField = store.getState().solutionField;
+          // const line = solutionField.filter(
+          //   (line) => line.block.id === item.id
+          // )[0];
+          // const block = line.block;
 
-          // only allow dropping into empty list if it's the player's block
-          dispatch(setList([block], handListIndex));
-          dispatch(listEvent());
-          dispatch(removeBlockFromField(item.id));
-          dispatch(fieldEvent());
+          // // only allow dropping into empty list if it's the player's block
+          // dispatch(setList([block], handListIndex));
+          // dispatch(listEvent());
+          // dispatch(removeBlockFromField(item.id));
+          // dispatch(fieldEvent());
         }
       },
     }),
@@ -125,22 +129,17 @@ function HandList({ player, draggable }) {
   );
 
   return (
-    <div className={'divHL'} ref={drop}>
+    <div className={'divHL'}>
       <ul data-testid={`handList-player${player}`}>
-        {blocks.map((codeBlock) => {
+        {blocks.map((block, index) => {
           return (
-            <li
-              className={'li'}
-              key={codeBlock.id}
-              data-testid={`listitem-player${player}`}
-            >
-              <CodeBlock
-                {...codeBlock}
-                draggable={draggable}
-                moveBlock={moveBlock}
-                findBlock={findBlock}
-              />
-            </li>
+            <CodeLine
+              block={block}
+              indent={0}
+              index={index}
+              moveBlock={moveBlock}
+              key={`player-${player}-line-${index}`}
+            />
           );
         })}
       </ul>
