@@ -1,7 +1,7 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
-  "icons": [
+  "short_name": "Code puzzle",
+  "name": "Team based code puzzles",
+  "icons": [ 
   ],
   "start_url": ".",
   "display": "standalone",

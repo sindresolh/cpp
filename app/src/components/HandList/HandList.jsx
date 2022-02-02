@@ -28,6 +28,7 @@ function HandList({ player, draggable }) {
   const handListIndex = player - 1;
   const blocks = useSelector((state) => state.handList[handListIndex]);
   const emptyList = blocks.length === 0;
+  console.log('player : ' + player + ' , draggable : ' + draggable)
 
   // find the block and index based on id
   const findBlock = useCallback(
@@ -125,7 +126,7 @@ function HandList({ player, draggable }) {
   );
 
   return (
-    <div className={'divHL'} ref={drop}>
+    <div className={'divHL'} ref={drop} key ={draggable}>
       <ul data-testid={`handList-player${player}`}>
         {blocks.map((codeBlock) => {
           return (
