@@ -118,8 +118,8 @@ const isAVariable = (string) => {
  * @returns true if the string is a function
  */
 const isAFunction = (string) => {
-  const regexFuncDecleration = /^def\s*?[a-zA-Z0-9'_()\[\]=":\s,*]+$/;
-  const regexFuncCall = /^[a-zA-Z0-9\s_]+\([a-zA-Z0-9'_\[\]="\s,*]*\)$/;
+  const regexFuncDecleration = /^def\s*?[a-zA-Z0-9'_\[\]=":\s,*]+$/;
+  const regexFuncCall = /^[a-zA-Z0-9\s_]+\([a-zA-Z0-9'+*\-_\[\]="\s,*]*\)$/;
   const regexKFuncKeyWords = /^return\s/;
   return (
     regexFuncDecleration.test(string) ||

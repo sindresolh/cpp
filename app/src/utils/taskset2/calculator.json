@@ -1,5 +1,5 @@
 [
-  [ {
+    {
         "codeBlocks": [
             {
                 "code": "number_1 = int(input(\"Enter first number: \"))",
@@ -106,79 +106,11 @@
                 "id": "17"
             }
         ],
-        "description": "",
+        "description": "Create a simple calculator. The program should first ask for an\ninteger, then an operator (+,-,*,/), and lastly a second integer.\nThe answer shall be printed back to the user",
         "hints": [
-            ""
+            "Be carefull about the type of the inputs"
         ],
         "attempts": "unlimited",
         "field": []
-    },
-    {
-      "codeBlocks": [
-            {
-                "code": "def sum_list(items):",
-                "category": "function",
-                "indent": 0,
-                "id": "1"
-            },
-            {
-                "code": "sum_numbers = 0",
-                "category": "variable",
-                "indent": 0,
-                "id": "2"
-            },
-            {
-                "code": "for x in items:",
-                "category": "loop",
-                "indent": 0,
-                "id": "3"
-            },
-            {
-                "code": "sum_numbers += x",
-                "category": "variable",
-                "indent": 0,
-                "id": "4"
-            },
-            {
-                "code": "return numbers",
-                "category": "function",
-                "indent": 0,
-                "id": "5"
-            }
-        ],
-        "distractors": [
-            {
-                "code": "function sum_list(items)",
-                "category": "function",
-                "indent": 0,
-                "id": "6"
-            },
-            {
-                "code": "for x in items.lenght:",
-                "category": "loop",
-                "indent": 0,
-                "id": "7"
-            }
-      ],
-      "description": "Create a function that sums elements in an array and returns the sum.",
-      "hints": ["Use 'def' to set up the function."],
-      "attempts": "unlimited",
-      "field": []
-    },
-    {
-      "codeBlocks": [
-        {
-          "code": "put me in",
-          "category": "function",
-          "indent": 0,
-          "id": "1"
-        }
-      ],
-      "distractors": [],
-      "description": "I copy pasted the task lol",
-      "hints": ["Use 'def' to set up the function."],
-      "attempts": "unlimited",
-      "field": []
     }
-  ]
 ]
