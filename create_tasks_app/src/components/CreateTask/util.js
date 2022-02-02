@@ -105,7 +105,8 @@ export const categorizeCode = (code) => {
  * @returns true if the string is a variable decleration
  */
 const isAVariable = (string) => {
-  const regex = /^[a-zA-z0-9+*\-\s]+\s*?=\s*?[a-zA-Z0-9+*\-'"_\(\)\\\s:]+$/;
+  const regex =
+    /^[a-zA-z0-9+*\-\[\]\s]+\s*?=\s*?[a-zA-Z0-9\[\]+*\-'"_\(\)\\\s:]+$/;
   return regex.test(string);
 };
 /**
@@ -119,11 +120,11 @@ const isAVariable = (string) => {
 const isAFunction = (string) => {
   const regexFuncDecleration = /^def\s*?[a-zA-Z0-9'_()\[\]=":\s,*]+$/;
   const regexFuncCall = /^[a-zA-Z0-9\s_]+\([a-zA-Z0-9'_\[\]="\s,*]*\)$/;
-  const regexKFuncKeyWord = /^^return\s/;
+  const regexKFuncKeyWords = /^return\s/;
   return (
     regexFuncDecleration.test(string) ||
     regexFuncCall.test(string) ||
-    regexKFuncKeyWord.test(string)
+    regexKFuncKeyWords.test(string)
   );
 };
 
@@ -137,7 +138,11 @@ const isAFunction = (string) => {
 const isALoop = (string) => {
   const regexForLoop = /^for [a-zA-Z0-9_]+ in [a-zA-Z0-9'_()\[\]="\s,*]+:$/;
   const regexWhileLoop = /^while [a-zA-Z0-9_()]+\s*[!=<>]*\s*[a-zA-Z0-9_()]+:$/;
-  return regexForLoop.test(string) || regexWhileLoop.test(string);
+  const regexLoopKeyWords = /(break|continue)$/;
+  return (
+    regexForLoop.test(string) ||
+    regexWhileLoop.test(string) | regexLoopKeyWords.test(string)
+  );
 };
 
 /**
