@@ -6,6 +6,8 @@
 # The next number is obtained by adding the preceding two terms. 
 # So the first 7 numbers in the fibonacci sequence becomes: 0, 1, 1, 2, 3, 5, 8
 
+# Hint : A fibbonaci sequence with 1 entry is an edge case. Check for this edge case first.
+
 n = int(input("How long should the fibonacci sequence be? "))
 n1, n2 = 0, 1
 count = 0

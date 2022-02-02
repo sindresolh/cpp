@@ -1,0 +1,116 @@
+[
+    {
+        "codeBlocks": [
+            {
+                "code": "number_1 = int(input(\"Enter first number: \"))",
+                "category": "variable",
+                "indent": 0,
+                "id": "1"
+            },
+            {
+                "code": "operator = input(\"Enter operator (+,-,*,/): \")",
+                "category": "undefined",
+                "indent": 0,
+                "id": "2"
+            },
+            {
+                "code": "number_2 = int(input(\"Enter second number: \"))",
+                "category": "variable",
+                "indent": 0,
+                "id": "3"
+            },
+            {
+                "code": "if operator == '+':",
+                "category": "condition",
+                "indent": 0,
+                "id": "4"
+            },
+            {
+                "code": "print(number_1 + number_2)",
+                "category": "function",
+                "indent": 0,
+                "id": "5"
+            },
+            {
+                "code": "elif operator == '-':",
+                "category": "condition",
+                "indent": 0,
+                "id": "6"
+            },
+            {
+                "code": "print(number_1 - number_2)",
+                "category": "function",
+                "indent": 0,
+                "id": "7"
+            },
+            {
+                "code": "elif operator == '*':",
+                "category": "condition",
+                "indent": 0,
+                "id": "8"
+            },
+            {
+                "code": "print(number_1 * number_2)",
+                "category": "function",
+                "indent": 0,
+                "id": "9"
+            },
+            {
+                "code": "elif operator == '/':",
+                "category": "condition",
+                "indent": 0,
+                "id": "10"
+            },
+            {
+                "code": "print(number_1 / number_2)",
+                "category": "function",
+                "indent": 0,
+                "id": "11"
+            }
+        ],
+        "distractors": [
+            {
+                "code": "else if operator == '-':",
+                "category": "undefined",
+                "indent": 0,
+                "id": "12"
+            },
+            {
+                "code": "else if operator == '*':",
+                "category": "undefined",
+                "indent": 0,
+                "id": "13"
+            },
+            {
+                "code": "else if operator == '/':",
+                "category": "undefined",
+                "indent": 0,
+                "id": "14"
+            },
+            {
+                "code": "operator = int(input(\"Enter operator (+,-,*,/): \"))",
+                "category": "undefined",
+                "indent": 0,
+                "id": "15"
+            },
+            {
+                "code": "number_1 = input(\"Enter first number: \")",
+                "category": "variable",
+                "indent": 0,
+                "id": "16"
+            },
+            {
+                "code": "number_2 = input(\"Enter second number: \")",
+                "category": "variable",
+                "indent": 0,
+                "id": "17"
+            }
+        ],
+        "description": "Create a simple calculator. The program should first ask for an\ninteger, then an operator (+,-,*,/), and lastly a second integer.\nThe answer shall be printed back to the user",
+        "hints": [
+            "Be carefull about the type of the inputs"
+        ],
+        "attempts": "unlimited",
+        "field": []
+    }
+]
