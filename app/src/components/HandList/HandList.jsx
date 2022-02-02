@@ -125,6 +125,7 @@ function HandList({ player, draggable }) {
               indent={0}
               index={index}
               moveBlock={moveBlock}
+              maxIndent={0}
               key={`player-${player}-line-${index}`}
             />
           );

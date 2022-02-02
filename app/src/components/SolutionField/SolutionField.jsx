@@ -15,12 +15,9 @@ import { ItemTypes } from '../../utils/itemtypes';
 import PropTypes from 'prop-types';
 import './SolutionField.css';
 import store from '../../redux/store/store';
-import { COLORS, X_INDENT } from '../../utils/constants';
+import { COLORS, MAX_INDENT } from '../../utils/constants';
 import { useRef } from 'react';
 import { useEffect } from 'react';
-
-const OFFSET = 30;
-const MAX_INDENT = 7; // TODO: random value for now
 
 /**
  *
@@ -158,6 +155,7 @@ function SolutionField({}) {
               {...line}
               index={index}
               moveBlock={moveBlock}
+              maxIndent={MAX_INDENT}
               key={`line-${index}`}
             />
           );

@@ -34,4 +34,5 @@ export const COLORS = {
   lightgreen: '#8bbe95',
 };
 
-export const X_INDENT = 50;
+export const OFFSET = 50;
+export const MAX_INDENT = 7;
