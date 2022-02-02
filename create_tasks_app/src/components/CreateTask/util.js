@@ -105,7 +105,7 @@ export const categorizeCode = (code) => {
  * @returns true if the string is a variable decleration
  */
 const isAVariable = (string) => {
-  const regex = /^[a-zA-z0-9]+\s*?=\s*?[a-zA-Z0-9'"_\(\)\\\s:]+$/;
+  const regex = /^[a-zA-z0-9+*\-\s]+\s*?=\s*?[a-zA-Z0-9+*\-'"_\(\)\\\s:]+$/;
   return regex.test(string);
 };
 /**
@@ -118,8 +118,13 @@ const isAVariable = (string) => {
  */
 const isAFunction = (string) => {
   const regexFuncDecleration = /^def\s*?[a-zA-Z0-9'_()\[\]=":\s,*]+$/;
-  const regexFuncCall = /^[a-zA-Z0-9_]+\([a-zA-Z0-9'_\[\]="\s,*]*\)$/;
-  return regexFuncDecleration.test(string) || regexFuncCall.test(string);
+  const regexFuncCall = /^[a-zA-Z0-9\s_]+\([a-zA-Z0-9'_\[\]="\s,*]*\)$/;
+  const regexKFuncKeyWord = /^^return\s/;
+  return (
+    regexFuncDecleration.test(string) ||
+    regexFuncCall.test(string) ||
+    regexKFuncKeyWord.test(string)
+  );
 };
 
 /**
