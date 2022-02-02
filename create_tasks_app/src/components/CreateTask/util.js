@@ -76,8 +76,7 @@ export const getCodeBlocksAndDistractors = (code) => {
  */
 const getBlockAsObject = (code, id) => {
   let category = categorizeCode(code.trim());
-  //let indent = getIndent(code);
-  let indent = 0; // TODO: hardcoded to be 0 for now until we add indenting
+  let indent = getIndent(code);
   id = String(id);
   code = code.trim();
   return { code, category, indent, id };

@@ -56,11 +56,7 @@ function CodeLine({ block, index, moveBlock, maxIndent, draggable }) {
         ref={blockRef}
         style={{ marginLeft: `${block.indent * OFFSET}px` }}
       >
-        <CodeBlock
-          {...block}
-          index
-          draggable={draggable} // TODO: might not need this
-        />
+        <CodeBlock {...block} index draggable={draggable} />
       </div>
     </li>
   );
