@@ -12,10 +12,10 @@ import PropTypes from 'prop-types';
  * @param {string} code   code of the code block, e.g. 'x = 1'
  * @param {number} player   the player number who owns this block
  * @param {string} category   the category, e.g. 'variable' or 'function'
+ * @param {number} indent   what indent the block is in
  *  @param {function} moveBlock move the block to a a new position
  * @param {function} findBlock find the current position of the block
  * @param {string} placement    reference to where this block is placed (player list or in solution field)
- * @param {number} blockIndent   what indent the block is in
  * @returns a draggable div containing a code block
  */
 function CodeBlock({
@@ -23,8 +23,8 @@ function CodeBlock({
   code,
   player,
   category,
+  indent,
   index,
-  blockIndent,
   moveBlock,
   draggable,
 }) {
@@ -36,7 +36,7 @@ function CodeBlock({
       item: {
         id,
         index,
-        blockIndent,
+        indent,
         player,
       },
       isDragging(monitor) {
@@ -59,7 +59,7 @@ function CodeBlock({
         }
       },
     }),
-    [id, index, blockIndent, moveBlock]
+    [id, index, indent, moveBlock]
   );
 
   let className = isDragging

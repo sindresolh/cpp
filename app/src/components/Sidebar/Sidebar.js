@@ -34,7 +34,7 @@ export default function Sidebar() {
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
   let currentTaskObject = currentTask.tasks[currentTaskNumber];
-  let field = useSelector((state) => state.solutionField);
+  const fieldBlocks = useSelector((state) => state.solutionField);
 
   /* Close the modal. Callback from SideBarModal*/
   const closeModal = () => {
@@ -113,8 +113,13 @@ export default function Sidebar() {
    * Make all players go to the next task of the submit is correct
    */
   const handleSubmit = () => {
-    const fieldBlocks = field.map((line) => line.block);
-    if (currentTaskNumber === currentTask.tasks.length - 1) {
+    const correctSolution = arrayIsEqual(
+      fieldBlocks,
+      currentTaskObject.codeBlocks
+    );
+    const lastTask = currentTaskNumber === currentTask.tasks.length - 1;
+
+    if (correctSolution && lastTask) {
       openModal(
         CheckIcon,
         'Task set finished',
@@ -124,7 +129,7 @@ export default function Sidebar() {
         COLORS.darkgreen,
         'none'
       );
-    } else if (arrayIsEqual(fieldBlocks, currentTaskObject.codeBlocks)) {
+    } else if (correctSolution) {
       dispatch(nextTask());
       dispatch(taskEvent());
       openModal(
@@ -148,6 +153,41 @@ export default function Sidebar() {
       );
     }
   };
+  // const handleSubmit = () => {
+  //   if (currentTaskNumber === currentTask.tasks.length - 1) {
+  //     openModal(
+  //       CheckIcon,
+  //       'Task set finished',
+  //       'Congratulations! You finished all the tasks.',
+  //       'Finish',
+  //       COLORS.lightgreen,
+  //       COLORS.darkgreen,
+  //       'none'
+  //     );
+  //   } else if (arrayIsEqual(fieldBlocks, currentTaskObject.codeBlocks)) {
+  //     dispatch(nextTask());
+  //     dispatch(taskEvent());
+  //     openModal(
+  //       CheckIcon,
+  //       'Correct',
+  //       'Continues to next task',
+  //       'Next task',
+  //       COLORS.lightgreen,
+  //       COLORS.darkgreen,
+  //       'none'
+  //     );
+  //   } else {
+  //     openModal(
+  //       CrossIcon,
+  //       'Incorrect',
+  //       'Unfortunately this is incorrect. Please try again.',
+  //       'Try again',
+  //       COLORS.lightred,
+  //       COLORS.darkred,
+  //       'block'
+  //     );
+  //   }
+  // };
 
   return (
     <div className='Sidebar' style={{ background: COLORS.sidebar }}>
@@ -160,7 +200,7 @@ export default function Sidebar() {
         buttonText={modalButtonText}
         buttonColor={modalButtonColor}
         borderColor={modalBorderColor}
-        field={field}
+        fieldBlocks={fieldBlocks}
         showFeedback={feedbackVisibility}
         showClearBoardDialog={hasClearBoardDialog}
         closeModal={() => closeModal()}

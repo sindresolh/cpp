@@ -47,10 +47,12 @@ function HandList({ player, draggable }) {
   // update the position of the block when moved inside a list
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0, playerNo) => {
-      const block = findBlock(id);
+      const blockObj = findBlock(id);
 
       // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
-      if (block !== undefined) swapBlockPositionInList(block, atIndex);
+      if (blockObj !== undefined) {
+        swapBlockPositionInList(blockObj, atIndex);
+      }
       // move block from solution field to hand list
       else moveBlockFromField(id, atIndex);
 
@@ -64,11 +66,11 @@ function HandList({ player, draggable }) {
    * @param {object} block  the moved block and the original index
    * @param {*} atIndex     the new index of the block
    */
-  const swapBlockPositionInList = (block, atIndex) => {
+  const swapBlockPositionInList = (blockObj, atIndex) => {
     const updatedBlocks = update(blocks, {
       $splice: [
-        [block.index, 1],
-        [atIndex, 0, block.block],
+        [blockObj.index, 1],
+        [atIndex, 0, blockObj.block],
       ],
     });
 
@@ -82,13 +84,12 @@ function HandList({ player, draggable }) {
    * @param {number} atIndex    the index the block is moved into
    */
   const moveBlockFromField = (id, atIndex) => {
-    let solutionField = store.getState().solutionField;
-    let movedBlock = solutionField.filter((line) => line.block.id === id)[0];
+    let fieldBlocks = store.getState().solutionField;
+    let movedBlock = fieldBlocks.filter((block) => block.id === id)[0];
 
     // players cannot move their own blocks to another player's hand
     // a player can only move their own block to their own hand from solution field
-    if (movedBlock !== undefined && movedBlock.block.player === player) {
-      movedBlock = movedBlock.block;
+    if (movedBlock !== undefined && movedBlock.player === player) {
       const updatedBlocks = [
         ...blocks.slice(0, atIndex),
         movedBlock,
@@ -122,7 +123,6 @@ function HandList({ player, draggable }) {
           return (
             <CodeLine
               block={block}
-              indent={0}
               index={index}
               moveBlock={moveBlock}
               maxIndent={0}

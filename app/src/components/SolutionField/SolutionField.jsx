@@ -25,55 +25,43 @@ import { useEffect } from 'react';
  * @returns a div containing the blocks players has moved to
  */
 function SolutionField({}) {
-  const lines = useSelector((state) => state.solutionField);
+  const blocks = useSelector((state) => state.solutionField);
   const players = useSelector((state) => state.players);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    console.log('lines in SF', lines);
-  }, [lines]);
 
   // finds the block, it's index and indent based on id
   const findBlock = useCallback(
     (id) => {
-      const blocks = lines.map((line) => line.block);
       const block = blocks.filter((block) => block.id === id)[0];
-
       if (block === undefined) return undefined; // block came from a hand list
-
       const blockIndex = blocks.indexOf(block);
-      const indent = lines[blockIndex].indent;
 
       return {
         block,
         index: blockIndex,
-        indent,
       };
     },
-    [lines]
+    [blocks]
   );
 
   // move the block within the field or to a hand list
   // TODO: make sure it works with indents
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0) => {
-      console.log('move block with id', id, 'to index', atIndex);
       let updatedLines;
       let line;
       // get block if it exists in solutionfield
-      const blockObj = findBlock(id);
-      if (blockObj === undefined) {
+      const block = findBlock(id);
+      if (block === undefined) {
         // block does not exist in field, get from hand
-        moveBlockFromList(id, atIndex, atIndent);
-        console.log('move from list');
+        moveBlockFromList(id, atIndex);
       } else {
         // block came from the field, swap position
-        swapBlockPositionInField(blockObj, atIndex, atIndent);
-        console.log('swap');
+        swapBlockPositionInField(block, atIndex, atIndent);
       }
       dispatch(fieldEvent()); // Move the block for the other players
     },
-    [findBlock, lines]
+    [findBlock, blocks]
   );
 
   /**
@@ -83,19 +71,16 @@ function SolutionField({}) {
    * @param {number} atIndent     the indent the block was dragged into
    */
   const swapBlockPositionInField = (blockObj, atIndex, atIndent) => {
-    const line = {
-      block: blockObj.block,
-      indent: atIndent,
-    };
-    //console.log('swap pos', line);
-    const updatedLines = update(lines, {
+    let block = blockObj.block;
+    block.indent = atIndent;
+    const updatedBlocks = update(blocks, {
       $splice: [
         [blockObj.index, 1],
-        [atIndex, 0, line],
+        [atIndex, 0, block],
       ],
     });
 
-    dispatch(setFieldState(updatedLines));
+    dispatch(setFieldState(updatedBlocks));
   };
 
   /**
@@ -105,8 +90,7 @@ function SolutionField({}) {
    * @param {number} atIndex    the index it was dragged into
    * @param {number} atIndent   the indent it was dragged into
    */
-  const moveBlockFromList = (id, atIndex, atIndent) => {
-    console.log(lines);
+  const moveBlockFromList = (id, atIndex) => {
     const handLists = store.getState().handList;
     let blockIsNotFound = true;
     let handListIndex = 0;
@@ -122,13 +106,12 @@ function SolutionField({}) {
           movedBlock = handLists[handListIndex][block];
           dispatch(removeBlockFromList(id, handListIndex));
           dispatch(listEvent());
-          const updatedLines = [
-            ...lines.slice(0, atIndex),
-            { block: movedBlock, indent: atIndent },
-            ...lines.slice(atIndex),
+          const updatedBlocks = [
+            ...blocks.slice(0, atIndex),
+            movedBlock,
+            ...blocks.slice(atIndex),
           ];
-          console.log();
-          dispatch(setFieldState(updatedLines));
+          dispatch(setFieldState(updatedBlocks));
         }
       }
       handListIndex++;
@@ -139,20 +122,20 @@ function SolutionField({}) {
     () => ({
       accept: ItemTypes.CODEBLOCK,
       hover: (item, monitor) => {
-        moveBlock(item.id, lines.length, 0); // only allow drop in empty field if it comes from hand
+        moveBlock(item.id, blocks.length, 0); // only allow drop in empty field if it comes from hand
       },
     }),
-    [lines]
+    [blocks]
   );
 
   return (
     <div className={'divSF'} style={{ background: COLORS.solutionfield }}>
       <h6>{'Connected platers: ' + players.length}</h6>
       <ul data-testid='solutionField'>
-        {lines.map((line, index) => {
+        {blocks.map((block, index) => {
           return (
             <CodeLine
-              {...line}
+              block={block}
               index={index}
               moveBlock={moveBlock}
               maxIndent={MAX_INDENT}

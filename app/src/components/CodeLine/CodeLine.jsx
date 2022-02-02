@@ -18,7 +18,7 @@ import { OFFSET } from '../../utils/constants';
  * @param {function} moveBlock callback function to move the block
  * @returns CodeLine component
  */
-function CodeLine({ block, indent, index, moveBlock, maxIndent, draggable }) {
+function CodeLine({ block, index, moveBlock, maxIndent, draggable }) {
   const blockRef = useRef(null); // reference to get the position of the DOM element
   const MAX_INDENT = maxIndent;
   const [, lineDrop] = useDrop(
@@ -32,6 +32,7 @@ function CodeLine({ block, indent, index, moveBlock, maxIndent, draggable }) {
         const blockPosition = blockRef.current.getBoundingClientRect().x; // get position of codeblock DOM
         const offsetDifference = dragOffset - blockPosition; // check if a block is dragged over its "indent boundary"
         const differentLine = item.id !== block.id; // swap position if block is dragged acrossed a different code line
+        const indent = block.indent;
 
         if (differentLine) moveBlock(item.id, index, indent);
         else if (offsetDifference > OFFSET && indent < MAX_INDENT)
@@ -41,7 +42,7 @@ function CodeLine({ block, indent, index, moveBlock, maxIndent, draggable }) {
           moveBlock(item.id, index, indent - 1); // block is moved to the previous indent
       },
     }),
-    [block, moveBlock, indent]
+    [block, moveBlock]
   );
 
   return (
@@ -53,12 +54,11 @@ function CodeLine({ block, indent, index, moveBlock, maxIndent, draggable }) {
       <div
         id={`blockref-${block.id}`}
         ref={blockRef}
-        style={{ marginLeft: `${indent * OFFSET}px` }}
+        style={{ marginLeft: `${block.indent * OFFSET}px` }}
       >
         <CodeBlock
           {...block}
           index
-          blockIndent={indent}
           draggable={draggable} // TODO: might not need this
         />
       </div>

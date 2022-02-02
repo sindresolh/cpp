@@ -11,25 +11,25 @@
         {
           "code": "sum_numbers = 0",
           "category": "variable",
-          "indent": 0,
+          "indent": 1,
           "id": "2"
         },
         {
           "code": "for x in items:",
           "category": "loop",
-          "indent": 0,
+          "indent": 1,
           "id": "3"
         },
         {
           "code": "sum_numbers += x",
           "category": "undefined",
-          "indent": 0,
+          "indent": 2,
           "id": "4"
         },
         {
           "code": "return sum_numbers",
           "category": "undefined",
-          "indent": 0,
+          "indent": 1,
           "id": "5"
         }
       ],
@@ -43,11 +43,39 @@
         {
           "code": "for x in items.length:",
           "category": "undefined",
-          "indent": 0,
+          "indent": 1,
           "id": "7"
         }
       ],
       "description": "Create a function that sums elements in an array and returns the sum.",
+      "hints": ["Use 'def' to set up the function."],
+      "attempts": "unlimited",
+      "field": []
+    },
+    {
+      "codeBlocks": [
+        {
+          "code": "code1",
+          "category": "function",
+          "indent": 0,
+          "id": "1"
+        },
+        {
+          "code": "code2",
+          "category": "variable",
+          "indent": 0,
+          "id": "2"
+        }
+      ],
+      "distractors": [
+        {
+          "code": "distractor",
+          "category": "undefined",
+          "indent": 0,
+          "id": "3"
+        }
+      ],
+      "description": "SAMME OPPGAVE COPY PASTE",
       "hints": ["Use 'def' to set up the function."],
       "attempts": "unlimited",
       "field": []

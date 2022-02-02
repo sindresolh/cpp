@@ -30,7 +30,7 @@ export default function SidebarModal({
   buttonColor,
   borderColor,
   modalIsOpen,
-  field,
+  fieldBlocks,
   showFeedback,
   showClearBoardDialog,
   closeModal,
@@ -39,7 +39,6 @@ export default function SidebarModal({
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
   let correctSolution = currentTask.tasks[currentTaskNumber].codeBlocks;
-  let fieldBlocks = field.map((line) => line.block);
   let feedbackArray = linebasedfeedback(fieldBlocks, correctSolution);
   Modal.setAppElement('body');
 
