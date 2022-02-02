@@ -56,7 +56,7 @@ class CommunicationHandler extends Component {
     this.state = {
       players: [],
       connected: false,
-      nick: props.nick.trim(),
+      nick: props.nick.trim().substring(0, 20),
       isModalOpen: false,
     };
   }
@@ -288,7 +288,6 @@ class CommunicationHandler extends Component {
         onRemovedPeer={this.handlePeerLeft}
         onJoinedRoom={this.joinedRoom}
       >
-
         {this.state.connected ? <CommunicationListener /> : <PuzzleGif />}
 
         {/* Fancy alert for new events, for now only shows when there is a new task*/}
