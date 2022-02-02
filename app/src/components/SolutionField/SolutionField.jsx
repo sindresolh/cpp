@@ -156,6 +156,7 @@ function SolutionField({}) {
               index={index}
               moveBlock={moveBlock}
               maxIndent={MAX_INDENT}
+              draggable={true}
               key={`line-${index}`}
             />
           );

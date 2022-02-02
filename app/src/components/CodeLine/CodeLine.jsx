@@ -18,7 +18,7 @@ import { OFFSET } from '../../utils/constants';
  * @param {function} moveBlock callback function to move the block
  * @returns CodeLine component
  */
-function CodeLine({ block, indent, index, moveBlock, maxIndent }) {
+function CodeLine({ block, indent, index, moveBlock, maxIndent, draggable }) {
   const blockRef = useRef(null); // reference to get the position of the DOM element
   const MAX_INDENT = maxIndent;
   const [, lineDrop] = useDrop(
@@ -59,7 +59,7 @@ function CodeLine({ block, indent, index, moveBlock, maxIndent }) {
           {...block}
           index
           blockIndent={indent}
-          draggable={true} // TODO: might not need this
+          draggable={draggable} // TODO: might not need this
         />
       </div>
     </li>
