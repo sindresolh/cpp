@@ -63,7 +63,7 @@
             },
             {
                 "code": "print(number_1 / number_2)",
-                "category": "undefined",
+                "category": "function",
                 "indent": 0,
                 "id": "11"
             }
