@@ -3,12 +3,6 @@ import './CodeBlock.css';
 import { ItemTypes } from '../../utils/itemtypes';
 import { useDrag } from 'react-dnd';
 import PropTypes from 'prop-types';
-import { useDrop } from 'react-dnd';
-import { useState } from 'react';
-import { useEffect } from 'react';
-
-const OFFSET = 30;
-const MAX_INDENT = 7; // TODO: random value for now
 
 /**
  * This component represents a code block. Can be either in a player list or in a code line in the solution field.
@@ -68,8 +62,6 @@ function CodeBlock({
     [id, index, blockIndent, moveBlock]
   );
 
-  let indentMargin = `${blockIndent * OFFSET}px`;
-
   let className = isDragging
     ? `cb ${category} player${player} dragging`
     : `cb ${category} player${player}`;
@@ -77,12 +69,10 @@ function CodeBlock({
 
   return (
     <div
-      // ref={(node) => drag(drop(node))}
       ref={drag}
       data-testid={`codeBlock-player${player}`}
       id={id}
       className={className}
-      style={{ marginLeft: indentMargin }}
       key={`block-${id}`}
     >
       {code}
