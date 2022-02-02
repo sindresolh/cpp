@@ -136,7 +136,8 @@ const isAFunction = (string) => {
  * @returns true if the string is a loop
  */
 const isALoop = (string) => {
-  const regexForLoop = /^for [a-zA-Z0-9_]+ in [a-zA-Z0-9'_()\[\]="\s,*]+:$/;
+  // const regexForLoop = /^for [a-zA-Z0-9_]+ in [a-zA-Z0-9'_()\[\]="\s,*]+:$/;
+  const regexForLoop = /^(for\s)|(?=.*(\sfor\s))/; // TODO: Make this more advanced, for can come in a lot of variants (not only in the beginning)
   const regexWhileLoop = /^while [a-zA-Z0-9_()]+\s*[!=<>]*\s*[a-zA-Z0-9_()]+:$/;
   const regexLoopKeyWords = /(break|continue)$/;
   return (
