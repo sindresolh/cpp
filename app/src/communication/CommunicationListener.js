@@ -78,6 +78,13 @@ class CommunicationListener extends Component {
     let shuffleBlocks = [...currentTaskObject.codeBlocks];
     let shuffleDistractors = [...currentTaskObject.distractors];
 
+    // Set indent to 0 for blocks in the hand
+    shuffleBlocks = shuffleBlocks.map((block) => ({ ...block, indent: 0 }));
+    shuffleDistractors = shuffleDistractors.map((block) => ({
+      ...block,
+      indent: 0,
+    }));
+
     // shuffle codeblocks
     let codeblocks = shuffleCodeblocks(
       shuffleBlocks,

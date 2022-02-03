@@ -106,13 +106,13 @@ export const shuffleCodeblocks = (
 export const clearBoard = (field, handList) => {
   field = deepCopy(field);
   while (field.length > 0) {
-    var codeblock = field.pop().block;
+    var codeblock = field.pop();
+    codeblock.indent = 0;
     var player = codeblock.player - 1;
 
-    if (player > 0) {
+    if (player >= 0) {
       handList[player].push(codeblock);
     }
   }
-
   return handList;
 };

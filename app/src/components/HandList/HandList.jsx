@@ -14,13 +14,14 @@ import update from 'immutability-helper';
 import { ItemTypes } from '../../utils/itemtypes';
 import { useDrop } from 'react-dnd';
 import store from '../../redux/store/store';
+import CodeLine from '../CodeLine/CodeLine';
 
 /**
  * This component represents a list of code blocks. Each player will have a list.
  * This list can accept dragged codeblocks if it is the correct player.
  *
- * @param {Array} codeBlocks    code blocks in the list
- * @param {Number} player   which player owns the list
+ * @param {Number} player    which player owns the list
+ * @param {Boolean} draggable   whether the player (the client) is allowed to drag the blocks in this list
  * @returns a div containing a list of codeblocks
  */
 function HandList({ player, draggable }) {
@@ -46,11 +47,13 @@ function HandList({ player, draggable }) {
 
   // update the position of the block when moved inside a list
   const moveBlock = useCallback(
-    (id, atIndex, atIndent = 0, playerNo) => {
-      const block = findBlock(id);
+    (id, atIndex, atIndent = 0) => {
+      const blockObj = findBlock(id);
 
       // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
-      if (block !== undefined) swapBlockPositionInList(block, atIndex);
+      if (blockObj !== undefined) {
+        swapBlockPositionInList(blockObj, atIndex);
+      }
       // move block from solution field to hand list
       else moveBlockFromField(id, atIndex);
 
@@ -64,11 +67,11 @@ function HandList({ player, draggable }) {
    * @param {object} block  the moved block and the original index
    * @param {*} atIndex     the new index of the block
    */
-  const swapBlockPositionInList = (block, atIndex) => {
+  const swapBlockPositionInList = (blockObj, atIndex) => {
     const updatedBlocks = update(blocks, {
       $splice: [
-        [block.index, 1],
-        [atIndex, 0, block.block],
+        [blockObj.index, 1],
+        [atIndex, 0, blockObj.block],
       ],
     });
 
@@ -82,13 +85,12 @@ function HandList({ player, draggable }) {
    * @param {number} atIndex    the index the block is moved into
    */
   const moveBlockFromField = (id, atIndex) => {
-    let solutionField = store.getState().solutionField;
-    let movedBlock = solutionField.filter((line) => line.block.id === id)[0];
+    let fieldBlocks = store.getState().solutionField;
+    let movedBlock = fieldBlocks.filter((block) => block.id === id)[0];
 
     // players cannot move their own blocks to another player's hand
     // a player can only move their own block to their own hand from solution field
-    if (movedBlock !== undefined && movedBlock.block.player === player) {
-      movedBlock = movedBlock.block;
+    if (movedBlock !== undefined && movedBlock.player === player) {
       const updatedBlocks = [
         ...blocks.slice(0, atIndex),
         movedBlock,
@@ -102,23 +104,13 @@ function HandList({ player, draggable }) {
   };
 
   // blocks can be dropped into empty hand list
-  const [, drop] = useDrop(
+  const [, emptyListDrop] = useDrop(
     () => ({
       accept: ItemTypes.CODEBLOCK,
       canDrop: () => emptyList,
       hover: (item) => {
-        if (emptyList && item.player === player) {
-          const solutionField = store.getState().solutionField;
-          const line = solutionField.filter(
-            (line) => line.block.id === item.id
-          )[0];
-          const block = line.block;
-
-          // only allow dropping into empty list if it's the player's block
-          dispatch(setList([block], handListIndex));
-          dispatch(listEvent());
-          dispatch(removeBlockFromField(item.id));
-          dispatch(fieldEvent());
+        if (item.player === player && emptyList) {
+          moveBlock(item.id);
         }
       },
     }),
@@ -126,22 +118,18 @@ function HandList({ player, draggable }) {
   );
 
   return (
-    <div className={'divHL'} ref={drop} key ={draggable}>
+    <div className={'divHL'} ref={emptyListDrop} key={draggable}>
       <ul data-testid={`handList-player${player}`}>
-        {blocks.map((codeBlock) => {
+        {blocks.map((block, index) => {
           return (
-            <li
-              className={'li'}
-              key={codeBlock.id}
-              data-testid={`listitem-player${player}`}
-            >
-              <CodeBlock
-                {...codeBlock}
-                draggable={draggable}
-                moveBlock={moveBlock}
-                findBlock={findBlock}
-              />
-            </li>
+            <CodeLine
+              block={block}
+              index={index}
+              moveBlock={moveBlock}
+              maxIndent={0}
+              draggable={draggable}
+              key={`player-${player}-line-${index}`}
+            />
           );
         })}
       </ul>
@@ -150,8 +138,8 @@ function HandList({ player, draggable }) {
 }
 
 HandList.propTypes = {
-  codeBlocks: PropTypes.array,
   player: PropTypes.number,
+  draggable: PropTypes.bool,
 };
 
 export default HandList;

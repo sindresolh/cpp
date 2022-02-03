@@ -16,7 +16,7 @@ const solutionFieldReducer = (state = [], action) => {
     }
     case ACTIONS.REMOVE_BLOCK_FROM_FIELD: {
       const updatedState = state.filter(
-        (line) => line.block.id !== action.payload.id
+        (block) => block.id !== action.payload.id
       );
       return updatedState;
     }

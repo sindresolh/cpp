@@ -34,7 +34,7 @@ export default function Sidebar() {
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
   let currentTaskObject = currentTask.tasks[currentTaskNumber];
-  let field = useSelector((state) => state.solutionField);
+  const fieldBlocks = useSelector((state) => state.solutionField);
 
   /* Close the modal. Callback from SideBarModal*/
   const closeModal = () => {
@@ -113,7 +113,6 @@ export default function Sidebar() {
    * Make all players go to the next task of the submit is correct
    */
   const handleSubmit = () => {
-    const fieldBlocks = field.map((line) => line.block);
     const correctSolution = arrayIsEqual(
       fieldBlocks,
       currentTaskObject.codeBlocks
@@ -166,7 +165,7 @@ export default function Sidebar() {
         buttonText={modalButtonText}
         buttonColor={modalButtonColor}
         borderColor={modalBorderColor}
-        field={field}
+        fieldBlocks={fieldBlocks}
         showFeedback={feedbackVisibility}
         showClearBoardDialog={hasClearBoardDialog}
         closeModal={() => closeModal()}
