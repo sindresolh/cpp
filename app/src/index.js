@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './redux/store/store';
 import JoinGame from './components/Lobby/JoinGame';
+import Sidebar from './components/Sidebar/Sidebar';
 
 ReactDOM.render(
   <React.StrictMode>

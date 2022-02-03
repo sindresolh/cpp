@@ -48,7 +48,7 @@
         }
       ],
       "description": "Create a function that sums elements in an array and returns the sum.",
-      "hints": ["Use 'def' to set up the function."],
+      "hints": ["Use 'def' to set up the function.", "Hint number 2"],
       "attempts": "unlimited",
       "field": []
     },
