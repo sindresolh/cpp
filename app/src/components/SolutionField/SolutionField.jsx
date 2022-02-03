@@ -20,9 +20,11 @@ import { useRef } from 'react';
 import { useEffect } from 'react';
 
 /**
+ * The field the players can move blocks into.
+ * The field contains codelines which allows indenting of blocks, as well as
+ * swapping positions by dragging.
  *
- * @param {Array} codeLines    an array where each element is a block and it's indent
- * @returns a div containing the blocks players has moved to
+ * @returns a div containing the blocks players has moved blocks into
  */
 function SolutionField({}) {
   const blocks = useSelector((state) => state.solutionField);
@@ -45,11 +47,8 @@ function SolutionField({}) {
   );
 
   // move the block within the field or to a hand list
-  // TODO: make sure it works with indents
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0) => {
-      let updatedLines;
-      let line;
       // get block if it exists in solutionfield
       const block = findBlock(id);
       if (block === undefined) {
@@ -88,7 +87,6 @@ function SolutionField({}) {
    * and add it to the solution field.
    * @param {string} id the id of the block that was dragged
    * @param {number} atIndex    the index it was dragged into
-   * @param {number} atIndent   the indent it was dragged into
    */
   const moveBlockFromList = (id, atIndex) => {
     const handLists = store.getState().handList;
@@ -154,9 +152,5 @@ function SolutionField({}) {
     </div>
   );
 }
-
-SolutionField.propTypes = {
-  codeLines: PropTypes.array,
-};
 
 export default SolutionField;

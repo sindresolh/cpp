@@ -5,7 +5,7 @@ export const sampleBlockP1 = {
   code: 'x = 1',
   player: PLAYER.P1,
   category: CATEGORY.VARIABLE,
-  indent: 0,
+  indent: 1,
 };
 
 export const sampleBlockP2 = {
