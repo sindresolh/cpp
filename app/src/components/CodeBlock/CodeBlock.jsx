@@ -13,9 +13,9 @@ import PropTypes from 'prop-types';
  * @param {number} player   the player number who owns this block
  * @param {string} category   the category, e.g. 'variable' or 'function'
  * @param {number} indent   what indent the block is in
+ * @param {number} index  what index the codeblock is at
  *  @param {function} moveBlock move the block to a a new position
  * @param {function} findBlock find the current position of the block
- * @param {string} placement    reference to where this block is placed (player list or in solution field)
  * @returns a draggable div containing a code block
  */
 function CodeBlock({
@@ -85,7 +85,10 @@ CodeBlock.propTypes = {
   code: PropTypes.string,
   player: PropTypes.number,
   category: PropTypes.string,
-  placement: PropTypes.element, // TODO: reference the element the block is in
+  indent: PropTypes.number,
+  index: PropTypes.number,
+  moveBlock: PropTypes.func,
+  draggable: PropTypes.bool,
 };
 
 export default CodeBlock;

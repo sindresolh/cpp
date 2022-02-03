@@ -20,8 +20,8 @@ import CodeLine from '../CodeLine/CodeLine';
  * This component represents a list of code blocks. Each player will have a list.
  * This list can accept dragged codeblocks if it is the correct player.
  *
- * @param {Array} codeBlocks    code blocks in the list
- * @param {Number} player   which player owns the list
+ * @param {Number} player    which player owns the list
+ * @param {Boolean} draggable   whether the player (the client) is allowed to drag the blocks in this list
  * @returns a div containing a list of codeblocks
  */
 function HandList({ player, draggable }) {
@@ -46,7 +46,7 @@ function HandList({ player, draggable }) {
 
   // update the position of the block when moved inside a list
   const moveBlock = useCallback(
-    (id, atIndex, atIndent = 0, playerNo) => {
+    (id, atIndex, atIndent = 0) => {
       const blockObj = findBlock(id);
 
       // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
@@ -137,8 +137,8 @@ function HandList({ player, draggable }) {
 }
 
 HandList.propTypes = {
-  codeBlocks: PropTypes.array,
   player: PropTypes.number,
+  draggable: PropTypes.bool,
 };
 
 export default HandList;

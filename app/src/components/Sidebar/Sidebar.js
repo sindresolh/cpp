@@ -153,41 +153,6 @@ export default function Sidebar() {
       );
     }
   };
-  // const handleSubmit = () => {
-  //   if (currentTaskNumber === currentTask.tasks.length - 1) {
-  //     openModal(
-  //       CheckIcon,
-  //       'Task set finished',
-  //       'Congratulations! You finished all the tasks.',
-  //       'Finish',
-  //       COLORS.lightgreen,
-  //       COLORS.darkgreen,
-  //       'none'
-  //     );
-  //   } else if (arrayIsEqual(fieldBlocks, currentTaskObject.codeBlocks)) {
-  //     dispatch(nextTask());
-  //     dispatch(taskEvent());
-  //     openModal(
-  //       CheckIcon,
-  //       'Correct',
-  //       'Continues to next task',
-  //       'Next task',
-  //       COLORS.lightgreen,
-  //       COLORS.darkgreen,
-  //       'none'
-  //     );
-  //   } else {
-  //     openModal(
-  //       CrossIcon,
-  //       'Incorrect',
-  //       'Unfortunately this is incorrect. Please try again.',
-  //       'Try again',
-  //       COLORS.lightred,
-  //       COLORS.darkred,
-  //       'block'
-  //     );
-  //   }
-  // };
 
   return (
     <div className='Sidebar' style={{ background: COLORS.sidebar }}>

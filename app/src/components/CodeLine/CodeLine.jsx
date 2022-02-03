@@ -6,6 +6,7 @@ import { ItemTypes } from '../../utils/itemtypes';
 import './CodeLine.css';
 import { useRef } from 'react';
 import { OFFSET } from '../../utils/constants';
+import PropTypes from 'prop-types';
 
 /**
  * A line which contains a code block. Can either be in a hand or in the solution field.
@@ -15,7 +16,9 @@ import { OFFSET } from '../../utils/constants';
  *
  * @param {object} block contains information about a code block
  * @param {number} index the index of this code line
- * @param {function} moveBlock callback function to move the block
+ * @param {Function} moveBlock callback function to move the block
+ * @param {number} maxIndent  the max indent a block can have
+ * @param {boolean} draggable whether the player shall be able to drag the block or not
  * @returns CodeLine component
  */
 function CodeLine({ block, index, moveBlock, maxIndent, draggable }) {
@@ -47,20 +50,29 @@ function CodeLine({ block, index, moveBlock, maxIndent, draggable }) {
 
   return (
     <li
-      data-testid='lines'
+      data-testid='codeline'
       style={{ background: COLORS.codeline }}
       ref={lineDrop}
       key={draggable}
     >
       <div
         id={`blockref-${block.id}`}
+        data-testid={`blockref-${block.id}`}
         ref={blockRef}
         style={{ marginLeft: `${block.indent * OFFSET}px` }}
       >
-        <CodeBlock {...block} index draggable={draggable} />
+        <CodeBlock {...block} index={index} draggable={draggable} />
       </div>
     </li>
   );
 }
+
+CodeLine.propTypes = {
+  block: PropTypes.object,
+  index: PropTypes.number,
+  moveBlock: PropTypes.func,
+  maxIndent: PropTypes.number,
+  draggable: PropTypes.bool,
+};
 
 export default CodeLine;
