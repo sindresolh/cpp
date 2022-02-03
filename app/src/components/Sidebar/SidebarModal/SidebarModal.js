@@ -30,7 +30,7 @@ export default function SidebarModal({
   buttonColor,
   borderColor,
   modalIsOpen,
-  field = null,
+  fieldBlocks,
   showFeedback = 'none',
   showClearBoardDialog = 'none',
   closeModal,
@@ -39,11 +39,8 @@ export default function SidebarModal({
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
   let correctSolution = currentTask.tasks[currentTaskNumber].codeBlocks;
-  let feedbackArray = [];
-  if (field) {
-    let fieldBlocks = field.map((line) => line.block);
-    feedbackArray = linebasedfeedback(fieldBlocks, correctSolution);
-  }
+  let feedbackArray = linebasedfeedback(fieldBlocks, correctSolution);
+
   Modal.setAppElement('body');
 
   let cancelButtonPosition = '7.5em';
@@ -84,7 +81,6 @@ export default function SidebarModal({
 
         <ul style={{ display: showFeedback }}>
           {feedbackArray.map((item) => {
-            // console.log('is correct', item.codeBlock.code, item.isCorrect);
             return (
               <li
                 className={item.isCorrect ? 'correctItem' : 'incorrectItem'}

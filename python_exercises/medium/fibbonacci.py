@@ -4,11 +4,12 @@
 # The program then prints out the first n numbers in the fibonacci sequence.
 # The first two numbers in the fibonacci sequence is 0 and 1.
 # The next number is obtained by adding the preceding two terms. 
-# So the first 7 numbers in the fibonacci sequence becomes: 0, 1, 1, 2, 3, 5, 8
 
+# Hint: The first 7 numbers in the fibonacci sequence becomes: 0, 1, 1, 2, 3, 5, 8
 # Hint : A fibbonaci sequence with 1 entry is an edge case. Check for this edge case first.
+# Hint: All codeblocks should be utilized in this task. No distractors.
 
-n = int(input("How long should the fibonacci sequence be? "))
+n = int(input("Enter sequence lenght "))
 n1, n2 = 0, 1
 count = 0
 if n == 1:
