@@ -50,6 +50,7 @@ function CodeLine({ block, index, moveBlock, maxIndent, draggable }) {
       data-testid='lines'
       style={{ background: COLORS.codeline }}
       ref={lineDrop}
+      key={draggable}
     >
       <div
         id={`blockref-${block.id}`}
