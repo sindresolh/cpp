@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Sidebar.css';
 import SidebarButton from './SidebarButton/SidebarButton';
 import SidebarModal from './SidebarModal/SidebarModal';
@@ -35,6 +35,14 @@ export default function Sidebar() {
   let currentTaskNumber = currentTask.currentTaskNumber;
   let currentTaskObject = currentTask.tasks[currentTaskNumber];
   let field = useSelector((state) => state.solutionField);
+  const [currentHintNo, setCurrentHintNo] = useState(0);
+
+  /**
+   * Reset current hint when a new task is started.
+   */
+  useEffect(() => {
+    setCurrentHintNo(0);
+  }, [currentTask]);
 
   /* Close the modal. Callback from SideBarModal*/
   const closeModal = () => {
@@ -178,17 +186,22 @@ export default function Sidebar() {
           title='Hint'
           icon={HintIcon}
           color={COLORS.lightyellow}
-          handleClick={() =>
+          handleClick={() => {
             openModal(
               HintIcon,
-              'Hint',
-              currentTaskObject.hints[0], // TODO: allow getting more than 1 hint
+              `Hint ${currentHintNo + 1}/${currentTaskObject.hints.length}`,
+              currentTaskObject.hints[currentHintNo],
               'Back to task',
               COLORS.lightyellow,
               COLORS.darkyellow,
               'none'
-            )
-          }
+            );
+            let updatedCurrentHintNo =
+              currentHintNo < currentTaskObject.hints.length - 1
+                ? currentHintNo + 1
+                : 0;
+            setCurrentHintNo(updatedCurrentHintNo);
+          }}
         />
       </div>
 
