@@ -24,9 +24,12 @@ import {
   arrayIsEqual,
 } from '../utils/compareArrays/compareArrays';
 import { clearBoard } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
+import PuzzleGif from '../components/Lobby/PuzzleGif';
+import SidebarModal from '../components/Sidebar/SidebarModal/SidebarModal';
+import SubmitIcon from '../images/buttonIcons/submit.png';
+import { COLORS } from '../utils/constants';
 
 const mapStateToProps = null;
-
 /** Helper function to let us call dispatch from a class function
  *
  * @param {*} dispatch
@@ -53,21 +56,29 @@ class CommunicationHandler extends Component {
     this.state = {
       players: [],
       connected: false,
+      nick: props.nick.trim().substring(0, 20),
+      isModalOpen: false,
     };
   }
+
+  /* Close the modal. Callback from SideBarModal*/
+  closeModal() {
+    this.setState({ isModalOpen: false });
+  }
+
   /**
    * Adds a new client to the room
    *
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room2');
+  join = (webrtc) => webrtc.joinRoom('cpp-room3');
 
   /**
    * Called when a new peer is added to the room
    *
    * @param {*} webrtc : Keeps information about the room
-   * @param {*} peer : Keeps information about this peer
+   * @param {*} peer : Keeps information about the peer that sent this message
    */
   handleCreatedPeer = (webrtc, peer) => {
     const { dispatch_addPlayer } = this.props;
@@ -79,7 +90,7 @@ class CommunicationHandler extends Component {
    * Called when a new peer leaves the room
    *
    * @param {*} webrtc : Keeps information about the room
-   * @param {*} peer : Keeps information about this peer
+   * @param {*} peer : Keeps information about the peer that sent this message
    */
   handlePeerLeft = (webrtc, peer) => {
     const { dispatch_removePlayer } = this.props;
@@ -93,7 +104,10 @@ class CommunicationHandler extends Component {
    */
   joinedRoom = (webrtc) => {
     const { dispatch_setPlayers } = this.props;
-    dispatch_setPlayers([...webrtc.getPeers(), { id: 'YOU' }]);
+    dispatch_setPlayers([
+      ...webrtc.getPeers(),
+      { id: 'YOU', nick: this.state.nick },
+    ]);
     this.setState({ connected: true });
   };
 
@@ -103,7 +117,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : Keeps information about the room
    * @param {*} type : The type of event that was called
    * @param {*} payload : Receiving data
-   * @param {*} peer : Keeps information about this peer
+   * @param {*} peer : Keeps information about the peer that sent this message
    */
   handlePeerData = (webrtc, type, payload, peer) => {
     switch (type) {
@@ -120,7 +134,7 @@ class CommunicationHandler extends Component {
         this.clearTask();
         break;
       case START_GAME:
-        this.startGame(payload);
+        this.startGame(payload, peer);
         break;
       default:
         return;
@@ -179,6 +193,7 @@ class CommunicationHandler extends Component {
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState.currentTask) {
+      this.setState({ isModalOpen: true });
       const { dispatch_nextTask } = this.props;
       dispatch_nextTask();
       this.initialFieldFromFile();
@@ -200,12 +215,53 @@ class CommunicationHandler extends Component {
     this.initialFieldFromFile();
   }
 
+  /**
+   * Finds a player with a given player id.
+   * Defaults to myself if not found.
+   *
+   * @returns
+   */
+  getPeer(players, pid) {
+    for (let p of players) {
+      if (p.id === pid) {
+        return p;
+      }
+    }
+    return { id: 'YOU', nick: this.state.nick };
+  }
+
+  /**
+   * Takes the players from store and rearranges them in the order of the playerIds
+   *
+   * @param {*} players : array of peers from store
+   * @param {*} playerIds : order of the players sent from the player that initated the game
+   * @param {*} peer : the player that initiated the game
+   */
+  assignPlayerOrder(players, playerIds, peer) {
+    let newPlayers = [];
+
+    while (playerIds.length > 0) {
+      let pid = playerIds.shift(); // Takes out first id
+
+      if (pid === 'YOU') {
+        // This is the sender
+        newPlayers.push(peer);
+        continue;
+      }
+      newPlayers.push(this.getPeer(players, pid));
+    }
+    const { dispatch_setPlayers } = this.props;
+    dispatch_setPlayers(newPlayers);
+  }
+
   /** Another player started the game from the lobby
    *
-   * @param {*} payload
+   * @param {*} payload : Data sent with this message
+   * @param {*} peer : Keeps information about the peer that sent this message
    */
-  startGame(payload) {
-    const prevState = store.getState().inProgress;
+  startGame(payload, peer) {
+    const state = store.getState();
+    const prevState = state.inProgress;
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState.inProgress) {
@@ -217,24 +273,34 @@ class CommunicationHandler extends Component {
 
       const { dispatch_startGame } = this.props;
       dispatch_startGame();
+
+      this.assignPlayerOrder(state.players, payloadState.playerIds, peer);
     }
   }
 
   render() {
     return (
       <LioWebRTC
-        options={{ dataOnly: true }}
+        options={{ dataOnly: true, nick: this.state.nick }}
         onReady={this.join}
         onCreatedPeer={this.handleCreatedPeer}
         onReceivedPeerData={this.handlePeerData}
         onRemovedPeer={this.handlePeerLeft}
         onJoinedRoom={this.joinedRoom}
       >
-        {this.state.connected ? (
-          <CommunicationListener />
-        ) : (
-          <h1>Waiting to connect</h1>
-        )}
+        {this.state.connected ? <CommunicationListener /> : <PuzzleGif />}
+
+        {/* Fancy alert for new events, for now only shows when there is a new task*/}
+        <SidebarModal
+          modalIsOpen={this.state.isModalOpen}
+          icon={SubmitIcon}
+          title={'New task'}
+          description={'Another player initiated a new task.'}
+          buttonText={'Ok'}
+          buttonColor={COLORS.lightgreen}
+          borderColor={COLORS.darkgreen}
+          closeModal={() => this.closeModal()}
+        />
       </LioWebRTC>
     );
   }

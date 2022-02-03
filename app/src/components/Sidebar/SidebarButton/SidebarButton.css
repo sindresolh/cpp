@@ -1,21 +1,33 @@
 .SideBarButton {
   display: inline-flex;
-  width: 7em;
   height: 3em;
   margin: 0.4em;
   border-radius: 1em;
   border-style: none;
   font-weight: bold;
   font-size: 1em;
+  cursor: default;
 }
 
-button > div {
+.SideBarButton:hover {
+  cursor: pointer;
+}
+
+.SideBarButton > div,
+.SideBarButton > img {
   position: 'absolute';
+  pointer-events: none;
+}
+
+.SideBarButton > div {
   padding-top: 0.7em;
   margin-left: 0.5em;
 }
 
-button > img {
-  position: 'absolute';
+.SideBarButton > img {
   padding-top: 0.3em;
+}
+
+.SideBarButton:disabled {
+  cursor: no-drop;
 }

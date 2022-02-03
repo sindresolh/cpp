@@ -7,6 +7,7 @@ import MainPage from './components/MainPage';
  * @returns
  */
 function App() {
+  document.title = 'Code puzzle';
   return <MainPage />;
 }
 

@@ -31,15 +31,16 @@ export default function SidebarModal({
   borderColor,
   modalIsOpen,
   fieldBlocks,
-  showFeedback,
-  showClearBoardDialog,
+  showFeedback = 'none',
+  showClearBoardDialog = 'none',
   closeModal,
-  clearBoard,
+  clearBoard = null,
 }) {
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
   let correctSolution = currentTask.tasks[currentTaskNumber].codeBlocks;
   let feedbackArray = linebasedfeedback(fieldBlocks, correctSolution);
+
   Modal.setAppElement('body');
 
   let cancelButtonPosition = '7.5em';

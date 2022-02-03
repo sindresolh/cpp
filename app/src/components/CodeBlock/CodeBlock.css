@@ -1,7 +1,7 @@
 .cb {
   border: solid;
   border-radius: 8px;
-  width: 7vw;
+  max-width: 15vw;
   margin: 2px;
   padding: 7px;
   text-align: left;

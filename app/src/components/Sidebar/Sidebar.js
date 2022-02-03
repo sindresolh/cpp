@@ -112,7 +112,7 @@ export default function Sidebar() {
   /**
    * Make all players go to the next task of the submit is correct
    */
-  const handleSubmit = () => {
+  const handleSubmit = () => 
     const correctSolution = arrayIsEqual(
       fieldBlocks,
       currentTaskObject.codeBlocks
