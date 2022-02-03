@@ -1,10 +1,10 @@
 import { ACTIONS } from '../../actions/ACTIONS';
 // Get the current taskset - mocking this for now
-// IMPORTANT : taskset1 is assumed for all tests
+// IMPORTANT : taskset is assumed for all tests
 //import { taskset } from '../../../utils/taskset1/taskset';
 // TODO: Store all tasksets in one JSON file so all sets can be accessed from that import.
 // TODO: --if we use a server in the future we would just fetch from there
-import tasksets from '../../../utils/taskset2/tasksets.json';
+import tasksets from '../../../utils/tasksets/tasksets.json';
 
 /**
  *
