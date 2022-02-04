@@ -5,7 +5,10 @@
 # Hint: Given "Emma is good developer. Emma is a writer" the function should return 2.
 # Hint: Use string method count()
 
-str = "Emma is good developer. Emma is a writer"
+str1 =  "Emma is a good writer."
+str2 = "Emma is great developer."
+str3 = str1 + str2
+
 answ = str.count("Emma")
 print(answ)
 
