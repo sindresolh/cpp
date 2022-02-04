@@ -1,7 +1,7 @@
 import { ACTIONS } from './ACTIONS';
 
 /** Called to start the game for all connected players
- * See reducers/gameState/inProgress
+ * See reducers/gameState/status
  *
  * @param {*} state : boolean, is the game in progresS?
  * @returns
@@ -9,6 +9,34 @@ import { ACTIONS } from './ACTIONS';
 export const startGame = (state) => {
   return {
     type: ACTIONS.START_GAME,
+    payload: {
+      state,
+    },
+  };
+};
+
+/**
+ * Called to finish the game.
+ * @param {*} state
+ * @returns
+ */
+export const finishGame = (state) => {
+  return {
+    type: ACTIONS.FINISH_GAME,
+    payload: {
+      state,
+    },
+  };
+};
+
+/**
+ * Go to the
+ * @param {*} state
+ * @returns
+ */
+export const goToLobby = (state) => {
+  return {
+    type: ACTIONS.GO_TO_LOBBY,
     payload: {
       state,
     },
@@ -175,6 +203,20 @@ export const taskEvent = (state) => {
   };
 };
 
+/**
+ * Notify other players peers that the final task was submitted.
+ * @param {*} state : Date when this reducer was called last time
+ * @returns
+ */
+export const finishEvent = (state) => {
+  return {
+    type: ACTIONS.FINISH_EVENT,
+    payload: {
+      state,
+    },
+  };
+};
+
 /** Go the next task.
  *  See reducers/gameState/task
  *
@@ -186,6 +228,21 @@ export const nextTask = (state) => {
     type: ACTIONS.NEXT_TASK,
     payload: {
       state,
+    },
+  };
+};
+
+/** Set task number.
+ *  See reducers/gameState/task
+ *
+ * @param {*} state : int
+ * @returns
+ */
+export const setTaskNumber = (number) => {
+  return {
+    type: ACTIONS.SET_TASK,
+    payload: {
+      number,
     },
   };
 };

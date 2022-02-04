@@ -9,6 +9,7 @@ import {
   NEXT_TASK,
   CLEAR_TASK,
   START_GAME,
+  FINISHED,
 } from './messages';
 import {
   startGame,
@@ -16,10 +17,10 @@ import {
   setFieldState,
   listEvent,
   fieldEvent,
+  finishEvent,
 } from '../redux/actions';
 import { shuffleCodeblocks } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
-import Lobby from '../components/Lobby/Lobby';
-import Player from '../components/Player/Player';
+import { STATUS } from '../utils/constants';
 
 /**
  * Helper function to retrive data from the redux store.
@@ -35,8 +36,9 @@ const mapStateToProps = (state) => ({
   fieldEvent: state.fieldEvent,
   taskEvent: state.taskEvent,
   clearEvent: state.clearEvent,
-  inProgress: state.inProgress,
+  status: state.status,
   players: state.players,
+  finishEvent: state.finishEvent,
 });
 
 /** Helper function to let us call dispatch from a class function
@@ -51,6 +53,7 @@ function mapDispatchToProps(dispatch) {
     dispatch_startGame: (...args) => dispatch(startGame(...args)),
     dispatch_listEvent: (...args) => dispatch(listEvent(...args)),
     dispatch_fieldEvent: (...args) => dispatch(fieldEvent(...args)),
+    dispatch_finishEvent: (...args) => dispatch(finishEvent(...args)),
   };
 }
 
@@ -139,30 +142,26 @@ class CommunicationListener extends Component {
       // This peer cleared the board
       const json = JSON.stringify(state.currentTask);
       this.props.webrtc.shout(CLEAR_TASK, json);
-    } else if (prevProps.inProgress !== this.props.inProgress) {
+    } else if (prevProps.status !== this.props.status) {
       // This player started the game from the lobby
       let playerIds = state.players.map((p) => p.id);
 
       const json = JSON.stringify({
-        inProgress: state.inProgress,
+        status: state.status,
         handList: state.handList,
         solutionField: state.solutionField,
         playerIds: playerIds,
       });
-      this.props.webrtc.shout(START_GAME, json);
+      if (state.status === STATUS.GAME) {
+        this.props.webrtc.shout(START_GAME, json);
+      }
+    } else if (prevProps.finishEvent !== this.props.finishEvent) {
+      this.props.webrtc.shout(FINISHED, '');
     }
   }
 
   render() {
-    return (
-      <>
-        {store.getState().inProgress ? (
-          <App />
-        ) : (
-          <Lobby handleClick={() => this.start()} />
-        )}
-      </>
-    );
+    return <App startGame={() => this.start()} />;
   }
 }
 
