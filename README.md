@@ -1,5 +1,7 @@
 # Cooperative Parssons Problems (CPP)
 
+## ADVARSEL: Kun ha en server kjørende om gangen, ellers blir det rot
+
 ## Oppdatert design (13.1.22)
 <img src="./documentation/images/design_v2_clean.png" width="500">
 <img src="./documentation/images/design_v2.png" width="500">
