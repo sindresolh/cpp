@@ -128,6 +128,7 @@ export default function Sidebar() {
     const lastTask = currentTaskNumber === currentTask.tasks.length - 1;
 
     if (correctSolution && lastTask) {
+      dispatch();
       openModal(
         CheckIcon,
         'Task set finished',
