@@ -152,8 +152,9 @@ class CommunicationListener extends Component {
         solutionField: state.solutionField,
         playerIds: playerIds,
       });
-      if (state.status === STATUS.START_GAME)
+      if (state.status === STATUS.GAME) {
         this.props.webrtc.shout(START_GAME, json);
+      }
     } else if (prevProps.finishEvent !== this.props.finishEvent) {
       this.props.webrtc.shout(FINISHED, '');
     }

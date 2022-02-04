@@ -12,6 +12,7 @@ import {
   removePlayer,
   startGame,
   finishGame,
+  setTaskNumber,
 } from '../redux/actions';
 import {
   SET_LIST,
@@ -48,6 +49,7 @@ function mapDispatchToProps(dispatch) {
     dispatch_removePlayer: (...args) => dispatch(removePlayer(...args)),
     dispatch_startGame: (...args) => dispatch(startGame(...args)),
     dispatch_finishGame: (...args) => dispatch(finishGame(...args)),
+    dispatch_setTaskNumber: (...args) => dispatch(setTaskNumber(...args)),
   };
 }
 
@@ -71,9 +73,10 @@ class CommunicationHandler extends Component {
     this.setState({ isModalOpen: false });
   }
 
-  /* Close the modal and dispatch to go to the finish screen.*/
+  /* Close the modal, reset task number to 0 and dispatch to go to the finish screen.*/
   finishModal() {
     this.setState({ isModalOpen: false });
+    this.props.dispatch_setTaskNumber(0);
     this.props.dispatch_finishGame();
   }
 

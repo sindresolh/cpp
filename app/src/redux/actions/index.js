@@ -232,6 +232,21 @@ export const nextTask = (state) => {
   };
 };
 
+/** Set task number.
+ *  See reducers/gameState/task
+ *
+ * @param {*} state : int
+ * @returns
+ */
+export const setTaskNumber = (number) => {
+  return {
+    type: ACTIONS.SET_TASK,
+    payload: {
+      number,
+    },
+  };
+};
+
 /** Update a player object
  * See reducers/gameState/player
  *

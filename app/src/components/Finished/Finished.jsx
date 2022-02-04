@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { goToLobby } from '../../redux/actions';
+import { goToLobby, setTaskNumber } from '../../redux/actions';
 import './Finished.css';
 import SidebarButton from '../Sidebar/SidebarButton/SidebarButton';
 import CheckButton from '../../images/buttonIcons/check.png';
@@ -17,7 +17,10 @@ function Finished() {
         title='Return to lobby'
         icon={CheckButton}
         color={COLORS.lightblue}
-        handleClick={() => dispatch(goToLobby())}
+        handleClick={() => {
+          dispatch(setTaskNumber(0));
+          dispatch(goToLobby());
+        }}
         width='20vh'
       />
     </div>

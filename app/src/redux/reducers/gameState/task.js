@@ -37,6 +37,8 @@ const taskReducer = (state = initialState, action) => {
         ...state,
         currentTaskNumber: state.currentTaskNumber + 1,
       };
+    case ACTIONS.SET_TASK:
+      return { ...state, currentTaskNumber: action.payload.number };
     default:
       return state;
   }
