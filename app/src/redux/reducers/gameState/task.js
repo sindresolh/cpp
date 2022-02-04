@@ -7,6 +7,8 @@ import { ACTIONS } from '../../actions/ACTIONS';
 //import tasksets from '../../../utils/tasksets/tasksets.json';
 import tasksets from '../../../utils/tasksets/simpletasks.json';
 
+alert(tasksets[0].length);
+
 /**
  *
  * @param {Integer} number the tasket number

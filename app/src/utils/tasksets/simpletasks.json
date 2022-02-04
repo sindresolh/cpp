@@ -1,5 +1,105 @@
 [
   [  {
+      "codeBlocks": [
+        {
+          "code": "def sum_list(items):",
+          "category": "function",
+          "indent": 0,
+          "id": "1"
+        },
+        {
+          "code": "sum_numbers = 0",
+          "category": "variable",
+          "indent": 1,
+          "id": "2"
+        },
+        {
+          "code": "for x in items:",
+          "category": "loop",
+          "indent": 1,
+          "id": "3"
+        },
+        {
+          "code": "sum_numbers += x",
+          "category": "variable",
+          "indent": 2,
+          "id": "4"
+        },
+        {
+          "code": "return numbers",
+          "category": "function",
+          "indent": 1,
+          "id": "5"
+        }
+      ],
+      "distractors": [
+        {
+          "code": "function sum_list(items)",
+          "category": "function",
+          "indent": 0,
+          "id": "6"
+        },
+        {
+          "code": "for x in items.lenght:",
+          "category": "loop",
+          "indent": 1,
+          "id": "7"
+        }
+      ],
+      "description": "Create a function that sums elements in an array and returns the sum.",
+      "hints": ["Use 'def' to set up the function."],
+      "attempts": "unlimited",
+      "field": []
+    },
+    {
+        "codeBlocks": [
+            {
+                "code": "num_list = [10, 33, 55]",
+                "category": "variable",
+                "indent": 0,
+                "id": "1"
+            },
+            {
+                "code": "for num in num_list:",
+                "category": "loop",
+                "indent": 0,
+                "id": "2"
+            },
+            {
+                "code": "if num % 5 == 0:",
+                "category": "condition",
+                "indent": 2,
+                "id": "3"
+            },
+            {
+                "code": "print(num)",
+                "category": "function",
+                "indent": 4,
+                "id": "4"
+            }
+        ],
+        "distractors": [
+            {
+                "code": "if num / 5 == 0:",
+                "category": "condition",
+                "indent": 0,
+                "id": "5"
+            },
+            {
+                "code": "for num in range(num_list):",
+                "category": "loop",
+                "indent": 0,
+                "id": "6"
+            }
+        ],
+        "description": "Iterate the given list of numbers and print only those numbers which are divisible by 5",
+        "hints": [
+            "% (modulo) is a math operation that finds the remainder when one integer is divided by another"
+        ],
+        "attempts": "unlimited",
+        "field": []
+    },
+    {
         "codeBlocks": [
             {
                 "code": "def first_equals_last(numList):",
@@ -64,7 +164,7 @@
                 "id": "10"
             }
         ],
-        "description": "Description: Write a function to return True if the first and last number of a given list is same. If numbers are different then return False.",
+        "description": "Write a function to return True if the first and last number of a given list is same. If numbers are different then return False.",
         "hints": [
             "Given list: [10, 20, 30, 40, 10] result is True",
             "Given list: [75, 65, 35, 75, 30] result is False"
