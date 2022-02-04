@@ -128,7 +128,7 @@ function SolutionField({}) {
 
   return (
     <div className={'divSF'} style={{ background: COLORS.solutionfield }}>
-      <h6>{'Connected platers: ' + players.length}</h6>
+      <h6>{'Connected players: ' + players.length}</h6>
       <ul data-testid='solutionField'>
         {blocks.map((block, index) => {
           return (
