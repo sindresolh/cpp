@@ -6,7 +6,7 @@ import '@testing-library/jest-dom';
 import store from '../../../redux/store/store';
 import { Provider } from 'react-redux';
 import Game from '../Game';
-import { taskset } from '../../../utils/taskset1/taskset';
+import { taskset } from '../../../utils/tasksets/tasksets.json';
 import { PLAYER, CATEGORY } from '../../../utils/constants';
 import '@testing-library/jest-dom';
 import {
