@@ -193,7 +193,7 @@
                 "id": "3"
             },
             {
-                "code": "answ = str.count(\"Emma\")",
+                "code": "answ = str3.count(\"Emma\")",
                 "category": "variable",
                 "indent": 0,
                 "id": "4"
@@ -207,19 +207,19 @@
         ],
         "distractors": [
             {
-                "code": "answ = \"Emma\".count(str)",
+                "code": "answ = \"Emma\".count(str3)",
                 "category": "variable",
                 "indent": 0,
                 "id": "6"
             },
             {
-                "code": "answ = \"Emma\".get(str)",
+                "code": "answ = \"Emma\".get(str3)",
                 "category": "variable",
                 "indent": 0,
                 "id": "7"
             },
             {
-                "code": "answ = str.get(Emma)",
+                "code": "answ = str3.get(Emma)",
                 "category": "variable",
                 "indent": 0,
                 "id": "8"
