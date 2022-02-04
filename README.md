@@ -1,6 +1,7 @@
 # Cooperative Parssons Problems (CPP)
 
-## ADVARSEL: Kun ha en server kjørende om gangen, ellers blir det rot
+Spill over nettet:
+https://jolly-sinoussi-516a97.netlify.app/?fbclid=IwAR1R3tTI0CzzaklzML2gYTrhcDmMIU1wEK4-FSL2YjeQmrB2PLP4GrkKloo
 
 ## Oppdatert design (13.1.22)
 <img src="./documentation/images/design_v2_clean.png" width="500">
