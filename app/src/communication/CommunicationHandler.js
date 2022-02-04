@@ -19,6 +19,7 @@ import {
   NEXT_TASK,
   CLEAR_TASK,
   START_GAME,
+  FINISHED,
 } from './messages';
 import {
   twoDimensionalArrayIsEqual,
@@ -28,6 +29,7 @@ import { clearBoard } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
 import PuzzleGif from '../components/Lobby/PuzzleGif';
 import SidebarModal from '../components/Sidebar/SidebarModal/SidebarModal';
 import SubmitIcon from '../images/buttonIcons/submit.png';
+import CheckIcon from '../images/buttonIcons/check.png';
 import { COLORS } from '../utils/constants';
 
 const mapStateToProps = null;
@@ -60,6 +62,7 @@ class CommunicationHandler extends Component {
       connected: false,
       nick: props.nick.trim().substring(0, 20),
       isModalOpen: false,
+      finished: false,
     };
   }
 
@@ -68,13 +71,19 @@ class CommunicationHandler extends Component {
     this.setState({ isModalOpen: false });
   }
 
+  /* Close the modal and dispatch to go to the finish screen.*/
+  finishModal() {
+    this.setState({ isModalOpen: false });
+    this.props.dispatch_finishGame();
+  }
+
   /**
    * Adds a new client to the room
    *
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room4');
+  join = (webrtc) => webrtc.joinRoom('cpp-room6');
 
   /**
    * Called when a new peer is added to the room
@@ -138,6 +147,9 @@ class CommunicationHandler extends Component {
       case START_GAME:
         this.startGame(payload, peer);
         break;
+      case FINISHED:
+        this.finished();
+        break;
       default:
         return;
     }
@@ -191,6 +203,7 @@ class CommunicationHandler extends Component {
    * @param {*} payload new task
    */
   nextTask(payload) {
+    console.log('next task boy');
     const prevState = store.getState().currentTask;
     const payloadState = JSON.parse(payload);
 
@@ -200,6 +213,12 @@ class CommunicationHandler extends Component {
       dispatch_nextTask();
       this.initialFieldFromFile();
     }
+  }
+  /**
+   * Another peer submitted the final task. The game is thus finished.
+   */
+  finished() {
+    this.setState({ finished: true, isModalOpen: true });
   }
 
   /**
@@ -263,10 +282,10 @@ class CommunicationHandler extends Component {
    */
   startGame(payload, peer) {
     const state = store.getState();
-    const prevState = state.inProgress;
+    const prevState = state.status;
     const payloadState = JSON.parse(payload);
 
-    if (prevState !== payloadState.inProgress) {
+    if (prevState !== payloadState.status) {
       const { dispatch_setListState } = this.props;
       dispatch_setListState(payloadState.handList);
 
@@ -293,16 +312,31 @@ class CommunicationHandler extends Component {
         {this.state.connected ? <CommunicationListener /> : <PuzzleGif />}
 
         {/* Fancy alert for new events, for now only shows when there is a new task*/}
-        <SidebarModal
-          modalIsOpen={this.state.isModalOpen}
-          icon={SubmitIcon}
-          title={'New task'}
-          description={'Another player initiated a new task.'}
-          buttonText={'Ok'}
-          buttonColor={COLORS.lightgreen}
-          borderColor={COLORS.darkgreen}
-          closeModal={() => this.closeModal()}
-        />
+        {this.state.finished ? (
+          <SidebarModal
+            modalIsOpen={this.state.isModalOpen}
+            icon={CheckIcon}
+            title={'Task set finished'}
+            description={
+              'Congratulations! Another player submitted the last task.'
+            }
+            buttonText={'Finish'}
+            buttonColor={COLORS.lightgreen}
+            borderColor={COLORS.darkgreen}
+            closeModal={() => this.finishModal()}
+          />
+        ) : (
+          <SidebarModal
+            modalIsOpen={this.state.isModalOpen}
+            icon={SubmitIcon}
+            title={'New task'}
+            description={'Another player initiated a new task.'}
+            buttonText={'Ok'}
+            buttonColor={COLORS.lightgreen}
+            borderColor={COLORS.darkgreen}
+            closeModal={() => this.closeModal()}
+          />
+        )}
       </LioWebRTC>
     );
   }

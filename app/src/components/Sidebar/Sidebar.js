@@ -10,6 +10,7 @@ import {
   setFieldState,
   setListState,
   finishGame,
+  finishEvent,
 } from '../../redux/actions';
 import { arrayIsEqual } from '../../utils/compareArrays/compareArrays';
 import HintIcon from '../../images/buttonIcons/hint.png';
@@ -37,6 +38,7 @@ export default function Sidebar() {
   let currentTaskObject = currentTask.tasks[currentTaskNumber];
   const fieldBlocks = useSelector((state) => state.solutionField);
   const [currentHintNo, setCurrentHintNo] = useState(0);
+  const [finished, setFinished] = useState(false);
 
   /**
    * Reset current hint when a new task is started.
@@ -48,6 +50,13 @@ export default function Sidebar() {
   /* Close the modal. Callback from SideBarModal*/
   const closeModal = () => {
     setModalIsOpen(false);
+  };
+
+  /**
+   * Dispatch the finish game action if all tasks are doene.
+   */
+  const showFinishedScren = () => {
+    dispatch(finishGame());
   };
 
   /**
@@ -129,7 +138,7 @@ export default function Sidebar() {
     const lastTask = currentTaskNumber === currentTask.tasks.length - 1;
 
     if (correctSolution && lastTask) {
-      dispatch(finishGame());
+      dispatch(finishEvent()); // notify other players this peer submitted the final task
       openModal(
         CheckIcon,
         'Task set finished',
@@ -139,6 +148,7 @@ export default function Sidebar() {
         COLORS.darkgreen,
         'none'
       );
+      setFinished(true);
     } else if (correctSolution) {
       dispatch(nextTask());
       dispatch(taskEvent());
@@ -178,7 +188,7 @@ export default function Sidebar() {
         fieldBlocks={fieldBlocks}
         showFeedback={feedbackVisibility}
         showClearBoardDialog={hasClearBoardDialog}
-        closeModal={() => closeModal()}
+        closeModal={() => (finished ? showFinishedScren() : closeModal())}
         clearBoard={() => clearBoard()}
       />
 

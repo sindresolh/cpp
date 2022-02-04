@@ -11,6 +11,7 @@ import solutionFieldReducer from './gameLogic/solutionField';
 import taskReducer from './gameState/task';
 import playerReducer from './gameState/players';
 import statusReducer from './gameState/status';
+import finishReducer from './webrtc/finishEvent';
 
 const allReducers = combineReducers({
   // Handles communicication to the other peers
@@ -18,6 +19,7 @@ const allReducers = combineReducers({
   fieldEvent: fieldEventReducer,
   listEvent: listEventReducer,
   taskEvent: taskEventReducer,
+  finishEvent: finishReducer,
 
   // Controls the game board
   handList: handListReducer,

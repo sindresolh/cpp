@@ -1,7 +1,7 @@
 import { ACTIONS } from './ACTIONS';
 
 /** Called to start the game for all connected players
- * See reducers/gameState/inProgress
+ * See reducers/gameState/status
  *
  * @param {*} state : boolean, is the game in progresS?
  * @returns
@@ -197,6 +197,20 @@ export const fieldEvent = (state) => {
 export const taskEvent = (state) => {
   return {
     type: ACTIONS.TASK_EVENT,
+    payload: {
+      state,
+    },
+  };
+};
+
+/**
+ * Notify other players peers that the final task was submitted.
+ * @param {*} state : Date when this reducer was called last time
+ * @returns
+ */
+export const finishEvent = (state) => {
+  return {
+    type: ACTIONS.FINISH_EVENT,
     payload: {
       state,
     },
