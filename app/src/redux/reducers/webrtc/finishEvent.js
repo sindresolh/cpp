@@ -10,7 +10,6 @@ import { ACTIONS } from '../../actions/ACTIONS';
 const finishReducer = (state = new Date(), action) => {
   switch (action.type) {
     case ACTIONS.FINISH_EVENT: {
-      console.log('finish event');
       return new Date();
     }
     default:

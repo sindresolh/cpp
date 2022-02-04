@@ -1,21 +1,25 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { goToLobby } from '../../redux/actions';
+import './Finished.css';
+import SidebarButton from '../Sidebar/SidebarButton/SidebarButton';
+import CheckButton from '../../images/buttonIcons/check.png';
+import { COLORS } from '../../utils/constants';
 
 function Finished() {
   const dispatch = useDispatch();
 
   return (
-    <div className='finished'>
+    <div className='finished' style={{ background: COLORS.background }}>
       <h1>Congratulations!</h1>
       <h6>TODO: oppsumering av utførelse</h6>
-      <button
-        onClick={() => {
-          dispatch(goToLobby());
-        }}
-      >
-        Return to lobby
-      </button>
+      <SidebarButton
+        title='Return to lobby'
+        icon={CheckButton}
+        color={COLORS.lightblue}
+        handleClick={() => dispatch(goToLobby())}
+        width='20vh'
+      />
     </div>
   );
 }

@@ -20,6 +20,7 @@ import {
   finishEvent,
 } from '../redux/actions';
 import { shuffleCodeblocks } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
+import { STATUS } from '../utils/constants';
 
 /**
  * Helper function to retrive data from the redux store.
@@ -151,7 +152,8 @@ class CommunicationListener extends Component {
         solutionField: state.solutionField,
         playerIds: playerIds,
       });
-      this.props.webrtc.shout(START_GAME, json);
+      if (state.status === STATUS.START_GAME)
+        this.props.webrtc.shout(START_GAME, json);
     } else if (prevProps.finishEvent !== this.props.finishEvent) {
       this.props.webrtc.shout(FINISHED, '');
     }

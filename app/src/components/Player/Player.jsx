@@ -31,8 +31,7 @@ const getPlayerIcon = (playerNo) => {
  */
 function Player({ playerNo, name, codeBlocks }) {
   const icon = getPlayerIcon(playerNo);
-  const draggableBlocks = (name === 'YOU')  || (name === 'Not connected') // allow blocks to be dragged if they are owned by the player
-  //console.log('name : ' +name + ' , draggable : ' + draggableBlocks)
+  const draggableBlocks = name === 'YOU' || name === 'Not connected'; // allow blocks to be dragged if they are owned by the player
   return (
     <div className={`player p${playerNo}`} data-testid={`player-${playerNo}`}>
       <div className='leftContainerPlayer'>
@@ -41,7 +40,7 @@ function Player({ playerNo, name, codeBlocks }) {
           src={icon}
           alt={`Player ${playerNo} icon`}
         />
-           <div
+        <div
           className={`player-${playerNo} name`}
           data-testid={`player-${playerNo}-name`}
         >
@@ -49,8 +48,11 @@ function Player({ playerNo, name, codeBlocks }) {
         </div>
       </div>
       <div className='rightContainerPlayer'>
-     
-        <HandList codeBlocks={codeBlocks} player={playerNo} draggable={draggableBlocks} />
+        <HandList
+          codeBlocks={codeBlocks}
+          player={playerNo}
+          draggable={draggableBlocks}
+        />
       </div>
     </div>
   );

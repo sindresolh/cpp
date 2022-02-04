@@ -1,5 +1,10 @@
 .finished {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
+  padding-bottom: 2vw;
+}
+
+.finished > h1 {
+  font-size: 7vh;
 }

@@ -203,7 +203,6 @@ class CommunicationHandler extends Component {
    * @param {*} payload new task
    */
   nextTask(payload) {
-    console.log('next task boy');
     const prevState = store.getState().currentTask;
     const payloadState = JSON.parse(payload);
 
