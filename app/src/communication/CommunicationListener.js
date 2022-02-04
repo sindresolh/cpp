@@ -35,7 +35,7 @@ const mapStateToProps = (state) => ({
   fieldEvent: state.fieldEvent,
   taskEvent: state.taskEvent,
   clearEvent: state.clearEvent,
-  inProgress: state.inProgress,
+  status: state.status,
   players: state.players,
 });
 
@@ -154,15 +154,7 @@ class CommunicationListener extends Component {
   }
 
   render() {
-    return (
-      <>
-        {store.getState().inProgress ? (
-          <App />
-        ) : (
-          <Lobby handleClick={() => this.start()} />
-        )}
-      </>
-    );
+    return <App startGame={() => this.start()} />;
   }
 }
 

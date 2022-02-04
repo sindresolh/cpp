@@ -9,6 +9,7 @@ import {
   clearEvent,
   setFieldState,
   setListState,
+  finishGame,
 } from '../../redux/actions';
 import { arrayIsEqual } from '../../utils/compareArrays/compareArrays';
 import HintIcon from '../../images/buttonIcons/hint.png';
@@ -128,7 +129,7 @@ export default function Sidebar() {
     const lastTask = currentTaskNumber === currentTask.tasks.length - 1;
 
     if (correctSolution && lastTask) {
-      dispatch();
+      dispatch(finishGame());
       openModal(
         CheckIcon,
         'Task set finished',

@@ -11,6 +11,7 @@ import {
   addPlayer,
   removePlayer,
   startGame,
+  finishGame,
 } from '../redux/actions';
 import {
   SET_LIST,
@@ -44,6 +45,7 @@ function mapDispatchToProps(dispatch) {
     dispatch_addPlayer: (...args) => dispatch(addPlayer(...args)),
     dispatch_removePlayer: (...args) => dispatch(removePlayer(...args)),
     dispatch_startGame: (...args) => dispatch(startGame(...args)),
+    dispatch_finishGame: (...args) => dispatch(finishGame(...args)),
   };
 }
 
@@ -72,7 +74,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room3');
+  join = (webrtc) => webrtc.joinRoom('cpp-room4');
 
   /**
    * Called when a new peer is added to the room

@@ -15,6 +15,34 @@ export const startGame = (state) => {
   };
 };
 
+/**
+ * Called to finish the game.
+ * @param {*} state
+ * @returns
+ */
+export const finishGame = (state) => {
+  return {
+    type: ACTIONS.FINISH_GAME,
+    payload: {
+      state,
+    },
+  };
+};
+
+/**
+ * Go to the
+ * @param {*} state
+ * @returns
+ */
+export const goToLobby = (state) => {
+  return {
+    type: ACTIONS.GO_TO_LOBBY,
+    payload: {
+      state,
+    },
+  };
+};
+
 /** Called to set the handlist for a spesific player
  *  See reducers/gameLogic/handList
  *

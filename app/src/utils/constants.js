@@ -38,3 +38,10 @@ export const COLORS = {
 
 export const OFFSET = 50;
 export const MAX_INDENT = 7;
+
+// status of the game
+export const STATUS = {
+  LOBBY: 1,
+  GAME: 2,
+  FINISHED: 3,
+};
