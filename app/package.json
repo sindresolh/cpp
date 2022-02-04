@@ -14,7 +14,7 @@
     "react-liowebrtc": "^1.2.9",
     "react-modal": "^3.14.4",
     "react-redux": "^7.2.5",
-    "react-scripts": "4.0.3",
+    "react-scripts": "^5.0.0",
     "redux": "^4.1.1",
     "redux-thunk": "^2.3.0",
     "web-vitals": "^1.1.2"
@@ -42,5 +42,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.6"
   }
 }
