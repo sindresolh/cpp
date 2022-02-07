@@ -24,23 +24,32 @@
   background-color: #c4ccf5;
 }
 
+.variable:hover {
+  background-color: #e6eaff;
+}
+
 .function {
   background-color: #fcc6be;
+}
+
+.function:hover {
+  background-color: #ffe2de;
 }
 
 .loop {
   background-color: #fbd392;
 }
 
+.loop:hover {
+  background-color: #fcedd4;
+}
+
 .condition {
   background-color: #8bbe95;
 }
 
-.variable:hover,
-.function:hover,
-.loop:hover,
 .condition:hover {
-  background-color: #c2c2c2;
+  background-color: #cfe3d3;
 }
 
 .player1 {
