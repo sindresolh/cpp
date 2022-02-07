@@ -31,7 +31,7 @@ function CodeLine({ block, index, moveBlock, maxIndent, draggable }) {
         return true; // TODO: yes for now
       },
       hover: (item, monitor) => {
-        const dragOffset = monitor.getClientOffset().x; // get continous offset of moving (preview) block
+        const dragOffset = monitor.getSourceClientOffset().x; // get continous offset of moving (preview) block
         const blockPosition = blockRef.current.getBoundingClientRect().x; // get position of codeblock DOM
         const offsetDifference = dragOffset - blockPosition; // check if a block is dragged over its "indent boundary"
         const differentLine = item.id !== block.id; // swap position if block is dragged acrossed a different code line
