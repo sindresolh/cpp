@@ -67,10 +67,11 @@ function HandList({ player, draggable }) {
    * @param {*} atIndex     the new index of the block
    */
   const swapBlockPositionInList = (blockObj, atIndex) => {
+    const updatedBlock = { ...blockObj.block, indent: 0 }; // set indent to 0
     const updatedBlocks = update(blocks, {
       $splice: [
         [blockObj.index, 1],
-        [atIndex, 0, blockObj.block],
+        [atIndex, 0, updatedBlock],
       ],
     });
 
@@ -90,9 +91,10 @@ function HandList({ player, draggable }) {
     // players cannot move their own blocks to another player's hand
     // a player can only move their own block to their own hand from solution field
     if (movedBlock !== undefined && movedBlock.player === player) {
+      const updatedBlock = { ...movedBlock, indent: 0 }; // set indent to 0
       const updatedBlocks = [
         ...blocks.slice(0, atIndex),
-        movedBlock,
+        updatedBlock,
         ...blocks.slice(atIndex),
       ];
 
