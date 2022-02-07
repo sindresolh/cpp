@@ -8,6 +8,10 @@
   font-size: 15px;
 }
 
+.cb {
+  cursor: pointer;
+}
+
 .invisible {
   color: transparent;
 }
@@ -30,6 +34,13 @@
 
 .condition {
   background-color: #8bbe95;
+}
+
+.variable:hover,
+.function:hover,
+.loop:hover,
+.condition:hover {
+  background-color: #c2c2c2;
 }
 
 .player1 {
