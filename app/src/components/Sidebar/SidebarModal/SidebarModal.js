@@ -53,13 +53,13 @@ export default function SidebarModal({
   let modalHeight = '18em';
   if (showFeedback === 'block') {
     switch (true) {
-      case feedbackArray.length > 15:
+      case feedbackArray.length > 12:
         modalHeight = '40em';
         break;
-      case feedbackArray.length > 10:
+      case feedbackArray.length > 8:
         modalHeight = '35em';
         break;
-      case feedbackArray.length > 5:
+      case feedbackArray.length > 4:
         modalHeight = '30em';
         break;
       case feedbackArray.length > 0:

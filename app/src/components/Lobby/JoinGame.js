@@ -34,28 +34,41 @@ export default function JoinGame() {
             right: '0',
             bottom: '0',
             background: COLORS.background,
-            zoom: 1.1,
+            display: 'flex',
+            justifyContent: 'center',
           }}
         >
           <div
             style={{
-              position: 'absolute',
-              top: '20%',
-              left: '40%',
-              background: COLORS.backgroundChild,
+              background: COLORS.solutionfield,
+              marginTop: '10em',
+              width: '50em',
+              height: '25em',
+              alignContent: 'center',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: '0.5em',
             }}
           >
+            <h1>Enter your nickname</h1>
             <label style={{ background: ' none' }}>
-              Nickname :
               <input
                 onKeyDown={handleKeyDown}
                 type='text'
                 name={nick}
                 onChange={(e) => setNick(e.target.value)}
-                style={{ margin: '1em', background: COLORS.solutionfield }}
+                style={{
+                  marginTop: '2em',
+                  transform: 'scale(1.5)',
+                  borderRadius: '0.5em',
+                  borderColor: 'black',
+                  background: '#fafafa',
+                }}
               />
             </label>
-            <div style={{ paddingTop: '3em' }}>
+            <div style={{ paddingTop: '1.5em' }}>
               <SidebarButton
                 title='Join game'
                 icon={SubmitIcon}
