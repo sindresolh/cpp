@@ -26,7 +26,7 @@
           "id": "4"
         },
         {
-          "code": "return numbers",
+          "code": "return sum_numbers",
           "category": "function",
           "indent": 1,
           "id": "5"
