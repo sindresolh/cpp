@@ -6,9 +6,13 @@
 
 # Hint: think about the type of the inputs
 
-number_1 = int(input("Enter first number: "))
-operator = input("Enter operator (+,-,*,/): ")
-number_2 = int(input("Enter second number: "))
+
+str1 = "Enter a number"
+str2 = "Enter +,-,* or /"
+
+number_1 = int(input(str1))
+operator = input(str2)
+number_2 = int(input(str1))
 
 if operator == '+':
     print(number_1 + number_2)
@@ -26,6 +30,6 @@ elif operator == '/':
 #$else if operator == '*':
 #$else if operator == '/':
 
-#$operator = int(input("Enter operator (+,-,*,/): "))
-#$number_1 = input("Enter first number: ")
-#$number_2 = input("Enter second number: ")
+#$operator = int(input(str2))
+#$number_1 = input(str1)
+#$number_2 = input(str1)

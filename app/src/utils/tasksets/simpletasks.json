@@ -1,0 +1,365 @@
+[
+  [  {
+      "codeBlocks": [
+        {
+          "code": "def sum_list(items):",
+          "category": "function",
+          "indent": 0,
+          "id": "1"
+        },
+        {
+          "code": "sum_numbers = 0",
+          "category": "variable",
+          "indent": 1,
+          "id": "2"
+        },
+        {
+          "code": "for x in items:",
+          "category": "loop",
+          "indent": 1,
+          "id": "3"
+        },
+        {
+          "code": "sum_numbers += x",
+          "category": "variable",
+          "indent": 2,
+          "id": "4"
+        },
+        {
+          "code": "return numbers",
+          "category": "function",
+          "indent": 1,
+          "id": "5"
+        }
+      ],
+      "distractors": [
+        {
+          "code": "function sum_list(items)",
+          "category": "function",
+          "indent": 0,
+          "id": "6"
+        },
+        {
+          "code": "for x in items.lenght:",
+          "category": "loop",
+          "indent": 1,
+          "id": "7"
+        }
+      ],
+      "description": "Create a function that sums elements in an array and returns the sum.",
+      "hints": ["Use 'def' to set up the function."],
+      "attempts": "unlimited",
+      "field": []
+    },
+    {
+        "codeBlocks": [
+            {
+                "code": "num_list = [10, 33, 55]",
+                "category": "variable",
+                "indent": 0,
+                "id": "1"
+            },
+            {
+                "code": "for num in num_list:",
+                "category": "loop",
+                "indent": 0,
+                "id": "2"
+            },
+            {
+                "code": "if num % 5 == 0:",
+                "category": "condition",
+                "indent": 1,
+                "id": "3"
+            },
+            {
+                "code": "print(num)",
+                "category": "function",
+                "indent": 2,
+                "id": "4"
+            }
+        ],
+        "distractors": [
+            {
+                "code": "if num / 5 == 0:",
+                "category": "condition",
+                "indent": 0,
+                "id": "5"
+            },
+            {
+                "code": "for num in range(num_list):",
+                "category": "loop",
+                "indent": 0,
+                "id": "6"
+            }
+        ],
+        "description": "Iterate the given list of numbers and print only those numbers which are divisible by 5",
+        "hints": [
+            "% (modulo) is a math operation that finds the remainder when one integer is divided by another"
+        ],
+        "attempts": "unlimited",
+        "field": []
+    },
+    {
+        "codeBlocks": [
+            {
+                "code": "def first_equals_last(numList):",
+                "category": "function",
+                "indent": 0,
+                "id": "1"
+            },
+            {
+                "code": "first = numList[0]",
+                "category": "variable",
+                "indent": 1,
+                "id": "2"
+            },
+            {
+                "code": "last = numList[-1]",
+                "category": "variable",
+                "indent": 1,
+                "id": "3"
+            },
+            {
+                "code": "if first == last:",
+                "category": "condition",
+                "indent": 1,
+                "id": "4"
+            },
+            {
+                "code": "return True",
+                "category": "function",
+                "indent": 2,
+                "id": "5"
+            },
+            {
+                "code": "else:",
+                "category": "condition",
+                "indent": 1,
+                "id": "6"
+            },
+            {
+                "code": "return False",
+                "category": "function",
+                "indent": 2,
+                "id": "7"
+            }
+        ],
+        "distractors": [
+            {
+                "code": "first = numList[1]",
+                "category": "variable",
+                "indent": 0,
+                "id": "8"
+            },
+            {
+                "code": "last = numList(len(numList))",
+                "category": "variable",
+                "indent": 0,
+                "id": "9"
+            },
+            {
+                "code": "if first = last:",
+                "category": "variable",
+                "indent": 0,
+                "id": "10"
+            }
+        ],
+        "description": "Write a function to return True if the first and last number of a given list is same. If numbers are different then return False.",
+        "hints": [
+            "Given list: [10, 20, 30, 40, 10] result is True",
+            "Given list: [75, 65, 35, 75, 30] result is False"
+        ],
+        "attempts": "unlimited",
+        "field": []
+    },
+    {
+        "codeBlocks": [
+            {
+                "code": "str1 =  \"Emma is a good writer.\"",
+                "category": "variable",
+                "indent": 0,
+                "id": "1"
+            },
+            {
+                "code": "str2 = \"Emma is great developer.\"",
+                "category": "variable",
+                "indent": 0,
+                "id": "2"
+            },
+            {
+                "code": "str3 = str1 + str2",
+                "category": "variable",
+                "indent": 0,
+                "id": "3"
+            },
+            {
+                "code": "answ = str3.count(\"Emma\")",
+                "category": "variable",
+                "indent": 0,
+                "id": "4"
+            },
+            {
+                "code": "print(answ)",
+                "category": "function",
+                "indent": 0,
+                "id": "5"
+            }
+        ],
+        "distractors": [
+            {
+                "code": "answ = \"Emma\".count(str3)",
+                "category": "variable",
+                "indent": 0,
+                "id": "6"
+            },
+            {
+                "code": "answ = \"Emma\".get(str3)",
+                "category": "variable",
+                "indent": 0,
+                "id": "7"
+            },
+            {
+                "code": "answ = str3.get(Emma)",
+                "category": "variable",
+                "indent": 0,
+                "id": "8"
+            }
+        ],
+        "description": "Write a program to find how many times substring “Emma” appears in the given string.",
+        "hints": [
+            "Given \"Emma is good developer. Emma is a writer\" the function should return 2.",
+            "Use string method count()"
+        ],
+        "attempts": "unlimited",
+        "field": []
+    },
+    {
+        "codeBlocks": [
+            {
+                "code": "str1 = \"Enter a number\"",
+                "category": "variable",
+                "indent": 0,
+                "id": "1"
+            },
+            {
+                "code": "str2 = \"Enter +,-,* or /\"",
+                "category": "variable",
+                "indent": 0,
+                "id": "2"
+            },
+            {
+                "code": "number_1 = int(input(str1))",
+                "category": "variable",
+                "indent": 0,
+                "id": "3"
+            },
+            {
+                "code": "operator = input(str2)",
+                "category": "variable",
+                "indent": 0,
+                "id": "4"
+            },
+            {
+                "code": "number_2 = int(input(str1))",
+                "category": "variable",
+                "indent": 0,
+                "id": "5"
+            },
+            {
+                "code": "if operator == '+':",
+                "category": "condition",
+                "indent": 0,
+                "id": "6"
+            },
+            {
+                "code": "print(number_1 + number_2)",
+                "category": "function",
+                "indent": 1,
+                "id": "7"
+            },
+            {
+                "code": "elif operator == '-':",
+                "category": "condition",
+                "indent": 0,
+                "id": "8"
+            },
+            {
+                "code": "print(number_1 - number_2)",
+                "category": "function",
+                "indent": 1,
+                "id": "9"
+            },
+            {
+                "code": "elif operator == '*':",
+                "category": "condition",
+                "indent": 0,
+                "id": "10"
+            },
+            {
+                "code": "print(number_1 * number_2)",
+                "category": "function",
+                "indent": 1,
+                "id": "11"
+            },
+            {
+                "code": "elif operator == '/':",
+                "category": "condition",
+                "indent": 0,
+                "id": "12"
+            },
+            {
+                "code": "print(number_1 / number_2)",
+                "category": "function",
+                "indent": 1,
+                "id": "13"
+            }
+        ],
+        "distractors": [
+            {
+                "code": "else if operator == '-':",
+                "category": "condition",
+                "indent": 0,
+                "id": "14"
+            },
+            {
+                "code": "else if operator == '*':",
+                "category": "condition",
+                "indent": 0,
+                "id": "15"
+            },
+            {
+                "code": "else if operator == '/':",
+                "category": "condition",
+                "indent": 0,
+                "id": "16"
+            },
+            {
+                "code": "operator = int(input(str2))",
+                "category": "variable",
+                "indent": 0,
+                "id": "17"
+            },
+            {
+                "code": "number_1 = input(str1)",
+                "category": "variable",
+                "indent": 0,
+                "id": "18"
+            },
+            {
+                "code": "number_2 = input(str1)",
+                "category": "variable",
+                "indent": 0,
+                "id": "19"
+            }
+        ],
+        "description": "Create a simple calculator. The program should first ask for an integer, then an operator (+,-,*,/), and lastly a second integer. The answer shall be printed back to the user.",
+        "hints": [
+            "Consider the type of the inputs",
+            "Check the operators in the order +, -,*, and /",
+            "\nIn python there exist if, elif and else statements."
+        ],
+        "attempts": "unlimited",
+        "field": []
+    }
+  ]
+]
