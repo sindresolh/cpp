@@ -4,6 +4,7 @@ import SubmitIcon from '../../images/buttonIcons/submit.png';
 import { COLORS } from '../../utils/constants';
 import './Lobby.css';
 import { useSelector } from 'react-redux';
+import PlayerIcon from '../../images/playerIcons/player_icon.png';
 
 /** Show the players in the lobby based on their nickname
  *
@@ -62,15 +63,25 @@ function Lobby({ handleClick }) {
   }, [players]);
 
   return (
-    <div style={{ background: COLORS.background }}>
-      <div className='Lobby'>
+    <div
+      style={{
+        background: COLORS.background,
+        display: 'flex',
+        justifyContent: 'center',
+      }}
+    >
+      <div className='Lobby' style={{ background: COLORS.solutionfield }}>
         <h1>Lobby</h1>
         <ul className='playerList'>
           {players.map((player) => {
             return (
               <li key={player.id}>
                 {player.nick !== null && player.nick !== undefined ? (
-                  <div>{player.nick}</div>
+                  <div>
+                    {' '}
+                    <img src={PlayerIcon} />
+                    <p style={{ marginLeft: '2em' }}>{player.nick}</p>
+                  </div>
                 ) : (
                   '' // Do not render anything if nick is undefined
                 )}

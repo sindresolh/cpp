@@ -16,7 +16,7 @@ import './SidebarModal.css';
  *            modalIsOpen: true or false
  *            field: feedback with correct and incorrect placed blocks
  *            showFeedback: display feedback
- *            showClearBoardialog: diaplay yes button for clearing the board
+ *            showClearBoardialog: display yes button for clearing the board
  *            closeModal: function for closing the modal
  *            clearBoard: function for clearing the board
  *
@@ -43,37 +43,57 @@ export default function SidebarModal({
 
   Modal.setAppElement('body');
 
-  let cancelButtonPosition = '7.5em';
-  if (showClearBoardDialog == 'inline-block') {
-    cancelButtonPosition = '3.5em';
+  // Change styling if there is two buttons
+  let cancelButtonPosition = '10em';
+  if (showClearBoardDialog === 'inline-block') {
+    cancelButtonPosition = '4em';
+  }
+
+  // Change lenght of modal based on the number of codelines
+  let modalHeight = '18em';
+  if (showFeedback === 'block' && feedbackArray.length > 0) {
+    let mHeight = 25 + 5 * ((feedbackArray.length / 4) >> 0);
+    mHeight = mHeight < 50 ? mHeight : 50;
+    modalHeight = mHeight.toString() + 'em';
   }
 
   const modalStyle = {
     content: {
-      width: '20em',
-      height: '25em',
+      width: '25em',
+      height: modalHeight,
       margin: 'auto',
       border: '0.5em solid ' + borderColor,
       borderRadius: '1em',
       background: '#f5f5f5',
     },
   };
+  /**
+   * Sets the backround color of the button. CSS hover cannot be used since color is set inline from a prop.
+   *
+   * @param {*} e : event
+   * @param {*} backgroundColor : hexcode
+   */
+  function setBackground(e, backgroundColor) {
+    e.target.style.background = backgroundColor;
+  }
   return (
     <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={modalStyle}>
       <div className='modalContainer'>
         <img height='25' width='auto' src={icon} alt='Icon' />
         <h2 style={{ display: 'inline', margin: '0.2em' }}>{title}</h2>
-        <p>{description}</p>
+        <p style={{ margin: '2em' }}>{description}</p>
 
         <button
           onClick={closeModal}
+          onMouseEnter={(e) => setBackground(e, '#c2c2c2')}
+          onMouseLeave={(e) => setBackground(e, buttonColor)}
           style={{ background: buttonColor, left: cancelButtonPosition }}
         >
           {buttonText}
         </button>
         <button
           onClick={clearBoard}
-          style={{ display: showClearBoardDialog, left: '12.5em' }}
+          style={{ display: showClearBoardDialog, left: '16em' }}
           className='confirmButton'
         >
           Yes
@@ -84,6 +104,7 @@ export default function SidebarModal({
             return (
               <li
                 className={item.isCorrect ? 'correctItem' : 'incorrectItem'}
+                style={{ marginLeft: 2 * item.codeBlock.indent + 'em' }}
                 key={item.codeBlock.id}
               >
                 {item.codeBlock.code}

@@ -8,6 +8,10 @@
   font-size: 15px;
 }
 
+.cb {
+  cursor: pointer;
+}
+
 .invisible {
   color: transparent;
 }
@@ -20,16 +24,32 @@
   background-color: #c4ccf5;
 }
 
+.variable:hover {
+  background-color: #e6eaff;
+}
+
 .function {
   background-color: #fcc6be;
+}
+
+.function:hover {
+  background-color: #ffe2de;
 }
 
 .loop {
   background-color: #fbd392;
 }
 
+.loop:hover {
+  background-color: #fcedd4;
+}
+
 .condition {
   background-color: #8bbe95;
+}
+
+.condition:hover {
+  background-color: #cfe3d3;
 }
 
 .player1 {
