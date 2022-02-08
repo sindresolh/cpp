@@ -45,27 +45,16 @@ export default function SidebarModal({
 
   // Change styling if there is two buttons
   let cancelButtonPosition = '10em';
-  if (showClearBoardDialog == 'inline-block') {
+  if (showClearBoardDialog === 'inline-block') {
     cancelButtonPosition = '4em';
   }
 
   // Change lenght of modal based on the number of codelines
   let modalHeight = '18em';
-  if (showFeedback === 'block') {
-    switch (true) {
-      case feedbackArray.length > 12:
-        modalHeight = '40em';
-        break;
-      case feedbackArray.length > 8:
-        modalHeight = '35em';
-        break;
-      case feedbackArray.length > 4:
-        modalHeight = '30em';
-        break;
-      case feedbackArray.length > 0:
-        modalHeight = '25em';
-        break;
-    }
+  if (showFeedback === 'block' && feedbackArray.length > 0) {
+    let mHeight = 25 + 5 * ((feedbackArray.length / 4) >> 0);
+    mHeight = mHeight < 50 ? mHeight : 50;
+    modalHeight = mHeight.toString() + 'em';
   }
 
   const modalStyle = {
