@@ -42,3 +42,10 @@
 .modalContainer > button:hover {
   cursor: pointer;
 }
+
+hr {
+  position: absolute;
+  margin-left: 0;
+  border: none;
+  border-top: 0.1em solid #c2c2c2;
+}

@@ -1,15 +1,14 @@
 .cb {
   border: solid;
   border-radius: 8px;
-  max-width: 15vw;
-  margin: 2px;
-  padding: 7px;
+  margin: 0.1em;
+  padding: 0.5em;
   text-align: left;
   font-size: 15px;
-}
-
-.cb {
   cursor: pointer;
+  width: fit-content;
+  max-width: 15vw;
+  white-space: nowrap;
 }
 
 .invisible {

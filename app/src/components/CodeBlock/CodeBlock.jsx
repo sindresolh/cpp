@@ -75,7 +75,9 @@ function CodeBlock({
       className={className}
       key={`block-${id}`}
     >
-      {code}
+      <code class="python">
+        {code}
+      </code>
     </div>
   );
 }
