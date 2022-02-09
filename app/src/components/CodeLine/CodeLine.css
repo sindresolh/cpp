@@ -3,3 +3,13 @@ li {
   border-radius: 0.5em;
   margin: 0.2em 1em;
 }
+
+.indentHighlight {
+  position: absolute;
+  margin-left: 0;
+  margin-top: 1.2em;
+  border: none;
+  border-top: 0.1em solid #c2c2c2;
+  stroke-linecap: 'square';
+  pointer-events: none;
+}
