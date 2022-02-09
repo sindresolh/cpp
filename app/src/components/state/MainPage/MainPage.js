@@ -1,8 +1,7 @@
 import React from 'react';
 import './MainPage.css';
-import Topbar from '../../components/Topbar/Topbar';
-import Game from '../../components/Game/Game';
-import { useSelector } from 'react-redux';
+import Topbar from '../../Topbar/Topbar';
+import Game from '../../Game/Game';
 
 export default function MainPage() {
   return (

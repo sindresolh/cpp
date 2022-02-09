@@ -1,13 +1,12 @@
 import './Game.css';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import SolutionField from '../SolutionField/SolutionField';
-import Sidebar from '../Sidebar/Sidebar';
+import SolutionField from './SolutionField/SolutionField';
+import Sidebar from './Sidebar/Sidebar';
 import { PLAYER } from '../../utils/constants';
-import Player from '../Player/Player';
+import Player from './Player/Player';
 import { useSelector } from 'react-redux';
 import { COLORS } from '../../utils/constants';
-import playerReducer from '../../redux/reducers/gameState/players';
 
 export default function Game() {
   const players = useSelector((state) => state.players);

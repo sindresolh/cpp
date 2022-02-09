@@ -1,5 +1,5 @@
 import React from 'react';
-import { COLORS } from '../utils/constants';
+import { COLORS } from '../../utils/constants';
 
 export default function PuzzleGif() {
   return (

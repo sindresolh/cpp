@@ -1,19 +1,17 @@
 import React, { useCallback } from 'react';
-import CodeBlock from '../CodeBlock/CodeBlock';
 import PropTypes from 'prop-types';
 import './HandList.css';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  addBlock,
   setList,
   removeBlockFromField,
   listEvent,
   fieldEvent,
-} from '../../redux/actions';
+} from '../../../redux/actions';
 import update from 'immutability-helper';
-import { ItemTypes } from '../../utils/itemtypes';
+import { ItemTypes } from '../../../utils/itemtypes';
 import { useDrop } from 'react-dnd';
-import store from '../../redux/store/store';
+import store from '../../../redux/store/store';
 import CodeLine from '../CodeLine/CodeLine';
 
 /**

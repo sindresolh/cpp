@@ -11,16 +11,16 @@ import {
   setListState,
   finishGame,
   finishEvent,
-} from '../../redux/actions';
-import { arrayIsEqual } from '../../utils/compareArrays/compareArrays';
-import HintIcon from '../../images/buttonIcons/hint.png';
-import ClearIcon from '../../images/buttonIcons/clear.png';
-import SubmitIcon from '../../images/buttonIcons/submit.png';
-import CheckIcon from '../../images/buttonIcons/check.png';
-import CrossIcon from '../../images/buttonIcons/cross.png';
-import { COLORS } from '../../utils/constants';
-import { clearBoard as clearBoardHelper } from '../../utils/shuffleCodeblocks/shuffleCodeblocks';
-import store from '../../redux/store/store';
+} from '../../../redux/actions';
+import { arrayIsEqual } from '../../../utils/compareArrays/compareArrays';
+import HintIcon from '../../../utils/images/buttonIcons/hint.png';
+import ClearIcon from '../../../utils/images/buttonIcons/clear.png';
+import SubmitIcon from '../../../utils/images/buttonIcons/submit.png';
+import CheckIcon from '../../../utils/images/buttonIcons/check.png';
+import CrossIcon from '../../../utils/images/buttonIcons/cross.png';
+import { COLORS } from '../../../utils/constants';
+import { clearBoard as clearBoardHelper } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
+import store from '../../../redux/store/store';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);

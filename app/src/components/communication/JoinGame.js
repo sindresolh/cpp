@@ -1,7 +1,7 @@
 import React from 'react';
-import SidebarButton from '../components/Sidebar/SidebarButton/SidebarButton';
-import SubmitIcon from '../images/buttonIcons/submit.png';
-import { COLORS } from '../utils/constants';
+import SidebarButton from '../../components/Game/Sidebar/SidebarButton/SidebarButton';
+import SubmitIcon from '../../utils/images/buttonIcons/submit.png';
+import { COLORS } from '../../utils/constants';
 import { useState } from 'react';
 import CommunicationHandler from './webrtc/CommunicationHandler';
 

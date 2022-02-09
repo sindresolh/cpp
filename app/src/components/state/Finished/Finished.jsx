@@ -1,10 +1,10 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { goToLobby, setTaskNumber } from '../../redux/actions';
+import { goToLobby, setTaskNumber } from '../../../redux/actions';
 import './Finished.css';
-import SidebarButton from '../../components/Sidebar/SidebarButton/SidebarButton';
-import CheckButton from '../../images/buttonIcons/check.png';
-import { COLORS } from '../../utils/constants';
+import SidebarButton from '../../Game/Sidebar/SidebarButton/SidebarButton';
+import CheckButton from '../../../utils/images/buttonIcons/check.png';
+import { COLORS } from '../../../utils/constants';
 
 function Finished() {
   const dispatch = useDispatch();

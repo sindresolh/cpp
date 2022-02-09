@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { withWebRTC } from 'react-liowebrtc';
 import { connect } from 'react-redux';
-import store from '../../redux/store/store';
-import App from '../../App';
+import store from '../../../redux/store/store';
+import App from '../../../App';
 import {
   SET_LIST,
   SET_FIELD,
@@ -18,9 +18,9 @@ import {
   listEvent,
   fieldEvent,
   finishEvent,
-} from '../../redux/actions';
-import { shuffleCodeblocks } from '../../utils/shuffleCodeblocks/shuffleCodeblocks';
-import { STATUS } from '../../utils/constants';
+} from '../../../redux/actions';
+import { shuffleCodeblocks } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
+import { STATUS } from '../../../utils/constants';
 
 /**
  * Helper function to retrive data from the redux store.

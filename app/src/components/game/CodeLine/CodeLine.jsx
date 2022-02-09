@@ -1,11 +1,11 @@
 import React from 'react';
-import { COLORS } from '../../utils/constants';
+import { COLORS } from '../../../utils/constants';
 import CodeBlock from '../CodeBlock/CodeBlock';
 import { useDrop } from 'react-dnd';
-import { ItemTypes } from '../../utils/itemtypes';
+import { ItemTypes } from '../../../utils/itemtypes';
 import './CodeLine.css';
 import { useRef } from 'react';
-import { OFFSET } from '../../utils/constants';
+import { OFFSET } from '../../../utils/constants';
 import PropTypes from 'prop-types';
 
 /**

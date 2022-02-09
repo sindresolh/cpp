@@ -4,7 +4,7 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import store from './redux/store/store';
-import JoinGame from './communication/JoinGame';
+import JoinGame from './components/communication/JoinGame';
 
 ReactDOM.render(
   <React.StrictMode>

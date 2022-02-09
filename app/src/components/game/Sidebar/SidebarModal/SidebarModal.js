@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from 'react-modal';
 import { useSelector } from 'react-redux';
-import { linebasedfeedback } from '../../../utils/compareArrays/compareArrays';
+import { linebasedfeedback } from '../../../../utils/compareArrays/compareArrays';
 import './SidebarModal.css';
 
 /**

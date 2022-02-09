@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import SidebarButton from '../../components/Sidebar/SidebarButton/SidebarButton';
-import SubmitIcon from '../../images/buttonIcons/submit.png';
-import { COLORS } from '../../utils/constants';
+import SidebarButton from '../../Game/Sidebar/SidebarButton/SidebarButton';
+import SubmitIcon from '../../../utils/images//buttonIcons/submit.png';
+import { COLORS } from '../../../utils/constants';
 import './Lobby.css';
 import { useSelector } from 'react-redux';
-import PlayerIcon from '../../images/playerIcons/player_icon.png';
+import PlayerIcon from '../../../utils/images/playerIcons/player_icon.png';
 
 /** Show the players in the lobby based on their nickname
  *

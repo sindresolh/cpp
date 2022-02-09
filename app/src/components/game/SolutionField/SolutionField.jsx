@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import CodeBlock from '../CodeBlock/CodeBlock';
 import CodeLine from '../CodeLine/CodeLine';
 import { useCallback } from 'react';
 import {
@@ -8,16 +7,13 @@ import {
   removeBlockFromList,
   fieldEvent,
   listEvent,
-} from '../../redux/actions';
+} from '../../../redux/actions';
 import update from 'immutability-helper';
 import { useDrop } from 'react-dnd';
-import { ItemTypes } from '../../utils/itemtypes';
-import PropTypes from 'prop-types';
+import { ItemTypes } from '../../../utils/itemtypes';
 import './SolutionField.css';
-import store from '../../redux/store/store';
-import { COLORS, MAX_INDENT } from '../../utils/constants';
-import { useRef } from 'react';
-import { useEffect } from 'react';
+import store from '../../../redux/store/store';
+import { COLORS, MAX_INDENT } from '../../../utils/constants';
 
 /**
  * The field the players can move blocks into.
