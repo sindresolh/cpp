@@ -1,7 +1,7 @@
 import './App.css';
-import MainPage from './components/MainPage';
-import Lobby from './components/Lobby/Lobby';
-import Finished from './components/Finished/Finished';
+import MainPage from './state/MainPage/MainPage';
+import Lobby from './state/Lobby/Lobby';
+import Finished from './state/Finished/Finished';
 import { STATUS } from './utils/constants';
 import { useSelector } from 'react-redux';
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import SidebarButton from '../Sidebar/SidebarButton/SidebarButton';
+import SidebarButton from '../../components/Sidebar/SidebarButton/SidebarButton';
 import SubmitIcon from '../../images/buttonIcons/submit.png';
 import { COLORS } from '../../utils/constants';
 import './Lobby.css';
@@ -79,7 +79,10 @@ function Lobby({ handleClick }) {
                 {player.nick !== null && player.nick !== undefined ? (
                   <div>
                     {' '}
-                    <img src={PlayerIcon} />
+                    <img
+                      src={PlayerIcon}
+                      style={{ height: '6em', alt: 'player icon' }}
+                    />
                     <p style={{ marginLeft: '2em' }}>{player.nick}</p>
                   </div>
                 ) : (

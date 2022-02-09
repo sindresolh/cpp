@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { LioWebRTC } from 'react-liowebrtc';
 import CommunicationListener from './CommunicationListener';
-import store from '../redux/store/store';
+import store from '../../redux/store/store';
 import { connect } from 'react-redux';
 import {
   setListState,
@@ -13,7 +13,7 @@ import {
   startGame,
   finishGame,
   setTaskNumber,
-} from '../redux/actions';
+} from '../../redux/actions';
 import {
   SET_LIST,
   SET_FIELD,
@@ -25,13 +25,13 @@ import {
 import {
   twoDimensionalArrayIsEqual,
   arrayIsEqual,
-} from '../utils/compareArrays/compareArrays';
-import { clearBoard } from '../utils/shuffleCodeblocks/shuffleCodeblocks';
-import PuzzleGif from '../components/Lobby/PuzzleGif';
-import SidebarModal from '../components/Sidebar/SidebarModal/SidebarModal';
-import SubmitIcon from '../images/buttonIcons/submit.png';
-import CheckIcon from '../images/buttonIcons/check.png';
-import { COLORS } from '../utils/constants';
+} from '../../utils/compareArrays/compareArrays';
+import { clearBoard } from '../../utils/shuffleCodeblocks/shuffleCodeblocks';
+import PuzzleGif from '../PuzzleGif';
+import SidebarModal from '../../components/Sidebar/SidebarModal/SidebarModal';
+import SubmitIcon from '../../images/buttonIcons/submit.png';
+import CheckIcon from '../../images/buttonIcons/check.png';
+import { COLORS } from '../../utils/constants';
 
 const mapStateToProps = null;
 /** Helper function to let us call dispatch from a class function
