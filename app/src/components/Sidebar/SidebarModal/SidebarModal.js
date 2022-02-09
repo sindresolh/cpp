@@ -102,12 +102,19 @@ export default function SidebarModal({
         <ul style={{ display: showFeedback }}>
           {feedbackArray.map((item) => {
             return (
-              <li
-                className={item.isCorrect ? 'correctItem' : 'incorrectItem'}
-                style={{ marginLeft: 2 * item.codeBlock.indent + 'em' }}
-                key={item.codeBlock.id}
-              >
-                {item.codeBlock.code}
+              <li>
+                <hr style={{ width: 2 * item.codeBlock.indent + 'em' }} />
+
+                <div
+                  className={item.isCorrect ? 'correctItem' : 'incorrectItem'}
+                  style={{
+                    marginLeft: 2 * item.codeBlock.indent + 'em',
+                    borderRadius: '0.5em',
+                  }}
+                  key={item.codeBlock.id}
+                >
+                  {item.codeBlock.code}
+                </div>
               </li>
             );
           })}

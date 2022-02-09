@@ -55,7 +55,7 @@ function CodeLine({ block, index, moveBlock, maxIndent, draggable }) {
       ref={lineDrop}
       key={draggable}
     >
-      <hr style={{width : `${block.indent * OFFSET}px`}} className="indentHighlight"/>
+      <hr style={{width : `${block.indent * OFFSET}px`}}/>
       
       <div
         id={`blockref-${block.id}`}
