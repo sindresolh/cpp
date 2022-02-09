@@ -109,11 +109,13 @@ export default function SidebarModal({
                   className={item.isCorrect ? 'correctItem' : 'incorrectItem'}
                   style={{
                     marginLeft: 2 * item.codeBlock.indent + 'em',
-                    borderRadius: '0.5em',
+                    borderRadius: '0.4em',
+                    width: 'fit-content',
+                    padding: '0.2em',
                   }}
                   key={item.codeBlock.id}
                 >
-                  {item.codeBlock.code}
+                  <code>{item.codeBlock.code}</code>
                 </div>
               </li>
             );

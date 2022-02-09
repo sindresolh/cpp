@@ -8,6 +8,7 @@
   cursor: pointer;
   width: fit-content;
   max-width: 15vw;
+  white-space: nowrap;
 }
 
 .invisible {
