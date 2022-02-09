@@ -131,10 +131,22 @@ export default function Sidebar() {
    * Make all players go to the next task of the submit is correct
    */
   const handleSubmit = () => {
-    const correctSolution = arrayIsEqual(
+    let correctSolution = arrayIsEqual(
       fieldBlocks,
       currentTaskObject.codeBlocks
     );
+
+    // Check if this is correct as an alternative solution
+    if (
+      !correctSolution &&
+      currentTaskObject.hasOwnProperty('otherSolutions')
+    ) {
+      for (var altSolution of currentTaskObject.otherSolutions) {
+        correctSolution = arrayIsEqual(fieldBlocks, altSolution);
+        if (correctSolution) break;
+      }
+    }
+
     const lastTask = currentTaskNumber === currentTask.tasks.length - 1;
 
     if (correctSolution && lastTask) {
