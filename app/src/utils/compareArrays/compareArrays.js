@@ -40,18 +40,32 @@ export const arrayIsEqual = (arr1, arr2) => {
  * @param {array} correct solution
  * @returns array with code and wheter or not it is correctly placed
  */
-export const linebasedfeedback = (field, correct) => {
+export const linebasedfeedback = (field, correct, otherSolutions = null) => {
   let equalAtIndex = [];
   if (isNull(field, correct)) return equalAtIndex;
 
-  for (var i = 0; i < field.length; i++) {
+  for (let i = 0; i < field.length; i++) {
+    let isCorrect = false;
+
     if (objectIsEqual(field[i], correct[i])) {
       // codeblock is placed at correct location
-      equalAtIndex.push({ codeBlock: field[i], isCorrect: true });
+      isCorrect = true;
     } else {
       // codeblock is placed incorrectly
-      equalAtIndex.push({ codeBlock: field[i], isCorrect: false });
+      isCorrect = false;
+
+      // check for alternative solutions
+      if (otherSolutions != null) {
+        for (let altSolution of otherSolutions) {
+          if (objectIsEqual(field[i], altSolution[i])) {
+            // codeblock is placed at correct location
+            isCorrect = true;
+          }
+        }
+      }
     }
+
+    equalAtIndex.push({ codeBlock: field[i], isCorrect: isCorrect });
   }
 
   return equalAtIndex;
