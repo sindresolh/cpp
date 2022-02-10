@@ -1,11 +1,11 @@
-import { PLAYER, CATEGORY } from '../../../utils/constants';
+import { PLAYER, CATEGORY } from '../../../../utils/constants';
 
 export const sampleBlockP1 = {
   id: 'cb-1',
   code: 'x = 1',
   player: PLAYER.P1,
   category: CATEGORY.VARIABLE,
-  indent: 1,
+  indent: 0,
 };
 
 export const sampleBlockP2 = {
