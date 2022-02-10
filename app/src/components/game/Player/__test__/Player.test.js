@@ -10,7 +10,7 @@ import {
 } from './sample-players';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import store from '../../../redux/store/store';
+import store from '../../../../redux/store/store';
 import { Provider } from 'react-redux';
 
 /**

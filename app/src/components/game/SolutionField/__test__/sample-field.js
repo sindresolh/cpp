@@ -1,4 +1,4 @@
-import { PLAYER, CATEGORY } from '../../../utils/constants';
+import { PLAYER, CATEGORY } from '../../../../utils/constants';
 
 export const sampleField = {
   field: [

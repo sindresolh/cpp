@@ -1,4 +1,4 @@
-import { PLAYER, CATEGORY } from '../../../utils/constants';
+import { PLAYER, CATEGORY } from '../../../../utils/constants';
 
 export const sampleBlockP1 = {
   id: 'cb-1',

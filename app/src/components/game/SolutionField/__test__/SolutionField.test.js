@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import SolutionField from '../SolutionField';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
-import store from '../../../redux/store/store';
+import store from '../../../../redux/store/store';
 import { Provider } from 'react-redux';
 import '@testing-library/jest-dom';
 import { sampleField as props } from './sample-field';
