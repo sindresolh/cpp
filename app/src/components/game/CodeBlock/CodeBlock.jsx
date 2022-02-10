@@ -68,7 +68,7 @@ function CodeBlock({
   className = !draggable ? className + ' invisible' : className;
 
   return (
-    <div
+    <div 
       ref={drag}
       data-testid={`codeBlock-player${player}`}
       id={id}

@@ -21,7 +21,7 @@ import PropTypes from 'prop-types';
  * @param {boolean} draggable whether the player shall be able to drag the block or not
  * @returns CodeLine component
  */
-function CodeLine({ block, index, moveBlock, maxIndent, draggable }) {
+function CodeLine({ block, index, moveBlock, maxIndent, draggable, handleDoubbleClick }) {
   const blockRef = useRef(null); // reference to get the position of the DOM element
   const MAX_INDENT = maxIndent;
   const [, lineDrop] = useDrop(
@@ -62,6 +62,7 @@ function CodeLine({ block, index, moveBlock, maxIndent, draggable }) {
         data-testid={`blockref-${block.id}`}
         ref={blockRef}
         style={{ marginLeft: `${block.indent * OFFSET}px` }}
+        onClick={(e) => handleDoubbleClick(e, block, draggable)}
       >
         <CodeBlock {...block} index={index} draggable={draggable} />
       </div>

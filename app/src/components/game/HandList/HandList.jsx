@@ -7,6 +7,8 @@ import {
   removeBlockFromField,
   listEvent,
   fieldEvent,
+  removeBlockFromList,
+  addBlockToField
 } from '../../../redux/actions';
 import update from 'immutability-helper';
 import { ItemTypes } from '../../../utils/itemtypes';
@@ -116,6 +118,34 @@ function HandList({ player, draggable }) {
     [blocks, emptyList]
   );
 
+  const handleDoubbleClick = (e, codeblock, draggable) => {
+    if(e.detail > 1 && draggable){ // if clicked more than once
+      const handLists = store.getState().handList;
+      let id = codeblock.id;
+      let blockIsNotFound = true;
+      let handListIndex = 0;
+      let movedBlock;
+      const AMOUNT_OF_PLAYERS = 4;
+
+      // find block and update the correct hand list
+      while (blockIsNotFound && handListIndex < AMOUNT_OF_PLAYERS) {
+        for (let block = 0; block < handLists[handListIndex].length; block++) {
+          if (handLists[handListIndex][block].id === id) {
+            // block is found, stop looking
+            blockIsNotFound = false;
+            movedBlock = handLists[handListIndex][block];
+            dispatch(removeBlockFromList(id, handListIndex));
+            dispatch(addBlockToField(codeblock));
+            dispatch(fieldEvent()); 
+            dispatch(listEvent());
+        }
+      }
+      handListIndex++;
+    }
+
+    }
+  };
+
   return (
     <div className={'divHL'} ref={emptyListDrop} key={draggable}>
       <ul data-testid={`handList-player${player}`}>
@@ -128,6 +158,7 @@ function HandList({ player, draggable }) {
               maxIndent={0}
               draggable={draggable}
               key={`player-${player}-line-${index}`}
+              handleDoubbleClick = {handleDoubbleClick}
             />
           );
         })}

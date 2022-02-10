@@ -7,6 +7,8 @@ import {
   removeBlockFromList,
   fieldEvent,
   listEvent,
+  removeBlockFromField,
+  addBlockToList
 } from '../../../redux/actions';
 import update from 'immutability-helper';
 import { useDrop } from 'react-dnd';
@@ -122,8 +124,27 @@ function SolutionField({}) {
     [blocks]
   );
 
+  
+  const handleDoubbleClick = (e, codeblock, draggable) => {
+    if(e.detail > 1 && draggable){ // if clicked more than once
+    let id = codeblock.id;
+    let fieldBlocks = store.getState().solutionField;
+    let movedBlock = fieldBlocks.filter((block) => block.id === id)[0];
+
+    // players cannot move their own blocks to another player's hand
+    // a player can only move their own block to their own hand from solution field
+    if (movedBlock !== undefined && movedBlock.player === codeblock.player) {
+        codeblock.indent = 0;
+        dispatch(removeBlockFromField(id));
+        dispatch(addBlockToList(codeblock));
+        dispatch(fieldEvent()); 
+        dispatch(listEvent()); 
+    }
+    }
+  };
+
   return (
-    <div className={'divSF'} style={{ background: COLORS.solutionfield }}>
+    <div className={'divSF'} style={{ background: COLORS.solutionfield }} >
       <h6>{'Connected players: ' + players.length}</h6>
       <ul data-testid='solutionField'>
         {blocks.map((block, index) => {
@@ -135,6 +156,7 @@ function SolutionField({}) {
               maxIndent={MAX_INDENT}
               draggable={true}
               key={`line-${index}`}
+              handleDoubbleClick = {handleDoubbleClick}
             />
           );
         })}
