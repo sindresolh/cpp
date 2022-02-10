@@ -1,21 +1,11 @@
 // Integration test for the Game
-import * as redux from 'react-redux';
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import store from '../../../redux/store/store';
 import { Provider } from 'react-redux';
 import Game from '../Game';
-import { taskset } from '../../../utils/tasksets/tasksets.json';
-import { PLAYER, CATEGORY } from '../../../utils/constants';
 import '@testing-library/jest-dom';
-import {
-  nextTask,
-  setField,
-  setList,
-  removeBlockFromField,
-  removeBlockFromList,
-} from '../../../redux/actions';
 
 function initialize_board(list, field) {
   // initialize handLists
