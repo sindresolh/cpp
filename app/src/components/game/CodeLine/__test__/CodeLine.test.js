@@ -5,7 +5,7 @@ import '@testing-library/jest-dom';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import { sampleBlockP1 as propsP1 } from './sample-block';
-import { OFFSET } from '../../../utils/constants';
+import { OFFSET } from '../../../../utils/constants';
 
 const MAX_INDENT = 7;
 const INDEX = 0;
