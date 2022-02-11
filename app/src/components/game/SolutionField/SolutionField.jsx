@@ -125,22 +125,28 @@ function SolutionField({}) {
     [blocks]
   );
 
+  /** Helper function to make sure that the field event is done before sending a new event
+   * 
+   * @returns 
+   */
   const fieldEventPromise = () => {
-  return Promise.resolve(dispatch(fieldEvent()));
+    return Promise.resolve(dispatch(fieldEvent()));
   }
 
   
+  /** Moves block from solutionfield to hand after a doubbleclick
+   * 
+   * @param {*} e
+   * @param {*} movedBlock : codeblock moved
+   * @param {*} draggable : wheter or not the player has permission to perform this action
+   */
   const handleDoubbleClick = (e, movedBlock, draggable) => {
-
-    
     if(e.detail > 1 && draggable && movedBlock != null){ // if clicked more than once
-      
       movedBlock.indent = 0;
       dispatch(removeBlockFromField(movedBlock.id));
       dispatch(addBlockToList(movedBlock));
-
       fieldEventPromise().then(() => dispatch(listEvent()));
-      
+      e.detail = 0;
       };
   };
 
