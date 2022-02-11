@@ -138,9 +138,11 @@ function HandList({ player, draggable }) {
         dispatch(removeBlockFromList(movedBlock.id, movedBlock.player -1));
         dispatch(addBlockToField(movedBlock));
         fieldEventPromise().then(() => dispatch(listEvent()));
-        e.datail = 0;
+        e.detail = 0;
     }
-  };
+  };  
+
+      
 
   return (
     <div className={'divHL'} ref={emptyListDrop} key={draggable}>
