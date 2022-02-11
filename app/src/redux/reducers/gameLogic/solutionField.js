@@ -20,7 +20,7 @@ const solutionFieldReducer = (state = [], action) => {
       );
       return updatedState;
     }
-    case 'ADD_BLOCK_TO_FIELD': {
+    case ACTIONS.ADD_BLOCK_TO_FIELD: {
       const updatedState = [...state, action.payload.block];
       return updatedState;
     }

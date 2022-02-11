@@ -100,7 +100,7 @@ export const removeBlockFromList = (blockId, handListIndex) => {
  */
 export const addBlockToList = (block) => {
   return {
-    type: 'ADD_BLOCK_TO_LIST',
+    type: ACTIONS.ADD_BLOCK_TO_LIST,
     payload: {
       block,
     },
@@ -145,7 +145,7 @@ export const removeBlockFromField = (id) => {
  */
 export const addBlockToField = (block) => {
   return {
-    type: 'ADD_BLOCK_TO_FIELD',
+    type: ACTIONS.ADD_BLOCK_TO_FIELD,
     payload: {
       block,
     },

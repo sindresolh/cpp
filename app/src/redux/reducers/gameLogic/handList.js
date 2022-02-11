@@ -33,7 +33,7 @@ const handListReducer = (state = [[], [], [], []], action) => {
       );
       return updatedState;
     }
-    case 'ADD_BLOCK_TO_LIST': {
+    case ACTIONS.ADD_BLOCK_TO_LIST: {
       const handListIndex = action.payload.block.player - 1;
       const handList = state[handListIndex];
       const updatedHandList = [...handList, action.payload.block];
