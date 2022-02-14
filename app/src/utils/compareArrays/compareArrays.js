@@ -86,8 +86,8 @@ export const objectIsEqual = (object1, object2) => {
     // not an object, check the values
     return object1 === object2;
   }
-  object1 = removePlayerProperty(object1);
-  object2 = removePlayerProperty(object2);
+  object1 = removeProperties(object1);
+  object2 = removeProperties(object2);
 
   const keys1 = Object.keys(object1);
   const keys2 = Object.keys(object2);
@@ -118,18 +118,20 @@ const isNull = (var1, var2) => {
 };
 
 /**
- * Remove the propery player from an object
+ * Remove the propery player and id from an object
  *
  * @param {*} obj
  * @returns
  */
-const removePlayerProperty = (obj) => {
+const removeProperties = (obj) => {
+  const objCopy = deepCopy(obj);
   if (obj.hasOwnProperty('player')) {
-    const objCopy = deepCopy(obj);
     delete objCopy.player;
-    return objCopy;
   }
-  return obj;
+  if (obj.hasOwnProperty('id')) {
+    delete objCopy.id;
+  }
+  return objCopy;
 };
 
 /** Create a deep copy of a variable
