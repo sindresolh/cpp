@@ -1,0 +1,78 @@
+[
+  [     
+      {
+        "codeBlocks": [
+            {
+                "code": "def sumlist(items):",
+                "category": "function",
+                "indent": 0,
+                "id": "1"
+            },
+            {
+                "code": "total = 0",
+                "category": "variable",
+                "indent": 1,
+                "id": "2"
+            },
+            {
+                "code": "for i in items:",
+                "category": "loop",
+                "indent": 1,
+                "id": "3"
+            },
+            {
+                "code": "if type(i) == type([]):",
+                "category": "condition",
+                "indent": 2,
+                "id": "4"
+            },
+            {
+                "code": "total += sumlist(i)",
+                "category": "variable",
+                "indent": 3,
+                "id": "5"
+            },
+            {
+                "code": "else:",
+                "category": "condition",
+                "indent": 2,
+                "id": "6"
+            },
+            {
+                "code": "total += i",
+                "category": "variable",
+                "indent": 3,
+                "id": "7"
+            },
+            {
+                "code": "return total",
+                "category": "function",
+                "indent": 1,
+                "id": "8"
+            }
+        ],
+        "distractors": [
+            {
+                "code": "total += items",
+                "category": "variable",
+                "indent": 0,
+                "id": "9"
+            },
+            {
+                "code": "if type(i) == type(list):",
+                "category": "condition",
+                "indent": 0,
+                "id": "10"
+            }
+        ],
+        "description": "Create a function that sums elements in a nested list and returns the sum.",
+        "hints": [
+            "A nested list is a list that contains other lists. For example [[1, 2, 3],[4, 5, 6],[7, 8, 9]]",
+            "Recursively call the function as long as the element is a list"
+        ],
+        "attempts": "unlimited",
+        "field": []
+    }
+]
+   
+]

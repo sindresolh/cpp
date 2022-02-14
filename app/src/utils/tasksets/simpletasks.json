@@ -46,7 +46,7 @@
           "id": "7"
         }
       ],
-      "description": "Create a function that sums elements in an array and returns the sum.",
+      "description": "Create a function that sums elements in a list and returns the sum.",
       "hints": ["Use 'def' to set up the function.", "Declare sum_list before you iterate over the items."],
       "attempts": "unlimited",
       "field": []
