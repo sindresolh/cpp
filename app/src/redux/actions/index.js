@@ -92,19 +92,17 @@ export const removeBlockFromList = (blockId, handListIndex) => {
   };
 };
 
-/** WARNING: UNUSED AS OF NOW
+/** Add a new block to the handlist
  * See reducers/gameLogic/handList
  *
  * @param {*} block
- * @param {*} handListIndex
  * @returns
  */
-export const addBlock = (block, handListIndex) => {
+export const addBlockToList = (block) => {
   return {
-    type: ACTIONS.ADD_BLOCK,
+    type: ACTIONS.ADD_BLOCK_TO_LIST,
     payload: {
       block,
-      handListIndex,
     },
   };
 };
@@ -135,6 +133,21 @@ export const removeBlockFromField = (id) => {
     type: ACTIONS.REMOVE_BLOCK_FROM_FIELD,
     payload: {
       id,
+    },
+  };
+};
+
+/** Append a codeblock to the field
+ * See reducers/gameLogic/solutionField
+ *
+ * @param {*} id
+ * @returns
+ */
+export const addBlockToField = (block) => {
+  return {
+    type: ACTIONS.ADD_BLOCK_TO_FIELD,
+    payload: {
+      block,
     },
   };
 };

@@ -21,6 +21,7 @@ import CrossIcon from '../../../utils/images/buttonIcons/cross.png';
 import { COLORS } from '../../../utils/constants';
 import { clearBoard as clearBoardHelper } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
 import store from '../../../redux/store/store';
+import { deepCopy } from '../../../utils/compareArrays/compareArrays';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -32,6 +33,7 @@ export default function Sidebar() {
   const [modalBorderColor, setModalBorderColor] = useState('white');
   const [feedbackVisibility, setFeedbackVisibility] = useState('none');
   const [hasClearBoardDialog, setHasClearBoardDialog] = useState('none');
+  const [currentfieldBlocks, setCurrentFieldBlocks] = useState([]); // fieldblocks from when submit was pressed
   const dispatch = useDispatch();
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
@@ -131,6 +133,8 @@ export default function Sidebar() {
    * Make all players go to the next task of the submit is correct
    */
   const handleSubmit = () => {
+    setCurrentFieldBlocks(fieldBlocks);
+
     let correctSolution = arrayIsEqual(
       fieldBlocks,
       currentTaskObject.codeBlocks
@@ -197,7 +201,7 @@ export default function Sidebar() {
         buttonText={modalButtonText}
         buttonColor={modalButtonColor}
         borderColor={modalBorderColor}
-        fieldBlocks={fieldBlocks}
+        fieldBlocks={currentfieldBlocks} // fieldblocks from when submit was pressed
         showFeedback={feedbackVisibility}
         showClearBoardDialog={hasClearBoardDialog}
         closeModal={() => (finished ? showFinishedScren() : closeModal())}

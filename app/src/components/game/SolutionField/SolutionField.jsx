@@ -7,6 +7,9 @@ import {
   removeBlockFromList,
   fieldEvent,
   listEvent,
+  removeBlockFromField,
+  addBlockToList,
+  setList
 } from '../../../redux/actions';
 import update from 'immutability-helper';
 import { useDrop } from 'react-dnd';
@@ -122,8 +125,33 @@ function SolutionField({}) {
     [blocks]
   );
 
+  /** Helper function to make sure that the field event is done before sending a new event
+   * 
+   * @returns 
+   */
+  const fieldEventPromise = () => {
+    return Promise.resolve(dispatch(fieldEvent()));
+  }
+
+  
+  /** Moves block from solutionfield to hand after a doubbleclick
+   * 
+   * @param {*} e
+   * @param {*} movedBlock : codeblock moved
+   * @param {*} draggable : wheter or not the player has permission to perform this action
+   */
+  const handleDoubbleClick = (e, movedBlock, draggable) => {
+    if(e.detail > 1 && draggable && movedBlock != null){ // (e.detauil > 1) if clicked more than once
+      movedBlock.indent = 0;
+      dispatch(removeBlockFromField(movedBlock.id));
+      dispatch(addBlockToList(movedBlock));
+      fieldEventPromise().then(() => dispatch(listEvent()));
+      e.detail = 0; // resets detail so that other codeblocks can be clicked
+      };
+  };
+
   return (
-    <div className={'divSF'} style={{ background: COLORS.solutionfield }}>
+    <div className={'divSF'} style={{ background: COLORS.solutionfield }} >
       <h6>{'Connected players: ' + players.length}</h6>
       <ul data-testid='solutionField'>
         {blocks.map((block, index) => {
@@ -135,6 +163,7 @@ function SolutionField({}) {
               maxIndent={MAX_INDENT}
               draggable={true}
               key={`line-${index}`}
+              handleDoubbleClick = {handleDoubbleClick}
             />
           );
         })}

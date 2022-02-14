@@ -33,17 +33,15 @@ const handListReducer = (state = [[], [], [], []], action) => {
       );
       return updatedState;
     }
-    case 'ADD_BLOCK': {
-      // TODO: we might not need this action, but let's keep it for now.
-      // TODO: update to include position (index) of block
-      const handList = state[action.payload.handListIndex];
+    case ACTIONS.ADD_BLOCK_TO_LIST: {
+      const handListIndex = action.payload.block.player - 1;
+      const handList = state[handListIndex];
       const updatedHandList = [...handList, action.payload.block];
       const updatedState = state.map((list, index) =>
-        index === action.payload.handListIndex ? updatedHandList : list
+        index === handListIndex ? updatedHandList : list
       );
       return updatedState;
     }
-
     default:
       return state;
   }
