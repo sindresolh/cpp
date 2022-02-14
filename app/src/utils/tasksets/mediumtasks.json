@@ -1,5 +1,130 @@
 [
-  [     
+  [    {
+        "codeBlocks": [
+            {
+                "code": "def merge_list(list1, list2):",
+                "category": "function",
+                "indent": 0,
+                "id": "1"
+            },
+            {
+                "code": "result_list = []",
+                "category": "variable",
+                "indent": 1,
+                "id": "2"
+            },
+            {
+                "code": "for num in list1:",
+                "category": "loop",
+                "indent": 1,
+                "id": "3"
+            },
+            {
+                "code": "if num % 2 != 0:",
+                "category": "condition",
+                "indent": 2,
+                "id": "4"
+            },
+            {
+                "code": "result_list.append(num)",
+                "category": "function",
+                "indent": 3,
+                "id": "5"
+            },
+            {
+                "code": "for num in list2:",
+                "category": "loop",
+                "indent": 1,
+                "id": "6"
+            },
+            {
+                "code": "if num % 2 == 0:",
+                "category": "condition",
+                "indent": 2,
+                "id": "7"
+            },
+            {
+                "code": "result_list.append(num)",
+                "category": "function",
+                "indent": 3,
+                "id": "8"
+            },
+            {
+                "code": "return result_list",
+                "category": "function",
+                "indent": 1,
+                "id": "9"
+            }
+        ],
+        "otherSolutions": [ 
+          [
+                {
+                "code": "def merge_list(list1, list2):",
+                "category": "function",
+                "indent": 0,
+                "id": "1"
+            },
+            {
+                "code": "result_list = []",
+                "category": "variable",
+                "indent": 1,
+                "id": "2"
+            },
+            {
+                "code": "for num in list2:",
+                "category": "loop",
+                "indent": 1,
+                "id": "6"
+            },
+            {
+                "code": "if num % 2 == 0:",
+                "category": "condition",
+                "indent": 2,
+                "id": "7"
+            },
+            {
+                "code": "result_list.append(num)",
+                "category": "function",
+                "indent": 3,
+                "id": "8"
+            },
+            {
+                "code": "for num in list1:",
+                "category": "loop",
+                "indent": 1,
+                "id": "3"
+            },
+            {
+                "code": "if num % 2 != 0:",
+                "category": "condition",
+                "indent": 2,
+                "id": "4"
+            },
+            {
+                "code": "result_list.append(num)",
+                "category": "function",
+                "indent": 3,
+                "id": "5"
+            },
+            {
+                "code": "return result_list",
+                "category": "function",
+                "indent": 1,
+                "id": "9"
+            }
+        ]
+      ],
+        "distractors": [],
+        "description": "Write a function that merges two lists of numbers, such that the new list should contain odd numbers from the first list and even numbers from the second list.",
+        "hints": [
+            "Create an empty list named result_list",
+            "Iterate first list using a for loop, then iterate the next list using a for loop",
+            "Use % (modulo) to check for odd or even numbers",
+            "Append odd numbers from list1 and even numbers from list2"
+        ],
+        "attempts": "unlimited",
+        "field": []
+    },
       {
         "codeBlocks": [
             {
