@@ -47,7 +47,7 @@
         }
       ],
       "description": "Create a function that sums elements in an array and returns the sum.",
-      "hints": ["Use 'def' to set up the function."],
+      "hints": ["Use 'def' to set up the function.", "Declare sum_list before you iterate over the items."],
       "attempts": "unlimited",
       "field": []
     },
@@ -94,7 +94,9 @@
         ],
         "description": "Iterate the given list of numbers and print only those numbers which are divisible by 5",
         "hints": [
-            "% (modulo) is a math operation that finds the remainder when one integer is divided by another"
+            "% (modulo) is a math operation that finds the remainder when one integer is divided by another. ",
+            "For example, 16 % 4 = 0, since if we divide 16 by 4, we get 4 with remainder 0.",
+            "For example, 17 % 5 = 2, since if we divide 17 by 5, we get 3 with remainder 2."
         ],
         "attempts": "unlimited",
         "field": []
@@ -309,7 +311,50 @@
         "description": "Write a program to find how many times substring “Emma” appears in the given string.",
         "hints": [
             "Given \"Emma is good developer. Emma is a writer\" the function should return 2.",
-            "Use string method count()"
+            "Use the string method count()"
+        ],
+        "attempts": "unlimited",
+        "field": []
+    },
+      {
+        "codeBlocks": [
+            {
+                "code": "def remove_chars(word, n):",
+                "category": "function",
+                "indent": 0,
+                "id": "1"
+            },
+            {
+                "code": "x = word[n:]",
+                "category": "variable",
+                "indent": 1,
+                "id": "2"
+            },
+            {
+                "code": "return x",
+                "category": "function",
+                "indent": 1,
+                "id": "3"
+            }
+        ],
+        "distractors": [
+            {
+                "code": "function remove_chars(word, n)",
+                "category": "function",
+                "indent": 0,
+                "id": "4"
+            },
+            {
+                "code": "x.pop(n)",
+                "category": "function",
+                "indent": 0,
+                "id": "5"
+            }
+        ],
+        "description": "Write a function to remove characters from a string starting from zero up to n and return a new string.",
+        "hints": [
+            "remove_chars(\"pynative\", 2) should result in output native.",
+            "Use string slicing to get the substring. For example, to remove the first four characters use s[4:]."
         ],
         "attempts": "unlimited",
         "field": []
