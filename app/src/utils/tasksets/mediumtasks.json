@@ -1,176 +1,5 @@
 [
-  [        {
-        "codeBlocks": [
-            {
-                "code": "n = int(input())",
-                "category": "variable",
-                "indent": 0,
-                "id": "1"
-            },
-            {
-                "code": "count, n1, n2 = 0, 0, 1",
-                "category": "variable",
-                "indent": 0,
-                "id": "2"
-            },
-            {
-                "code": "if n == 1:",
-                "category": "condition",
-                "indent": 0,
-                "id": "4"
-            },
-            {
-                "code": "print(n1)",
-                "category": "function",
-                "indent": 1,
-                "id": "5"
-            },
-            {
-                "code": "else:",
-                "category": "condition",
-                "indent": 0,
-                "id": "6"
-            },
-            {
-                "code": "while count < n:",
-                "category": "loop",
-                "indent": 1,
-                "id": "7"
-            },
-            {
-                "code": "print(n1)",
-                "category": "function",
-                "indent": 2,
-                "id": "8"
-            },
-            {
-                "code": "nth = n1 + n2",
-                "category": "variable",
-                "indent": 2,
-                "id": "9"
-            },
-            {
-                "code": "n1 = n2",
-                "category": "variable",
-                "indent": 2,
-                "id": "10"
-            },
-            {
-                "code": "n2 = nth",
-                "category": "variable",
-                "indent": 2,
-                "id": "11"
-            },
-            {
-                "code": "count += 1",
-                "category": "variable",
-                "indent": 2,
-                "id": "12"
-            }
-        ],
-        "distractors": [
-            {
-                "code": "n = input()",
-                "category": "variable",
-                "indent": 0,
-                "id": "13"
-            },
-            {
-                "code": "if n = 1",
-                "category": "variable",
-                "indent": 0,
-                "id": "14"
-            },
-            {
-                "code": "while count < nth:",
-                "category": "loop",
-                "indent": 0,
-                "id": "15"
-            },
-            {
-                "code": "n2 = n1",
-                "category": "variable",
-                "indent": 0,
-                "id": "16"
-            }
-        ],
-        "otherSolutions": [ [
-               {
-                "code": "count, n1, n2 = 0, 0, 1",
-                "category": "variable",
-                "indent": 0,
-                "id": "2"
-            },
-            {
-                "code": "n = int(input())",
-                "category": "variable",
-                "indent": 0,
-                "id": "1"
-            },
-            {
-                "code": "if n == 1:",
-                "category": "condition",
-                "indent": 0,
-                "id": "4"
-            },
-            {
-                "code": "print(n1)",
-                "category": "function",
-                "indent": 1,
-                "id": "5"
-            },
-            {
-                "code": "else:",
-                "category": "condition",
-                "indent": 0,
-                "id": "6"
-            },
-            {
-                "code": "while count < n:",
-                "category": "loop",
-                "indent": 1,
-                "id": "7"
-            },
-            {
-                "code": "print(n1)",
-                "category": "function",
-                "indent": 2,
-                "id": "8"
-            },
-            {
-                "code": "nth = n1 + n2",
-                "category": "variable",
-                "indent": 3,
-                "id": "9"
-            },
-            {
-                "code": "n1 = n2",
-                "category": "variable",
-                "indent": 3,
-                "id": "10"
-            },
-            {
-                "code": "n2 = nth",
-                "category": "variable",
-                "indent": 3,
-                "id": "11"
-            },
-            {
-                "code": "count += 1",
-                "category": "variable",
-                "indent": 3,
-                "id": "12"
-            }
-        ]],
-        "description": "Create a program that asks for a positive integer n. The program then prints out the first n numbers in the fibonacci sequence. The first two numbers in the fibonacci sequence is 0 and 1. The next number is obtained by adding the preceding two terms. ",
-        "hints": [
-            "The first 7 numbers in the fibonacci sequence becomes: 0, 1, 1, 2, 3, 5, 8",
-            "A fibbonaci sequence with 1 entry is an edge case. Check for this edge case first.",
-            "First print the next number in the sequence, then calculate the next fibonacci number."
-        ],
-        "attempts": "unlimited",
-        "field": []
-    },
+  [       
       {
         "codeBlocks": [
             {
@@ -477,7 +306,250 @@
         ],
         "attempts": "unlimited",
         "field": []
+    },
+    {
+        "codeBlocks": [
+            {
+                "code": "n = int(input())",
+                "category": "variable",
+                "indent": 0,
+                "id": "1"
+            },
+            {
+                "code": "count, n1, n2 = 0, 0, 1",
+                "category": "variable",
+                "indent": 0,
+                "id": "2"
+            },
+            {
+                "code": "if n == 1:",
+                "category": "condition",
+                "indent": 0,
+                "id": "4"
+            },
+            {
+                "code": "print(n1)",
+                "category": "function",
+                "indent": 1,
+                "id": "5"
+            },
+            {
+                "code": "else:",
+                "category": "condition",
+                "indent": 0,
+                "id": "6"
+            },
+            {
+                "code": "while count < n:",
+                "category": "loop",
+                "indent": 1,
+                "id": "7"
+            },
+            {
+                "code": "print(n1)",
+                "category": "function",
+                "indent": 2,
+                "id": "8"
+            },
+            {
+                "code": "nth = n1 + n2",
+                "category": "variable",
+                "indent": 2,
+                "id": "9"
+            },
+            {
+                "code": "n1 = n2",
+                "category": "variable",
+                "indent": 2,
+                "id": "10"
+            },
+            {
+                "code": "n2 = nth",
+                "category": "variable",
+                "indent": 2,
+                "id": "11"
+            },
+            {
+                "code": "count += 1",
+                "category": "variable",
+                "indent": 2,
+                "id": "12"
+            }
+        ],
+        "distractors": [
+            {
+                "code": "n = input()",
+                "category": "variable",
+                "indent": 0,
+                "id": "13"
+            },
+            {
+                "code": "if n = 1",
+                "category": "variable",
+                "indent": 0,
+                "id": "14"
+            },
+            {
+                "code": "while count < nth:",
+                "category": "loop",
+                "indent": 0,
+                "id": "15"
+            }
+        ],
+        "otherSolutions": [ [
+               {
+                "code": "count, n1, n2 = 0, 0, 1",
+                "category": "variable",
+                "indent": 0,
+                "id": "2"
+            },
+            {
+                "code": "n = int(input())",
+                "category": "variable",
+                "indent": 0,
+                "id": "1"
+            },
+            {
+                "code": "if n == 1:",
+                "category": "condition",
+                "indent": 0,
+                "id": "4"
+            },
+            {
+                "code": "print(n1)",
+                "category": "function",
+                "indent": 1,
+                "id": "5"
+            },
+            {
+                "code": "else:",
+                "category": "condition",
+                "indent": 0,
+                "id": "6"
+            },
+            {
+                "code": "while count < n:",
+                "category": "loop",
+                "indent": 1,
+                "id": "7"
+            },
+            {
+                "code": "print(n1)",
+                "category": "function",
+                "indent": 2,
+                "id": "8"
+            },
+            {
+                "code": "nth = n1 + n2",
+                "category": "variable",
+                "indent": 3,
+                "id": "9"
+            },
+            {
+                "code": "n1 = n2",
+                "category": "variable",
+                "indent": 3,
+                "id": "10"
+            },
+            {
+                "code": "n2 = nth",
+                "category": "variable",
+                "indent": 3,
+                "id": "11"
+            },
+            {
+                "code": "count += 1",
+                "category": "variable",
+                "indent": 3,
+                "id": "12"
+            }
+        ]],
+        "description": "Create a program that asks for a positive integer n. The program then prints out the first n numbers in the fibonacci sequence. The first two numbers in the fibonacci sequence is 0 and 1. The next number is obtained by adding the preceding two terms. ",
+        "hints": [
+            "The first 7 numbers in the fibonacci sequence becomes: 0, 1, 1, 2, 3, 5, 8",
+            "A fibbonaci sequence with 1 entry is an edge case. Check for this edge case first.",
+            "First print the next number in the sequence, then calculate the next fibonacci number.",
+            "Lastly increment the counter"
+        ],
+        "attempts": "unlimited",
+        "field": []
+    },
+    {
+        "codeBlocks": [
+            {
+                "code": "def palindrome(num):",
+                "category": "function",
+                "indent": 0,
+                "id": "1"
+            },
+            {
+                "code": "original, reverse = num, 0",
+                "category": "variable",
+                "indent": 1,
+                "id": "2"
+            },
+            {
+                "code": "while num > 0:",
+                "category": "loop",
+                "indent": 1,
+                "id": "3"
+            },
+            {
+                "code": "r = num % 10",
+                "category": "variable",
+                "indent": 2,
+                "id": "4"
+            },
+            {
+                "code": "reverse = (reverse * 10) + r",
+                "category": "variable",
+                "indent": 2,
+                "id": "5"
+            },
+            {
+                "code": "num = num // 10",
+                "category": "variable",
+                "indent": 2,
+                "id": "6"
+            },
+            {
+                "code": "if original == reverse:",
+                "category": "condition",
+                "indent": 1,
+                "id": "7"
+            },
+            {
+                "code": "return True",
+                "category": "function",
+                "indent": 2,
+                "id": "8"
+            },
+            {
+                "code": "else:",
+                "category": "condition",
+                "indent": 1,
+                "id": "9"
+            },
+            {
+                "code": "return False",
+                "category": "function",
+                "indent": 2,
+                "id": "10"
+            }
+        ],
+        "distractors": [],
+        "description": "Write a function to check if the given number is a palindrome number. A palindrome number is a number that is same after reverse.",
+        "hints": [
+            "Given 121 the function should return true\n Given 125 the function should return false",
+            "Modulo: 14 % 10 = 4, divide: 14 // 10 = 1, combine: 4 * 10 + 1 = 41",
+            "To reverse a number the last digit needs to be multiplied by 10 for each preceding digit.",
+            "To reverse a number the first digit needs to be divided by 10 for each succeeding digit.",
+            "All codeblocks should be utilized in this task. No distractors."
+        ],
+        "attempts": "unlimited",
+        "field": []
     }
+     
 ]
    
 ]
