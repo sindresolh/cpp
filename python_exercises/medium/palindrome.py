@@ -6,6 +6,9 @@
 # Hint: Given 121 the function should return true
 # Hint: Given 125 the function should return false
 # Hint: All codeblocks should be utilized in this task. No distractors.
+# Hint: To reverse a number the last digit needs to be multiplied by 10 for each preceding digit.
+# Hint: To reverse a number the first digit needs to be divided by 10 for each succeeding digit.
+
 
 def palindrome(num):
 
@@ -23,3 +26,5 @@ def palindrome(num):
         return True
     else:
         return False
+
+print(palindrome(121))

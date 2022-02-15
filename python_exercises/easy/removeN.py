@@ -6,8 +6,8 @@
 # Hint: Use string slicing to get the substring. For example, to remove the first four characters and the remeaning use s[4:].
 
 def remove_chars(word, n):
-    x = word[n:]
-    return x
+  x = word[n:]
+  return x
 
 #$function remove_chars(word, n)
 #$x.pop(n)

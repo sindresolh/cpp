@@ -6,7 +6,7 @@ import {
   linebasedfeedback,
 } from '../compareArrays';
 
-const somearray = [1, '2', new Date()];
+const somearray = [1, '2', { hello: 'world' }];
 const object1 = { var: 1, othervar: 'hello' };
 const object2 = { somearray: somearray };
 const someotherarray = [somearray, object1, object2];
@@ -58,7 +58,7 @@ describe('test the compare array functions', () => {
     });
 
     it('two equal arrays', () => {
-      expect(arrayIsEqual(somearray, [1, '2', new Date()])).toBe(true);
+      expect(arrayIsEqual(somearray, [1, '2', { hello: 'world' }])).toBe(true);
     });
 
     it('two different arrays', () => {
