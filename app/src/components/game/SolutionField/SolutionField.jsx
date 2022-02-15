@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import CodeLine from '../CodeLine/CodeLine';
-import { useCallback } from 'react';
+import { useCallback, useEffect, useState} from 'react';
 import {
   setFieldState,
   removeBlockFromList,
@@ -9,7 +9,6 @@ import {
   listEvent,
   removeBlockFromField,
   addBlockToList,
-  setList
 } from '../../../redux/actions';
 import update from 'immutability-helper';
 import { useDrop } from 'react-dnd';
@@ -29,6 +28,7 @@ function SolutionField({}) {
   const blocks = useSelector((state) => state.solutionField);
   const players = useSelector((state) => state.players);
   const dispatch = useDispatch();
+  const [selectedBlock, setSelectedBlock] = useState(null);     // block selected for the next keyDown event
 
   // finds the block, it's index and indent based on id
   const findBlock = useCallback(
@@ -61,6 +61,40 @@ function SolutionField({}) {
     },
     [findBlock, blocks]
   );
+
+  const handleKeyDown = useCallback(e=> {
+      if(selectedBlock != null && e.keyCode != null){
+
+      var KEY_BACKSPACE = 8;
+      var KEY_TAB = 9;
+
+      //alert(selectedBlock.index);
+
+      //let block = findBlock(selectedBlock.id);  // get the blocks updated indent and index
+
+
+      //alert(block.indent)
+ 
+      if (e.keyCode === KEY_TAB && selectedBlock.indent < MAX_INDENT) {
+        moveBlock(selectedBlock.id, selectedBlock.index, selectedBlock.indent +1);
+        setSelectedBlock((selectedBlock) => ({...selectedBlock, indent: selectedBlock.indent+1}))
+      }
+      else if(e.keyCode === KEY_BACKSPACE && selectedBlock.indent > 0){
+        moveBlock(selectedBlock.id, selectedBlock.index, selectedBlock.indent -1);
+        setSelectedBlock((selectedBlock) => ({...selectedBlock, indent: selectedBlock.indent-1}))
+      }
+    } 
+  },);
+
+  /**
+   * Creates an key event listener based on the selected codeblock
+   */
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+        window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
 
   /**
    * Swap the position of the dragged block.
@@ -133,21 +167,29 @@ function SolutionField({}) {
     return Promise.resolve(dispatch(fieldEvent()));
   }
 
-  
   /** Moves block from solutionfield to hand after a doubbleclick
    * 
    * @param {*} e
    * @param {*} movedBlock : codeblock moved
    * @param {*} draggable : wheter or not the player has permission to perform this action
    */
-  const handleDoubbleClick = (e, movedBlock, draggable) => {
-    if(e.detail > 1 && draggable && movedBlock != null){ // (e.detauil > 1) if clicked more than once
+  const handleDoubbleClick = (e, movedBlock, draggable, index) => {
+
+    if(movedBlock != null && draggable){
+    
+    // the user selected this codeblock
+    movedBlock.index = index;
+    setSelectedBlock(movedBlock);
+
+    // (e.detauil > 1) if clicked more than once
+    if(e.detail > 1){
       movedBlock.indent = 0;
       dispatch(removeBlockFromField(movedBlock.id));
       dispatch(addBlockToList(movedBlock));
       fieldEventPromise().then(() => dispatch(listEvent()));
       e.detail = 0; // resets detail so that other codeblocks can be clicked
       };
+    }
   };
 
   return (
