@@ -15,7 +15,7 @@ import { useDrop } from 'react-dnd';
 import { ItemTypes } from '../../../utils/itemtypes';
 import './SolutionField.css';
 import store from '../../../redux/store/store';
-import { COLORS, MAX_INDENT } from '../../../utils/constants';
+import { COLORS, MAX_INDENT, KEYBOARD_EVENT } from '../../../utils/constants';
 
 /**
  * The field the players can move blocks into.
@@ -62,27 +62,21 @@ function SolutionField({}) {
     [findBlock, blocks]
   );
 
+  /**
+   * Handle keyboard input for the selected codeblock.
+   * Tab and bacskpace changes indenting.
+   */
   const handleKeyDown = useCallback(e=> {
       if(selectedBlock != null && e.keyCode != null){
-
-      var KEY_BACKSPACE = 8;
-      var KEY_TAB = 9;
-
-      //alert(selectedBlock.index);
-
-      //let block = findBlock(selectedBlock.id);  // get the blocks updated indent and index
-
-
-      //alert(block.indent)
  
-      if (e.keyCode === KEY_TAB && selectedBlock.indent < MAX_INDENT) {
-        moveBlock(selectedBlock.id, selectedBlock.index, selectedBlock.indent +1);
-        setSelectedBlock((selectedBlock) => ({...selectedBlock, indent: selectedBlock.indent+1}))
-      }
-      else if(e.keyCode === KEY_BACKSPACE && selectedBlock.indent > 0){
-        moveBlock(selectedBlock.id, selectedBlock.index, selectedBlock.indent -1);
-        setSelectedBlock((selectedBlock) => ({...selectedBlock, indent: selectedBlock.indent-1}))
-      }
+        if (e.keyCode === KEYBOARD_EVENT.TAB && selectedBlock.indent < MAX_INDENT) {      // TAB
+          moveBlock(selectedBlock.id, selectedBlock.index, selectedBlock.indent +1);
+          setSelectedBlock((selectedBlock) => ({...selectedBlock, indent: selectedBlock.indent+1}))
+        }
+        else if(e.keyCode === KEYBOARD_EVENT.BACKSPACE && selectedBlock.indent > 0){      // BACKSPACE
+          moveBlock(selectedBlock.id, selectedBlock.index, selectedBlock.indent -1);
+          setSelectedBlock((selectedBlock) => ({...selectedBlock, indent: selectedBlock.indent-1}))
+        }
     } 
   },);
 

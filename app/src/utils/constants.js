@@ -45,3 +45,8 @@ export const STATUS = {
   GAME: 2,
   FINISHED: 3,
 };
+
+export const KEYBOARD_EVENT = {
+  BACKSPACE: 8,
+  TAB: 9,
+};
