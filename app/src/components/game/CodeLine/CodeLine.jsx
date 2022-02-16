@@ -62,7 +62,7 @@ function CodeLine({ block, index, moveBlock, maxIndent, draggable, handleDoubble
         data-testid={`blockref-${block.id}`}
         ref={blockRef}
         style={{ marginLeft: `${block.indent * OFFSET}px` }}
-        onClick={(e) => handleDoubbleClick(e, block, draggable)}
+        onClick={(e) => handleDoubbleClick(e, block, draggable, index)}
       >
         <CodeBlock {...block} index={index} draggable={draggable} />
       </div>
