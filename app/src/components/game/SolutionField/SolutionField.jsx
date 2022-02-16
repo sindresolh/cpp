@@ -71,14 +71,14 @@ function SolutionField({}) {
    */
   const handleKeyDown = useCallback(e=> {
     e.preventDefault();     // do not target adress bar
-      if(selectedCodeline != null && e.keyCode != null){
-        if (e.keyCode === KEYBOARD_EVENT.TAB && selectedCodeline.indent < MAX_INDENT) {      // TAB
-          setSelectedCodeline((selectedCodeline) => ({...selectedCodeline, indent: selectedCodeline.indent+1}))
-          moveBlock(selectedCodeline.id, selectedCodeline.index, selectedCodeline.indent +1, false);
-        }
-        else if(e.keyCode === KEYBOARD_EVENT.BACKSPACE && selectedCodeline.indent > 0){      // BACKSPACE
+      if(selectedCodeline != null && e.keyCode != null){               // SHIFT TAB OR BACKSPACE
+        if((e.shiftKey && e.keyCode == KEYBOARD_EVENT.TAB  && selectedCodeline.indent > 0) || (e.keyCode === KEYBOARD_EVENT.BACKSPACE  && selectedCodeline.indent > 0)) { 
           setSelectedCodeline((selectedCodeline) => ({...selectedCodeline, indent: selectedCodeline.indent-1}))
           moveBlock(selectedCodeline.id, selectedCodeline.index, selectedCodeline.indent -1, false);
+        }
+        else if (!e.shiftKey && e.keyCode === KEYBOARD_EVENT.TAB && selectedCodeline.indent < MAX_INDENT) {      // TAB
+          setSelectedCodeline((selectedCodeline) => ({...selectedCodeline, indent: selectedCodeline.indent+1}))
+          moveBlock(selectedCodeline.id, selectedCodeline.index, selectedCodeline.indent +1, false);
         }
     } 
   },);
