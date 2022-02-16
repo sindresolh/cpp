@@ -28,7 +28,7 @@ function SolutionField({}) {
   const blocks = useSelector((state) => state.solutionField);
   const players = useSelector((state) => state.players);
   const dispatch = useDispatch();
-  const [selectedBlock, setSelectedBlock] = useState(null);     // block selected for the next keyDown event
+  const [selectedCodeline, setSelectedCodeline] = useState(null);     // block selected for the next keyDown event
 
   // finds the block, it's index and indent based on id
   const findBlock = useCallback(
@@ -49,7 +49,7 @@ function SolutionField({}) {
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0, mouseEvent = true) => {
       if(mouseEvent){
-        setSelectedBlock(null);  // reset selected codeblocks
+        setSelectedCodeline(null);  // reset selected codeblocks
       }
       // get block if it exists in solutionfield
       const block = findBlock(id);
@@ -71,14 +71,14 @@ function SolutionField({}) {
    */
   const handleKeyDown = useCallback(e=> {
     e.preventDefault();     // do not target adress bar
-      if(selectedBlock != null && e.keyCode != null){
-        if (e.keyCode === KEYBOARD_EVENT.TAB && selectedBlock.indent < MAX_INDENT) {      // TAB
-          setSelectedBlock((selectedBlock) => ({...selectedBlock, indent: selectedBlock.indent+1}))
-          moveBlock(selectedBlock.id, selectedBlock.index, selectedBlock.indent +1, false);
+      if(selectedCodeline != null && e.keyCode != null){
+        if (e.keyCode === KEYBOARD_EVENT.TAB && selectedCodeline.indent < MAX_INDENT) {      // TAB
+          setSelectedCodeline((selectedCodeline) => ({...selectedCodeline, indent: selectedCodeline.indent+1}))
+          moveBlock(selectedCodeline.id, selectedCodeline.index, selectedCodeline.indent +1, false);
         }
-        else if(e.keyCode === KEYBOARD_EVENT.BACKSPACE && selectedBlock.indent > 0){      // BACKSPACE
-          setSelectedBlock((selectedBlock) => ({...selectedBlock, indent: selectedBlock.indent-1}))
-          moveBlock(selectedBlock.id, selectedBlock.index, selectedBlock.indent -1, false);
+        else if(e.keyCode === KEYBOARD_EVENT.BACKSPACE && selectedCodeline.indent > 0){      // BACKSPACE
+          setSelectedCodeline((selectedCodeline) => ({...selectedCodeline, indent: selectedCodeline.indent-1}))
+          moveBlock(selectedCodeline.id, selectedCodeline.index, selectedCodeline.indent -1, false);
         }
     } 
   },);
@@ -171,7 +171,7 @@ function SolutionField({}) {
    * @param {*} draggable : wheter or not the player has permission to perform this action
    */
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
-    setSelectedBlock(movedBlock);
+    setSelectedCodeline(movedBlock);
 
     if(movedBlock != null && draggable){
     
@@ -203,7 +203,7 @@ function SolutionField({}) {
               draggable={true}
               key={`line-${index}`}
               handleDoubbleClick = {handleDoubbleClick}
-              isSelected = {selectedBlock}
+              selectedCodeline = {selectedCodeline}
             />
           );
         })}

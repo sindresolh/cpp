@@ -20,10 +20,10 @@ import PropTypes from 'prop-types';
 *  @param {Function} unselectOnHover callback to set the selected block to be null
  * @param {number} maxIndent  the max indent a block can have
  * @param {boolean} draggable whether the player shall be able to drag the block or not
- * @param {int} isSelected wheter or not this codeline in was selected
+ * @param {int} selectedCodeline information about the currently selected codeline. This could be this codeline.
  * @returns CodeLine component
  */
-function CodeLine({ block, index, moveBlock, maxIndent, draggable, handleDoubbleClick, isSelected}) {
+function CodeLine({ block, index, moveBlock, maxIndent, draggable, handleDoubbleClick, selectedCodeline}) {
   const blockRef = useRef(null); // reference to get the position of the DOM element
   const [border, setBorder] = useState('none');
   const MAX_INDENT = maxIndent;
@@ -56,13 +56,13 @@ function CodeLine({ block, index, moveBlock, maxIndent, draggable, handleDoubble
    * For visual aid.
    */
   useEffect(() => {
-    if(isSelected && isSelected.id === block.id){
+    if(selectedCodeline && selectedCodeline.id === block.id){
       setBorder('solid #c2c2c2 0.1em');
     }
     else{
       setBorder('none');
     }
-  }, [isSelected])
+  }, [selectedCodeline])
 
   return (
     <li
