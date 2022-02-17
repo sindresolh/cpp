@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import SidebarButton from '../../Game/Sidebar/SidebarButton/SidebarButton';
 import SubmitIcon from '../../../utils/images//buttonIcons/submit.png';
+import HintIcon from '../../../utils/images//buttonIcons/hint.png';
 import { COLORS } from '../../../utils/constants';
 import './Lobby.css';
 import { useSelector } from 'react-redux';
 import PlayerIcon from '../../../utils/images/playerIcons/player_icon.png';
 import ReactPlayer from 'react-player';
 import Video from '../../../utils/images/tutorial.mp4';
+import Modal from 'react-modal';
 
 /** Show the players in the lobby based on their nickname
  *
@@ -16,6 +18,18 @@ import Video from '../../../utils/images/tutorial.mp4';
 function Lobby({ handleClick }) {
   const players = useSelector((state) => state.players);
   const [data, setData] = useState(false);
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+
+  const modalStyle = {
+    content: {
+      top: '50%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+    },
+  };
 
   /** Recursive busy wait untill a given player has a nick property
    *
@@ -64,6 +78,14 @@ function Lobby({ handleClick }) {
     return () => (unmounted = true);
   }, [players]);
 
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setIsOpen(false);
+  }
+
   return (
     <div
       style={{
@@ -73,7 +95,18 @@ function Lobby({ handleClick }) {
       }}
     >
       <div className='Lobby' style={{ background: COLORS.solutionfield }}>
-        <h1>Lobby</h1>
+        <div style={{ position: 'relative', left: '45%' }}>
+          <SidebarButton
+            title=''
+            icon={HintIcon}
+            color={COLORS.lightyellow}
+            handleClick={openModal}
+            width='3em'
+          />
+        </div>
+
+        <h1 style={{ marginTop: '-1em' }}>Lobby</h1>
+
         <ul className='playerList'>
           {players.map((player) => {
             return (
@@ -94,6 +127,7 @@ function Lobby({ handleClick }) {
             );
           })}
         </ul>
+
         <div>
           <SidebarButton
             title='Start game'
@@ -104,8 +138,15 @@ function Lobby({ handleClick }) {
             disabled={!data} // Disable if data is not loaded
           />
         </div>
+
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          style={modalStyle}
+        >
+          <ReactPlayer url={Video} controls={true} />
+        </Modal>
       </div>
-      <ReactPlayer url={Video} controls={true} />
     </div>
   );
 }
