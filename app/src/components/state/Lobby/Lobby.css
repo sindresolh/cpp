@@ -1,3 +1,8 @@
+.lobbyContainer {
+  display: flex;
+  justify-content: center;
+}
+
 .Lobby {
   margin-top: 10em;
   width: 50em;
@@ -25,4 +30,10 @@
   text-align: left;
   font-size: 15px;
   list-style: none;
+  text-align: center;
+}
+
+.playerIcon {
+  height: 6vw;
+  object-fit: cover;
 }
