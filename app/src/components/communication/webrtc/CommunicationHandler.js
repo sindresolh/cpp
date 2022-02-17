@@ -310,6 +310,7 @@ class CommunicationHandler extends Component {
         onReceivedPeerData={this.handlePeerData}
         onRemovedPeer={this.handlePeerLeft}
         onJoinedRoom={this.joinedRoom}
+        url={'http://13.51.198.237:8888/'}
       >
         {this.state.connected ? <CommunicationListener /> : <PuzzleGif />}
 

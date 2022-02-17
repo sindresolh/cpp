@@ -5,6 +5,8 @@ import { COLORS } from '../../../utils/constants';
 import './Lobby.css';
 import { useSelector } from 'react-redux';
 import PlayerIcon from '../../../utils/images/playerIcons/player_icon.png';
+import ReactPlayer from 'react-player';
+import Video from '../../../utils/images/tutorial.mp4';
 
 /** Show the players in the lobby based on their nickname
  *
@@ -103,6 +105,7 @@ function Lobby({ handleClick }) {
           />
         </div>
       </div>
+      <ReactPlayer url={Video} controls={true} />
     </div>
   );
 }
