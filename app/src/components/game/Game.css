@@ -1,7 +1,6 @@
 .Game {
   flex: 6;
   display: flex;
-  flex-flow: row;
 }
 
 .GameLeft {
