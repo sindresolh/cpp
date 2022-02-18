@@ -1,12 +1,14 @@
 .SideBarButton {
   display: inline-flex;
-  height: 3vw;
+  height: fit-content;
+  width: fit-content;
   margin: 0.4vw;
   border-radius: 1vw;
   border-style: none;
   font-weight: bold;
-  font-size: 1vw;
   cursor: default;
+  white-space: nowrap;
+  font-size: calc(10px + 0.4vw);
 }
 
 .SideBarButton:hover {
@@ -18,16 +20,16 @@
   position: 'absolute';
   pointer-events: none;
   max-width: 100%;
-  width: 2vw;
+  margin-top: 0.4vw;
+  margin: 0.4vw 0.2vw 0.4vw;
 }
 
 .SideBarButton > div {
-  padding-top: 0.8em;
-  margin-left: 0.5em;
+  padding-top: 0.3vw;
 }
 
 .SideBarButton > img {
-  padding-top: 0.3em;
+  width: calc(12px + 0.8vw);
 }
 
 .SideBarButton:disabled {

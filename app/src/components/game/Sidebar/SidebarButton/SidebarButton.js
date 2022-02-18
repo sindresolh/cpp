@@ -15,7 +15,7 @@ export default function SidebarButton({
   icon,
   color,
   handleClick,
-  width = '7em',
+  width = '6.5em',
   disabled = false,
 }) {
   /**

@@ -74,7 +74,7 @@ export default function JoinGame() {
                 icon={SubmitIcon}
                 color={COLORS.lightgreen}
                 handleClick={handleSubmit}
-                width='9em'
+                width='8em'
               />
             </div>
           </div>

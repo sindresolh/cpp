@@ -97,7 +97,7 @@ function Lobby({ handleClick }) {
             icon={SubmitIcon}
             color={COLORS.lightgreen}
             handleClick={handleClick}
-            width='9em'
+            width='8.5em'
             disabled={!data} // Disable if data is not loaded
           />
         </div>
