@@ -30,6 +30,7 @@
   text-align: left;
   list-style: none;
   text-align: center;
+  word-wrap: break-word;
 }
 
 .playerIcon {
