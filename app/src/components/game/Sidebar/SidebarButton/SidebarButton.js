@@ -37,7 +37,7 @@ export default function SidebarButton({
       className='SideBarButton'
       disabled={disabled}
     >
-      <img height='30' width='auto' src={icon} alt='Icon' />
+      <img width='auto' src={icon} alt='Icon' />
       <div>{title}</div>
     </button>
   );

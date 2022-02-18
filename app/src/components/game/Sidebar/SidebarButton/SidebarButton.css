@@ -1,11 +1,11 @@
 .SideBarButton {
   display: inline-flex;
-  height: 3em;
-  margin: 0.4em;
-  border-radius: 1em;
+  height: 3vw;
+  margin: 0.4vw;
+  border-radius: 1vw;
   border-style: none;
   font-weight: bold;
-  font-size: 1em;
+  font-size: 1vw;
   cursor: default;
 }
 
@@ -17,6 +17,8 @@
 .SideBarButton > img {
   position: 'absolute';
   pointer-events: none;
+  max-width: 100%;
+  width: 2vw;
 }
 
 .SideBarButton > div {

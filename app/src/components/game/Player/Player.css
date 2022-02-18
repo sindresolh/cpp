@@ -1,5 +1,5 @@
 .player {
-  padding: 5px;
+  padding: 0.2vw;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -31,8 +31,9 @@ img {
 .player-2.name,
 .player-3.name,
 .player-4.name {
+  font-size: 1vw;
   font-weight: bold;
-  padding: 2px;
+  padding: 0.1vw;
   flex: 2;
   color: #636363;
 }
