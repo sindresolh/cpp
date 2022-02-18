@@ -52,7 +52,9 @@ export default function JoinGame() {
               borderRadius: '0.5em',
             }}
           >
-            <h1>Enter your nickname</h1>
+            <h1 style={{ fontSize: 'calc(18px + 0.4vw)' }}>
+              Enter your nickname
+            </h1>
             <label style={{ background: ' none' }}>
               <input
                 onKeyDown={handleKeyDown}
@@ -65,6 +67,7 @@ export default function JoinGame() {
                   borderRadius: '0.5em',
                   borderColor: 'black',
                   background: '#fafafa',
+                  width: '8vw',
                 }}
               />
             </label>

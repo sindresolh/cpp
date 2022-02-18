@@ -62,7 +62,7 @@ class CommunicationHandler extends Component {
     this.state = {
       players: [],
       connected: false,
-      nick: props.nick.trim().substring(0, 20),
+      nick: props.nick.trim().substring(0, 15),
       isModalOpen: false,
       finished: false,
     };
