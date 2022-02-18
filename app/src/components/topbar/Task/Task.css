@@ -12,6 +12,7 @@ textarea {
   resize: none;
   border: none;
   outline: none;
+  height: 10vmin;
 }
 label {
   font-weight: bold;
