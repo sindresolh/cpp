@@ -12,12 +12,12 @@ import { useMediaQuery } from 'react-responsive';
 export default function Game() {
   const players = useSelector((state) => state.players);
 
-  // change the flex direction based on widt
-  const rotate = useMediaQuery({
+  // change the flex direction based on width and height
+  const minwidth = useMediaQuery({
     query: '(min-width: 1200px)',
   });
-  const gameFlow = rotate ? 'row' : 'column';
-  const playerFlow = !rotate ? 'row' : 'column';
+  const gameFlow = minwidth ? 'row' : 'column';
+  const playerFlow = !minwidth ? 'row' : 'column';
 
   /** Set the name of the players.
    *
