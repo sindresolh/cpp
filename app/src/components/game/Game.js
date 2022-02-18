@@ -54,7 +54,7 @@ export default function Game() {
         {/*Player 1 and 3 on the left side*/}
         <div
           className='GameLeft'
-          style={{ flexFlow: playerFlow, margin: '5' + playerScale }}
+          style={{ flexFlow: playerFlow, margin: '7' + playerScale }}
         >
           <Player playerNo={PLAYER.P1} name={names[0]} />
           <Player playerNo={PLAYER.P3} name={names[2]} />
@@ -69,7 +69,7 @@ export default function Game() {
         {/*Player 2 and 4 on the right side*/}
         <div
           className='GameRight'
-          style={{ flexFlow: playerFlow, margin: '5' + playerScale }}
+          style={{ flexFlow: playerFlow, margin: '7' + playerScale }}
         >
           <Player playerNo={PLAYER.P2} name={names[1]} />
           <Player playerNo={PLAYER.P4} name={names[3]} />

@@ -6,7 +6,6 @@
 .GameLeft {
   display: flex;
   flex-flow: column;
-  margin: 5vh;
   justify-content: space-between;
 }
 
@@ -20,6 +19,5 @@
 .GameRight {
   display: flex;
   flex-flow: column;
-  margin: 5vh;
   justify-content: space-between;
 }
