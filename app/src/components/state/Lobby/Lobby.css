@@ -1,3 +1,8 @@
+.lobbyContainer {
+  display: flex;
+  justify-content: center;
+}
+
 .Lobby {
   margin-top: 10em;
   width: 50em;
@@ -11,6 +16,7 @@
 
 .Lobby > h1 {
   margin-bottom: 2em;
+  font-size: calc(20px + 0.4vw);
 }
 
 .playerList {
@@ -18,11 +24,16 @@
 }
 
 .playerList > li {
-  border-radius: 8px;
-  width: 7vw;
+  width: 8vw;
   margin: 0.5em;
-  padding: 7px;
+  padding: 0.5vw;
   text-align: left;
-  font-size: 15px;
   list-style: none;
+  text-align: center;
+  word-wrap: break-word;
+}
+
+.playerIcon {
+  height: 5vw;
+  object-fit: cover;
 }
