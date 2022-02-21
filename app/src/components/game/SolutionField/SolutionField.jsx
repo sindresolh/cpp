@@ -28,7 +28,7 @@ function SolutionField({}) {
   const blocks = useSelector((state) => state.solutionField);
   const players = useSelector((state) => state.players);
   const dispatch = useDispatch();
-  const [selectedBlock, setSelectedBlock] = useState(null);     // block selected for the next keyDown event
+  const [selectedCodeline, setSelectedCodeline] = useState(null);     // block selected for the next keyDown event
 
   // finds the block, it's index and indent based on id
   const findBlock = useCallback(
@@ -47,7 +47,10 @@ function SolutionField({}) {
 
   // move the block within the field or to a hand list
   const moveBlock = useCallback(
-    (id, atIndex, atIndent = 0) => {
+    (id, atIndex, atIndent = 0, mouseEvent = true) => {
+      if(mouseEvent){
+        setSelectedCodeline(null);  // reset selected codeblocks
+      }
       // get block if it exists in solutionfield
       const block = findBlock(id);
       if (block === undefined) {
@@ -67,15 +70,15 @@ function SolutionField({}) {
    * Tab and bacskpace changes indenting.
    */
   const handleKeyDown = useCallback(e=> {
-      if(selectedBlock != null && e.keyCode != null){
- 
-        if (e.keyCode === KEYBOARD_EVENT.TAB && selectedBlock.indent < MAX_INDENT) {      // TAB
-          moveBlock(selectedBlock.id, selectedBlock.index, selectedBlock.indent +1);
-          setSelectedBlock((selectedBlock) => ({...selectedBlock, indent: selectedBlock.indent+1}))
+    e.preventDefault();     // do not target adress bar
+      if(selectedCodeline != null && e.keyCode != null){               // SHIFT TAB OR BACKSPACE
+        if((e.shiftKey && e.keyCode == KEYBOARD_EVENT.TAB  && selectedCodeline.indent > 0) || (e.keyCode === KEYBOARD_EVENT.BACKSPACE  && selectedCodeline.indent > 0)) { 
+          setSelectedCodeline((selectedCodeline) => ({...selectedCodeline, indent: selectedCodeline.indent-1}))
+          moveBlock(selectedCodeline.id, selectedCodeline.index, selectedCodeline.indent -1, false);
         }
-        else if(e.keyCode === KEYBOARD_EVENT.BACKSPACE && selectedBlock.indent > 0){      // BACKSPACE
-          moveBlock(selectedBlock.id, selectedBlock.index, selectedBlock.indent -1);
-          setSelectedBlock((selectedBlock) => ({...selectedBlock, indent: selectedBlock.indent-1}))
+        else if (!e.shiftKey && e.keyCode === KEYBOARD_EVENT.TAB && selectedCodeline.indent < MAX_INDENT) {      // TAB
+          setSelectedCodeline((selectedCodeline) => ({...selectedCodeline, indent: selectedCodeline.indent+1}))
+          moveBlock(selectedCodeline.id, selectedCodeline.index, selectedCodeline.indent +1, false);
         }
     } 
   },);
@@ -168,22 +171,22 @@ function SolutionField({}) {
    * @param {*} draggable : wheter or not the player has permission to perform this action
    */
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
+    setSelectedCodeline(movedBlock);
 
     if(movedBlock != null && draggable){
     
-    // the user selected this codeblock
-    movedBlock.index = index;
-    setSelectedBlock(movedBlock);
+      // the user selected this codeblock
+      movedBlock.index = index;
 
-    // (e.detauil > 1) if clicked more than once
-    if(e.detail > 1){
-      movedBlock.indent = 0;
-      dispatch(removeBlockFromField(movedBlock.id));
-      dispatch(addBlockToList(movedBlock));
-      fieldEventPromise().then(() => dispatch(listEvent()));
-      e.detail = 0; // resets detail so that other codeblocks can be clicked
-      };
-    }
+      // (e.detauil > 1) if clicked more than once
+      if(e.detail > 1){
+        movedBlock.indent = 0;
+        dispatch(removeBlockFromField(movedBlock.id));
+        dispatch(addBlockToList(movedBlock));
+        fieldEventPromise().then(() => dispatch(listEvent()));
+        e.detail = 0; // resets detail so that other codeblocks can be clicked
+        };
+      }
   };
 
   return (
@@ -200,6 +203,7 @@ function SolutionField({}) {
               draggable={true}
               key={`line-${index}`}
               handleDoubbleClick = {handleDoubbleClick}
+              selectedCodeline = {selectedCodeline}
             />
           );
         })}
