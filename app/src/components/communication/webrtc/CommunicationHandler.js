@@ -62,7 +62,7 @@ class CommunicationHandler extends Component {
     this.state = {
       players: [],
       connected: false,
-      nick: props.nick.trim().substring(0, 20),
+      nick: props.nick.trim().substring(0, 15),
       isModalOpen: false,
       finished: false,
     };
@@ -310,6 +310,7 @@ class CommunicationHandler extends Component {
         onReceivedPeerData={this.handlePeerData}
         onRemovedPeer={this.handlePeerLeft}
         onJoinedRoom={this.joinedRoom}
+        url='http://13.48.27.134:8888/'
       >
         {this.state.connected ? <CommunicationListener /> : <PuzzleGif />}
 

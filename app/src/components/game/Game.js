@@ -7,9 +7,18 @@ import { PLAYER } from '../../utils/constants';
 import Player from './Player/Player';
 import { useSelector } from 'react-redux';
 import { COLORS } from '../../utils/constants';
+import { useMediaQuery } from 'react-responsive';
 
 export default function Game() {
   const players = useSelector((state) => state.players);
+
+  // change the flex direction based on width and height
+  const minwidth = useMediaQuery({
+    query: '(min-width: 1200px)',
+  });
+  const gameFlow = minwidth ? 'row' : 'column';
+  const playerFlow = !minwidth ? 'row' : 'column';
+  const playerScale = minwidth ? 'vh' : 'vw';
 
   /** Set the name of the players.
    *
@@ -40,10 +49,13 @@ export default function Game() {
       <div
         className='Game'
         data-testid='Game'
-        style={{ background: COLORS.background }}
+        style={{ background: COLORS.background, flexFlow: gameFlow }}
       >
         {/*Player 1 and 3 on the left side*/}
-        <div className='GameLeft'>
+        <div
+          className='GameLeft'
+          style={{ flexFlow: playerFlow, margin: '7' + playerScale }}
+        >
           <Player playerNo={PLAYER.P1} name={names[0]} />
           <Player playerNo={PLAYER.P3} name={names[2]} />
         </div>
@@ -55,7 +67,10 @@ export default function Game() {
         </div>
 
         {/*Player 2 and 4 on the right side*/}
-        <div className='GameRight'>
+        <div
+          className='GameRight'
+          style={{ flexFlow: playerFlow, margin: '7' + playerScale }}
+        >
           <Player playerNo={PLAYER.P2} name={names[1]} />
           <Player playerNo={PLAYER.P4} name={names[3]} />
         </div>

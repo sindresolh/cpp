@@ -64,10 +64,9 @@ function Lobby({ handleClick }) {
 
   return (
     <div
+      className='lobbyContainer'
       style={{
         background: COLORS.background,
-        display: 'flex',
-        justifyContent: 'center',
       }}
     >
       <div className='Lobby' style={{ background: COLORS.solutionfield }}>
@@ -78,12 +77,12 @@ function Lobby({ handleClick }) {
               <li key={player.id}>
                 {player.nick !== null && player.nick !== undefined ? (
                   <div>
-                    {' '}
                     <img
+                      className='playerIcon'
                       src={PlayerIcon}
-                      style={{ height: '6em', alt: 'player icon' }}
+                      alt='player icon'
                     />
-                    <p style={{ marginLeft: '2em' }}>{player.nick}</p>
+                    <p>{player.nick}</p>
                   </div>
                 ) : (
                   '' // Do not render anything if nick is undefined
@@ -98,7 +97,7 @@ function Lobby({ handleClick }) {
             icon={SubmitIcon}
             color={COLORS.lightgreen}
             handleClick={handleClick}
-            width='9em'
+            width='8.5em'
             disabled={!data} // Disable if data is not loaded
           />
         </div>
