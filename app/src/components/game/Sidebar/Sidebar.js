@@ -46,8 +46,18 @@ export default function Sidebar() {
    * Reset current hint when a new task is started.
    */
   useEffect(() => {
+    setModalIsOpen(false);
     setCurrentHintNo(0);
   }, [currentTask]);
+
+  /**
+   * Update the hint modal when changing current hint number
+   */
+  useEffect(() => {
+    if (modalIsOpen) {
+      handleHint();
+    }
+  }, [currentHintNo]);
 
   /* Close the modal. Callback from SideBarModal*/
   const closeModal = () => {
@@ -152,9 +162,7 @@ export default function Sidebar() {
    */
   const handleSubmit = () => {
     closeModal();
-
     setCurrentFieldBlocks(fieldBlocks);
-
     let correctSolution = arrayIsEqual(
       fieldBlocks,
       currentTaskObject.codeBlocks
@@ -247,7 +255,6 @@ export default function Sidebar() {
     }
 
     setCurrentHintNo(updatedCurrentHintNo);
-    handleHint();
   };
 
   return (
@@ -279,7 +286,6 @@ export default function Sidebar() {
           icon={HintIcon}
           color={COLORS.lightyellow}
           handleClick={() => {
-            changeHint('+');
             handleHint();
           }}
         />
