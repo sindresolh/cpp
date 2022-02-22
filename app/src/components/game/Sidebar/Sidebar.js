@@ -21,7 +21,6 @@ import CrossIcon from '../../../utils/images/buttonIcons/cross.png';
 import { COLORS } from '../../../utils/constants';
 import { clearBoard as clearBoardHelper } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
 import store from '../../../redux/store/store';
-import { deepCopy } from '../../../utils/compareArrays/compareArrays';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
