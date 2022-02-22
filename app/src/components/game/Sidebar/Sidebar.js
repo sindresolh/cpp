@@ -207,6 +207,44 @@ export default function Sidebar() {
     }
   };
 
+  /**
+   * Opens Clear board dialog
+   */
+  const handleHint = () => {
+    openModal(
+      HintIcon,
+      `Hint ${currentHintNo + 1}/${currentTaskObject.hints.length}`,
+      currentTaskObject.hints[currentHintNo],
+      'Back to task',
+      COLORS.lightyellow,
+      COLORS.darkyellow,
+      'none'
+    );
+  };
+
+  /**
+   * Incement or decrement
+   *
+   * @param {*} operator : + or -
+   */
+  const changeHint = (operator) => {
+    let updatedCurrentHintNo = 0;
+    if (operator === '+') {
+      updatedCurrentHintNo =
+        currentHintNo < currentTaskObject.hints.length - 1
+          ? currentHintNo + 1
+          : 0;
+    } else {
+      updatedCurrentHintNo =
+        currentHintNo > 0
+          ? currentHintNo - 1
+          : currentTaskObject.hints.length - 1;
+    }
+
+    setCurrentHintNo(updatedCurrentHintNo);
+    handleHint();
+  };
+
   return (
     <div className='Sidebar' style={{ background: COLORS.sidebar }}>
       {/* Popup for hint or submit */}
@@ -225,6 +263,8 @@ export default function Sidebar() {
         clickConfirm={() =>
           modalTitle === 'Clear' ? clearBoard() : handleSubmit()
         }
+        incrementHint={() => changeHint('+')}
+        decrementHint={() => changeHint('-')}
       />
 
       <div>
@@ -232,22 +272,7 @@ export default function Sidebar() {
           title='Hint'
           icon={HintIcon}
           color={COLORS.lightyellow}
-          handleClick={() => {
-            openModal(
-              HintIcon,
-              `Hint ${currentHintNo + 1}/${currentTaskObject.hints.length}`,
-              currentTaskObject.hints[currentHintNo],
-              'Back to task',
-              COLORS.lightyellow,
-              COLORS.darkyellow,
-              'none'
-            );
-            let updatedCurrentHintNo =
-              currentHintNo < currentTaskObject.hints.length - 1
-                ? currentHintNo + 1
-                : 0;
-            setCurrentHintNo(updatedCurrentHintNo);
-          }}
+          handleClick={handleHint}
         />
       </div>
 

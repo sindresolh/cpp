@@ -35,6 +35,8 @@ export default function SidebarModal({
   showDialog = 'none',
   closeModal,
   clickConfirm = null,
+  incrementHint = null,
+  decrementHint = null,
 }) {
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
@@ -87,6 +89,15 @@ export default function SidebarModal({
         <img height='25' width='auto' src={icon} alt='Icon' />
         <h2 style={{ display: 'inline', margin: '0.2em' }}>{title}</h2>
         <p style={{ margin: '2em' }}>{description}</p>
+
+        <div style={{ display: 'inline-block' }}>
+          <button onClick={decrementHint}>
+            <i class='arrow left'></i>
+          </button>
+          <button onClick={incrementHint}>
+            <i class='arrow right'></i>
+          </button>
+        </div>
 
         <button
           onClick={closeModal}
