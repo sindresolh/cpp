@@ -33,6 +33,7 @@ export default function Sidebar() {
   const [feedbackVisibility, setFeedbackVisibility] = useState('none');
   const [hasDialog, setDialog] = useState('none');
   const [currentfieldBlocks, setCurrentFieldBlocks] = useState([]); // fieldblocks from when submit was pressed
+  const [hintModal, setHintModal] = useState('none');
   const dispatch = useDispatch();
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
@@ -79,7 +80,8 @@ export default function Sidebar() {
     buttonColor,
     borderColor,
     feedbackVisibility,
-    hasDialog = 'none'
+    hasDialog = 'none',
+    hintModal = 'none'
   ) => {
     setModalIcon(icon);
     setModalTitle(title);
@@ -89,6 +91,7 @@ export default function Sidebar() {
     setModalBorderColor(borderColor);
     setFeedbackVisibility(feedbackVisibility);
     setDialog(hasDialog);
+    setHintModal(hintModal);
     setModalIsOpen(true);
   };
 
@@ -218,7 +221,9 @@ export default function Sidebar() {
       'Back to task',
       COLORS.lightyellow,
       COLORS.darkyellow,
-      'none'
+      'none',
+      'none',
+      'inline-block'
     );
   };
 
@@ -265,6 +270,7 @@ export default function Sidebar() {
         }
         incrementHint={() => changeHint('+')}
         decrementHint={() => changeHint('-')}
+        hintModal={hintModal}
       />
 
       <div>

@@ -37,6 +37,7 @@ export default function SidebarModal({
   clickConfirm = null,
   incrementHint = null,
   decrementHint = null,
+  hintModal = 'none',
 }) {
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
@@ -88,13 +89,20 @@ export default function SidebarModal({
       <div className='modalContainer'>
         <img height='25' width='auto' src={icon} alt='Icon' />
         <h2 style={{ display: 'inline', margin: '0.2em' }}>{title}</h2>
+
         <p style={{ margin: '2em' }}>{description}</p>
 
-        <div style={{ display: 'inline-block' }}>
-          <button onClick={decrementHint}>
+        <div
+          style={{
+            display: 'hintModal',
+            marginRight: '0.7em',
+            paddingTop: '1.5em',
+          }}
+        >
+          <button onClick={decrementHint} style={{ marginRight: '1em' }}>
             <i class='arrow left'></i>
           </button>
-          <button onClick={incrementHint}>
+          <button onClick={incrementHint} style={{ marginLeft: '1em' }}>
             <i class='arrow right'></i>
           </button>
         </div>
