@@ -69,6 +69,8 @@ class CommunicationHandler extends Component {
     };
   }
 
+  isProduction = JSON.parse(configData.PRODUCTION);
+
   /* Close the modal. Callback from SideBarModal*/
   closeModal() {
     this.setState({ isModalOpen: false });
@@ -98,7 +100,9 @@ class CommunicationHandler extends Component {
   handleCreatedPeer = (webrtc, peer) => {
     const { dispatch_addPlayer } = this.props;
     dispatch_addPlayer(peer);
-    console.log(`Peer-${peer.id.substring(0, 5)} joined the room!`);
+    if (!this.isProduction) {
+      console.log(`Peer-${peer.id.substring(0, 5)} joined the room!`);
+    }
   };
 
   /**
@@ -110,7 +114,9 @@ class CommunicationHandler extends Component {
   handlePeerLeft = (webrtc, peer) => {
     const { dispatch_removePlayer } = this.props;
     dispatch_removePlayer(peer);
-    console.log(`Peer-${peer.id.substring(0, 5)} disconnected.`);
+    if (!this.isProduction) {
+      console.log(`Peer-${peer.id.substring(0, 5)} disconnected.`);
+    }
   };
 
   /** Called when a new peer successfully joins the room
@@ -305,7 +311,11 @@ class CommunicationHandler extends Component {
   render() {
     return (
       <LioWebRTC
-        options={{ dataOnly: true, nick: this.state.nick }}
+        options={{
+          dataOnly: true,
+          nick: this.state.nick,
+          debug: !this.isProduction,
+        }}
         onReady={this.join}
         onCreatedPeer={this.handleCreatedPeer}
         onReceivedPeerData={this.handlePeerData} // For Peer2Peer
