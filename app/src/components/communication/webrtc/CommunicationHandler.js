@@ -32,6 +32,7 @@ import SidebarModal from '../../Game/Sidebar/SidebarModal/SidebarModal';
 import SubmitIcon from '../../../utils/images/buttonIcons/submit.png';
 import CheckIcon from '../../../utils/images/buttonIcons/check.png';
 import { COLORS } from '../../../utils/constants';
+import configData from '../../../config.json';
 
 const mapStateToProps = null;
 /** Helper function to let us call dispatch from a class function
@@ -311,7 +312,7 @@ class CommunicationHandler extends Component {
         onReceivedSignalData={this.handlePeerData} // For signalingserver
         onRemovedPeer={this.handlePeerLeft}
         onJoinedRoom={this.joinedRoom}
-        url='http://13.48.27.134:8888/'
+        url={configData.SERVER_URL}
       >
         {this.state.connected ? <CommunicationListener /> : <PuzzleGif />}
 
