@@ -166,9 +166,9 @@ function Lobby({ handleClick }) {
           buttonText={'Cancel'}
           buttonColor={COLORS.lightred}
           borderColor={COLORS.darkred}
-          showClearBoardDialog={'inline-block'}
-          clearBoard={handleClick}
+          showDialog={'inline-block'}
           closeModal={closeConfirmModal}
+          clickConfirm={handleClick}
         />
       </div>
     </div>

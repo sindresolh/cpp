@@ -16,9 +16,9 @@ import './SidebarModal.css';
  *            modalIsOpen: true or false
  *            field: feedback with correct and incorrect placed blocks
  *            showFeedback: display feedback
- *            showClearBoardialog: display yes button for clearing the board
+ *            showDialog: display yes button for clearing the board
  *            closeModal: function for closing the modal
- *            clearBoard: function for clearing the board
+ *            clickConfirm: function for confirming to the modal
  *
  * @returns
  */
@@ -32,9 +32,9 @@ export default function SidebarModal({
   modalIsOpen,
   fieldBlocks,
   showFeedback = 'none',
-  showClearBoardDialog = 'none',
+  showDialog = 'none',
   closeModal,
-  clearBoard = null,
+  clickConfirm = null,
 }) {
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
@@ -50,7 +50,7 @@ export default function SidebarModal({
 
   // Change styling if there is two buttons
   let cancelButtonPosition = '10em';
-  if (showClearBoardDialog === 'inline-block') {
+  if (showDialog === 'inline-block') {
     cancelButtonPosition = '4em';
   }
 
@@ -97,8 +97,8 @@ export default function SidebarModal({
           {buttonText}
         </button>
         <button
-          onClick={clearBoard}
-          style={{ display: showClearBoardDialog, left: '16em' }}
+          onClick={clickConfirm}
+          style={{ display: showDialog, left: '16em' }}
           className="confirmButton"
         >
           Yes

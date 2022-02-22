@@ -203,9 +203,9 @@ export default function Sidebar() {
         borderColor={modalBorderColor}
         fieldBlocks={currentfieldBlocks} // fieldblocks from when submit was pressed
         showFeedback={feedbackVisibility}
-        showClearBoardDialog={hasClearBoardDialog}
+        showDialog={hasClearBoardDialog}
         closeModal={() => (finished ? showFinishedScren() : closeModal())}
-        clearBoard={() => clearBoard()}
+        clickConfirm={() => clearBoard()}
       />
 
       <div>
