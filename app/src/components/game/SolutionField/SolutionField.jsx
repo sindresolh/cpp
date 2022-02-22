@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import CodeLine from '../CodeLine/CodeLine';
-import { useCallback, useEffect, useState} from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   setFieldState,
   removeBlockFromList,
@@ -28,7 +28,7 @@ function SolutionField({}) {
   const blocks = useSelector((state) => state.solutionField);
   const players = useSelector((state) => state.players);
   const dispatch = useDispatch();
-  const [selectedCodeline, setSelectedCodeline] = useState(null);     // block selected for the next keyDown event
+  const [selectedCodeline, setSelectedCodeline] = useState(null); // block selected for the next keyDown event
 
   // finds the block, it's index and indent based on id
   const findBlock = useCallback(
@@ -48,8 +48,8 @@ function SolutionField({}) {
   // move the block within the field or to a hand list
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0, mouseEvent = true) => {
-      if(mouseEvent){
-        setSelectedCodeline(null);  // reset selected codeblocks
+      if (mouseEvent) {
+        setSelectedCodeline(null); // reset selected codeblocks
       }
       // get block if it exists in solutionfield
       const block = findBlock(id);
@@ -69,27 +69,53 @@ function SolutionField({}) {
    * Handle keyboard input for the selected codeblock.
    * Tab and bacskpace changes indenting.
    */
-  const handleKeyDown = useCallback(e=> {
-    e.preventDefault();     // do not target adress bar
-      if(selectedCodeline != null && e.keyCode != null){               // SHIFT TAB OR BACKSPACE
-        if((e.shiftKey && e.keyCode == KEYBOARD_EVENT.TAB  && selectedCodeline.indent > 0) || (e.keyCode === KEYBOARD_EVENT.BACKSPACE  && selectedCodeline.indent > 0)) { 
-          setSelectedCodeline((selectedCodeline) => ({...selectedCodeline, indent: selectedCodeline.indent-1}))
-          moveBlock(selectedCodeline.id, selectedCodeline.index, selectedCodeline.indent -1, false);
-        }
-        else if (!e.shiftKey && e.keyCode === KEYBOARD_EVENT.TAB && selectedCodeline.indent < MAX_INDENT) {      // TAB
-          setSelectedCodeline((selectedCodeline) => ({...selectedCodeline, indent: selectedCodeline.indent+1}))
-          moveBlock(selectedCodeline.id, selectedCodeline.index, selectedCodeline.indent +1, false);
-        }
-    } 
-  },);
+  const handleKeyDown = useCallback((e) => {
+    e.preventDefault(); // do not target adress bar
+    if (selectedCodeline != null && e.keyCode != null) {
+      // SHIFT TAB OR BACKSPACE
+      if (
+        (e.shiftKey &&
+          e.keyCode == KEYBOARD_EVENT.TAB &&
+          selectedCodeline.indent > 0) ||
+        (e.keyCode === KEYBOARD_EVENT.BACKSPACE && selectedCodeline.indent > 0)
+      ) {
+        setSelectedCodeline((selectedCodeline) => ({
+          ...selectedCodeline,
+          indent: selectedCodeline.indent - 1,
+        }));
+        moveBlock(
+          selectedCodeline.id,
+          selectedCodeline.index,
+          selectedCodeline.indent - 1,
+          false
+        );
+      } else if (
+        !e.shiftKey &&
+        e.keyCode === KEYBOARD_EVENT.TAB &&
+        selectedCodeline.indent < MAX_INDENT
+      ) {
+        // TAB
+        setSelectedCodeline((selectedCodeline) => ({
+          ...selectedCodeline,
+          indent: selectedCodeline.indent + 1,
+        }));
+        moveBlock(
+          selectedCodeline.id,
+          selectedCodeline.index,
+          selectedCodeline.indent + 1,
+          false
+        );
+      }
+    }
+  });
 
   /**
    * Creates an key event listener based on the selected codeblock
    */
   useEffect(() => {
-    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
-        window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, [handleKeyDown]);
 
@@ -157,15 +183,15 @@ function SolutionField({}) {
   );
 
   /** Helper function to make sure that the field event is done before sending a new event
-   * 
-   * @returns 
+   *
+   * @returns
    */
   const fieldEventPromise = () => {
     return Promise.resolve(dispatch(fieldEvent()));
-  }
+  };
 
   /** Moves block from solutionfield to hand after a doubbleclick
-   * 
+   *
    * @param {*} e
    * @param {*} movedBlock : codeblock moved
    * @param {*} draggable : wheter or not the player has permission to perform this action
@@ -173,24 +199,23 @@ function SolutionField({}) {
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
     setSelectedCodeline(movedBlock);
 
-    if(movedBlock != null && draggable){
-    
+    if (movedBlock != null && draggable) {
       // the user selected this codeblock
-      movedBlock.index = index;
+      //movedBlock.index = index;
 
       // (e.detauil > 1) if clicked more than once
-      if(e.detail > 1){
+      if (e.detail > 1) {
         movedBlock.indent = 0;
         dispatch(removeBlockFromField(movedBlock.id));
         dispatch(addBlockToList(movedBlock));
         fieldEventPromise().then(() => dispatch(listEvent()));
         e.detail = 0; // resets detail so that other codeblocks can be clicked
-        };
       }
+    }
   };
 
   return (
-    <div className={'divSF'} style={{ background: COLORS.solutionfield }} >
+    <div className={'divSF'} style={{ background: COLORS.solutionfield }}>
       <h6>{'Connected players: ' + players.length}</h6>
       <ul data-testid='solutionField'>
         {blocks.map((block, index) => {
@@ -202,8 +227,8 @@ function SolutionField({}) {
               maxIndent={MAX_INDENT}
               draggable={true}
               key={`line-${index}`}
-              handleDoubbleClick = {handleDoubbleClick}
-              selectedCodeline = {selectedCodeline}
+              handleDoubbleClick={handleDoubbleClick}
+              selectedCodeline={selectedCodeline}
             />
           );
         })}
