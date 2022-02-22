@@ -126,7 +126,7 @@ class CommunicationHandler extends Component {
   };
 
   /**
-   * Called when another peer in the room calls: webrtc.shout
+   * Called when another peer in the room calls: webrtc.shout or webrtc.broadcast
    *
    * @param {*} webrtc : Keeps information about the room
    * @param {*} type : The type of event that was called
@@ -307,7 +307,8 @@ class CommunicationHandler extends Component {
         options={{ dataOnly: true, nick: this.state.nick }}
         onReady={this.join}
         onCreatedPeer={this.handleCreatedPeer}
-        onReceivedPeerData={this.handlePeerData}
+        onReceivedPeerData={this.handlePeerData} // For Peer2Peer
+        onReceivedSignalData={this.handlePeerData} // For signalingserver
         onRemovedPeer={this.handlePeerLeft}
         onJoinedRoom={this.joinedRoom}
         url='http://13.48.27.134:8888/'

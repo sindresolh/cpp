@@ -110,6 +110,16 @@ class CommunicationListener extends Component {
   }
 
   /**
+   * Notify other peers with  and the signaling server with broadcast
+   *
+   * @param {*} type : event sent
+   * @param {*} payload : data sent
+   */
+  shout(type, payload) {
+    this.props.webrtc.shout(type, payload);
+  }
+
+  /**
    * Notifies other peers when this player changes the state
    *
    * @param {*} prevProps : Checks that the new value is different
@@ -120,11 +130,11 @@ class CommunicationListener extends Component {
     if (prevProps.listEvent !== this.props.listEvent) {
       // This peer moved codeblock in an handlist
       const json = JSON.stringify(state.handList);
-      this.props.webrtc.shout(SET_LIST, json);
+      this.shout(SET_LIST, json);
     } else if (prevProps.fieldEvent !== this.props.fieldEvent) {
       // This peer moved codeblock in soloutionfield
       const json = JSON.stringify(state.solutionField);
-      this.props.webrtc.shout(SET_FIELD, json);
+      this.shout(SET_FIELD, json);
     } else if (
       // This peer updated the game state by going to the next task
       prevProps.taskEvent !== this.props.taskEvent
@@ -135,13 +145,13 @@ class CommunicationListener extends Component {
         handList: state.handList,
         solutionField: state.solutionField,
       });
-      this.props.webrtc.shout(NEXT_TASK, json);
+      this.shout(NEXT_TASK, json);
       const { dispatch_listEvent } = this.props;
       dispatch_listEvent();
     } else if (prevProps.clearEvent !== this.props.clearEvent) {
       // This peer cleared the board
       const json = JSON.stringify(state.currentTask);
-      this.props.webrtc.shout(CLEAR_TASK, json);
+      this.shout(CLEAR_TASK, json);
     } else if (prevProps.status !== this.props.status) {
       // This player started the game from the lobby
       let playerIds = state.players.map((p) => p.id);
@@ -153,10 +163,10 @@ class CommunicationListener extends Component {
         playerIds: playerIds,
       });
       if (state.status === STATUS.GAME) {
-        this.props.webrtc.shout(START_GAME, json);
+        this.shout(START_GAME, json);
       }
     } else if (prevProps.finishEvent !== this.props.finishEvent) {
-      this.props.webrtc.shout(FINISHED, '');
+      this.shout(FINISHED, '');
     }
   }
 
