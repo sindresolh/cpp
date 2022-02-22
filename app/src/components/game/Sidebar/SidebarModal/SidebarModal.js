@@ -83,8 +83,8 @@ export default function SidebarModal({
   }
   return (
     <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={modalStyle}>
-      <div className='modalContainer'>
-        <img height='25' width='auto' src={icon} alt='Icon' />
+      <div className="modalContainer">
+        <img height="25" width="auto" src={icon} alt="Icon" />
         <h2 style={{ display: 'inline', margin: '0.2em' }}>{title}</h2>
         <p style={{ margin: '2em' }}>{description}</p>
 
@@ -99,7 +99,7 @@ export default function SidebarModal({
         <button
           onClick={clearBoard}
           style={{ display: showClearBoardDialog, left: '16em' }}
-          className='confirmButton'
+          className="confirmButton"
         >
           Yes
         </button>
