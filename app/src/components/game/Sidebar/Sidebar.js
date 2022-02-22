@@ -239,7 +239,7 @@ export default function Sidebar() {
         currentHintNo < currentTaskObject.hints.length - 1
           ? currentHintNo + 1
           : 0;
-    } else {
+    } else if (operator === '-') {
       updatedCurrentHintNo =
         currentHintNo > 0
           ? currentHintNo - 1
@@ -278,7 +278,10 @@ export default function Sidebar() {
           title='Hint'
           icon={HintIcon}
           color={COLORS.lightyellow}
-          handleClick={handleHint}
+          handleClick={() => {
+            changeHint('+');
+            handleHint();
+          }}
         />
       </div>
 

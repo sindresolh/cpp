@@ -94,7 +94,7 @@ export default function SidebarModal({
 
         <div
           style={{
-            display: 'hintModal',
+            display: hintModal,
             marginRight: '0.7em',
             paddingTop: '1.5em',
           }}
