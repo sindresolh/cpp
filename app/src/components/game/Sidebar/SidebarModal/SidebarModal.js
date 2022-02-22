@@ -83,8 +83,8 @@ export default function SidebarModal({
   }
   return (
     <Modal isOpen={modalIsOpen} onRequestClose={closeModal} style={modalStyle}>
-      <div className="modalContainer">
-        <img height="25" width="auto" src={icon} alt="Icon" />
+      <div className='modalContainer'>
+        <img height='25' width='auto' src={icon} alt='Icon' />
         <h2 style={{ display: 'inline', margin: '0.2em' }}>{title}</h2>
         <p style={{ margin: '2em' }}>{description}</p>
 
@@ -99,15 +99,15 @@ export default function SidebarModal({
         <button
           onClick={clickConfirm}
           style={{ display: showDialog, left: '16em' }}
-          className="confirmButton"
+          className='confirmButton'
         >
           Yes
         </button>
 
         <ul style={{ display: showFeedback }}>
-          {feedbackArray.map((item) => {
+          {feedbackArray.map((item, index) => {
             return (
-              <li>
+              <li key={index}>
                 <hr style={{ width: 2 * item.codeBlock.indent + 'em' }} />
 
                 <div

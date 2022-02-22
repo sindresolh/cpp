@@ -31,7 +31,7 @@ export default function Sidebar() {
   const [modalButtonColor, setModalButtonColor] = useState('white');
   const [modalBorderColor, setModalBorderColor] = useState('white');
   const [feedbackVisibility, setFeedbackVisibility] = useState('none');
-  const [hasClearBoardDialog, setHasClearBoardDialog] = useState('none');
+  const [hasDialog, setDialog] = useState('none');
   const [currentfieldBlocks, setCurrentFieldBlocks] = useState([]); // fieldblocks from when submit was pressed
   const dispatch = useDispatch();
   const currentTask = useSelector((state) => state.currentTask);
@@ -69,7 +69,7 @@ export default function Sidebar() {
    * @param {*} buttonText : text for the button that closes the model
    * @param {*} color : border color for the modal
    * @param {*} feedbackVisibility : 'none' or 'block' based on wheter or not is an incorrect solution from submit
-   * @param {*} isClear : 'none' or 'block' based on wheter or not it was triggered from Clear
+   * @param {*} hasDialog : 'none' or 'block' based on wheter or not it was triggered from Clear
    */
   const openModal = (
     icon,
@@ -79,7 +79,7 @@ export default function Sidebar() {
     buttonColor,
     borderColor,
     feedbackVisibility,
-    isClear = 'none'
+    hasDialog = 'none'
   ) => {
     setModalIcon(icon);
     setModalTitle(title);
@@ -88,7 +88,7 @@ export default function Sidebar() {
     setModalButtonColor(buttonColor);
     setModalBorderColor(borderColor);
     setFeedbackVisibility(feedbackVisibility);
-    setHasClearBoardDialog(isClear);
+    setDialog(hasDialog);
     setModalIsOpen(true);
   };
 
@@ -129,9 +129,27 @@ export default function Sidebar() {
   };
 
   /**
+   * Confirm modal to be displayed before the feedbackmodal
+   */
+  const confirmSubmit = () => {
+    openModal(
+      SubmitIcon,
+      'Submit',
+      'Are you sure you want to submit for the entire group?',
+      'Cancel',
+      COLORS.lightred,
+      COLORS.darkgreen,
+      'none',
+      'inline-block'
+    );
+  };
+
+  /**
    * Make all players go to the next task of the submit is correct
    */
   const handleSubmit = () => {
+    closeModal();
+
     setCurrentFieldBlocks(fieldBlocks);
 
     let correctSolution = arrayIsEqual(
@@ -190,7 +208,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="Sidebar" style={{ background: COLORS.sidebar }}>
+    <div className='Sidebar' style={{ background: COLORS.sidebar }}>
       {/* Popup for hint or submit */}
       <SidebarModal
         modalIsOpen={modalIsOpen}
@@ -202,14 +220,16 @@ export default function Sidebar() {
         borderColor={modalBorderColor}
         fieldBlocks={currentfieldBlocks} // fieldblocks from when submit was pressed
         showFeedback={feedbackVisibility}
-        showDialog={hasClearBoardDialog}
+        showDialog={hasDialog}
         closeModal={() => (finished ? showFinishedScren() : closeModal())}
-        clickConfirm={() => clearBoard()}
+        clickConfirm={() =>
+          modalTitle === 'Clear' ? clearBoard() : handleSubmit()
+        }
       />
 
       <div>
         <SidebarButton
-          title="Hint"
+          title='Hint'
           icon={HintIcon}
           color={COLORS.lightyellow}
           handleClick={() => {
@@ -233,19 +253,19 @@ export default function Sidebar() {
 
       <div>
         <SidebarButton
-          title="Clear"
+          title='Clear'
           icon={ClearIcon}
           color={COLORS.lightred}
           handleClick={() => handleClear()}
         />
       </div>
 
-      <div className="BottomButton">
+      <div className='BottomButton'>
         <SidebarButton
-          title="Submit"
+          title='Submit'
           icon={SubmitIcon}
           color={COLORS.lightgreen}
-          handleClick={() => handleSubmit()}
+          handleClick={() => confirmSubmit()}
         />
       </div>
     </div>
