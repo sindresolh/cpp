@@ -21,6 +21,7 @@ import {
 } from '../../../redux/actions';
 import { shuffleCodeblocks } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
 import { STATUS } from '../../../utils/constants';
+import configData from '../../../config.json';
 
 /**
  * Helper function to retrive data from the redux store.
@@ -61,6 +62,8 @@ function mapDispatchToProps(dispatch) {
  * Listens to changes in the redux store and sends new messages to all peers.
  */
 class CommunicationListener extends Component {
+  isProduction = JSON.parse(configData.PRODUCTION);
+
   /**
    * Distribute cards to all players, including yourself
    */
@@ -110,13 +113,17 @@ class CommunicationListener extends Component {
   }
 
   /**
-   * Notify other peers with  and the signaling server with broadcast
+   * Notify other peers with shout and the signaling server with broadcast
    *
    * @param {*} type : event sent
    * @param {*} payload : data sent
    */
   shout(type, payload) {
-    this.props.webrtc.shout(type, payload);
+    if (this.isProduction) {
+      this.props.webrtc.broadcast(type, payload);
+    } else {
+      this.props.webrtc.shout(type, payload);
+    }
   }
 
   /**

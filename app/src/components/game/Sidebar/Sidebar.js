@@ -21,7 +21,6 @@ import CrossIcon from '../../../utils/images/buttonIcons/cross.png';
 import { COLORS } from '../../../utils/constants';
 import { clearBoard as clearBoardHelper } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
 import store from '../../../redux/store/store';
-import { deepCopy } from '../../../utils/compareArrays/compareArrays';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -32,8 +31,9 @@ export default function Sidebar() {
   const [modalButtonColor, setModalButtonColor] = useState('white');
   const [modalBorderColor, setModalBorderColor] = useState('white');
   const [feedbackVisibility, setFeedbackVisibility] = useState('none');
-  const [hasClearBoardDialog, setHasClearBoardDialog] = useState('none');
+  const [hasDialog, setDialog] = useState('none');
   const [currentfieldBlocks, setCurrentFieldBlocks] = useState([]); // fieldblocks from when submit was pressed
+  const [hintModal, setHintModal] = useState('none');
   const dispatch = useDispatch();
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
@@ -46,8 +46,18 @@ export default function Sidebar() {
    * Reset current hint when a new task is started.
    */
   useEffect(() => {
+    setModalIsOpen(false);
     setCurrentHintNo(0);
   }, [currentTask]);
+
+  /**
+   * Update the hint modal when changing current hint number
+   */
+  useEffect(() => {
+    if (modalIsOpen) {
+      handleHint();
+    }
+  }, [currentHintNo]);
 
   /* Close the modal. Callback from SideBarModal*/
   const closeModal = () => {
@@ -70,7 +80,7 @@ export default function Sidebar() {
    * @param {*} buttonText : text for the button that closes the model
    * @param {*} color : border color for the modal
    * @param {*} feedbackVisibility : 'none' or 'block' based on wheter or not is an incorrect solution from submit
-   * @param {*} isClear : 'none' or 'block' based on wheter or not it was triggered from Clear
+   * @param {*} hasDialog : 'none' or 'block' based on wheter or not it was triggered from Clear
    */
   const openModal = (
     icon,
@@ -80,7 +90,8 @@ export default function Sidebar() {
     buttonColor,
     borderColor,
     feedbackVisibility,
-    isClear = 'none'
+    hasDialog = 'none',
+    hintModal = 'none'
   ) => {
     setModalIcon(icon);
     setModalTitle(title);
@@ -89,7 +100,8 @@ export default function Sidebar() {
     setModalButtonColor(buttonColor);
     setModalBorderColor(borderColor);
     setFeedbackVisibility(feedbackVisibility);
-    setHasClearBoardDialog(isClear);
+    setDialog(hasDialog);
+    setHintModal(hintModal);
     setModalIsOpen(true);
   };
 
@@ -130,11 +142,27 @@ export default function Sidebar() {
   };
 
   /**
+   * Confirm modal to be displayed before the feedbackmodal
+   */
+  const confirmSubmit = () => {
+    openModal(
+      SubmitIcon,
+      'Submit',
+      'Are you sure you want to submit for the entire group?',
+      'Cancel',
+      COLORS.lightred,
+      COLORS.darkgreen,
+      'none',
+      'inline-block'
+    );
+  };
+
+  /**
    * Make all players go to the next task of the submit is correct
    */
   const handleSubmit = () => {
+    closeModal();
     setCurrentFieldBlocks(fieldBlocks);
-
     let correctSolution = arrayIsEqual(
       fieldBlocks,
       currentTaskObject.codeBlocks
@@ -190,6 +218,45 @@ export default function Sidebar() {
     }
   };
 
+  /**
+   * Opens Clear board dialog
+   */
+  const handleHint = () => {
+    openModal(
+      HintIcon,
+      `Hint ${currentHintNo + 1}/${currentTaskObject.hints.length}`,
+      currentTaskObject.hints[currentHintNo],
+      'Back to task',
+      COLORS.lightyellow,
+      COLORS.darkyellow,
+      'none',
+      'none',
+      'inline-block'
+    );
+  };
+
+  /**
+   * Incement or decrement
+   *
+   * @param {*} operator : + or -
+   */
+  const changeHint = (operator) => {
+    let updatedCurrentHintNo = 0;
+    if (operator === '+') {
+      updatedCurrentHintNo =
+        currentHintNo < currentTaskObject.hints.length - 1
+          ? currentHintNo + 1
+          : 0;
+    } else if (operator === '-') {
+      updatedCurrentHintNo =
+        currentHintNo > 0
+          ? currentHintNo - 1
+          : currentTaskObject.hints.length - 1;
+    }
+
+    setCurrentHintNo(updatedCurrentHintNo);
+  };
+
   return (
     <div className='Sidebar' style={{ background: COLORS.sidebar }}>
       {/* Popup for hint or submit */}
@@ -203,9 +270,14 @@ export default function Sidebar() {
         borderColor={modalBorderColor}
         fieldBlocks={currentfieldBlocks} // fieldblocks from when submit was pressed
         showFeedback={feedbackVisibility}
-        showClearBoardDialog={hasClearBoardDialog}
+        showDialog={hasDialog}
         closeModal={() => (finished ? showFinishedScren() : closeModal())}
-        clearBoard={() => clearBoard()}
+        clickConfirm={() =>
+          modalTitle === 'Clear' ? clearBoard() : handleSubmit()
+        }
+        incrementHint={() => changeHint('+')}
+        decrementHint={() => changeHint('-')}
+        hintModal={hintModal}
       />
 
       <div>
@@ -214,20 +286,7 @@ export default function Sidebar() {
           icon={HintIcon}
           color={COLORS.lightyellow}
           handleClick={() => {
-            openModal(
-              HintIcon,
-              `Hint ${currentHintNo + 1}/${currentTaskObject.hints.length}`,
-              currentTaskObject.hints[currentHintNo],
-              'Back to task',
-              COLORS.lightyellow,
-              COLORS.darkyellow,
-              'none'
-            );
-            let updatedCurrentHintNo =
-              currentHintNo < currentTaskObject.hints.length - 1
-                ? currentHintNo + 1
-                : 0;
-            setCurrentHintNo(updatedCurrentHintNo);
+            handleHint();
           }}
         />
       </div>
@@ -246,7 +305,7 @@ export default function Sidebar() {
           title='Submit'
           icon={SubmitIcon}
           color={COLORS.lightgreen}
-          handleClick={() => handleSubmit()}
+          handleClick={() => confirmSubmit()}
         />
       </div>
     </div>

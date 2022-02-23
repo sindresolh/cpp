@@ -32,6 +32,7 @@ import SidebarModal from '../../Game/Sidebar/SidebarModal/SidebarModal';
 import SubmitIcon from '../../../utils/images/buttonIcons/submit.png';
 import CheckIcon from '../../../utils/images/buttonIcons/check.png';
 import { COLORS } from '../../../utils/constants';
+import configData from '../../../config.json';
 
 const mapStateToProps = null;
 /** Helper function to let us call dispatch from a class function
@@ -68,6 +69,8 @@ class CommunicationHandler extends Component {
     };
   }
 
+  isProduction = JSON.parse(configData.PRODUCTION);
+
   /* Close the modal. Callback from SideBarModal*/
   closeModal() {
     this.setState({ isModalOpen: false });
@@ -97,7 +100,9 @@ class CommunicationHandler extends Component {
   handleCreatedPeer = (webrtc, peer) => {
     const { dispatch_addPlayer } = this.props;
     dispatch_addPlayer(peer);
-    console.log(`Peer-${peer.id.substring(0, 5)} joined the room!`);
+    if (!this.isProduction) {
+      console.log(`Peer-${peer.id.substring(0, 5)} joined the room!`);
+    }
   };
 
   /**
@@ -109,7 +114,9 @@ class CommunicationHandler extends Component {
   handlePeerLeft = (webrtc, peer) => {
     const { dispatch_removePlayer } = this.props;
     dispatch_removePlayer(peer);
-    console.log(`Peer-${peer.id.substring(0, 5)} disconnected.`);
+    if (!this.isProduction) {
+      console.log(`Peer-${peer.id.substring(0, 5)} disconnected.`);
+    }
   };
 
   /** Called when a new peer successfully joins the room
@@ -304,14 +311,18 @@ class CommunicationHandler extends Component {
   render() {
     return (
       <LioWebRTC
-        options={{ dataOnly: true, nick: this.state.nick }}
+        options={{
+          dataOnly: true,
+          nick: this.state.nick,
+          debug: !this.isProduction,
+        }}
         onReady={this.join}
         onCreatedPeer={this.handleCreatedPeer}
         onReceivedPeerData={this.handlePeerData} // For Peer2Peer
         onReceivedSignalData={this.handlePeerData} // For signalingserver
         onRemovedPeer={this.handlePeerLeft}
         onJoinedRoom={this.joinedRoom}
-        url='http://13.48.27.134:8888/'
+        url={configData.SERVER_URL}
       >
         {this.state.connected ? <CommunicationListener /> : <PuzzleGif />}
 

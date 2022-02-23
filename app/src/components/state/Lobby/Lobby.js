@@ -9,6 +9,7 @@ import PlayerIcon from '../../../utils/images/playerIcons/player_icon.png';
 import ReactPlayer from 'react-player';
 import Video from '../../../utils/images/tutorial.mp4';
 import Modal from 'react-modal';
+import SidebarModal from '../../Game/Sidebar/SidebarModal/SidebarModal';
 
 /** Show the players in the lobby based on their nickname
  *
@@ -18,7 +19,8 @@ import Modal from 'react-modal';
 function Lobby({ handleClick }) {
   const players = useSelector((state) => state.players);
   const [data, setData] = useState(false);
-  const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [videoModalIsOpen, setVideoModalIsOpen] = useState(false);
+  const [confirmStartModalIsOpen, setConfirmStartIsOpen] = useState(false);
 
   const modalStyle = {
     content: {
@@ -78,44 +80,52 @@ function Lobby({ handleClick }) {
     return () => (unmounted = true);
   }, [players]);
 
-  function openModal() {
-    setIsOpen(true);
+  function openVideoModal() {
+    setVideoModalIsOpen(true);
   }
 
-  function closeModal() {
-    setIsOpen(false);
+  function closeVideoModal() {
+    setVideoModalIsOpen(false);
+  }
+
+  function openConfirmModal() {
+    setConfirmStartIsOpen(true);
+  }
+
+  function closeConfirmModal() {
+    setConfirmStartIsOpen(false);
   }
 
   return (
     <div
-      className='lobbyContainer'
+      className="lobbyContainer"
       style={{
         background: COLORS.background,
       }}
     >
-      <div className='Lobby' style={{ background: COLORS.solutionfield }}>
+      <div className="Lobby" style={{ background: COLORS.solutionfield }}>
         <div style={{ position: 'relative', left: '45%' }}>
           <SidebarButton
-            title=''
+            title=""
             icon={HintIcon}
             color={COLORS.lightyellow}
-            handleClick={openModal}
-            width='3em'
+            handleClick={openVideoModal}
+            width="3em"
           />
         </div>
 
         <h1 style={{ marginTop: '-1em' }}>Lobby</h1>
 
-        <ul className='playerList'>
+        <ul className="playerList">
           {players.map((player) => {
             return (
               <li key={player.id}>
                 {player.nick !== null && player.nick !== undefined ? (
                   <div>
                     <img
-                      className='playerIcon'
+                      className="playerIcon"
                       src={PlayerIcon}
-                      alt='player icon'
+                      alt="player icon"
                     />
                     <p>{player.nick}</p>
                   </div>
@@ -129,22 +139,37 @@ function Lobby({ handleClick }) {
 
         <div>
           <SidebarButton
-            title='Start game'
+            title="Start game"
             icon={SubmitIcon}
             color={COLORS.lightgreen}
-            handleClick={handleClick}
-            width='8.5em'
+            handleClick={openConfirmModal}
+            width="8.5em"
             disabled={!data} // Disable if data is not loaded
           />
         </div>
 
         <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
+          isOpen={videoModalIsOpen}
+          onRequestClose={closeVideoModal}
           style={modalStyle}
         >
           <ReactPlayer url={Video} controls={true} />
         </Modal>
+
+        <SidebarModal
+          modalIsOpen={confirmStartModalIsOpen}
+          icon={SubmitIcon}
+          title={'Are you sure you want to start the game?'}
+          description={
+            'Do not start the game before all players have joined the lobby'
+          }
+          buttonText={'Cancel'}
+          buttonColor={COLORS.lightred}
+          borderColor={COLORS.darkred}
+          showDialog={'inline-block'}
+          closeModal={closeConfirmModal}
+          clickConfirm={handleClick}
+        />
       </div>
     </div>
   );

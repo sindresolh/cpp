@@ -16,9 +16,9 @@ import './SidebarModal.css';
  *            modalIsOpen: true or false
  *            field: feedback with correct and incorrect placed blocks
  *            showFeedback: display feedback
- *            showClearBoardialog: display yes button for clearing the board
+ *            showDialog: display yes button for clearing the board
  *            closeModal: function for closing the modal
- *            clearBoard: function for clearing the board
+ *            clickConfirm: function for confirming to the modal
  *
  * @returns
  */
@@ -32,9 +32,12 @@ export default function SidebarModal({
   modalIsOpen,
   fieldBlocks,
   showFeedback = 'none',
-  showClearBoardDialog = 'none',
+  showDialog = 'none',
   closeModal,
-  clearBoard = null,
+  clickConfirm = null,
+  incrementHint = null,
+  decrementHint = null,
+  hintModal = 'none',
 }) {
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
@@ -50,7 +53,7 @@ export default function SidebarModal({
 
   // Change styling if there is two buttons
   let cancelButtonPosition = '10em';
-  if (showClearBoardDialog === 'inline-block') {
+  if (showDialog === 'inline-block') {
     cancelButtonPosition = '4em';
   }
 
@@ -86,7 +89,23 @@ export default function SidebarModal({
       <div className='modalContainer'>
         <img height='25' width='auto' src={icon} alt='Icon' />
         <h2 style={{ display: 'inline', margin: '0.2em' }}>{title}</h2>
+
         <p style={{ margin: '2em' }}>{description}</p>
+
+        <div
+          style={{
+            display: hintModal,
+            marginRight: '0.7em',
+            paddingTop: '1.5em',
+          }}
+        >
+          <button onClick={decrementHint} style={{ marginRight: '1em' }}>
+            <i class='arrow left'></i>
+          </button>
+          <button onClick={incrementHint} style={{ marginLeft: '1em' }}>
+            <i class='arrow right'></i>
+          </button>
+        </div>
 
         <button
           onClick={closeModal}
@@ -97,17 +116,17 @@ export default function SidebarModal({
           {buttonText}
         </button>
         <button
-          onClick={clearBoard}
-          style={{ display: showClearBoardDialog, left: '16em' }}
+          onClick={clickConfirm}
+          style={{ display: showDialog, left: '16em' }}
           className='confirmButton'
         >
           Yes
         </button>
 
         <ul style={{ display: showFeedback }}>
-          {feedbackArray.map((item) => {
+          {feedbackArray.map((item, index) => {
             return (
-              <li>
+              <li key={index}>
                 <hr style={{ width: 2 * item.codeBlock.indent + 'em' }} />
 
                 <div
