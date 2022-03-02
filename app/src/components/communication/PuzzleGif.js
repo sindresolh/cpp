@@ -2,10 +2,11 @@ import React from 'react';
 import { COLORS } from '../../utils/constants';
 import { useMediaQuery } from 'react-responsive';
 
-export default function PuzzleGif() {
+export default function PuzzleGif({ webrtc }) {
   const showText = useMediaQuery({
     query: '(min-width: 1800px)',
   });
+
   return (
     <div
       style={{

@@ -98,34 +98,34 @@ function Lobby({ handleClick }) {
 
   return (
     <div
-      className="lobbyContainer"
+      className='lobbyContainer'
       style={{
         background: COLORS.background,
       }}
     >
-      <div className="Lobby" style={{ background: COLORS.solutionfield }}>
+      <div className='Lobby' style={{ background: COLORS.solutionfield }}>
         <div style={{ position: 'relative', left: '45%' }}>
           <SidebarButton
-            title=""
+            title=''
             icon={HintIcon}
             color={COLORS.lightyellow}
             handleClick={openVideoModal}
-            width="3em"
+            width='3em'
           />
         </div>
 
         <h1 style={{ marginTop: '-1em' }}>Lobby</h1>
 
-        <ul className="playerList">
+        <ul className='playerList'>
           {players.map((player) => {
             return (
               <li key={player.id}>
                 {player.nick !== null && player.nick !== undefined ? (
                   <div>
                     <img
-                      className="playerIcon"
+                      className='playerIcon'
                       src={PlayerIcon}
-                      alt="player icon"
+                      alt='player icon'
                     />
                     <p>{player.nick}</p>
                   </div>
@@ -139,11 +139,11 @@ function Lobby({ handleClick }) {
 
         <div>
           <SidebarButton
-            title="Start game"
+            title='Start game'
             icon={SubmitIcon}
             color={COLORS.lightgreen}
             handleClick={openConfirmModal}
-            width="8.5em"
+            width='8.5em'
             disabled={!data} // Disable if data is not loaded
           />
         </div>

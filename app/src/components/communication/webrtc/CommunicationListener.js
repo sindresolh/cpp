@@ -126,6 +126,14 @@ class CommunicationListener extends Component {
     }
   }
 
+  componentWillUnmount = () => {
+    if (this.isProduction) {
+      this.props.webrtc.quit(); // leave signaling server
+    } else {
+      this.props.webrtc.leaveRoom(); // leave p2p connection
+    }
+  };
+
   /**
    * Notifies other peers when this player changes the state
    *
@@ -175,13 +183,18 @@ class CommunicationListener extends Component {
     } else if (prevProps.finishEvent !== this.props.finishEvent) {
       this.shout(FINISHED, '');
     }
-  }
 
-  /**
-   * Leave game on exit.
-   */
-  componentWillUnmount() {
-    this.props.webrtc.leaveRoom();
+    // Prompt user with warning and leave game.
+    window.onbeforeunload = (event) => {
+      // Prompt user with warning
+      const e = event || window.event;
+      e.preventDefault();
+      if (e) {
+        e.returnValue = '';
+      }
+
+      return '';
+    };
   }
 
   render() {

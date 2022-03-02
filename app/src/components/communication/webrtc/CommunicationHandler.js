@@ -71,11 +71,10 @@ class CommunicationHandler extends Component {
 
   isProduction = JSON.parse(configData.PRODUCTION);
 
-  /**
-   * Warn user when leaving page.
-   */
   componentDidUpdate() {
+    // Prompt user with warning and leave game.
     window.onbeforeunload = (event) => {
+      // Prompt user with warning
       const e = event || window.event;
       e.preventDefault();
       if (e) {
