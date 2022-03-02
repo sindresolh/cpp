@@ -71,6 +71,20 @@ class CommunicationHandler extends Component {
 
   isProduction = JSON.parse(configData.PRODUCTION);
 
+  /**
+   * Warn user when leaving page.
+   */
+  componentDidUpdate() {
+    window.onbeforeunload = (event) => {
+      const e = event || window.event;
+      e.preventDefault();
+      if (e) {
+        e.returnValue = '';
+      }
+      return '';
+    };
+  }
+
   /* Close the modal. Callback from SideBarModal*/
   closeModal() {
     this.setState({ isModalOpen: false });
