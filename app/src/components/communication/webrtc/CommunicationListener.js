@@ -175,13 +175,16 @@ class CommunicationListener extends Component {
     } else if (prevProps.finishEvent !== this.props.finishEvent) {
       this.shout(FINISHED, '');
     }
-  }
 
-  /**
-   * Leave game when exiting the window
-   */
-  componentWillUnmount() {
-    this.props.webrtc.quit();
+    //Warn users leaving page
+    window.onbeforeunload = (event) => {
+      const e = event || window.event;
+      e.preventDefault();
+      if (e) {
+        e.returnValue = '';
+      }
+      return '';
+    };
   }
 
   render() {

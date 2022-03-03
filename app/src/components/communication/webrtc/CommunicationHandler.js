@@ -34,7 +34,9 @@ import CheckIcon from '../../../utils/images/buttonIcons/check.png';
 import { COLORS } from '../../../utils/constants';
 import configData from '../../../config.json';
 
-const mapStateToProps = null;
+const mapStateToProps = (state) => ({
+  players: state.players,
+});
 /** Helper function to let us call dispatch from a class function
  *
  * @param {*} dispatch
@@ -71,20 +73,6 @@ class CommunicationHandler extends Component {
 
   isProduction = JSON.parse(configData.PRODUCTION);
 
-  /**
-   * Warn user when leaving page.
-   */
-  componentDidUpdate() {
-    window.onbeforeunload = (event) => {
-      const e = event || window.event;
-      e.preventDefault();
-      if (e) {
-        e.returnValue = '';
-      }
-      return '';
-    };
-  }
-
   /* Close the modal. Callback from SideBarModal*/
   closeModal() {
     this.setState({ isModalOpen: false });
@@ -103,7 +91,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room9');
+  join = (webrtc) => webrtc.joinRoom('cpp-room3');
 
   /**
    * Called when a new peer is added to the room
@@ -113,9 +101,13 @@ class CommunicationHandler extends Component {
    */
   handleCreatedPeer = (webrtc, peer) => {
     const { dispatch_addPlayer } = this.props;
-    dispatch_addPlayer(peer);
-    if (!this.isProduction) {
-      console.log(`Peer-${peer.id.substring(0, 5)} joined the room!`);
+
+    if (store.getState().players.length < 4) {
+      // As long as there is less than 4 people already in the room
+      dispatch_addPlayer(peer);
+      if (!this.isProduction) {
+        console.log(`Peer-${peer.id.substring(0, 5)} joined the room!`);
+      }
     }
   };
 
@@ -138,12 +130,21 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : Keeps information about the room
    */
   joinedRoom = (webrtc) => {
-    const { dispatch_setPlayers } = this.props;
-    dispatch_setPlayers([
-      ...webrtc.getPeers(),
-      { id: 'YOU', nick: this.state.nick },
-    ]);
-    this.setState({ connected: true });
+    alert(store.getState().players.length);
+
+    if (store.getState().players.length < 4) {
+      // As long as there is less than 4 people already in the room
+      const { dispatch_setPlayers } = this.props;
+      dispatch_setPlayers([
+        ...webrtc.getPeers(),
+        { id: 'YOU', nick: this.state.nick },
+      ]);
+      this.setState({ connected: true });
+    } else {
+      webrtc.quit();
+      alert('Game has already 4 players. Room full.');
+      window.location.reload();
+    }
   };
 
   /**
@@ -329,6 +330,9 @@ class CommunicationHandler extends Component {
           dataOnly: true,
           nick: this.state.nick,
           debug: !this.isProduction,
+        }}
+        network={{
+          maxPeers: 4,
         }}
         onReady={this.join}
         onCreatedPeer={this.handleCreatedPeer}
