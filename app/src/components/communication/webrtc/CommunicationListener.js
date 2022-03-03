@@ -177,6 +177,13 @@ class CommunicationListener extends Component {
     }
   }
 
+  /**
+   * Leave game when exiting the window
+   */
+  componentWillUnmount() {
+    this.props.webrtc.quit();
+  }
+
   render() {
     return <App startGame={() => this.start()} />;
   }
