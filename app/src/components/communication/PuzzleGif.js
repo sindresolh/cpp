@@ -6,6 +6,7 @@ export default function PuzzleGif() {
   const showText = useMediaQuery({
     query: '(min-width: 1800px)',
   });
+
   return (
     <div
       style={{

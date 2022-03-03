@@ -175,6 +175,20 @@ class CommunicationListener extends Component {
     } else if (prevProps.finishEvent !== this.props.finishEvent) {
       this.shout(FINISHED, '');
     }
+
+    //Warn users leaving page
+    window.onbeforeunload = (event) => {
+      const e = event || window.event;
+      e.preventDefault();
+      if (e) {
+        e.returnValue = '';
+      }
+      return '';
+    };
+  }
+
+  componentWillUnmount() {
+    this.props.webrtc.quit();
   }
 
   render() {

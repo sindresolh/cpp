@@ -34,7 +34,9 @@ import CheckIcon from '../../../utils/images/buttonIcons/check.png';
 import { COLORS } from '../../../utils/constants';
 import configData from '../../../config.json';
 
-const mapStateToProps = null;
+const mapStateToProps = (state) => ({
+  players: state.players,
+});
 /** Helper function to let us call dispatch from a class function
  *
  * @param {*} dispatch
@@ -64,6 +66,10 @@ class CommunicationHandler extends Component {
       players: [],
       connected: false,
       nick: props.nick.trim().substring(0, 15),
+      modalTitle: '',
+      modalDescription: '',
+      modalBorderColor: '',
+      modalButtonColor: '',
       isModalOpen: false,
       finished: false,
     };
@@ -74,6 +80,9 @@ class CommunicationHandler extends Component {
   /* Close the modal. Callback from SideBarModal*/
   closeModal() {
     this.setState({ isModalOpen: false });
+    if (this.state.modalTitle === 'Room full') {
+      window.location.reload();
+    }
   }
 
   /* Close the modal, reset task number to 0 and dispatch to go to the finish screen.*/
@@ -89,7 +98,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room9');
+  join = (webrtc) => webrtc.joinRoom('cpp-room2');
 
   /**
    * Called when a new peer is added to the room
@@ -99,9 +108,12 @@ class CommunicationHandler extends Component {
    */
   handleCreatedPeer = (webrtc, peer) => {
     const { dispatch_addPlayer } = this.props;
-    dispatch_addPlayer(peer);
-    if (!this.isProduction) {
-      console.log(`Peer-${peer.id.substring(0, 5)} joined the room!`);
+    if (store.getState().players.length < 4) {
+      // As long as there is less than 4 people already in the room
+      dispatch_addPlayer(peer);
+      if (!this.isProduction) {
+        console.log(`Peer-${peer.id.substring(0, 5)} joined the room!`);
+      }
     }
   };
 
@@ -124,12 +136,25 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : Keeps information about the room
    */
   joinedRoom = (webrtc) => {
-    const { dispatch_setPlayers } = this.props;
-    dispatch_setPlayers([
-      ...webrtc.getPeers(),
-      { id: 'YOU', nick: this.state.nick },
-    ]);
-    this.setState({ connected: true });
+    if (store.getState().players.length < 4) {
+      // As long as there is less than 4 people already in the room
+      const { dispatch_setPlayers } = this.props;
+      dispatch_setPlayers([
+        ...webrtc.getPeers(),
+        { id: 'YOU', nick: this.state.nick },
+      ]);
+      this.setState({ connected: true });
+    } else {
+      webrtc.quit();
+      this.setState({
+        modalTitle: 'Room full',
+        modalDescription:
+          'The game you tried to join is already full. Game already has 4 players',
+        isModalOpen: true,
+        modalBorderColor: COLORS.darkred,
+        modalButtonColor: COLORS.lightred,
+      });
+    }
   };
 
   /**
@@ -217,7 +242,13 @@ class CommunicationHandler extends Component {
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState.currentTask) {
-      this.setState({ isModalOpen: true });
+      this.setState({
+        modalTitle: 'New task',
+        modalDescription: 'Another player initiated a new task.',
+        isModalOpen: true,
+        modalBorderColor: COLORS.darkgreen,
+        modalButtonColor: COLORS.lightgreen,
+      });
       const { dispatch_nextTask } = this.props;
       dispatch_nextTask();
       this.initialFieldFromFile();
@@ -316,6 +347,9 @@ class CommunicationHandler extends Component {
           nick: this.state.nick,
           debug: !this.isProduction,
         }}
+        network={{
+          maxPeers: 4,
+        }}
         onReady={this.join}
         onCreatedPeer={this.handleCreatedPeer}
         onReceivedPeerData={this.handlePeerData} // For Peer2Peer
@@ -325,7 +359,6 @@ class CommunicationHandler extends Component {
         url={configData.SERVER_URL}
       >
         {this.state.connected ? <CommunicationListener /> : <PuzzleGif />}
-
         {/* Fancy alert for new events, for now only shows when there is a new task*/}
         {this.state.finished ? (
           <SidebarModal
@@ -344,11 +377,11 @@ class CommunicationHandler extends Component {
           <SidebarModal
             modalIsOpen={this.state.isModalOpen}
             icon={SubmitIcon}
-            title={'New task'}
-            description={'Another player initiated a new task.'}
+            title={this.state.modalTitle}
+            description={this.state.modalDescription}
             buttonText={'Ok'}
-            buttonColor={COLORS.lightgreen}
-            borderColor={COLORS.darkgreen}
+            buttonColor={this.state.modalButtonColor}
+            borderColor={this.state.modalBorderColor}
             closeModal={() => this.closeModal()}
           />
         )}
