@@ -66,6 +66,8 @@ class CommunicationHandler extends Component {
       players: [],
       connected: false,
       nick: props.nick.trim().substring(0, 15),
+      modalTitle: '',
+      modalDescription: '',
       isModalOpen: false,
       finished: false,
     };
@@ -76,6 +78,9 @@ class CommunicationHandler extends Component {
   /* Close the modal. Callback from SideBarModal*/
   closeModal() {
     this.setState({ isModalOpen: false });
+    if (this.state.modalTitle === 'Room full') {
+      window.location.reload();
+    }
   }
 
   /* Close the modal, reset task number to 0 and dispatch to go to the finish screen.*/
@@ -142,8 +147,12 @@ class CommunicationHandler extends Component {
       this.setState({ connected: true });
     } else {
       webrtc.quit();
-      alert('Game has already 4 players. Room full.');
-      window.location.reload();
+      this.setState({
+        modalTitle: 'Room full',
+        modalDescription: 'Game has already 4 players',
+        isModalOpen: true,
+      });
+      //window.location.reload();
     }
   };
 
@@ -232,7 +241,11 @@ class CommunicationHandler extends Component {
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState.currentTask) {
-      this.setState({ isModalOpen: true });
+      this.setState({
+        modalTitle: 'New task',
+        modalDescription: 'Another player initiated a new task.',
+        isModalOpen: true,
+      });
       const { dispatch_nextTask } = this.props;
       dispatch_nextTask();
       this.initialFieldFromFile();
@@ -362,8 +375,8 @@ class CommunicationHandler extends Component {
           <SidebarModal
             modalIsOpen={this.state.isModalOpen}
             icon={SubmitIcon}
-            title={'New task'}
-            description={'Another player initiated a new task.'}
+            title={this.state.modalTitle}
+            description={this.state.modalDescription}
             buttonText={'Ok'}
             buttonColor={COLORS.lightgreen}
             borderColor={COLORS.darkgreen}
