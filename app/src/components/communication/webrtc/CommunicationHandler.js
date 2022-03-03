@@ -68,6 +68,8 @@ class CommunicationHandler extends Component {
       nick: props.nick.trim().substring(0, 15),
       modalTitle: '',
       modalDescription: '',
+      modalBorderColor: '',
+      modalButtonColor: '',
       isModalOpen: false,
       finished: false,
     };
@@ -96,7 +98,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room3');
+  join = (webrtc) => webrtc.joinRoom('cpp-room4');
 
   /**
    * Called when a new peer is added to the room
@@ -106,7 +108,6 @@ class CommunicationHandler extends Component {
    */
   handleCreatedPeer = (webrtc, peer) => {
     const { dispatch_addPlayer } = this.props;
-
     if (store.getState().players.length < 4) {
       // As long as there is less than 4 people already in the room
       dispatch_addPlayer(peer);
@@ -135,8 +136,6 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : Keeps information about the room
    */
   joinedRoom = (webrtc) => {
-    alert(store.getState().players.length);
-
     if (store.getState().players.length < 4) {
       // As long as there is less than 4 people already in the room
       const { dispatch_setPlayers } = this.props;
@@ -149,10 +148,12 @@ class CommunicationHandler extends Component {
       webrtc.quit();
       this.setState({
         modalTitle: 'Room full',
-        modalDescription: 'Game has already 4 players',
+        modalDescription:
+          'The game you tried to join is already full. Game already has 4 players',
         isModalOpen: true,
+        modalBorderColor: COLORS.darkred,
+        modalButtonColor: COLORS.lightred,
       });
-      //window.location.reload();
     }
   };
 
@@ -245,6 +246,8 @@ class CommunicationHandler extends Component {
         modalTitle: 'New task',
         modalDescription: 'Another player initiated a new task.',
         isModalOpen: true,
+        modalBorderColor: COLORS.darkgreen,
+        modalButtonColor: COLORS.lightgreen,
       });
       const { dispatch_nextTask } = this.props;
       dispatch_nextTask();
@@ -356,7 +359,6 @@ class CommunicationHandler extends Component {
         url={configData.SERVER_URL}
       >
         {this.state.connected ? <CommunicationListener /> : <PuzzleGif />}
-
         {/* Fancy alert for new events, for now only shows when there is a new task*/}
         {this.state.finished ? (
           <SidebarModal
@@ -378,8 +380,8 @@ class CommunicationHandler extends Component {
             title={this.state.modalTitle}
             description={this.state.modalDescription}
             buttonText={'Ok'}
-            buttonColor={COLORS.lightgreen}
-            borderColor={COLORS.darkgreen}
+            buttonColor={this.state.modalButtonColor}
+            borderColor={this.state.modalBorderColor}
             closeModal={() => this.closeModal()}
           />
         )}
