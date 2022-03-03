@@ -10,7 +10,7 @@ import ReactPlayer from 'react-player';
 import Video from '../../../utils/images/tutorial.mp4';
 import Modal from 'react-modal';
 import SidebarModal from '../../Game/Sidebar/SidebarModal/SidebarModal';
-import { setPlayers } from '../../../redux/actions';
+import { removePlayer } from '../../../redux/actions';
 
 /** Show the players in the lobby based on their nickname
  *
@@ -60,7 +60,7 @@ function Lobby({ handleClick }) {
         if (timeout > time) {
           setTimeout(waitForNick, 30); // Wait 30 ms and check again
         } else {
-          dispatch(setPlayers(players.filter((player) => player !== p)));
+          dispatch(removePlayer(p));
           resolve();
         }
       })();
