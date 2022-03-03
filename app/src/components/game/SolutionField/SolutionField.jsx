@@ -183,8 +183,7 @@ function SolutionField({}) {
 
     if (movedBlock != null && draggable) {
       // the user selected this codeblock
-      //movedBlock.index = index;
-
+      movedBlock.index = index;
       // (e.detauil > 1) if clicked more than once
       if (e.detail > 1) {
         movedBlock.indent = 0;
