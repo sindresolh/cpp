@@ -58,7 +58,7 @@ export default function SidebarModal({
   }
 
   // Change lenght of modal based on the number of codelines
-  let modalHeight = '18em';
+  let modalHeight = '23em';
   if (showFeedback === 'block' && feedbackArray.length > 0) {
     let mHeight = 25 + 5 * ((feedbackArray.length / 4) >> 0);
     mHeight = mHeight < 50 ? mHeight : 50;

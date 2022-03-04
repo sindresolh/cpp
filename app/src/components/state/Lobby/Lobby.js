@@ -76,7 +76,7 @@ function Lobby({ handleClick }) {
 
     // Checks that each individual player has player.nick
     for (let p of players) {
-      promises.push(hasNick(p, 1000));
+      promises.push(hasNick(p, 2000));
     }
 
     // Return all resolved promises
