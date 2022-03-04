@@ -25,7 +25,9 @@ import { COLORS, MAX_INDENT, KEYBOARD_EVENT } from '../../../utils/constants';
  * @returns a div containing the blocks players has moved blocks into
  */
 function SolutionField({}) {
-  const currentTaskNumber = useSelector((state) => state.currentTask.currentTaskNumber);
+  const currentTaskNumber = useSelector(
+    (state) => state.currentTask.currentTaskNumber
+  );
   const blocks = useSelector((state) => state.solutionField);
   const players = useSelector((state) => state.players);
   const dispatch = useDispatch();
@@ -70,25 +72,53 @@ function SolutionField({}) {
    * Handle keyboard input for the selected codeblock.
    * Tab and bacskpace changes indenting.
    */
-  const handleKeyDown = useCallback(e=> {
-    e.preventDefault();     // do not target adress bar
-    if(selectedCodeline != null && findBlock(selectedCodeline.id) !== undefined && e.keyCode != null){               
-      if((e.shiftKey && e.keyCode == KEYBOARD_EVENT.TAB  && selectedCodeline.indent > 0) || (e.keyCode === KEYBOARD_EVENT.BACKSPACE  && selectedCodeline.indent > 0)) { 
+  const handleKeyDown = useCallback((e) => {
+    e.preventDefault(); // do not target adress bar
+    if (
+      selectedCodeline != null &&
+      findBlock(selectedCodeline.id) !== undefined &&
+      e.keyCode != null
+    ) {
+      if (
+        (e.shiftKey &&
+          e.keyCode == KEYBOARD_EVENT.TAB &&
+          selectedCodeline.indent > 0) ||
+        (e.keyCode === KEYBOARD_EVENT.BACKSPACE && selectedCodeline.indent > 0)
+      ) {
         // SHIFT TAB OR BACKSPACE
-        setSelectedCodeline((selectedCodeline) => ({...selectedCodeline, indent: selectedCodeline.indent-1}))
-        moveBlock(selectedCodeline.id, selectedCodeline.index, selectedCodeline.indent -1, false);
+        setSelectedCodeline((selectedCodeline) => ({
+          ...selectedCodeline,
+          indent: selectedCodeline.indent - 1,
+        }));
+        moveBlock(
+          selectedCodeline.id,
+          selectedCodeline.index,
+          selectedCodeline.indent - 1,
+          false
+        );
+      } else if (
+        !e.shiftKey &&
+        e.keyCode === KEYBOARD_EVENT.TAB &&
+        selectedCodeline.indent < MAX_INDENT
+      ) {
+        // TAB
+        setSelectedCodeline((selectedCodeline) => ({
+          ...selectedCodeline,
+          indent: selectedCodeline.indent + 1,
+        }));
+        moveBlock(
+          selectedCodeline.id,
+          selectedCodeline.index,
+          selectedCodeline.indent + 1,
+          false
+        );
       }
-      else if (!e.shiftKey && e.keyCode === KEYBOARD_EVENT.TAB && selectedCodeline.indent < MAX_INDENT) {
-        // TAB      
-        setSelectedCodeline((selectedCodeline) => ({...selectedCodeline, indent: selectedCodeline.indent+1}))
-        moveBlock(selectedCodeline.id, selectedCodeline.index, selectedCodeline.indent +1, false);
-      }
-    } 
-  },);
+    }
+  });
 
   /* Reset selected block when a new task starts*/
   useEffect(() => {
-    setSelectedCodeline(null)
+    setSelectedCodeline(null);
   }, [currentTaskNumber]);
 
   /**

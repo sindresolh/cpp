@@ -128,6 +128,9 @@ const removeProperties = (obj) => {
   if (obj.hasOwnProperty('player')) {
     delete objCopy.player;
   }
+  if (obj.hasOwnProperty('index')) {
+    delete objCopy.index;
+  }
   if (obj.hasOwnProperty('id')) {
     delete objCopy.id;
   }
