@@ -66,7 +66,16 @@ function mapDispatchToProps(dispatch) {
  * Listens to changes in the redux store and sends new messages to all peers.
  */
 class CommunicationListener extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      fieldMessage: {},
+      listMessage: {},
+    };
+  }
+
   isProduction = JSON.parse(configData.PRODUCTION);
+  EVENT_DELAY = 300;
 
   /**
    * Distribute cards to all players, including yourself
@@ -140,17 +149,30 @@ class CommunicationListener extends Component {
   componentDidUpdate(prevProps) {
     const state = store.getState();
 
-    if (prevProps.listEvent !== this.props.listEvent) {
+    if (prevProps.listEvent.getTime() < this.props.listEvent.getTime()) {
       // This peer moved codeblock in an handlist
-      const json = JSON.stringify({
-        handList: state.handList,
-        allocatedLists: state.allocatedLists,
-      });
-      this.shout(SET_LIST, json);
-    } else if (prevProps.fieldEvent !== this.props.fieldEvent) {
+      const json = JSON.stringify(state.handList);
+      this.setState({ listMessage: json });
+      setTimeout(() => {
+        // As long as this is the last listEvent (componentDidUpdate not called a second time)
+        if (store.getState().listEvent.getTime() <= state.listEvent.getTime()) {
+          this.shout(SET_LIST, this.state.listMessage);
+        }
+      }, this.EVENT_DELAY);
+    } else if (
+      prevProps.fieldEvent.getTime() < this.props.fieldEvent.getTime()
+    ) {
       // This peer moved codeblock in soloutionfield
       const json = JSON.stringify(state.solutionField);
-      this.shout(SET_FIELD, json);
+      this.setState({ fieldMessage: json });
+      setTimeout(() => {
+        // As long as this is the last fieldEvent (componentDidUpdate not called a second time)
+        if (
+          store.getState().fieldEvent.getTime() <= state.fieldEvent.getTime()
+        ) {
+          this.shout(SET_FIELD, this.state.fieldMessage);
+        }
+      }, this.EVENT_DELAY);
     } else if (
       // This peer updated the game state by going to the next task
       prevProps.taskEvent !== this.props.taskEvent
@@ -164,7 +186,9 @@ class CommunicationListener extends Component {
       this.shout(NEXT_TASK, json);
       const { dispatch_listEvent } = this.props;
       dispatch_listEvent();
-    } else if (prevProps.clearEvent !== this.props.clearEvent) {
+    } else if (
+      prevProps.clearEvent.getTime() < this.props.clearEvent.getTime()
+    ) {
       // This peer cleared the board
       const json = JSON.stringify(state.currentTask);
       this.shout(CLEAR_TASK, json);
@@ -194,10 +218,6 @@ class CommunicationListener extends Component {
       }
       return '';
     };
-  }
-
-  componentWillUnmount() {
-    this.props.webrtc.quit();
   }
 
   render() {
