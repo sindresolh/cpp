@@ -9,7 +9,7 @@ import {
   fieldEvent,
   removeBlockFromList,
   addBlockToField,
-  setFieldState
+  setFieldState,
 } from '../../../redux/actions';
 import update from 'immutability-helper';
 import { ItemTypes } from '../../../utils/itemtypes';
@@ -28,7 +28,8 @@ import CodeLine from '../CodeLine/CodeLine';
 function HandList({ player, draggable }) {
   const dispatch = useDispatch();
   const handListIndex = player - 1;
-  const blocks = useSelector((state) => state.handList[handListIndex]);
+  let blocks = useSelector((state) => state.handList[handListIndex]);
+  blocks = blocks.map((block) => ({ ...block, indent: 0 })); // set indent to 0
   const emptyList = blocks.length === 0;
 
   // find the block and index based on id
@@ -118,31 +119,30 @@ function HandList({ player, draggable }) {
     }),
     [blocks, emptyList]
   );
-  
+
   /** Helper function to make sure that the field event is done before sending a new event
-   * 
-   * @returns 
+   *
+   * @returns
    */
   const fieldEventPromise = () => {
     return Promise.resolve(dispatch(fieldEvent()));
-  }
+  };
 
-   /** Moves block from solutionfield to hand after a doubbleclick
-   * 
+  /** Moves block from solutionfield to hand after a doubbleclick
+   *
    * @param {*} e
    * @param {*} movedBlock : codeblock moved
    * @param {*} draggable : wheter or not the player has permission to perform this action
    */
   const handleDoubbleClick = (e, movedBlock, draggable) => {
-    if(e.detail > 1 && draggable && movedBlock != null){ // (e.detauil > 1) if clicked more than once
-        dispatch(removeBlockFromList(movedBlock.id, movedBlock.player -1));
-        dispatch(addBlockToField(movedBlock));
-        fieldEventPromise().then(() => dispatch(listEvent()));
-        e.detail = 0; // resets detail so that other codeblocks can be clicked
+    if (e.detail > 1 && draggable && movedBlock != null) {
+      // (e.detauil > 1) if clicked more than once
+      dispatch(removeBlockFromList(movedBlock.id, movedBlock.player - 1));
+      dispatch(addBlockToField(movedBlock));
+      fieldEventPromise().then(() => dispatch(listEvent()));
+      e.detail = 0; // resets detail so that other codeblocks can be clicked
     }
-  };  
-
-      
+  };
 
   return (
     <div className={'divHL'} ref={emptyListDrop} key={draggable}>
@@ -156,7 +156,7 @@ function HandList({ player, draggable }) {
               maxIndent={0}
               draggable={draggable}
               key={`player-${player}-line-${index}`}
-              handleDoubbleClick = {handleDoubbleClick}
+              handleDoubbleClick={handleDoubbleClick}
             />
           );
         })}

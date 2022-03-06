@@ -13,6 +13,7 @@ import {
   startGame,
   finishGame,
   setTaskNumber,
+  setAllocatedListsForCurrentTask,
 } from '../../../redux/actions';
 import {
   SET_LIST,
@@ -53,6 +54,8 @@ function mapDispatchToProps(dispatch) {
     dispatch_startGame: (...args) => dispatch(startGame(...args)),
     dispatch_finishGame: (...args) => dispatch(finishGame(...args)),
     dispatch_setTaskNumber: (...args) => dispatch(setTaskNumber(...args)),
+    dispatch_setAllocatedListsForCurrentTask: (...args) =>
+      dispatch(setAllocatedListsForCurrentTask(...args)),
   };
 }
 
@@ -265,14 +268,18 @@ class CommunicationHandler extends Component {
    * Clears the board
    */
   clearTask() {
-    // Get current board state
-    let field = store.getState().solutionField;
-    let handList = store.getState().handList;
+    // // Get current board state
+    // let field = store.getState().solutionField;
+    // let handList = store.getState().handList;
+    // // Update board
+    // handList = clearBoard(field, handList);
+    // const { dispatch_setListState } = this.props;
+    // dispatch_setListState(handList);
+    // this.initialFieldFromFile();
 
-    // Update board
-    handList = clearBoard(field, handList);
+    const codeBlocks = store.getState().allocatedLists;
     const { dispatch_setListState } = this.props;
-    dispatch_setListState(handList);
+    dispatch_setListState(codeBlocks);
     this.initialFieldFromFile();
   }
 
@@ -328,6 +335,9 @@ class CommunicationHandler extends Component {
     if (prevState !== payloadState.status) {
       const { dispatch_setListState } = this.props;
       dispatch_setListState(payloadState.handList);
+
+      const { dispatch_setAllocatedListsForCurrentTask } = this.props;
+      dispatch_setAllocatedListsForCurrentTask(payloadState.handList);
 
       const { dispatch_setFieldState } = this.props;
       dispatch_setFieldState(payloadState.solutionField);
