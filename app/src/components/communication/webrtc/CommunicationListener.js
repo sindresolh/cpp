@@ -75,7 +75,7 @@ class CommunicationListener extends Component {
   }
 
   isProduction = JSON.parse(configData.PRODUCTION);
-  EVENT_DELAY = 300;
+  EVENT_DELAY = 150;
 
   /**
    * Distribute cards to all players, including yourself
@@ -151,7 +151,10 @@ class CommunicationListener extends Component {
 
     if (prevProps.listEvent.getTime() < this.props.listEvent.getTime()) {
       // This peer moved codeblock in an handlist
-      const json = JSON.stringify(state.handList);
+      const json = JSON.stringify({
+        handList: state.handList,
+        allocatedLists: state.allocatedLists,
+      });
       this.setState({ listMessage: json });
       setTimeout(() => {
         // As long as this is the last listEvent (componentDidUpdate not called a second time)
