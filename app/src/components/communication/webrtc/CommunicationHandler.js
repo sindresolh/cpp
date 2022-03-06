@@ -281,9 +281,9 @@ class CommunicationHandler extends Component {
     // dispatch_setListState(handList);
     // this.initialFieldFromFile();
 
-    const codeBlocks = store.getState().allocatedLists;
+    const handList = store.getState().allocatedLists;
     const { dispatch_setListState } = this.props;
-    dispatch_setListState(codeBlocks);
+    dispatch_setListState(handList);
     this.initialFieldFromFile();
   }
 
