@@ -142,7 +142,10 @@ class CommunicationListener extends Component {
 
     if (prevProps.listEvent !== this.props.listEvent) {
       // This peer moved codeblock in an handlist
-      const json = JSON.stringify(state.handList);
+      const json = JSON.stringify({
+        handList: state.handList,
+        allocatedLists: state.allocatedLists,
+      });
       this.shout(SET_LIST, json);
     } else if (prevProps.fieldEvent !== this.props.fieldEvent) {
       // This peer moved codeblock in soloutionfield

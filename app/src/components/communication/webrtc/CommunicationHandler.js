@@ -194,17 +194,19 @@ class CommunicationHandler extends Component {
   };
 
   /**
-   *  Update the blocks in a hand list.
+   *  Update the blocks in a hand list as well as the allocated lists for the current task.
    *
    * @param {*} payload the new state for hand list
    */
   setList(payload) {
-    const { dispatch_setListState } = this.props;
+    const { dispatch_setListState, dispatch_setAllocatedListsForCurrentTask } =
+      this.props;
     const prevState = store.getState().handList;
     const payloadState = JSON.parse(payload);
 
     if (!twoDimensionalArrayIsEqual(prevState, payloadState)) {
-      dispatch_setListState(payloadState);
+      dispatch_setListState(payloadState.handList);
+      dispatch_setAllocatedListsForCurrentTask(payloadState.allocatedLists);
     }
   }
 
@@ -254,6 +256,8 @@ class CommunicationHandler extends Component {
       });
       const { dispatch_nextTask } = this.props;
       dispatch_nextTask();
+      //const { dispatch_setAllocatedListsForCurrentTask } = this.props;
+      //dispatch_setAllocatedListsForCurrentTask(payloadState.handList);
       this.initialFieldFromFile();
     }
   }
