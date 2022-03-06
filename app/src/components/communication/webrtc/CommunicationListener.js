@@ -18,6 +18,7 @@ import {
   listEvent,
   fieldEvent,
   finishEvent,
+  setAllocatedListsForCurrentTask,
 } from '../../../redux/actions';
 import { shuffleCodeblocks } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
 import { STATUS } from '../../../utils/constants';
@@ -40,6 +41,7 @@ const mapStateToProps = (state) => ({
   status: state.status,
   players: state.players,
   finishEvent: state.finishEvent,
+  allocatedLists: state.allocatedLists,
 });
 
 /** Helper function to let us call dispatch from a class function
@@ -55,6 +57,8 @@ function mapDispatchToProps(dispatch) {
     dispatch_listEvent: (...args) => dispatch(listEvent(...args)),
     dispatch_fieldEvent: (...args) => dispatch(fieldEvent(...args)),
     dispatch_finishEvent: (...args) => dispatch(finishEvent(...args)),
+    dispatch_setAllocatedListsForCurrentTask: (...args) =>
+      dispatch(setAllocatedListsForCurrentTask(...args)),
   };
 }
 
@@ -98,9 +102,11 @@ class CommunicationListener extends Component {
       state.players.length
     );
 
-    // initialize handLists
-    const { dispatch_setListState } = this.props;
+    // initialize handLists and set the allocated lists for the current task
+    const { dispatch_setListState, dispatch_setAllocatedListsForCurrentTask } =
+      this.props;
     dispatch_setListState(codeblocks);
+    dispatch_setAllocatedListsForCurrentTask(codeblocks);
   }
 
   /**
@@ -136,7 +142,10 @@ class CommunicationListener extends Component {
 
     if (prevProps.listEvent !== this.props.listEvent) {
       // This peer moved codeblock in an handlist
-      const json = JSON.stringify(state.handList);
+      const json = JSON.stringify({
+        handList: state.handList,
+        allocatedLists: state.allocatedLists,
+      });
       this.shout(SET_LIST, json);
     } else if (prevProps.fieldEvent !== this.props.fieldEvent) {
       // This peer moved codeblock in soloutionfield

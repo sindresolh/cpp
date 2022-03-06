@@ -304,3 +304,17 @@ export const removePlayer = (player) => {
     },
   };
 };
+
+/**
+ * Sets the allocated hand lists at the beginning of a new task.
+ * @param {*} state
+ * @returns
+ */
+export const setAllocatedListsForCurrentTask = (state) => {
+  return {
+    type: ACTIONS.SET_ALLOCATED_LISTS,
+    payload: {
+      state,
+    },
+  };
+};
