@@ -148,7 +148,10 @@ class CommunicationListener extends Component {
       const json = JSON.stringify(state.handList);
       this.setState({ listMessage: json });
       setTimeout(() => {
-        this.shout(SET_LIST, this.state.listMessage);
+        // As long as this is the last listEvent (componentDidUpdate not called a second time)
+        if (store.getState().listEvent.getTime() <= state.listEvent.getTime()) {
+          this.shout(SET_LIST, this.state.listMessage);
+        }
       }, this.EVENT_DELAY);
     } else if (
       prevProps.fieldEvent.getTime() < this.props.fieldEvent.getTime()
@@ -157,7 +160,7 @@ class CommunicationListener extends Component {
       const json = JSON.stringify(state.solutionField);
       this.setState({ fieldMessage: json });
       setTimeout(() => {
-        // As long as this is the last fieldEvent
+        // As long as this is the last fieldEvent (componentDidUpdate not called a second time)
         if (
           store.getState().fieldEvent.getTime() <= state.fieldEvent.getTime()
         ) {
