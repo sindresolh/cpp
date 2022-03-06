@@ -62,7 +62,16 @@ function mapDispatchToProps(dispatch) {
  * Listens to changes in the redux store and sends new messages to all peers.
  */
 class CommunicationListener extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      fieldMessage: {},
+      listMessage: {},
+    };
+  }
+
   isProduction = JSON.parse(configData.PRODUCTION);
+  EVENT_DELAY = 500;
 
   /**
    * Distribute cards to all players, including yourself
@@ -134,14 +143,22 @@ class CommunicationListener extends Component {
   componentDidUpdate(prevProps) {
     const state = store.getState();
 
-    if (prevProps.listEvent !== this.props.listEvent) {
+    if (prevProps.listEvent.getTime() < this.props.listEvent.getTime()) {
       // This peer moved codeblock in an handlist
       const json = JSON.stringify(state.handList);
-      this.shout(SET_LIST, json);
-    } else if (prevProps.fieldEvent !== this.props.fieldEvent) {
+      this.setState({ json });
+      setTimeout(() => {
+        this.shout(SET_LIST, json);
+      }, this.EVENT_DELAY);
+    } else if (
+      prevProps.fieldEvent.getTime() < this.props.fieldEvent.getTime()
+    ) {
       // This peer moved codeblock in soloutionfield
       const json = JSON.stringify(state.solutionField);
-      this.shout(SET_FIELD, json);
+      this.setState({ json });
+      setTimeout(() => {
+        this.shout(SET_FIELD, json);
+      }, this.EVENT_DELAY);
     } else if (
       // This peer updated the game state by going to the next task
       prevProps.taskEvent !== this.props.taskEvent
@@ -155,7 +172,9 @@ class CommunicationListener extends Component {
       this.shout(NEXT_TASK, json);
       const { dispatch_listEvent } = this.props;
       dispatch_listEvent();
-    } else if (prevProps.clearEvent !== this.props.clearEvent) {
+    } else if (
+      prevProps.clearEvent.getTime() < this.props.clearEvent.getTime()
+    ) {
       // This peer cleared the board
       const json = JSON.stringify(state.currentTask);
       this.shout(CLEAR_TASK, json);
@@ -185,10 +204,6 @@ class CommunicationListener extends Component {
       }
       return '';
     };
-  }
-
-  componentWillUnmount() {
-    this.props.webrtc.quit();
   }
 
   render() {
