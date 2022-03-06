@@ -11,6 +11,7 @@ import {
   setListState,
   finishGame,
   finishEvent,
+  setAllocatedListsForCurrentTask,
 } from '../../../redux/actions';
 import { arrayIsEqual } from '../../../utils/compareArrays/compareArrays';
 import HintIcon from '../../../utils/images/buttonIcons/hint.png';
@@ -129,13 +130,16 @@ export default function Sidebar() {
 
     let initalfield = currentTaskObject.field;
 
-    let field = store.getState().solutionField;
-    let handList = store.getState().handList;
-    handList = clearBoardHelper(field, handList);
+    // let field = store.getState().solutionField;
+    // let handList = store.getState().handList;
+    // handList = clearBoardHelper(field, handList);
 
-    // Update board
+    // // Update board
     dispatch(setFieldState(initalfield));
-    dispatch(setListState(handList));
+    // dispatch(setListState(handList));
+
+    const allocatedLists = store.getState().allocatedLists;
+    dispatch(setListState(allocatedLists));
 
     // Tell my team to reset solutionfield
     dispatch(clearEvent());
