@@ -146,18 +146,23 @@ class CommunicationListener extends Component {
     if (prevProps.listEvent.getTime() < this.props.listEvent.getTime()) {
       // This peer moved codeblock in an handlist
       const json = JSON.stringify(state.handList);
-      this.setState({ json });
+      this.setState({ listMessage: json });
       setTimeout(() => {
-        this.shout(SET_LIST, json);
+        this.shout(SET_LIST, this.state.listMessage);
       }, this.EVENT_DELAY);
     } else if (
       prevProps.fieldEvent.getTime() < this.props.fieldEvent.getTime()
     ) {
       // This peer moved codeblock in soloutionfield
       const json = JSON.stringify(state.solutionField);
-      this.setState({ json });
+      this.setState({ fieldMessage: json });
       setTimeout(() => {
-        this.shout(SET_FIELD, json);
+        // As long as this is the last fieldEvent
+        if (
+          store.getState().fieldEvent.getTime() <= state.fieldEvent.getTime()
+        ) {
+          this.shout(SET_FIELD, this.state.fieldMessage);
+        }
       }, this.EVENT_DELAY);
     } else if (
       // This peer updated the game state by going to the next task
