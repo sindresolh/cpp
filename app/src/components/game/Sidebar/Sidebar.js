@@ -47,7 +47,9 @@ export default function Sidebar() {
    * Reset current hint when a new task is started.
    */
   useEffect(() => {
-    setModalIsOpen(false);
+    if (modalTitle.includes('Hint')) {
+      setModalIsOpen(false);
+    }
     setCurrentHintNo(0);
   }, [currentTask]);
 
