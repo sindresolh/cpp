@@ -9,6 +9,7 @@ import {
   listEvent,
   removeBlockFromField,
   addBlockToList,
+  moveRequest,
 } from '../../../redux/actions';
 import update from 'immutability-helper';
 import { useDrop } from 'react-dnd';
@@ -51,19 +52,22 @@ function SolutionField({}) {
   // move the block within the field or to a hand list
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0, mouseEvent = true) => {
-      if (mouseEvent) {
-        setSelectedCodeline(null); // reset selected codeblocks
-      }
-      // get block if it exists in solutionfield
-      const block = findBlock(id);
-      if (block === undefined) {
-        // block does not exist in field, get from hand
-        moveBlockFromList(id, atIndex);
-      } else {
-        // block came from the field, swap position
-        swapBlockPositionInField(block, atIndex, atIndent);
-      }
-      dispatch(fieldEvent()); // Move the block for the other players
+      // if (mouseEvent) {
+      //   setSelectedCodeline(null); // reset selected codeblocks
+      // }
+      // // get block if it exists in solutionfield
+      // const block = findBlock(id);
+      // if (block === undefined) {
+      //   // block does not exist in field, get from hand
+      //   moveBlockFromList(id, atIndex);
+      // } else {
+      //   // block came from the field, swap position
+      //   swapBlockPositionInField(block, atIndex, atIndent);
+      // }
+      // dispatch(fieldEvent()); // Move the block for the other players
+
+      console.log('lokalt flytt i solution field');
+      dispatch(moveRequest(new Date())); // TODO: oppdater dette
     },
     [findBlock, blocks]
   );

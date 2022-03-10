@@ -59,7 +59,7 @@ function HandList({ player, draggable }) {
       // else moveBlockFromField(id, atIndex);
       // dispatch(listEvent()); // Move the block for the other players
 
-      console.log('lokalt flytt');
+      console.log('lokalt flytt i handlist');
       dispatch(moveRequest(new Date())); // TODO: oppdater dette
     },
     [findBlock, blocks]
