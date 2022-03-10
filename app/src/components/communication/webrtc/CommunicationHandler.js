@@ -24,6 +24,7 @@ import {
   CLEAR_TASK,
   START_GAME,
   FINISHED,
+  MOVE_REQUEST,
 } from './messages';
 import {
   twoDimensionalArrayIsEqual,
@@ -192,6 +193,9 @@ class CommunicationHandler extends Component {
       case FINISHED:
         this.finished();
         break;
+      case MOVE_REQUEST:
+        this.moveRequest(payload, peer);
+        break;
       default:
         return;
     }
@@ -273,6 +277,17 @@ class CommunicationHandler extends Component {
     const { dispatch_removeHost } = this.props;
     this.setState({ finished: true, isModalOpen: true });
     dispatch_removeHost();
+  }
+
+  /**
+   * Another peer has requested a move that has to be validated.
+   * If okay, perform the move for all players by broadcasting.
+   * @param {*} payload
+   * @param {*} peer
+   */
+  moveRequest(payload, peer) {
+    const moveRequest = JSON.parse(payload);
+    console.log(`peer ${peer.id} requests this move : ${moveRequest.move}`);
   }
 
   /**

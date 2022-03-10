@@ -28,4 +28,6 @@ export const ACTIONS = {
 
   SET_HOST: 'SET_HOST',
   REMOVE_HOST: 'REMOVE_HOST',
+
+  MOVE_REQUEST: 'MOVE_REQUEST',
 };

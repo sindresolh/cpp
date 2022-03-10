@@ -346,3 +346,17 @@ export const removeHost = (state) => {
     },
   };
 };
+
+/**
+ * Player requests a move to the host. Store this request.
+ * @param {*} state
+ * @returns
+ */
+export const moveRequest = (moveRequest) => {
+  return {
+    type: ACTIONS.MOVE_REQUEST,
+    payload: {
+      moveRequest,
+    },
+  };
+};

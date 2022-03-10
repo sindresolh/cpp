@@ -10,6 +10,7 @@ import {
   removeBlockFromList,
   addBlockToField,
   setFieldState,
+  moveRequest,
 } from '../../../redux/actions';
 import update from 'immutability-helper';
 import { ItemTypes } from '../../../utils/itemtypes';
@@ -49,16 +50,17 @@ function HandList({ player, draggable }) {
   // update the position of the block when moved inside a list
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0) => {
-      const blockObj = findBlock(id);
+      // const blockObj = findBlock(id);
+      // // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
+      // if (blockObj !== undefined) {
+      //   swapBlockPositionInList(blockObj, atIndex);
+      // }
+      // // move block from solution field to hand list
+      // else moveBlockFromField(id, atIndex);
+      // dispatch(listEvent()); // Move the block for the other players
 
-      // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
-      if (blockObj !== undefined) {
-        swapBlockPositionInList(blockObj, atIndex);
-      }
-      // move block from solution field to hand list
-      else moveBlockFromField(id, atIndex);
-
-      dispatch(listEvent()); // Move the block for the other players
+      console.log('lokalt flytt');
+      dispatch(moveRequest(new Date())); // TODO: oppdater dette
     },
     [findBlock, blocks]
   );
