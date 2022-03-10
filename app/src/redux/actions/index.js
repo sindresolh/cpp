@@ -318,3 +318,31 @@ export const setAllocatedListsForCurrentTask = (state) => {
     },
   };
 };
+
+/**
+ * Set the host for the game. Will be called when a game is initiated.
+ * @param {String} host peer id
+ * @returns
+ */
+export const setHost = (host) => {
+  return {
+    type: ACTIONS.SET_HOST,
+    payload: {
+      host,
+    },
+  };
+};
+
+/**
+ * Remove the stored host. Will be called when a game is finished.
+ * @param {*} state
+ * @returns
+ */
+export const removeHost = (state) => {
+  return {
+    type: ACTIONS.REMOVE_HOST,
+    payload: {
+      state,
+    },
+  };
+};

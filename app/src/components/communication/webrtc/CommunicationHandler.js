@@ -14,6 +14,8 @@ import {
   finishGame,
   setTaskNumber,
   setAllocatedListsForCurrentTask,
+  setHost,
+  removeHost,
 } from '../../../redux/actions';
 import {
   SET_LIST,
@@ -56,6 +58,8 @@ function mapDispatchToProps(dispatch) {
     dispatch_setTaskNumber: (...args) => dispatch(setTaskNumber(...args)),
     dispatch_setAllocatedListsForCurrentTask: (...args) =>
       dispatch(setAllocatedListsForCurrentTask(...args)),
+    dispatch_setHost: (...args) => dispatch(setHost(...args)),
+    dispatch_removeHost: (...args) => dispatch(removeHost(...args)),
   };
 }
 
@@ -263,10 +267,12 @@ class CommunicationHandler extends Component {
     }
   }
   /**
-   * Another peer submitted the final task. The game is thus finished.
+   * Another peer submitted the final task. The game is thus finished. Remove host.
    */
   finished() {
+    const { dispatch_removeHost } = this.props;
     this.setState({ finished: true, isModalOpen: true });
+    dispatch_removeHost();
   }
 
   /**
@@ -312,6 +318,8 @@ class CommunicationHandler extends Component {
    */
   assignPlayerOrder(players, playerIds, peer) {
     let newPlayers = [];
+    const { dispatch_setHost } = this.props;
+    dispatch_setHost(peer.id); // set the host for this game
 
     while (playerIds.length > 0) {
       let pid = playerIds.shift(); // Takes out first id

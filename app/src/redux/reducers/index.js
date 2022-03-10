@@ -13,6 +13,7 @@ import playerReducer from './gameState/players';
 import statusReducer from './gameState/status';
 import finishReducer from './webrtc/finishEvent';
 import allocatedListsReducer from './gameState/allocatedLists';
+import hostReducer from './gameState/host';
 
 const allReducers = combineReducers({
   // Handles communicication to the other peers
@@ -31,5 +32,6 @@ const allReducers = combineReducers({
   players: playerReducer,
   status: statusReducer,
   allocatedLists: allocatedListsReducer,
+  host: hostReducer,
 });
 export default allReducers;
