@@ -86,33 +86,22 @@ export const shuffleCodeblocks = (
   correctBlocks = shuffle(correctBlocks);
 
   // If there is at least as many correct codeblocks as players: make sure everyone gets one
-  if (correctBlocks.length >= numberOfPlayers) {
-    // There is enough codeblocks for everyone, do nothing
-  }
-  // Else check if there is enough total codeblocks to give one block for each player
-  else if (distractors.length + correctBlocks.length >= numberOfPlayers) {
-    let numberOfDistractorsToAdd = numberOfPlayers - correctBlocks.length;
-    distractors = shuffle(distractors);
-    let removed = distractors.splice(0, numberOfDistractorsToAdd);
-    correctBlocks = correctBlocks.concat(removed);
-  } else {
-    alert('wololo');
-    // We have less than total codeblocks than player. Make sure no players get more than 1 block.
-    let total_codeblocks = distractors.length + correctBlocks.length;
-    // Calculate which player to start handing out codeblocks to
-    start_index = Math.floor(
-      Math.random() * (numberOfPlayers - total_codeblocks + 1) // Random int between 0 and numbers of players that will not recive any codeblocks
-    );
-    end_index = total_codeblocks + start_index;
-
-    alert(
-      'start_index: ' +
-        start_index +
-        ' , players: ' +
-        numberOfPlayers +
-        ' , codeblocks: ' +
-        total_codeblocks
-    );
+  if (correctBlocks.length < numberOfPlayers) {
+    // Else check if there is enough total codeblocks to give one block for each player
+    if (distractors.length + correctBlocks.length >= numberOfPlayers) {
+      let numberOfDistractorsToAdd = numberOfPlayers - correctBlocks.length;
+      distractors = shuffle(distractors);
+      let removed = distractors.splice(0, numberOfDistractorsToAdd);
+      correctBlocks = correctBlocks.concat(removed);
+    } else {
+      // We have less than total codeblocks than player. Make sure no players get more than 1 block.
+      let total_codeblocks = distractors.length + correctBlocks.length;
+      // Calculate which player to start handing out codeblocks to
+      start_index = Math.floor(
+        Math.random() * (numberOfPlayers - total_codeblocks + 1) // Random int between 0 and numbers of players that will not recive any codeblocks
+      );
+      end_index = total_codeblocks + start_index;
+    }
   }
 
   // Give one block to each player (and none to some if there are less blocks than players)
