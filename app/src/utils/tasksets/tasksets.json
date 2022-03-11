@@ -50,20 +50,7 @@
       "description": "Create a function that sums elements in an array and returns the sum.",
       "hints": ["Use 'def' to set up the function.", "Hint number 2"],
       "attempts": "unlimited",
-      "field": [
-        {
-          "code": "field 1",
-          "category": "function",
-          "indent": 0,
-          "id": "100"
-        },
-        {
-          "code": "field 2",
-          "category": "variable",
-          "indent": 0,
-          "id": "101"
-        }
-      ]
+      "field": []
     },
     {
       "codeBlocks": [

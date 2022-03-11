@@ -82,6 +82,7 @@ function HandList({ player, draggable }) {
 
         if (!alreadyRequested(move, lastMoveRequest)) {
           // prevent continuosly dispatching before move happens
+          console.log('request move');
           dispatch(moveRequest(move));
         }
       }
@@ -161,13 +162,13 @@ function HandList({ player, draggable }) {
    * @param {*} draggable : wheter or not the player has permission to perform this action
    */
   const handleDoubbleClick = (e, movedBlock, draggable) => {
-    if (e.detail > 1 && draggable && movedBlock != null) {
-      // (e.detauil > 1) if clicked more than once
-      dispatch(removeBlockFromList(movedBlock.id, movedBlock.player - 1));
-      dispatch(addBlockToField(movedBlock));
-      fieldEventPromise().then(() => dispatch(listEvent()));
-      e.detail = 0; // resets detail so that other codeblocks can be clicked
-    }
+    // if (e.detail > 1 && draggable && movedBlock != null) {
+    //   // (e.detauil > 1) if clicked more than once
+    //   dispatch(removeBlockFromList(movedBlock.id, movedBlock.player - 1));
+    //   dispatch(addBlockToField(movedBlock));
+    //   fieldEventPromise().then(() => dispatch(listEvent()));
+    //   e.detail = 0; // resets detail so that other codeblocks can be clicked
+    // }
   };
 
   return (

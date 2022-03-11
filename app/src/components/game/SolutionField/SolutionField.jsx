@@ -90,6 +90,7 @@ function SolutionField({}) {
 
         if (!alreadyRequested(move, lastMoveRequest)) {
           // prevent continuosly dispatching before move happens
+          console.log('request move');
           dispatch(moveRequest(move));
         }
       }
@@ -239,19 +240,19 @@ function SolutionField({}) {
    */
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
     setSelectedCodeline(movedBlock);
-
     if (movedBlock != null && draggable) {
       // the user selected this codeblock
       movedBlock.index = index;
-      // (e.detauil > 1) if clicked more than once
-      if (e.detail > 1) {
-        movedBlock.indent = 0;
-        dispatch(removeBlockFromField(movedBlock.id));
-        dispatch(addBlockToList(movedBlock));
-        fieldEventPromise().then(() => dispatch(listEvent()));
-        e.detail = 0; // resets detail so that other codeblocks can be clicked
-      }
     }
+    //   // (e.detauil > 1) if clicked more than once
+    //   if (e.detail > 1) {
+    //     movedBlock.indent = 0;
+    //     dispatch(removeBlockFromField(movedBlock.id));
+    //     dispatch(addBlockToList(movedBlock));
+    //     fieldEventPromise().then(() => dispatch(listEvent()));
+    //     e.detail = 0; // resets detail so that other codeblocks can be clicked
+    //   }
+    // }
   };
 
   return (
