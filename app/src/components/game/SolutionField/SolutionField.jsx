@@ -57,30 +57,32 @@ function SolutionField({}) {
       //   setSelectedCodeline(null); // reset selected codeblocks
       // }
       // // get block if it exists in solutionfield
-      // const block = findBlock(id);
-      // if (block === undefined) {
-      //   // block does not exist in field, get from hand
-      //   moveBlockFromList(id, atIndex);
-      // } else {
-      //   // block came from the field, swap position
-      //   swapBlockPositionInField(block, atIndex, atIndent);
-      // }
-      // dispatch(fieldEvent()); // Move the block for the other players
+      if (store.getState().host === '') {
+        const block = findBlock(id);
+        if (block === undefined) {
+          // block does not exist in field, get from hand
+          moveBlockFromList(id, atIndex);
+        } else {
+          // block came from the field, swap position
+          swapBlockPositionInField(block, atIndex, atIndent);
+        }
+        dispatch(fieldEvent()); // Move the block for the other players
+      } else {
+        // TODO: mouse event
+        const move = {
+          id,
+          index: atIndex,
+          indent: atIndent,
+          field: 'SF',
+        };
+        const lastMoveRequest = store.getState().moveRequest;
 
-      // TODO: mouse event
-      const move = {
-        id,
-        index: atIndex,
-        indent: atIndent,
-        field: 'SF',
-      };
-      const lastMoveRequest = store.getState().moveRequest;
-
-      if (!objectIsEqual(move, lastMoveRequest)) {
-        // prevent continuosly dispatching before move happens
-        console.log('lokalt flytt i SF', move);
-        console.log('last', lastMoveRequest);
-        dispatch(moveRequest(move));
+        if (!objectIsEqual(move, lastMoveRequest)) {
+          // prevent continuosly dispatching before move happens
+          console.log('lokalt flytt i SF', move);
+          console.log('last', lastMoveRequest);
+          dispatch(moveRequest(move));
+        }
       }
     },
     [findBlock, blocks]

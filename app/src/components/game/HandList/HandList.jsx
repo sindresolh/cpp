@@ -51,28 +51,30 @@ function HandList({ player, draggable }) {
   // update the position of the block when moved inside a list
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0) => {
-      // const blockObj = findBlock(id);
-      // // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
-      // if (blockObj !== undefined) {
-      //   swapBlockPositionInList(blockObj, atIndex);
-      // }
-      // // move block from solution field to hand list
-      // else moveBlockFromField(id, atIndex);
-      // dispatch(listEvent()); // Move the block for the other players
+      if (store.getState().host === '') {
+        const blockObj = findBlock(id);
+        // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
+        if (blockObj !== undefined) {
+          swapBlockPositionInList(blockObj, atIndex);
+        }
+        // move block from solution field to hand list
+        else moveBlockFromField(id, atIndex);
+        dispatch(listEvent()); // Move the block for the other players
+      } else {
+        const move = {
+          id,
+          index: atIndex,
+          indent: atIndent,
+          field: player.toString(),
+        };
+        const lastMoveRequest = store.getState().moveRequest;
 
-      const move = {
-        id,
-        index: atIndex,
-        indent: atIndent,
-        field: player.toString(),
-      };
-      const lastMoveRequest = store.getState().moveRequest;
-
-      if (!objectIsEqual(move, lastMoveRequest)) {
-        // prevent continuosly dispatching before move happens
-        console.log('lokalt flytt i handlist', move);
-        console.log('last', lastMoveRequest);
-        dispatch(moveRequest(move));
+        if (!objectIsEqual(move, lastMoveRequest)) {
+          // prevent continuosly dispatching before move happens
+          console.log('lokalt flytt i handlist', move);
+          console.log('last', lastMoveRequest);
+          dispatch(moveRequest(move));
+        }
       }
     },
     [findBlock, blocks]

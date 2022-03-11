@@ -20,6 +20,7 @@ import {
   fieldEvent,
   finishEvent,
   setAllocatedListsForCurrentTask,
+  setHost,
 } from '../../../redux/actions';
 import { shuffleCodeblocks } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
 import { STATUS } from '../../../utils/constants';
@@ -62,6 +63,7 @@ function mapDispatchToProps(dispatch) {
     dispatch_finishEvent: (...args) => dispatch(finishEvent(...args)),
     dispatch_setAllocatedListsForCurrentTask: (...args) =>
       dispatch(setAllocatedListsForCurrentTask(...args)),
+    dispatch_setHost: (...args) => dispatch(setHost(...args)),
   };
 }
 

@@ -18,6 +18,9 @@ import {
   removeHost,
   listEvent,
   fieldEvent,
+  removeBlockFromField,
+  removeBlockFromList,
+  setList,
 } from '../../../redux/actions';
 import {
   SET_LIST,
@@ -39,6 +42,7 @@ import SubmitIcon from '../../../utils/images/buttonIcons/submit.png';
 import CheckIcon from '../../../utils/images/buttonIcons/check.png';
 import { COLORS } from '../../../utils/constants';
 import configData from '../../../config.json';
+import update from 'immutability-helper';
 
 const mapStateToProps = (state) => ({
   players: state.players,
@@ -51,6 +55,7 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     dispatch_setListState: (...args) => dispatch(setListState(...args)),
+    dispatch_setList: (...args) => dispatch(setList(...args)),
     dispatch_setFieldState: (...args) => dispatch(setFieldState(...args)),
     dispatch_nextTask: (...args) => dispatch(nextTask(...args)),
     dispatch_setPlayers: (...args) => dispatch(setPlayers(...args)),
@@ -65,6 +70,10 @@ function mapDispatchToProps(dispatch) {
     dispatch_removeHost: (...args) => dispatch(removeHost(...args)),
     dispatch_listEvent: (...args) => dispatch(listEvent(...args)),
     dispatch_fieldEvent: (...args) => dispatch(fieldEvent(...args)),
+    dispatch_removeBlockFromField: (...args) =>
+      dispatch(removeBlockFromField(...args)),
+    dispatch_removeBlockFromList: (...args) =>
+      dispatch(removeBlockFromList(...args)),
   };
 }
 
@@ -211,15 +220,15 @@ class CommunicationHandler extends Component {
    * @param {*} payload the new state for hand list
    */
   setList(payload) {
-    // const { dispatch_setListState, dispatch_setAllocatedListsForCurrentTask } =
-    //   this.props;
-    // const prevState = store.getState().handList;
-    // const payloadState = JSON.parse(payload);
+    const { dispatch_setListState, dispatch_setAllocatedListsForCurrentTask } =
+      this.props;
+    const prevState = store.getState().handList;
+    const payloadState = JSON.parse(payload);
 
-    // if (!twoDimensionalArrayIsEqual(prevState, payloadState)) {
-    //   dispatch_setListState(payloadState.handList);
-    //   dispatch_setAllocatedListsForCurrentTask(payloadState.allocatedLists);
-    // }
+    if (!twoDimensionalArrayIsEqual(prevState, payloadState)) {
+      dispatch_setListState(payloadState.handList);
+      dispatch_setAllocatedListsForCurrentTask(payloadState.allocatedLists);
+    }
     console.log('host has sent LISTS');
   }
 
@@ -229,13 +238,13 @@ class CommunicationHandler extends Component {
    * @param {*} payload the new state for solution field
    */
   setField(payload) {
-    // const { dispatch_setFieldState } = this.props;
-    // const prevState = store.getState().solutionField;
-    // const payloadState = JSON.parse(payload);
+    const { dispatch_setFieldState } = this.props;
+    const prevState = store.getState().solutionField;
+    const payloadState = JSON.parse(payload);
 
-    // if (!arrayIsEqual(prevState, payloadState)) {
-    //   dispatch_setFieldState(payloadState);
-    // }
+    if (!arrayIsEqual(prevState, payloadState)) {
+      dispatch_setFieldState(payloadState);
+    }
     console.log('host has sent FIELD');
   }
 
@@ -301,6 +310,8 @@ class CommunicationHandler extends Component {
     if (this.moveIsAccepted(moveRequest)) {
       const field = 'mock field for now';
       // TODO: do the move locally here
+      this.moveBlock(moveRequest);
+
       if (moveRequest.field === 'SF') {
         // broadcast what field is being updated (lists or solution field)
         dispatch_fieldEvent();
@@ -309,6 +320,130 @@ class CommunicationHandler extends Component {
       }
     }
   }
+
+  moveBlock(moveRequest) {
+    console.log('performing move at host');
+    let blocks;
+    const player = parseInt(moveRequest.field);
+    if (moveRequest.field === 'SF') blocks = store.getState().solutionField;
+    else {
+      const handListIndex = parseInt(moveRequest.field) - 1;
+      blocks = store.getState().handList[handListIndex];
+    }
+    const block = this.findBlock(moveRequest.id, blocks);
+    if (block === undefined) {
+      if (moveRequest.field === 'SF')
+        this.moveBlockFromList(moveRequest.id, moveRequest.index);
+      else this.moveBlockFromField(moveRequest.id, moveRequest.index, player);
+    } else {
+      if (moveRequest.field === 'SF')
+        this.swapBlockPositionInField(
+          block,
+          moveRequest.index,
+          moveRequest.indent
+        );
+      else this.swapBlockPositionInList(block, moveRequest.index, player);
+    }
+  }
+
+  findBlock(id, blocks) {
+    const block = blocks.filter((block) => block.id === id)[0];
+    if (block === undefined) return undefined; // block came solution field
+
+    return {
+      block,
+      index: blocks.indexOf(block),
+    };
+  }
+
+  moveBlockFromList = (id, atIndex) => {
+    const blocks = store.getState().solutionField;
+    const handLists = store.getState().handList;
+    let blockIsNotFound = true;
+    let handListIndex = 0;
+    let movedBlock;
+    const AMOUNT_OF_PLAYERS = 4;
+    const {
+      dispatch_removeBlockFromList,
+      dispatch_listEvent,
+      dispatch_setFieldState,
+    } = this.props;
+
+    // find block and update the correct hand list
+    while (blockIsNotFound && handListIndex < AMOUNT_OF_PLAYERS) {
+      for (let block = 0; block < handLists[handListIndex].length; block++) {
+        if (handLists[handListIndex][block].id === id) {
+          // block is found, stop looking
+          blockIsNotFound = false;
+          movedBlock = handLists[handListIndex][block];
+          dispatch_removeBlockFromList(id, handListIndex);
+          dispatch_listEvent();
+          const updatedBlocks = [
+            ...blocks.slice(0, atIndex),
+            movedBlock,
+            ...blocks.slice(atIndex),
+          ];
+          dispatch_setFieldState(updatedBlocks);
+        }
+      }
+      handListIndex++;
+    }
+  };
+
+  swapBlockPositionInField = (blockObj, atIndex, atIndent) => {
+    const { dispatch_setFieldState } = this.props;
+    const blocks = store.getState().solutionField;
+    let block = blockObj.block;
+    block.indent = atIndent;
+    const updatedBlocks = update(blocks, {
+      $splice: [
+        [blockObj.index, 1],
+        [atIndex, 0, block],
+      ],
+    });
+
+    dispatch_setFieldState(updatedBlocks);
+  };
+
+  moveBlockFromField = (id, atIndex, player) => {
+    let fieldBlocks = store.getState().solutionField;
+    let movedBlock = fieldBlocks.filter((block) => block.id === id)[0];
+    const blocks = store.getState().handList[player - 1];
+    const {
+      dispatch_setList,
+      dispatch_removeBlockFromField,
+      dispatch_fieldEvent,
+    } = this.props;
+
+    // players cannot move their own blocks to another player's hand
+    // a player can only move their own block to their own hand from solution field
+    if (movedBlock !== undefined && movedBlock.player === player) {
+      const updatedBlock = { ...movedBlock, indent: 0 }; // set indent to 0
+      const updatedBlocks = [
+        ...blocks.slice(0, atIndex),
+        updatedBlock,
+        ...blocks.slice(atIndex),
+      ];
+
+      dispatch_setList(updatedBlocks, player - 1);
+      dispatch_removeBlockFromField(id);
+      dispatch_fieldEvent();
+    }
+  };
+
+  swapBlockPositionInList = (blockObj, atIndex, player) => {
+    const { dispatch_setList } = this.props;
+    const blocks = store.getState().handList[player - 1];
+    const updatedBlock = { ...blockObj.block, indent: 0 }; // set indent to 0
+    const updatedBlocks = update(blocks, {
+      $splice: [
+        [blockObj.index, 1],
+        [atIndex, 0, updatedBlock],
+      ],
+    });
+
+    dispatch_setList(updatedBlocks, player - 1);
+  };
 
   /**
    * Checks if a move should be accepted.
