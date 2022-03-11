@@ -132,7 +132,7 @@ const compareProperties = (obj1, obj2, properties) => {
   for (let key of properties) {
     if (obj1.hasOwnProperty(key) && obj2.hasOwnProperty(key)) {
       // Both objects have the property
-      if (objectIsEqual(obj1[key] !== obj2[key])) {
+      if (!objectIsEqual(obj1[key], obj2[key])) {
         // Properties are different
         return false;
       }
