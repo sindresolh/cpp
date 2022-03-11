@@ -16,6 +16,8 @@ import {
   setAllocatedListsForCurrentTask,
   setHost,
   removeHost,
+  listEvent,
+  fieldEvent,
 } from '../../../redux/actions';
 import {
   SET_LIST,
@@ -61,6 +63,8 @@ function mapDispatchToProps(dispatch) {
       dispatch(setAllocatedListsForCurrentTask(...args)),
     dispatch_setHost: (...args) => dispatch(setHost(...args)),
     dispatch_removeHost: (...args) => dispatch(removeHost(...args)),
+    dispatch_listEvent: (...args) => dispatch(listEvent(...args)),
+    dispatch_fieldEvent: (...args) => dispatch(fieldEvent(...args)),
   };
 }
 
@@ -207,15 +211,16 @@ class CommunicationHandler extends Component {
    * @param {*} payload the new state for hand list
    */
   setList(payload) {
-    const { dispatch_setListState, dispatch_setAllocatedListsForCurrentTask } =
-      this.props;
-    const prevState = store.getState().handList;
-    const payloadState = JSON.parse(payload);
+    // const { dispatch_setListState, dispatch_setAllocatedListsForCurrentTask } =
+    //   this.props;
+    // const prevState = store.getState().handList;
+    // const payloadState = JSON.parse(payload);
 
-    if (!twoDimensionalArrayIsEqual(prevState, payloadState)) {
-      dispatch_setListState(payloadState.handList);
-      dispatch_setAllocatedListsForCurrentTask(payloadState.allocatedLists);
-    }
+    // if (!twoDimensionalArrayIsEqual(prevState, payloadState)) {
+    //   dispatch_setListState(payloadState.handList);
+    //   dispatch_setAllocatedListsForCurrentTask(payloadState.allocatedLists);
+    // }
+    console.log('host has sent LISTS');
   }
 
   /**
@@ -224,13 +229,14 @@ class CommunicationHandler extends Component {
    * @param {*} payload the new state for solution field
    */
   setField(payload) {
-    const { dispatch_setFieldState } = this.props;
-    const prevState = store.getState().solutionField;
-    const payloadState = JSON.parse(payload);
+    // const { dispatch_setFieldState } = this.props;
+    // const prevState = store.getState().solutionField;
+    // const payloadState = JSON.parse(payload);
 
-    if (!arrayIsEqual(prevState, payloadState)) {
-      dispatch_setFieldState(payloadState);
-    }
+    // if (!arrayIsEqual(prevState, payloadState)) {
+    //   dispatch_setFieldState(payloadState);
+    // }
+    console.log('host has sent FIELD');
   }
 
   /**
@@ -287,9 +293,30 @@ class CommunicationHandler extends Component {
    */
   moveRequest(payload, peer) {
     const moveRequest = JSON.parse(payload);
+    const { dispatch_fieldEvent, dispatch_listEvent } = this.props;
+
     console.log(
       `peer ${peer.id} requests this move -> id: ${moveRequest.id}, index: ${moveRequest.index}, indent: ${moveRequest.indent}, field: ${moveRequest.field}`
     );
+    if (this.moveIsAccepted(moveRequest)) {
+      const field = 'mock field for now';
+      // TODO: do the move locally here
+      if (moveRequest.field === 'SF') {
+        // broadcast what field is being updated (lists or solution field)
+        dispatch_fieldEvent();
+      } else {
+        dispatch_listEvent();
+      }
+    }
+  }
+
+  /**
+   * Checks if a move should be accepted.
+   * @param {object} move id, index, indent and field
+   * @returns whether the move should be accepted.
+   */
+  moveIsAccepted(move) {
+    return true; // TODO: always accepts for now
   }
 
   /**
