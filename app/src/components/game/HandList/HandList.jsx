@@ -17,6 +17,7 @@ import { ItemTypes } from '../../../utils/itemtypes';
 import { useDrop } from 'react-dnd';
 import store from '../../../redux/store/store';
 import CodeLine from '../CodeLine/CodeLine';
+import { objectIsEqual } from '../../../utils/compareArrays/compareArrays';
 
 /**
  * This component represents a list of code blocks. Each player will have a list.
@@ -28,6 +29,7 @@ import CodeLine from '../CodeLine/CodeLine';
  */
 function HandList({ player, draggable }) {
   const dispatch = useDispatch();
+  const lastMoveRequest = useSelector((state) => state.moveRequest);
   const handListIndex = player - 1;
   let blocks = useSelector((state) => state.handList[handListIndex]);
   blocks = blocks.map((block) => ({ ...block, indent: 0 })); // set indent to 0
@@ -59,10 +61,21 @@ function HandList({ player, draggable }) {
       // else moveBlockFromField(id, atIndex);
       // dispatch(listEvent()); // Move the block for the other players
 
-      console.log('lokalt flytt i handlist');
-      dispatch(moveRequest(new Date())); // TODO: oppdater dette
+      const move = {
+        id,
+        index: atIndex,
+        indent: atIndent,
+        field: player.toString(),
+      };
+
+      if (!objectIsEqual(move, lastMoveRequest)) {
+        // prevent continuosly dispatching before move happens
+        console.log('lokalt flytt i handlist', move);
+        console.log('last', lastMoveRequest);
+        dispatch(moveRequest(move));
+      }
     },
-    [findBlock, blocks]
+    [findBlock, blocks, lastMoveRequest]
   );
 
   /**

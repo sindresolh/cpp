@@ -287,7 +287,9 @@ class CommunicationHandler extends Component {
    */
   moveRequest(payload, peer) {
     const moveRequest = JSON.parse(payload);
-    console.log(`peer ${peer.id} requests this move : ${moveRequest.move}`);
+    console.log(
+      `peer ${peer.id} requests this move -> id: ${moveRequest.id}, index: ${moveRequest.index}, indent: ${moveRequest.indent}, field: ${moveRequest.field}`
+    );
   }
 
   /**

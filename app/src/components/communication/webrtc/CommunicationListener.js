@@ -229,9 +229,7 @@ class CommunicationListener extends Component {
     } else if (prevProps.finishEvent !== this.props.finishEvent) {
       this.shout(FINISHED, '');
     } else if (prevProps.moveRequest !== this.props.moveRequest) {
-      const json = JSON.stringify({
-        move: 'some move',
-      });
+      const json = JSON.stringify(state.moveRequest);
       this.whisper(state.host, MOVE_REQUEST, json);
     }
 
