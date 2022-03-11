@@ -51,12 +51,28 @@ const wrongFormat = (blocks) => {
   return false;
 };
 
+const oneBlockPerPlayer = (
+  startindex,
+  end_index,
+  correctBlocks,
+  codeblocks
+) => {
+  for (let i = startindex; i < end_index; i++) {
+    let block = correctBlocks.pop();
+    block.player = i + 1;
+    codeblocks[i].push(block);
+  }
+  return codeblocks;
+};
+
 export const shuffleCodeblocks = (
   correctBlocks,
   distractors,
   numberOfPlayers
 ) => {
   let codeblocks = [[], [], [], []]; // codeblocks for all 4 players
+  let start_index = 0;
+  let end_index = numberOfPlayers;
 
   // Verify input
   if (
@@ -69,20 +85,49 @@ export const shuffleCodeblocks = (
 
   correctBlocks = shuffle(correctBlocks);
 
-  // Make sure that each player gets a correct codeblock
+  // If there is at least as many correct codeblocks as players: make sure everyone gets one
   if (correctBlocks.length >= numberOfPlayers) {
-    for (let i = 0; i < numberOfPlayers; i++) {
-      let block = correctBlocks.pop();
-      block.player = i + 1;
-      codeblocks[i].push(block);
-    }
+    // There is enough codeblocks for everyone, do nothing
   }
+  // Else check if there is enough total codeblocks to give one block for each player
+  else if (distractors.length + correctBlocks.length >= numberOfPlayers) {
+    let numberOfDistractorsToAdd = numberOfPlayers - correctBlocks.length;
+    distractors = shuffle(distractors);
+    let removed = distractors.splice(0, numberOfDistractorsToAdd);
+    correctBlocks = correctBlocks.concat(removed);
+  } else {
+    alert('wololo');
+    // We have less than total codeblocks than player. Make sure no players get more than 1 block.
+    let total_codeblocks = distractors.length + correctBlocks.length;
+    // Calculate which player to start handing out codeblocks to
+    start_index = Math.floor(
+      Math.random() * (numberOfPlayers - total_codeblocks + 1) // Random int between 0 and numbers of players that will not recive any codeblocks
+    );
+    end_index = total_codeblocks + start_index;
+
+    alert(
+      'start_index: ' +
+        start_index +
+        ' , players: ' +
+        numberOfPlayers +
+        ' , codeblocks: ' +
+        total_codeblocks
+    );
+  }
+
+  // Give one block to each player (and none to some if there are less blocks than players)
+  codeblocks = oneBlockPerPlayer(
+    start_index,
+    end_index,
+    correctBlocks,
+    codeblocks
+  );
 
   let remainingBlocks = correctBlocks.concat(distractors);
   remainingBlocks = shuffle(remainingBlocks);
 
   // Give the players the remaining blocks
-  for (var block of remainingBlocks) {
+  for (let block of remainingBlocks) {
     let player = Math.floor(Math.random() * numberOfPlayers) + 1; // random int between 1 and 4
     block.player = player;
     codeblocks[player - 1].push(block);
