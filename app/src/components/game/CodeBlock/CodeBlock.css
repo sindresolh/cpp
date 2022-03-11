@@ -18,50 +18,38 @@
   opacity: 0;
 }
 
-.variable {
-  background-color: #c4ccf5;
-}
-
-.variable:hover {
-  background-color: #e6eaff;
-}
-
-.function {
+.player1 {
+  border-color: #dd4932;
   background-color: #fcc6be;
 }
 
-.function:hover {
+.player1:hover {
   background-color: #ffe2de;
-}
-
-.loop {
-  background-color: #fbd392;
-}
-
-.loop:hover {
-  background-color: #fcedd4;
-}
-
-.condition {
-  background-color: #8bbe95;
-}
-
-.condition:hover {
-  background-color: #cfe3d3;
-}
-
-.player1 {
-  border-color: #dd4932;
 }
 
 .player2 {
   border-color: #3c53cb;
+  background-color: #c4ccf5;
+}
+
+.player2:hover {
+  background-color: #e6eaff;
 }
 
 .player3 {
   border-color: #e88e28;
+  background-color: #fbd392;
+}
+
+.player3:hover {
+  background-color: #fcedd4;
 }
 
 .player4 {
   border-color: #2b6e38;
+  background-color: #8bbe95;
+}
+
+.player4:hover {
+  background-color: #cfe3d3;
 }
