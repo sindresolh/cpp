@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './HandList.css';
 import { useSelector, useDispatch } from 'react-redux';
@@ -29,7 +29,6 @@ import { objectIsEqual } from '../../../utils/compareArrays/compareArrays';
  */
 function HandList({ player, draggable }) {
   const dispatch = useDispatch();
-  const lastMoveRequest = useSelector((state) => state.moveRequest);
   const handListIndex = player - 1;
   let blocks = useSelector((state) => state.handList[handListIndex]);
   blocks = blocks.map((block) => ({ ...block, indent: 0 })); // set indent to 0
@@ -67,6 +66,7 @@ function HandList({ player, draggable }) {
         indent: atIndent,
         field: player.toString(),
       };
+      const lastMoveRequest = store.getState().moveRequest;
 
       if (!objectIsEqual(move, lastMoveRequest)) {
         // prevent continuosly dispatching before move happens
@@ -75,7 +75,7 @@ function HandList({ player, draggable }) {
         dispatch(moveRequest(move));
       }
     },
-    [findBlock, blocks, lastMoveRequest]
+    [findBlock, blocks]
   );
 
   /**

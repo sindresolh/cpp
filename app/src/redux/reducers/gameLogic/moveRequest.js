@@ -13,7 +13,6 @@ import { ACTIONS } from '../../actions/ACTIONS';
 const moveRequestReducer = (state = {}, action) => {
   switch (action.type) {
     case ACTIONS.MOVE_REQUEST: {
-      console.log('move request', action.payload.moveRequest);
       return action.payload.moveRequest;
     }
     default:
