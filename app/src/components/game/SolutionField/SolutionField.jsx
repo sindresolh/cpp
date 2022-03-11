@@ -17,6 +17,7 @@ import { ItemTypes } from '../../../utils/itemtypes';
 import './SolutionField.css';
 import store from '../../../redux/store/store';
 import { COLORS, MAX_INDENT, KEYBOARD_EVENT } from '../../../utils/constants';
+import { objectIsEqual } from '../../../utils/compareArrays/compareArrays';
 
 /**
  * The field the players can move blocks into.
@@ -66,8 +67,21 @@ function SolutionField({}) {
       // }
       // dispatch(fieldEvent()); // Move the block for the other players
 
-      console.log('lokalt flytt i solution field');
-      dispatch(moveRequest(new Date())); // TODO: oppdater dette
+      // TODO: mouse event
+      const move = {
+        id,
+        index: atIndex,
+        indent: atIndent,
+        field: 'SF',
+      };
+      const lastMoveRequest = store.getState().moveRequest;
+
+      if (!objectIsEqual(move, lastMoveRequest)) {
+        // prevent continuosly dispatching before move happens
+        console.log('lokalt flytt i SF', move);
+        console.log('last', lastMoveRequest);
+        dispatch(moveRequest(move));
+      }
     },
     [findBlock, blocks]
   );
