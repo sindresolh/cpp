@@ -19,6 +19,17 @@ import store from '../../../redux/store/store';
 import { COLORS, MAX_INDENT, KEYBOARD_EVENT } from '../../../utils/constants';
 import { objectIsEqual } from '../../../utils/compareArrays/compareArrays';
 
+const alreadyRequested = (move, lastMoveRequest) => {
+  if (
+    move.id !== lastMoveRequest.id ||
+    move.index !== lastMoveRequest.index ||
+    move.indent !== lastMoveRequest.indent ||
+    move.field !== lastMoveRequest.field
+  )
+    return false;
+  return true;
+};
+
 /**
  * The field the players can move blocks into.
  * The field contains codelines which allows indenting of blocks, as well as
@@ -77,10 +88,8 @@ function SolutionField({}) {
         };
         const lastMoveRequest = store.getState().moveRequest;
 
-        if (!objectIsEqual(move, lastMoveRequest)) {
+        if (!alreadyRequested(move, lastMoveRequest)) {
           // prevent continuosly dispatching before move happens
-          console.log('lokalt flytt i SF', move);
-          console.log('last', lastMoveRequest);
           dispatch(moveRequest(move));
         }
       }

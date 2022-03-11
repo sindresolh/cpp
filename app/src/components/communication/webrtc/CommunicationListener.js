@@ -80,7 +80,7 @@ class CommunicationListener extends Component {
   }
 
   isProduction = JSON.parse(configData.PRODUCTION);
-  EVENT_DELAY = 10;
+  EVENT_DELAY = 0;
 
   /**
    * Distribute cards to all players, including yourself

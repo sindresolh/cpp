@@ -1,5 +1,12 @@
 import { ACTIONS } from '../../actions/ACTIONS';
 
+const initialState = {
+  id: undefined,
+  index: undefined,
+  indent: undefined,
+  field: undefined,
+};
+
 /**  Reducer for storing the last move request a player has done.
  *
  * TODO
@@ -10,7 +17,7 @@ import { ACTIONS } from '../../actions/ACTIONS';
  * @param {*} action
  * @returns
  */
-const moveRequestReducer = (state = {}, action) => {
+const moveRequestReducer = (state = initialState, action) => {
   switch (action.type) {
     case ACTIONS.MOVE_REQUEST: {
       return action.payload.moveRequest;

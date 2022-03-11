@@ -19,6 +19,17 @@ import store from '../../../redux/store/store';
 import CodeLine from '../CodeLine/CodeLine';
 import { objectIsEqual } from '../../../utils/compareArrays/compareArrays';
 
+const alreadyRequested = (move, lastMoveRequest) => {
+  if (
+    move.id !== lastMoveRequest.id ||
+    move.index !== lastMoveRequest.index ||
+    move.indent !== lastMoveRequest.indent ||
+    move.field !== lastMoveRequest.field
+  )
+    return false;
+  return true;
+};
+
 /**
  * This component represents a list of code blocks. Each player will have a list.
  * This list can accept dragged codeblocks if it is the correct player.
@@ -69,10 +80,8 @@ function HandList({ player, draggable }) {
         };
         const lastMoveRequest = store.getState().moveRequest;
 
-        if (!objectIsEqual(move, lastMoveRequest)) {
+        if (!alreadyRequested(move, lastMoveRequest)) {
           // prevent continuosly dispatching before move happens
-          console.log('lokalt flytt i handlist', move);
-          console.log('last', lastMoveRequest);
           dispatch(moveRequest(move));
         }
       }
