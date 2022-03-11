@@ -86,8 +86,11 @@ export const objectIsEqual = (object1, object2) => {
     // not an object, check the values
     return object1 === object2;
   }
-  object1 = removeProperties(object1);
-  object2 = removeProperties(object2);
+
+  // If both objects are equal codeblocks, return true
+  if (compareProperties(object1, object2, ['code', 'indent'])) {
+    return true;
+  }
 
   const keys1 = Object.keys(object1);
   const keys2 = Object.keys(object2);
@@ -118,23 +121,28 @@ const isNull = (var1, var2) => {
 };
 
 /**
- * Remove the propery player and id from an object
+ * Check that two objects has equal properties
  *
- * @param {*} obj
+ * @param {*} obj1
+ * @param {*} obj2
+ * @param {*} properties
  * @returns
  */
-const removeProperties = (obj) => {
-  const objCopy = deepCopy(obj);
-  if (obj.hasOwnProperty('player')) {
-    delete objCopy.player;
+const compareProperties = (obj1, obj2, properties) => {
+  for (let key of properties) {
+    if (obj1.hasOwnProperty(key) && obj2.hasOwnProperty(key)) {
+      // Both objects have the property
+      if (objectIsEqual(obj1[key] !== obj2[key])) {
+        // Properties are different
+        return false;
+      }
+    } else {
+      // One of the objects lacks the property
+      return false;
+    }
   }
-  if (obj.hasOwnProperty('index')) {
-    delete objCopy.index;
-  }
-  if (obj.hasOwnProperty('id')) {
-    delete objCopy.id;
-  }
-  return objCopy;
+
+  return true; // The objects properties are equal
 };
 
 /** Create a deep copy of a variable
