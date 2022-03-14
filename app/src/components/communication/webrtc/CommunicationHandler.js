@@ -318,40 +318,40 @@ class CommunicationHandler extends Component {
   moveRequest(payload, peer) {
     const moveRequest = JSON.parse(payload);
     const { dispatch_fieldEvent, dispatch_listEvent } = this.props;
-
-    console.log(
-      `peer ${peer.id} requests this move -> id: ${moveRequest.id}, index: ${moveRequest.index}, indent: ${moveRequest.indent}, field: ${moveRequest.field}`
-    );
     if (this.moveIsAccepted(moveRequest)) {
-      const field = 'mock field for now';
-      // TODO: do the move locally here
       this.moveBlock(moveRequest);
 
-      if (moveRequest.field === 'SF') {
+      if (moveRequest.field === 'SF')
         // broadcast what field is being updated (lists or solution field)
         dispatch_fieldEvent();
-      } else {
-        dispatch_listEvent();
-      }
+      else dispatch_listEvent();
     }
   }
 
+  /**
+   * Perform the move locally as host.
+   * @param {object} moveRequest {id, index, indent, field}
+   */
   moveBlock(moveRequest) {
-    console.log('performing move at host');
     let blocks;
     const player = parseInt(moveRequest.field);
-    if (moveRequest.field === 'SF') blocks = store.getState().solutionField;
-    else {
-      const handListIndex = parseInt(moveRequest.field) - 1;
-      blocks = store.getState().handList[handListIndex];
-    }
+    const handListIndex = player - 1;
+    const isAMoveInSolutionField = moveRequest.field === 'SF';
+
+    // get blocks from solution field or handlist depending on where the move is performed
+    blocks = isAMoveInSolutionField
+      ? store.getState().solutionField
+      : store.getState().handList[handListIndex];
+
     const block = this.findBlock(moveRequest.id, blocks);
+
+    // swaps block position in handlist/solution field OR move it from list/field to the other
     if (block === undefined) {
-      if (moveRequest.field === 'SF')
+      if (isAMoveInSolutionField)
         this.moveBlockFromList(moveRequest.id, moveRequest.index);
       else this.moveBlockFromField(moveRequest.id, moveRequest.index, player);
     } else {
-      if (moveRequest.field === 'SF')
+      if (isAMoveInSolutionField)
         this.swapBlockPositionInField(
           block,
           moveRequest.index,
@@ -361,9 +361,15 @@ class CommunicationHandler extends Component {
     }
   }
 
+  /**
+   * Tried to find the block in an array.
+   * @param {Integer} id
+   * @param {Array} blocks
+   * @returns block object if found; undefined if not
+   */
   findBlock(id, blocks) {
     const block = blocks.filter((block) => block.id === id)[0];
-    if (block === undefined) return undefined; // block came solution field
+    if (block === undefined) return undefined; // block came from solution field
 
     return {
       block,
@@ -371,6 +377,11 @@ class CommunicationHandler extends Component {
     };
   }
 
+  /**
+   * Moves a block from hand list to the solution field
+   * @param {Integer} id
+   * @param {Integer} atIndex
+   */
   moveBlockFromList = (id, atIndex) => {
     const blocks = store.getState().solutionField;
     const handLists = store.getState().handList;
@@ -405,6 +416,12 @@ class CommunicationHandler extends Component {
     }
   };
 
+  /**
+   * Swap block positions in the solution field.
+   * @param {} blockObj
+   * @param {*} atIndex
+   * @param {*} atIndent
+   */
   swapBlockPositionInField = (blockObj, atIndex, atIndent) => {
     const { dispatch_setFieldState } = this.props;
     const blocks = store.getState().solutionField;
@@ -420,6 +437,12 @@ class CommunicationHandler extends Component {
     dispatch_setFieldState(updatedBlocks);
   };
 
+  /**
+   * Move a block from the field into a hand list.
+   * @param {*} id
+   * @param {*} atIndex
+   * @param {*} player
+   */
   moveBlockFromField = (id, atIndex, player) => {
     let fieldBlocks = store.getState().solutionField;
     let movedBlock = fieldBlocks.filter((block) => block.id === id)[0];
@@ -446,6 +469,12 @@ class CommunicationHandler extends Component {
     }
   };
 
+  /**
+   * Swap block positions in a hand list.
+   * @param {*} blockObj
+   * @param {*} atIndex
+   * @param {*} player
+   */
   swapBlockPositionInList = (blockObj, atIndex, player) => {
     const { dispatch_setList } = this.props;
     const blocks = store.getState().handList[player - 1];

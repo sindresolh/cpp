@@ -7,9 +7,6 @@ import {
   removeBlockFromField,
   listEvent,
   fieldEvent,
-  removeBlockFromList,
-  addBlockToField,
-  setFieldState,
   moveRequest,
 } from '../../../redux/actions';
 import update from 'immutability-helper';
@@ -17,8 +14,14 @@ import { ItemTypes } from '../../../utils/itemtypes';
 import { useDrop } from 'react-dnd';
 import store from '../../../redux/store/store';
 import CodeLine from '../CodeLine/CodeLine';
-import { objectIsEqual } from '../../../utils/compareArrays/compareArrays';
 
+/**
+ * Check if a move is already been requested to the host.
+ * This prevents sending the same request repeatedly while hovering.
+ * @param {object} move
+ * @param {object} lastMoveRequest
+ * @returns true if the move has been requested
+ */
 const alreadyRequested = (move, lastMoveRequest) => {
   if (
     move.id !== lastMoveRequest.id ||
@@ -28,6 +31,13 @@ const alreadyRequested = (move, lastMoveRequest) => {
   )
     return false;
   return true;
+};
+
+/**
+ * @returns true if this player is the host.
+ */
+const iAmHost = () => {
+  return store.getState().host === '';
 };
 
 /**
@@ -62,7 +72,8 @@ function HandList({ player, draggable }) {
   // update the position of the block when moved inside a list
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0) => {
-      if (store.getState().host === '') {
+      if (iAmHost()) {
+        // perform moves locally before dispatching list event
         const blockObj = findBlock(id);
         // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
         if (blockObj !== undefined) {
@@ -72,6 +83,7 @@ function HandList({ player, draggable }) {
         else moveBlockFromField(id, atIndex);
         dispatch(listEvent()); // Move the block for the other players
       } else {
+        // request move to host
         const move = {
           id,
           index: atIndex,
@@ -79,12 +91,10 @@ function HandList({ player, draggable }) {
           field: player.toString(),
         };
         const lastMoveRequest = store.getState().moveRequest;
+        console.log('request move');
 
-        if (!alreadyRequested(move, lastMoveRequest)) {
-          // prevent continuosly dispatching before move happens
-          console.log('request move');
+        if (!alreadyRequested(move, lastMoveRequest))
           dispatch(moveRequest(move));
-        }
       }
     },
     [findBlock, blocks]

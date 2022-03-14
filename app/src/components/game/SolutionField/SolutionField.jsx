@@ -19,6 +19,13 @@ import store from '../../../redux/store/store';
 import { COLORS, MAX_INDENT, KEYBOARD_EVENT } from '../../../utils/constants';
 import { objectIsEqual } from '../../../utils/compareArrays/compareArrays';
 
+/**
+ * Check if a move is already been requested to the host.
+ * This prevents sending the same request repeatedly while hovering.
+ * @param {object} move
+ * @param {object} lastMoveRequest
+ * @returns true if the move has been requested
+ */
 const alreadyRequested = (move, lastMoveRequest) => {
   if (
     move.id !== lastMoveRequest.id ||
@@ -28,6 +35,13 @@ const alreadyRequested = (move, lastMoveRequest) => {
   )
     return false;
   return true;
+};
+
+/**
+ * @returns true if this player is the host.
+ */
+const iAmHost = () => {
+  return store.getState().host === '';
 };
 
 /**
@@ -68,7 +82,8 @@ function SolutionField({}) {
       //   setSelectedCodeline(null); // reset selected codeblocks
       // }
       // // get block if it exists in solutionfield
-      if (store.getState().host === '') {
+      if (iAmHost()) {
+        // perform move locally before dispatching field event
         const block = findBlock(id);
         if (block === undefined) {
           // block does not exist in field, get from hand
@@ -86,13 +101,12 @@ function SolutionField({}) {
           indent: atIndent,
           field: 'SF',
         };
+        console.log('request move');
+
         const lastMoveRequest = store.getState().moveRequest;
 
-        if (!alreadyRequested(move, lastMoveRequest)) {
-          // prevent continuosly dispatching before move happens
-          console.log('request move');
+        if (!alreadyRequested(move, lastMoveRequest))
           dispatch(moveRequest(move));
-        }
       }
     },
     [findBlock, blocks]
