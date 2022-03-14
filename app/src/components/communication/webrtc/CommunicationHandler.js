@@ -140,6 +140,7 @@ class CommunicationHandler extends Component {
 
   /**
    * Called when a new peer leaves the room
+   * If the host left the room set a new host.
    *
    * @param {*} webrtc : Keeps information about the room
    * @param {*} peer : Keeps information about the peer that sent this message
@@ -150,6 +151,20 @@ class CommunicationHandler extends Component {
     if (!this.isProduction) {
       console.log(`Peer-${peer.id.substring(0, 5)} disconnected.`);
     }
+    if (peer.id === store.getState().host) this.setNewHost();
+  };
+
+  /**
+   * Set a new host if the previous host disconnected.
+   * If this peer is set as new host: set host as ''.
+   */
+  setNewHost = () => {
+    const { dispatch_setHost } = this.props;
+    const players = store.getState().players;
+    const newHost = players[0];
+
+    if (newHost.id === 'YOU') dispatch_setHost('');
+    else dispatch_setHost(newHost.id);
   };
 
   /** Called when a new peer successfully joins the room
