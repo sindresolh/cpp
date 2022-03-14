@@ -115,7 +115,17 @@ export const shuffleCodeblocks = (
   let remainingBlocks = correctBlocks.concat(distractors);
   remainingBlocks = shuffle(remainingBlocks);
 
-  // Give the players the remaining blocks
+  // Divide the remaining blocks equally amongst the players
+  while (remainingBlocks.length >= numberOfPlayers) {
+    codeblocks = oneBlockPerPlayer(
+      0,
+      numberOfPlayers,
+      remainingBlocks,
+      codeblocks
+    );
+  }
+
+  // Give the players the last remaining blocks
   for (let block of remainingBlocks) {
     let player = Math.floor(Math.random() * numberOfPlayers) + 1; // random int between 1 and 4
     block.player = player;
