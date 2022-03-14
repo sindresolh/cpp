@@ -13,8 +13,11 @@ textarea {
   border: none;
   outline: none;
   height: 10vmin;
+  width: 90vmin;
+  font-size: 1.3em;
 }
 label {
   font-weight: bold;
   background-color: white;
+  font-size: 1.3em;
 }
