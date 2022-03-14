@@ -8,6 +8,8 @@ import {
   listEvent,
   fieldEvent,
   moveRequest,
+  removeBlockFromList,
+  addBlockToField,
 } from '../../../redux/actions';
 import update from 'immutability-helper';
 import { ItemTypes } from '../../../utils/itemtypes';
@@ -83,22 +85,29 @@ function HandList({ player, draggable }) {
         else moveBlockFromField(id, atIndex);
         dispatch(listEvent()); // Move the block for the other players
       } else {
-        // request move to host
-        const move = {
-          id,
-          index: atIndex,
-          indent: atIndent,
-          field: player.toString(),
-        };
-        const lastMoveRequest = store.getState().moveRequest;
-        console.log('request move');
-
-        if (!alreadyRequested(move, lastMoveRequest))
-          dispatch(moveRequest(move));
+        // request a move to the host
+        requestMove(id, atIndex, atIndent, player.toString());
       }
     },
     [findBlock, blocks]
   );
+
+  /**
+   * Request a move to the host.
+   * @param {*} id
+   * @param {*} index
+   * @param {*} indent
+   */
+  const requestMove = (id, index, indent, field) => {
+    const move = {
+      id,
+      index,
+      indent,
+      field,
+    };
+    const lastMoveRequest = store.getState().moveRequest;
+    if (!alreadyRequested(move, lastMoveRequest)) dispatch(moveRequest(move));
+  };
 
   /**
    * Swap the position of the dragged block.
@@ -172,13 +181,23 @@ function HandList({ player, draggable }) {
    * @param {*} draggable : wheter or not the player has permission to perform this action
    */
   const handleDoubbleClick = (e, movedBlock, draggable) => {
-    // if (e.detail > 1 && draggable && movedBlock != null) {
-    //   // (e.detauil > 1) if clicked more than once
-    //   dispatch(removeBlockFromList(movedBlock.id, movedBlock.player - 1));
-    //   dispatch(addBlockToField(movedBlock));
-    //   fieldEventPromise().then(() => dispatch(listEvent()));
-    //   e.detail = 0; // resets detail so that other codeblocks can be clicked
-    // }
+    if (e.detail > 1 && draggable && movedBlock != null) {
+      // (e.detauil > 1) if clicked more than once
+      if (iAmHost()) {
+        dispatch(removeBlockFromList(movedBlock.id, movedBlock.player - 1));
+        dispatch(addBlockToField(movedBlock));
+        fieldEventPromise().then(() => dispatch(listEvent()));
+      } else {
+        requestMove(
+          movedBlock.id,
+          store.getState().solutionField.length + 1,
+          0,
+          'SF'
+        );
+      }
+
+      e.detail = 0; // resets detail so that other codeblocks can be clicked
+    }
   };
 
   return (

@@ -316,6 +316,7 @@ class CommunicationHandler extends Component {
    * @param {*} peer
    */
   moveRequest(payload, peer) {
+    console.log('someone requested a move');
     const moveRequest = JSON.parse(payload);
     const { dispatch_fieldEvent, dispatch_listEvent } = this.props;
     if (this.moveIsAccepted(moveRequest)) {

@@ -78,10 +78,10 @@ function SolutionField({}) {
   // move the block within the field or to a hand list
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0, mouseEvent = true) => {
-      // if (mouseEvent) {
-      //   setSelectedCodeline(null); // reset selected codeblocks
-      // }
-      // // get block if it exists in solutionfield
+      if (mouseEvent) {
+        setSelectedCodeline(null); // reset selected codeblocks
+      }
+      // get block if it exists in solutionfield
       if (iAmHost()) {
         // perform move locally before dispatching field event
         const block = findBlock(id);
@@ -94,23 +94,28 @@ function SolutionField({}) {
         }
         dispatch(fieldEvent()); // Move the block for the other players
       } else {
-        // TODO: mouse event
-        const move = {
-          id,
-          index: atIndex,
-          indent: atIndent,
-          field: 'SF',
-        };
-        console.log('request move');
-
-        const lastMoveRequest = store.getState().moveRequest;
-
-        if (!alreadyRequested(move, lastMoveRequest))
-          dispatch(moveRequest(move));
+        requestMove(id, atIndex, atIndent, 'SF');
       }
     },
     [findBlock, blocks]
   );
+
+  /**
+   * Request a move to the host.
+   * @param {*} id
+   * @param {*} index
+   * @param {*} indent
+   */
+  const requestMove = (id, index, indent, field) => {
+    const move = {
+      id,
+      index,
+      indent,
+      field,
+    };
+    const lastMoveRequest = store.getState().moveRequest;
+    if (!alreadyRequested(move, lastMoveRequest)) dispatch(moveRequest(move));
+  };
 
   /**
    * Handle keyboard input for the selected codeblock.
@@ -258,15 +263,22 @@ function SolutionField({}) {
       // the user selected this codeblock
       movedBlock.index = index;
     }
-    //   // (e.detauil > 1) if clicked more than once
-    //   if (e.detail > 1) {
-    //     movedBlock.indent = 0;
-    //     dispatch(removeBlockFromField(movedBlock.id));
-    //     dispatch(addBlockToList(movedBlock));
-    //     fieldEventPromise().then(() => dispatch(listEvent()));
-    //     e.detail = 0; // resets detail so that other codeblocks can be clicked
-    //   }
-    // }
+    // (e.detauil > 1) if clicked more than once
+    if (e.detail > 1) {
+      if (iAmHost()) {
+        movedBlock.indent = 0;
+        dispatch(removeBlockFromField(movedBlock.id));
+        dispatch(addBlockToList(movedBlock));
+        fieldEventPromise().then(() => dispatch(listEvent()));
+      } else {
+        const blockOwner = movedBlock.player;
+        const listIndex = blockOwner - 1;
+        const atIndex = store.getState().handList[listIndex].length;
+        requestMove(movedBlock.id, atIndex, 0, blockOwner);
+      }
+
+      e.detail = 0; // resets detail so that other codeblocks can be clicked
+    }
   };
 
   return (
