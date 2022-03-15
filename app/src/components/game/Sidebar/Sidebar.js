@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Sidebar.css';
 import SidebarButton from './SidebarButton/SidebarButton';
 import SidebarModal from './SidebarModal/SidebarModal';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   nextTask,
   taskEvent,
@@ -27,6 +27,7 @@ import { clearBoard as clearBoardHelper } from '../../../utils/shuffleCodeblocks
 import store from '../../../redux/store/store';
 import LockIcon from '../../../utils/images/buttonIcons/lock.png';
 import UnlockIcon from '../../../utils/images/buttonIcons/unlock.png';
+import { createSelector } from 'reselect';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -49,6 +50,10 @@ export default function Sidebar() {
   const [finished, setFinished] = useState(false);
   const [locked, setLocked] = useState(false);
 
+  const selectLocks = createSelector([(state) => state.players], (players) =>
+    players.map((players) => players.text)
+  );
+
   /**
    * Reset current hint when a new task is started.
    */
@@ -67,6 +72,20 @@ export default function Sidebar() {
       handleHint();
     }
   }, [currentHintNo]);
+
+  /**
+   * Update when I get a new locked event from host
+   */
+  useEffect(() => {
+    let players = store.getState().players;
+    for (let p of players) {
+      if (p.id === 'YOU') {
+        alert('locked');
+        //alert(p.lock);
+        setLocked(p.lock);
+      }
+    }
+  }, [selectLocks]);
 
   /* Close the modal. Callback from SideBarModal*/
   const closeModal = () => {
@@ -175,8 +194,8 @@ export default function Sidebar() {
           } else {
             p.lock = !p.lock;
           }
-          dispatch(lockEvent({ pid: 'HOST', lock: p.lock }));
           dispatch(setPlayers(players));
+          dispatch(lockEvent({ pid: 'HOST', lock: p.lock }));
           setLocked(p.lock);
           break;
         }

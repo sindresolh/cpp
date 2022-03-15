@@ -233,7 +233,6 @@ class CommunicationHandler extends Component {
         this.lockRequest(payload, peer);
         return;
       case LOCK_EVENT:
-        alert('svar fra host');
         this.lockEvent(payload);
     }
   };
@@ -391,12 +390,11 @@ class CommunicationHandler extends Component {
     if (!this.setLock(players, payloadState.pid, payloadState.lock)) {
       // If it does not belong to another player it probably belongs to me
       if (prevState.lockRequest === payloadState.lock) {
-        alert('det var meg som sendte');
         this.setLock(players, 'YOU', payloadState.lock);
       }
     }
 
-    console.log(players);
+    alert('players set');
   }
 
   /**

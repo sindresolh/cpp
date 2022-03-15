@@ -247,7 +247,6 @@ class CommunicationListener extends Component {
       this.whisper(state.host, LOCK_REQUEST, json);
     } else if (prevProps.lockEvent !== this.props.lockEvent) {
       // I am host and I just approved a lock.
-      alert('approved by host');
       const json = JSON.stringify(state.lockEvent);
       this.shout(LOCK_EVENT, json);
     }
