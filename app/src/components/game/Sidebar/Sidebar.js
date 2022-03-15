@@ -170,7 +170,6 @@ export default function Sidebar() {
           if (!p.hasOwnProperty('lock')) {
             p.lock = true;
           }
-          alert(p.lock);
           dispatch(lockEvent({ pid: 'HOST', lock: p.lock }));
           dispatch(setPlayers(players));
           break;
