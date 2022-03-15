@@ -360,3 +360,31 @@ export const moveRequest = (moveRequest) => {
     },
   };
 };
+
+/** Player requests a board lock for themself. Store this request.
+ *
+ * @param {*} state : Date when this reducer was called last time
+ * @returns
+ */
+export const lockRequest = (state) => {
+  return {
+    type: ACTIONS.LOCK_REQUEST,
+    payload: {
+      state,
+    },
+  };
+};
+
+/** As host notify other peers that the locks are updated
+ *
+ * @param {*} state : Date when this reducer was called last time
+ * @returns
+ */
+export const lockEvent = (state) => {
+  return {
+    type: ACTIONS.LOCK_EVENT,
+    payload: {
+      state,
+    },
+  };
+};

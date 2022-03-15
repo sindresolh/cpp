@@ -11,6 +11,8 @@ import {
   START_GAME,
   FINISHED,
   MOVE_REQUEST,
+  LOCK_REQUEST,
+  LOCK_EVENT,
 } from './messages';
 import {
   startGame,
@@ -21,6 +23,8 @@ import {
   finishEvent,
   setAllocatedListsForCurrentTask,
   setHost,
+  lockEvent,
+  lockRequest,
 } from '../../../redux/actions';
 import { shuffleCodeblocks } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
 import { STATUS } from '../../../utils/constants';
@@ -46,6 +50,8 @@ const mapStateToProps = (state) => ({
   allocatedLists: state.allocatedLists,
   host: state.host,
   moveRequest: state.moveRequest,
+  lockRequest: state.lockRequest,
+  lockEvent: state.lockEvent,
 });
 
 /** Helper function to let us call dispatch from a class function
@@ -235,6 +241,15 @@ class CommunicationListener extends Component {
     } else if (prevProps.moveRequest !== this.props.moveRequest) {
       const json = JSON.stringify(state.moveRequest);
       this.whisper(state.host, MOVE_REQUEST, json);
+    } else if (prevProps.lockRequest !== this.props.lockRequest) {
+      // I am not host and need to request a lock board for myself
+      const json = JSON.stringify(state.lockRequest);
+      this.whisper(state.host, LOCK_REQUEST, json);
+    } else if (prevProps.lockEvent !== this.props.lockEvent) {
+      // I am host and I just approved a lock.
+      alert('approved by host');
+      const json = JSON.stringify(state.lockEvent);
+      this.shout(LOCK_EVENT, json);
     }
 
     //Warn users leaving page

@@ -15,6 +15,8 @@ import finishReducer from './webrtc/finishEvent';
 import allocatedListsReducer from './gameState/allocatedLists';
 import hostReducer from './gameState/host';
 import moveRequestReducer from './gameLogic/moveRequest';
+import lockRequestReducer from './gameLogic/lockRequest';
+import lockEventReducer from './webrtc/lockEvent';
 
 const allReducers = combineReducers({
   // Handles communicication to the other peers
@@ -35,5 +37,7 @@ const allReducers = combineReducers({
   allocatedLists: allocatedListsReducer,
   host: hostReducer,
   moveRequest: moveRequestReducer,
+  lockRequest: lockRequestReducer,
+  lockEvent: lockEventReducer,
 });
 export default allReducers;
