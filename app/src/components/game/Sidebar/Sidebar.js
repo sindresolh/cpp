@@ -25,6 +25,8 @@ import CrossIcon from '../../../utils/images/buttonIcons/cross.png';
 import { COLORS } from '../../../utils/constants';
 import { clearBoard as clearBoardHelper } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
 import store from '../../../redux/store/store';
+import LockIcon from '../../../utils/images/buttonIcons/lock.png';
+import UnlockIcon from '../../../utils/images/buttonIcons/unlock.png';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -45,6 +47,7 @@ export default function Sidebar() {
   const fieldBlocks = useSelector((state) => state.solutionField);
   const [currentHintNo, setCurrentHintNo] = useState(0);
   const [finished, setFinished] = useState(false);
+  const [locked, setLocked] = useState(false);
 
   /**
    * Reset current hint when a new task is started.
@@ -169,9 +172,12 @@ export default function Sidebar() {
         if (p.id === 'YOU') {
           if (!p.hasOwnProperty('lock')) {
             p.lock = true;
+          } else {
+            p.lock = !p.lock;
           }
           dispatch(lockEvent({ pid: 'HOST', lock: p.lock }));
           dispatch(setPlayers(players));
+          setLocked(p.lock);
           break;
         }
       }
@@ -342,9 +348,9 @@ export default function Sidebar() {
 
       <div className="BottomButton">
         <SidebarButton
-          title="Submit"
-          icon={SubmitIcon}
-          color={COLORS.lightgreen}
+          title={locked ? 'Unlock' : 'Lock in'}
+          icon={locked ? UnlockIcon : LockIcon}
+          color={locked ? COLORS.lightred : COLORS.lightgreen}
           handleClick={() => handleLock()}
         />
       </div>
