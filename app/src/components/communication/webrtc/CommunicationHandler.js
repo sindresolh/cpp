@@ -14,6 +14,13 @@ import {
   finishGame,
   setTaskNumber,
   setAllocatedListsForCurrentTask,
+  setHost,
+  removeHost,
+  listEvent,
+  fieldEvent,
+  removeBlockFromField,
+  removeBlockFromList,
+  setList,
 } from '../../../redux/actions';
 import {
   SET_LIST,
@@ -22,6 +29,7 @@ import {
   CLEAR_TASK,
   START_GAME,
   FINISHED,
+  MOVE_REQUEST,
 } from './messages';
 import {
   twoDimensionalArrayIsEqual,
@@ -34,6 +42,7 @@ import SubmitIcon from '../../../utils/images/buttonIcons/submit.png';
 import CheckIcon from '../../../utils/images/buttonIcons/check.png';
 import { COLORS } from '../../../utils/constants';
 import configData from '../../../config.json';
+import update from 'immutability-helper';
 
 const mapStateToProps = (state) => ({
   players: state.players,
@@ -46,6 +55,7 @@ const mapStateToProps = (state) => ({
 function mapDispatchToProps(dispatch) {
   return {
     dispatch_setListState: (...args) => dispatch(setListState(...args)),
+    dispatch_setList: (...args) => dispatch(setList(...args)),
     dispatch_setFieldState: (...args) => dispatch(setFieldState(...args)),
     dispatch_nextTask: (...args) => dispatch(nextTask(...args)),
     dispatch_setPlayers: (...args) => dispatch(setPlayers(...args)),
@@ -56,6 +66,14 @@ function mapDispatchToProps(dispatch) {
     dispatch_setTaskNumber: (...args) => dispatch(setTaskNumber(...args)),
     dispatch_setAllocatedListsForCurrentTask: (...args) =>
       dispatch(setAllocatedListsForCurrentTask(...args)),
+    dispatch_setHost: (...args) => dispatch(setHost(...args)),
+    dispatch_removeHost: (...args) => dispatch(removeHost(...args)),
+    dispatch_listEvent: (...args) => dispatch(listEvent(...args)),
+    dispatch_fieldEvent: (...args) => dispatch(fieldEvent(...args)),
+    dispatch_removeBlockFromField: (...args) =>
+      dispatch(removeBlockFromField(...args)),
+    dispatch_removeBlockFromList: (...args) =>
+      dispatch(removeBlockFromList(...args)),
   };
 }
 
@@ -122,6 +140,7 @@ class CommunicationHandler extends Component {
 
   /**
    * Called when a new peer leaves the room
+   * If the host left the room set a new host.
    *
    * @param {*} webrtc : Keeps information about the room
    * @param {*} peer : Keeps information about the peer that sent this message
@@ -132,6 +151,20 @@ class CommunicationHandler extends Component {
     if (!this.isProduction) {
       console.log(`Peer-${peer.id.substring(0, 5)} disconnected.`);
     }
+    if (peer.id === store.getState().host) this.setNewHost();
+  };
+
+  /**
+   * Set a new host if the previous host disconnected.
+   * If this peer is set as new host: set host as ''.
+   */
+  setNewHost = () => {
+    const { dispatch_setHost } = this.props;
+    const players = store.getState().players;
+    const newHost = players[0];
+
+    if (newHost.id === 'YOU') dispatch_setHost('');
+    else dispatch_setHost(newHost.id);
   };
 
   /** Called when a new peer successfully joins the room
@@ -188,6 +221,9 @@ class CommunicationHandler extends Component {
       case FINISHED:
         this.finished();
         break;
+      case MOVE_REQUEST:
+        this.moveRequest(payload, peer);
+        break;
       default:
         return;
     }
@@ -208,6 +244,7 @@ class CommunicationHandler extends Component {
       dispatch_setListState(payloadState.handList);
       dispatch_setAllocatedListsForCurrentTask(payloadState.allocatedLists);
     }
+    console.log('host has sent LISTS');
   }
 
   /**
@@ -223,6 +260,7 @@ class CommunicationHandler extends Component {
     if (!arrayIsEqual(prevState, payloadState)) {
       dispatch_setFieldState(payloadState);
     }
+    console.log('host has sent FIELD');
   }
 
   /**
@@ -263,10 +301,202 @@ class CommunicationHandler extends Component {
     }
   }
   /**
-   * Another peer submitted the final task. The game is thus finished.
+   * Another peer submitted the final task. The game is thus finished. Remove host.
    */
   finished() {
+    const { dispatch_removeHost } = this.props;
     this.setState({ finished: true, isModalOpen: true });
+    dispatch_removeHost();
+  }
+
+  /**
+   * Another peer has requested a move that has to be validated.
+   * If okay, perform the move for all players by broadcasting.
+   * @param {*} payload
+   * @param {*} peer
+   */
+  moveRequest(payload, peer) {
+    console.log('someone requested a move');
+    const moveRequest = JSON.parse(payload);
+    const { dispatch_fieldEvent, dispatch_listEvent } = this.props;
+    if (this.moveIsAccepted(moveRequest)) {
+      this.moveBlock(moveRequest);
+
+      if (moveRequest.field === 'SF')
+        // broadcast what field is being updated (lists or solution field)
+        dispatch_fieldEvent();
+      else dispatch_listEvent();
+    }
+  }
+
+  /**
+   * Perform the move locally as host.
+   * @param {object} moveRequest {id, index, indent, field}
+   */
+  moveBlock(moveRequest) {
+    let blocks;
+    const player = parseInt(moveRequest.field);
+    const handListIndex = player - 1;
+    const isAMoveInSolutionField = moveRequest.field === 'SF';
+
+    // get blocks from solution field or handlist depending on where the move is performed
+    blocks = isAMoveInSolutionField
+      ? store.getState().solutionField
+      : store.getState().handList[handListIndex];
+
+    const block = this.findBlock(moveRequest.id, blocks);
+
+    // swaps block position in handlist/solution field OR move it from list/field to the other
+    if (block === undefined) {
+      if (isAMoveInSolutionField)
+        this.moveBlockFromList(moveRequest.id, moveRequest.index);
+      else this.moveBlockFromField(moveRequest.id, moveRequest.index, player);
+    } else {
+      if (isAMoveInSolutionField)
+        this.swapBlockPositionInField(
+          block,
+          moveRequest.index,
+          moveRequest.indent
+        );
+      else this.swapBlockPositionInList(block, moveRequest.index, player);
+    }
+  }
+
+  /**
+   * Tried to find the block in an array.
+   * @param {Integer} id
+   * @param {Array} blocks
+   * @returns block object if found; undefined if not
+   */
+  findBlock(id, blocks) {
+    const block = blocks.filter((block) => block.id === id)[0];
+    if (block === undefined) return undefined; // block came from solution field
+
+    return {
+      block,
+      index: blocks.indexOf(block),
+    };
+  }
+
+  /**
+   * Moves a block from hand list to the solution field
+   * @param {Integer} id
+   * @param {Integer} atIndex
+   */
+  moveBlockFromList = (id, atIndex) => {
+    const blocks = store.getState().solutionField;
+    const handLists = store.getState().handList;
+    let blockIsNotFound = true;
+    let handListIndex = 0;
+    let movedBlock;
+    const AMOUNT_OF_PLAYERS = 4;
+    const {
+      dispatch_removeBlockFromList,
+      dispatch_listEvent,
+      dispatch_setFieldState,
+    } = this.props;
+
+    // find block and update the correct hand list
+    while (blockIsNotFound && handListIndex < AMOUNT_OF_PLAYERS) {
+      for (let block = 0; block < handLists[handListIndex].length; block++) {
+        if (handLists[handListIndex][block].id === id) {
+          // block is found, stop looking
+          blockIsNotFound = false;
+          movedBlock = handLists[handListIndex][block];
+          dispatch_removeBlockFromList(id, handListIndex);
+          dispatch_listEvent();
+          const updatedBlocks = [
+            ...blocks.slice(0, atIndex),
+            movedBlock,
+            ...blocks.slice(atIndex),
+          ];
+          dispatch_setFieldState(updatedBlocks);
+        }
+      }
+      handListIndex++;
+    }
+  };
+
+  /**
+   * Swap block positions in the solution field.
+   * @param {} blockObj
+   * @param {*} atIndex
+   * @param {*} atIndent
+   */
+  swapBlockPositionInField = (blockObj, atIndex, atIndent) => {
+    const { dispatch_setFieldState } = this.props;
+    const blocks = store.getState().solutionField;
+    let block = blockObj.block;
+    block.indent = atIndent;
+    const updatedBlocks = update(blocks, {
+      $splice: [
+        [blockObj.index, 1],
+        [atIndex, 0, block],
+      ],
+    });
+
+    dispatch_setFieldState(updatedBlocks);
+  };
+
+  /**
+   * Move a block from the field into a hand list.
+   * @param {*} id
+   * @param {*} atIndex
+   * @param {*} player
+   */
+  moveBlockFromField = (id, atIndex, player) => {
+    let fieldBlocks = store.getState().solutionField;
+    let movedBlock = fieldBlocks.filter((block) => block.id === id)[0];
+    const blocks = store.getState().handList[player - 1];
+    const {
+      dispatch_setList,
+      dispatch_removeBlockFromField,
+      dispatch_fieldEvent,
+    } = this.props;
+
+    // players cannot move their own blocks to another player's hand
+    // a player can only move their own block to their own hand from solution field
+    if (movedBlock !== undefined && movedBlock.player === player) {
+      const updatedBlock = { ...movedBlock, indent: 0 }; // set indent to 0
+      const updatedBlocks = [
+        ...blocks.slice(0, atIndex),
+        updatedBlock,
+        ...blocks.slice(atIndex),
+      ];
+
+      dispatch_setList(updatedBlocks, player - 1);
+      dispatch_removeBlockFromField(id);
+      dispatch_fieldEvent();
+    }
+  };
+
+  /**
+   * Swap block positions in a hand list.
+   * @param {*} blockObj
+   * @param {*} atIndex
+   * @param {*} player
+   */
+  swapBlockPositionInList = (blockObj, atIndex, player) => {
+    const { dispatch_setList } = this.props;
+    const blocks = store.getState().handList[player - 1];
+    const updatedBlock = { ...blockObj.block, indent: 0 }; // set indent to 0
+    const updatedBlocks = update(blocks, {
+      $splice: [
+        [blockObj.index, 1],
+        [atIndex, 0, updatedBlock],
+      ],
+    });
+
+    dispatch_setList(updatedBlocks, player - 1);
+  };
+
+  /**
+   * Checks if a move should be accepted.
+   * @param {object} move id, index, indent and field
+   * @returns whether the move should be accepted.
+   */
+  moveIsAccepted(move) {
+    return true; // TODO: always accepts for now
   }
 
   /**
@@ -312,6 +542,8 @@ class CommunicationHandler extends Component {
    */
   assignPlayerOrder(players, playerIds, peer) {
     let newPlayers = [];
+    const { dispatch_setHost } = this.props;
+    dispatch_setHost(peer.id); // set the host for this game
 
     while (playerIds.length > 0) {
       let pid = playerIds.shift(); // Takes out first id

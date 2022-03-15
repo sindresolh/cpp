@@ -81,7 +81,9 @@ export const linebasedfeedback = (field, correct, otherSolutions = null) => {
  * @returns true if all keys in an object are equal
  */
 export const objectIsEqual = (object1, object2) => {
-  if (isNull(object1, object2)) return false;
+  if (isNull(object1, object2)) {
+    return false;
+  }
   if (typeof object1 !== 'object') {
     // not an object, check the values
     return object1 === object2;

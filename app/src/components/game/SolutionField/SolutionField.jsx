@@ -9,6 +9,7 @@ import {
   listEvent,
   removeBlockFromField,
   addBlockToList,
+  moveRequest,
 } from '../../../redux/actions';
 import update from 'immutability-helper';
 import { useDrop } from 'react-dnd';
@@ -16,6 +17,32 @@ import { ItemTypes } from '../../../utils/itemtypes';
 import './SolutionField.css';
 import store from '../../../redux/store/store';
 import { COLORS, MAX_INDENT, KEYBOARD_EVENT } from '../../../utils/constants';
+import { objectIsEqual } from '../../../utils/compareArrays/compareArrays';
+
+/**
+ * Check if a move is already been requested to the host.
+ * This prevents sending the same request repeatedly while hovering.
+ * @param {object} move
+ * @param {object} lastMoveRequest
+ * @returns true if the move has been requested
+ */
+const alreadyRequested = (move, lastMoveRequest) => {
+  if (
+    move.id !== lastMoveRequest.id ||
+    move.index !== lastMoveRequest.index ||
+    move.indent !== lastMoveRequest.indent ||
+    move.field !== lastMoveRequest.field
+  )
+    return false;
+  return true;
+};
+
+/**
+ * @returns true if this player is the host.
+ */
+const iAmHost = () => {
+  return store.getState().host === '';
+};
 
 /**
  * The field the players can move blocks into.
@@ -55,18 +82,40 @@ function SolutionField({}) {
         setSelectedCodeline(null); // reset selected codeblocks
       }
       // get block if it exists in solutionfield
-      const block = findBlock(id);
-      if (block === undefined) {
-        // block does not exist in field, get from hand
-        moveBlockFromList(id, atIndex);
+      if (iAmHost()) {
+        // perform move locally before dispatching field event
+        const block = findBlock(id);
+        if (block === undefined) {
+          // block does not exist in field, get from hand
+          moveBlockFromList(id, atIndex);
+        } else {
+          // block came from the field, swap position
+          swapBlockPositionInField(block, atIndex, atIndent);
+        }
+        dispatch(fieldEvent()); // Move the block for the other players
       } else {
-        // block came from the field, swap position
-        swapBlockPositionInField(block, atIndex, atIndent);
+        requestMove(id, atIndex, atIndent, 'SF');
       }
-      dispatch(fieldEvent()); // Move the block for the other players
     },
     [findBlock, blocks]
   );
+
+  /**
+   * Request a move to the host.
+   * @param {*} id
+   * @param {*} index
+   * @param {*} indent
+   */
+  const requestMove = (id, index, indent, field) => {
+    const move = {
+      id,
+      index,
+      indent,
+      field,
+    };
+    const lastMoveRequest = store.getState().moveRequest;
+    if (!alreadyRequested(move, lastMoveRequest)) dispatch(moveRequest(move));
+  };
 
   /**
    * Handle keyboard input for the selected codeblock.
@@ -210,18 +259,25 @@ function SolutionField({}) {
    */
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
     setSelectedCodeline(movedBlock);
-
     if (movedBlock != null && draggable) {
       // the user selected this codeblock
       movedBlock.index = index;
-      // (e.detauil > 1) if clicked more than once
-      if (e.detail > 1) {
+    }
+    // (e.detauil > 1) if clicked more than once
+    if (e.detail > 1) {
+      if (iAmHost()) {
         movedBlock.indent = 0;
         dispatch(removeBlockFromField(movedBlock.id));
         dispatch(addBlockToList(movedBlock));
         fieldEventPromise().then(() => dispatch(listEvent()));
-        e.detail = 0; // resets detail so that other codeblocks can be clicked
+      } else {
+        const blockOwner = movedBlock.player;
+        const listIndex = blockOwner - 1;
+        const atIndex = store.getState().handList[listIndex].length;
+        requestMove(movedBlock.id, atIndex, 0, blockOwner);
       }
+
+      e.detail = 0; // resets detail so that other codeblocks can be clicked
     }
   };
 

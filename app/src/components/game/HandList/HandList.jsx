@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import './HandList.css';
 import { useSelector, useDispatch } from 'react-redux';
@@ -7,15 +7,40 @@ import {
   removeBlockFromField,
   listEvent,
   fieldEvent,
+  moveRequest,
   removeBlockFromList,
   addBlockToField,
-  setFieldState,
 } from '../../../redux/actions';
 import update from 'immutability-helper';
 import { ItemTypes } from '../../../utils/itemtypes';
 import { useDrop } from 'react-dnd';
 import store from '../../../redux/store/store';
 import CodeLine from '../CodeLine/CodeLine';
+
+/**
+ * Check if a move is already been requested to the host.
+ * This prevents sending the same request repeatedly while hovering.
+ * @param {object} move
+ * @param {object} lastMoveRequest
+ * @returns true if the move has been requested
+ */
+const alreadyRequested = (move, lastMoveRequest) => {
+  if (
+    move.id !== lastMoveRequest.id ||
+    move.index !== lastMoveRequest.index ||
+    move.indent !== lastMoveRequest.indent ||
+    move.field !== lastMoveRequest.field
+  )
+    return false;
+  return true;
+};
+
+/**
+ * @returns true if this player is the host.
+ */
+const iAmHost = () => {
+  return store.getState().host === '';
+};
 
 /**
  * This component represents a list of code blocks. Each player will have a list.
@@ -49,19 +74,40 @@ function HandList({ player, draggable }) {
   // update the position of the block when moved inside a list
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0) => {
-      const blockObj = findBlock(id);
-
-      // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
-      if (blockObj !== undefined) {
-        swapBlockPositionInList(blockObj, atIndex);
+      if (iAmHost()) {
+        // perform moves locally before dispatching list event
+        const blockObj = findBlock(id);
+        // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
+        if (blockObj !== undefined) {
+          swapBlockPositionInList(blockObj, atIndex);
+        }
+        // move block from solution field to hand list
+        else moveBlockFromField(id, atIndex);
+        dispatch(listEvent()); // Move the block for the other players
+      } else {
+        // request a move to the host
+        requestMove(id, atIndex, atIndent, player.toString());
       }
-      // move block from solution field to hand list
-      else moveBlockFromField(id, atIndex);
-
-      dispatch(listEvent()); // Move the block for the other players
     },
     [findBlock, blocks]
   );
+
+  /**
+   * Request a move to the host.
+   * @param {*} id
+   * @param {*} index
+   * @param {*} indent
+   */
+  const requestMove = (id, index, indent, field) => {
+    const move = {
+      id,
+      index,
+      indent,
+      field,
+    };
+    const lastMoveRequest = store.getState().moveRequest;
+    if (!alreadyRequested(move, lastMoveRequest)) dispatch(moveRequest(move));
+  };
 
   /**
    * Swap the position of the dragged block.
@@ -137,9 +183,19 @@ function HandList({ player, draggable }) {
   const handleDoubbleClick = (e, movedBlock, draggable) => {
     if (e.detail > 1 && draggable && movedBlock != null) {
       // (e.detauil > 1) if clicked more than once
-      dispatch(removeBlockFromList(movedBlock.id, movedBlock.player - 1));
-      dispatch(addBlockToField(movedBlock));
-      fieldEventPromise().then(() => dispatch(listEvent()));
+      if (iAmHost()) {
+        dispatch(removeBlockFromList(movedBlock.id, movedBlock.player - 1));
+        dispatch(addBlockToField(movedBlock));
+        fieldEventPromise().then(() => dispatch(listEvent()));
+      } else {
+        requestMove(
+          movedBlock.id,
+          store.getState().solutionField.length + 1,
+          0,
+          'SF'
+        );
+      }
+
       e.detail = 0; // resets detail so that other codeblocks can be clicked
     }
   };

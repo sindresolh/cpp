@@ -10,6 +10,7 @@ import {
   CLEAR_TASK,
   START_GAME,
   FINISHED,
+  MOVE_REQUEST,
 } from './messages';
 import {
   startGame,
@@ -19,6 +20,7 @@ import {
   fieldEvent,
   finishEvent,
   setAllocatedListsForCurrentTask,
+  setHost,
 } from '../../../redux/actions';
 import { shuffleCodeblocks } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
 import { STATUS } from '../../../utils/constants';
@@ -42,6 +44,8 @@ const mapStateToProps = (state) => ({
   players: state.players,
   finishEvent: state.finishEvent,
   allocatedLists: state.allocatedLists,
+  host: state.host,
+  moveRequest: state.moveRequest,
 });
 
 /** Helper function to let us call dispatch from a class function
@@ -59,6 +63,7 @@ function mapDispatchToProps(dispatch) {
     dispatch_finishEvent: (...args) => dispatch(finishEvent(...args)),
     dispatch_setAllocatedListsForCurrentTask: (...args) =>
       dispatch(setAllocatedListsForCurrentTask(...args)),
+    dispatch_setHost: (...args) => dispatch(setHost(...args)),
   };
 }
 
@@ -75,7 +80,7 @@ class CommunicationListener extends Component {
   }
 
   isProduction = JSON.parse(configData.PRODUCTION);
-  EVENT_DELAY = 150;
+  EVENT_DELAY = 0;
 
   /**
    * Distribute cards to all players, including yourself
@@ -142,6 +147,21 @@ class CommunicationListener extends Component {
   }
 
   /**
+   * Notify a peer with whisper and the signaling server with transmit
+   * @param {*} peerId
+   * @param {*} type
+   * @param {*} payload
+   */
+  whisper(peerId, type, payload) {
+    const peer = this.props.webrtc.getPeerById(peerId);
+    if (this.isProduction) {
+      this.props.webrtc.transmit(peer, type, payload);
+    } else {
+      this.props.webrtc.whisper(peer, type, payload);
+    }
+  }
+
+  /**
    * Notifies other peers when this player changes the state
    *
    * @param {*} prevProps : Checks that the new value is different
@@ -150,6 +170,7 @@ class CommunicationListener extends Component {
     const state = store.getState();
 
     if (prevProps.listEvent.getTime() < this.props.listEvent.getTime()) {
+      console.log('update all players about LIST event');
       // This peer moved codeblock in an handlist
       const json = JSON.stringify({
         handList: state.handList,
@@ -165,6 +186,7 @@ class CommunicationListener extends Component {
     } else if (
       prevProps.fieldEvent.getTime() < this.props.fieldEvent.getTime()
     ) {
+      console.log('update all players about FIELD event');
       // This peer moved codeblock in soloutionfield
       const json = JSON.stringify(state.solutionField);
       this.setState({ fieldMessage: json });
@@ -210,6 +232,9 @@ class CommunicationListener extends Component {
       }
     } else if (prevProps.finishEvent !== this.props.finishEvent) {
       this.shout(FINISHED, '');
+    } else if (prevProps.moveRequest !== this.props.moveRequest) {
+      const json = JSON.stringify(state.moveRequest);
+      this.whisper(state.host, MOVE_REQUEST, json);
     }
 
     //Warn users leaving page
