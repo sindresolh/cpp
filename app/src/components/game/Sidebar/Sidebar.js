@@ -51,7 +51,7 @@ export default function Sidebar() {
   const [locked, setLocked] = useState(false);
 
   const selectLocks = createSelector([(state) => state.players], (players) =>
-    players.map((players) => players.text)
+    players.map((players) => players.lock)
   );
 
   /**
@@ -80,8 +80,7 @@ export default function Sidebar() {
     let players = store.getState().players;
     for (let p of players) {
       if (p.id === 'YOU') {
-        alert('locked');
-        //alert(p.lock);
+        alert(p.lock);
         setLocked(p.lock);
       }
     }

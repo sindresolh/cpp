@@ -393,8 +393,6 @@ class CommunicationHandler extends Component {
         this.setLock(players, 'YOU', payloadState.lock);
       }
     }
-
-    alert('players set');
   }
 
   /**
