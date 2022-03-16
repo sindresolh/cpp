@@ -253,11 +253,12 @@ class CommunicationListener extends Component {
       const json = JSON.stringify(state.lockRequest);
       this.whisper(state.host, LOCK_REQUEST, json);
     } else if (prevProps.lockEvent !== this.props.lockEvent) {
-      // I am host and I just approved a lock.
       if (this.iAmHost()) {
+        // I am host and I just approved a lock.
         const json = JSON.stringify(state.lockEvent);
         this.shout(LOCK_EVENT, json);
       }
+      // If I am not host and got this message: Sidebar.js is updated with the players that are ready
     }
 
     //Warn users leaving page

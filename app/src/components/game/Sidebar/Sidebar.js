@@ -49,9 +49,9 @@ export default function Sidebar() {
   const [currentHintNo, setCurrentHintNo] = useState(0);
   const [finished, setFinished] = useState(false);
   const [locked, setLocked] = useState(false);
-
+  const [numberOfLocks, setNumberOfLocks] = useState(0); // Keeps track of the number of ready players
   const numberOfPlayers = useSelector((state) => state.players.length);
-  const newLockEvent = useSelector((state) => state.lockEvent);
+  const newLockEvent = useSelector((state) => state.lockEvent); // Keeps track of new lock events
 
   /**
    * Reset current hint when a new task is started.
@@ -80,10 +80,10 @@ export default function Sidebar() {
       let players = store.getState().players;
       console.log(players);
       for (let p of players) {
+        if (!p.hasOwnProperty('lock')) {
+          p.lock = false;
+        }
         if (p.id === 'YOU') {
-          if (!p.hasOwnProperty('lock')) {
-            p.lock = false;
-          }
           setLocked(p.lock);
           console.log('lock : ' + p.lock);
         }
@@ -369,7 +369,7 @@ export default function Sidebar() {
         />
       </div>
 
-      <p>{'TODO' + ' / ' + numberOfPlayers}</p>
+      <p>{numberOfLocks + ' / ' + numberOfPlayers}</p>
 
       <div className='BottomButton'>
         <SidebarButton
