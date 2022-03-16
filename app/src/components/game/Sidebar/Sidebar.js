@@ -251,7 +251,7 @@ export default function Sidebar() {
     const lastTask = currentTaskNumber === currentTask.tasks.length - 1;
 
     if (correctSolution && lastTask) {
-      if (iAmHost) {
+      if (iAmHost()) {
         dispatch(finishEvent()); // notify other players this peer submitted the final task
       }
 
@@ -266,7 +266,7 @@ export default function Sidebar() {
       );
       setFinished(true);
     } else if (correctSolution) {
-      if (iAmHost) {
+      if (iAmHost()) {
         dispatch(nextTask());
         dispatch(taskEvent());
       }

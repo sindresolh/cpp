@@ -296,7 +296,7 @@ class CommunicationHandler extends Component {
       this.setState({
         modalTitle: 'New task',
         modalDescription:
-          'Your solution was correct! Another player initiated a new task.',
+          'Your solution was correct! The game will soon present the next task.',
         isModalOpen: true,
         modalBorderColor: COLORS.darkgreen,
         modalButtonColor: COLORS.lightgreen,
@@ -699,7 +699,7 @@ class CommunicationHandler extends Component {
             icon={CheckIcon}
             title={'Task set finished'}
             description={
-              'Congratulations! Another player submitted the last task.'
+              'Congratulations! Your team has ompleted the task set.'
             }
             buttonText={'Finish'}
             buttonColor={COLORS.lightgreen}
