@@ -80,35 +80,6 @@ export const moveBlockInSolutionField = (
   dispatch_fieldEvent(); // Move the block for the other players
 };
 
-// export const moveBlockInHandler = (id, index, indent, blocksSF, blocksHL) => {
-//   let blocks;
-//   const player = parseInt(moveRequest.field);
-//   const handListIndex = player - 1;
-//   const isAMoveInSolutionField = moveRequest.field === 'SF';
-
-//   // get blocks from solution field or handlist depending on where the move is performed
-//   blocks = isAMoveInSolutionField
-//     ? store.getState().solutionField
-//     : store.getState().handList[handListIndex];
-
-//   const block = this.findBlock(moveRequest.id, blocks);
-
-//   // swaps block position in handlist/solution field OR move it from list/field to the other
-//   if (block === undefined) {
-//     if (isAMoveInSolutionField)
-//       this.moveBlockFromList(moveRequest.id, moveRequest.index);
-//     else this.moveBlockFromField(moveRequest.id, moveRequest.index, player);
-//   } else {
-//     if (isAMoveInSolutionField)
-//       this.swapBlockPositionInField(
-//         block,
-//         moveRequest.index,
-//         moveRequest.indent
-//       );
-//     else this.swapBlockPositionInList(block, moveRequest.index, player);
-//   }
-// };
-
 /**
  * Request a move to the host if it has not already been requested.
  * @param {Object} request

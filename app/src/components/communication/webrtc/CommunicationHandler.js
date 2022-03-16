@@ -36,6 +36,10 @@ import {
   arrayIsEqual,
 } from '../../../utils/compareArrays/compareArrays';
 import { clearBoard } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
+import {
+  moveBlockInHandList,
+  moveBlockInSolutionField,
+} from '../../../utils/moveBlock/moveBlock';
 import PuzzleGif from '../PuzzleGif';
 import SidebarModal from '../../Game/Sidebar/SidebarModal/SidebarModal';
 import SubmitIcon from '../../../utils/images/buttonIcons/submit.png';
@@ -315,177 +319,42 @@ class CommunicationHandler extends Component {
    */
   moveRequest(payload, peer) {
     const moveRequest = JSON.parse(payload);
-    const { dispatch_fieldEvent, dispatch_listEvent } = this.props;
-    if (this.moveIsAccepted(moveRequest)) {
-      this.moveBlock(moveRequest);
-
-      if (moveRequest.field === 'SF')
-        // broadcast what field is being updated (lists or solution field)
-        dispatch_fieldEvent();
-      else dispatch_listEvent();
-    }
-  }
-
-  /**
-   * Perform the move locally as host.
-   * @param {object} moveRequest {id, index, indent, field}
-   */
-  moveBlock(moveRequest) {
-    let blocks;
-    const player = parseInt(moveRequest.field);
-    const handListIndex = player - 1;
-    const isAMoveInSolutionField = moveRequest.field === 'SF';
-
-    // get blocks from solution field or handlist depending on where the move is performed
-    blocks = isAMoveInSolutionField
-      ? store.getState().solutionField
-      : store.getState().handList[handListIndex];
-
-    const block = this.findBlock(moveRequest.id, blocks);
-
-    // swaps block position in handlist/solution field OR move it from list/field to the other
-    if (block === undefined) {
-      if (isAMoveInSolutionField)
-        this.moveBlockFromList(moveRequest.id, moveRequest.index);
-      else this.moveBlockFromField(moveRequest.id, moveRequest.index, player);
-    } else {
-      if (isAMoveInSolutionField)
-        this.swapBlockPositionInField(
-          block,
-          moveRequest.index,
-          moveRequest.indent
-        );
-      else this.swapBlockPositionInList(block, moveRequest.index, player);
-    }
-  }
-
-  /**
-   * Tried to find the block in an array.
-   * @param {Integer} id
-   * @param {Array} blocks
-   * @returns block object if found; undefined if not
-   */
-  findBlock(id, blocks) {
-    const block = blocks.filter((block) => block.id === id)[0];
-    if (block === undefined) return undefined; // block came from solution field
-
-    return {
-      block,
-      index: blocks.indexOf(block),
+    const dispatches = {
+      dispatch_fieldEvent: this.props.dispatch_fieldEvent,
+      dispatch_listEvent: this.props.dispatch_listEvent,
+      dispatch_removeBlockFromField: this.props.dispatch_removeBlockFromField,
+      dispatch_setFieldState: this.props.dispatch_setFieldState,
+      dispatch_removeBlockFromList: this.props.dispatch_removeBlockFromList,
+      dispatch_setList: this.props.dispatch_setList,
     };
-  }
 
-  /**
-   * Moves a block from hand list to the solution field
-   * @param {Integer} id
-   * @param {Integer} atIndex
-   */
-  moveBlockFromList = (id, atIndex) => {
-    const blocks = store.getState().solutionField;
-    const handLists = store.getState().handList;
-    let blockIsNotFound = true;
-    let handListIndex = 0;
-    let movedBlock;
-    const AMOUNT_OF_PLAYERS = 4;
-    const {
-      dispatch_removeBlockFromList,
-      dispatch_listEvent,
-      dispatch_setFieldState,
-    } = this.props;
+    if (this.moveIsAccepted(moveRequest)) {
+      const { id, index, indent, field } = moveRequest;
+      const player = parseInt(field);
+      const handListIndex = player - 1;
+      const isAMoveInSolutionField = field === 'SF';
 
-    // find block and update the correct hand list
-    while (blockIsNotFound && handListIndex < AMOUNT_OF_PLAYERS) {
-      for (let block = 0; block < handLists[handListIndex].length; block++) {
-        if (handLists[handListIndex][block].id === id) {
-          // block is found, stop looking
-          blockIsNotFound = false;
-          movedBlock = handLists[handListIndex][block];
-          dispatch_removeBlockFromList(id, handListIndex);
-          dispatch_listEvent();
-          const updatedBlocks = [
-            ...blocks.slice(0, atIndex),
-            movedBlock,
-            ...blocks.slice(atIndex),
-          ];
-          dispatch_setFieldState(updatedBlocks);
-        }
+      if (isAMoveInSolutionField) {
+        moveBlockInSolutionField(
+          id,
+          index,
+          indent,
+          store.getState().solutionField,
+          store.getState().handList,
+          dispatches
+        );
+      } else {
+        moveBlockInHandList(
+          id,
+          index,
+          store.getState().solutionField,
+          store.getState().handList[handListIndex],
+          handListIndex,
+          dispatches
+        );
       }
-      handListIndex++;
     }
-  };
-
-  /**
-   * Swap block positions in the solution field.
-   * @param {} blockObj
-   * @param {*} atIndex
-   * @param {*} atIndent
-   */
-  swapBlockPositionInField = (blockObj, atIndex, atIndent) => {
-    const { dispatch_setFieldState } = this.props;
-    const blocks = store.getState().solutionField;
-    let block = blockObj.block;
-    block.indent = atIndent;
-    const updatedBlocks = update(blocks, {
-      $splice: [
-        [blockObj.index, 1],
-        [atIndex, 0, block],
-      ],
-    });
-
-    dispatch_setFieldState(updatedBlocks);
-  };
-
-  /**
-   * Move a block from the field into a hand list.
-   * @param {*} id
-   * @param {*} atIndex
-   * @param {*} player
-   */
-  moveBlockFromField = (id, atIndex, player) => {
-    let fieldBlocks = store.getState().solutionField;
-    let movedBlock = fieldBlocks.filter((block) => block.id === id)[0];
-    const blocks = store.getState().handList[player - 1];
-    const {
-      dispatch_setList,
-      dispatch_removeBlockFromField,
-      dispatch_fieldEvent,
-    } = this.props;
-
-    // players cannot move their own blocks to another player's hand
-    // a player can only move their own block to their own hand from solution field
-    if (movedBlock !== undefined && movedBlock.player === player) {
-      const updatedBlock = { ...movedBlock, indent: 0 }; // set indent to 0
-      const updatedBlocks = [
-        ...blocks.slice(0, atIndex),
-        updatedBlock,
-        ...blocks.slice(atIndex),
-      ];
-
-      dispatch_setList(updatedBlocks, player - 1);
-      dispatch_removeBlockFromField(id);
-      dispatch_fieldEvent();
-    }
-  };
-
-  /**
-   * Swap block positions in a hand list.
-   * @param {*} blockObj
-   * @param {*} atIndex
-   * @param {*} player
-   */
-  swapBlockPositionInList = (blockObj, atIndex, player) => {
-    const { dispatch_setList } = this.props;
-    const blocks = store.getState().handList[player - 1];
-    const updatedBlock = { ...blockObj.block, indent: 0 }; // set indent to 0
-    const updatedBlocks = update(blocks, {
-      $splice: [
-        [blockObj.index, 1],
-        [atIndex, 0, updatedBlock],
-      ],
-    });
-
-    dispatch_setList(updatedBlocks, player - 1);
-  };
+  }
 
   /**
    * Checks if a move should be accepted.
