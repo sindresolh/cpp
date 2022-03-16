@@ -78,10 +78,9 @@ export default function Sidebar() {
   }, [currentHintNo]);
 
   /**
-   * Update when I get a new locked event from host
+   * Another player has changed their ready status
    */
   useEffect(() => {
-    // I am NOT HOST and need to update my state
     let players = store.getState().players;
     let playerNumber = 0;
     for (let p of players) {
@@ -97,9 +96,12 @@ export default function Sidebar() {
     }
     console.log(lockedInPlayers);
 
-    setNumberOfLockedInPlayers(
-      lockedInPlayers.filter((lock) => lock === true).length
-    );
+    let readyCount = lockedInPlayers.filter((lock) => lock === true).length;
+    setNumberOfLockedInPlayers(readyCount);
+
+    if (readyCount === numberOfPlayers) {
+      handleSubmit();
+    }
   }, [newLockEvent]);
 
   /* Close the modal. Callback from SideBarModal*/
@@ -225,22 +227,6 @@ export default function Sidebar() {
   };
 
   /**
-   * Confirm modal to be displayed before the feedbackmodal
-   */
-  const confirmSubmit = () => {
-    openModal(
-      SubmitIcon,
-      'Submit',
-      'Are you sure you want to submit for the entire group?',
-      'Cancel',
-      COLORS.lightred,
-      COLORS.darkgreen,
-      'none',
-      'inline-block'
-    );
-  };
-
-  /**
    * Make all players go to the next task of the submit is correct
    */
   const handleSubmit = () => {
@@ -265,7 +251,10 @@ export default function Sidebar() {
     const lastTask = currentTaskNumber === currentTask.tasks.length - 1;
 
     if (correctSolution && lastTask) {
-      dispatch(finishEvent()); // notify other players this peer submitted the final task
+      if (iAmHost) {
+        dispatch(finishEvent()); // notify other players this peer submitted the final task
+      }
+
       openModal(
         CheckIcon,
         'Task set finished',
@@ -277,8 +266,11 @@ export default function Sidebar() {
       );
       setFinished(true);
     } else if (correctSolution) {
-      dispatch(nextTask());
-      dispatch(taskEvent());
+      if (iAmHost) {
+        dispatch(nextTask());
+        dispatch(taskEvent());
+      }
+
       openModal(
         CheckIcon,
         'Correct',
