@@ -244,7 +244,6 @@ class CommunicationHandler extends Component {
       dispatch_setListState(payloadState.handList);
       dispatch_setAllocatedListsForCurrentTask(payloadState.allocatedLists);
     }
-    console.log('host has sent LISTS');
   }
 
   /**
@@ -260,7 +259,6 @@ class CommunicationHandler extends Component {
     if (!arrayIsEqual(prevState, payloadState)) {
       dispatch_setFieldState(payloadState);
     }
-    console.log('host has sent FIELD');
   }
 
   /**
@@ -316,7 +314,6 @@ class CommunicationHandler extends Component {
    * @param {*} peer
    */
   moveRequest(payload, peer) {
-    console.log('someone requested a move');
     const moveRequest = JSON.parse(payload);
     const { dispatch_fieldEvent, dispatch_listEvent } = this.props;
     if (this.moveIsAccepted(moveRequest)) {

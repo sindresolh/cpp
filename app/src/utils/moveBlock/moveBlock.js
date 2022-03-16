@@ -116,7 +116,6 @@ export const moveBlockInSolutionField = (
  * @param {Function} dispatch_moveRequest
  */
 export const requestMove = (request, lastRequest, dispatch_moveRequest) => {
-  console.log(request, lastRequest);
   if (!alreadyRequested(request, lastRequest)) dispatch_moveRequest(request);
 };
 

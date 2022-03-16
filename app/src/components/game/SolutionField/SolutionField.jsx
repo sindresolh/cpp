@@ -198,10 +198,16 @@ function SolutionField({}) {
         dispatch(addBlockToList(movedBlock));
         fieldEventPromise().then(() => dispatch(listEvent()));
       } else {
-        const blockOwner = movedBlock.player;
-        const listIndex = blockOwner - 1;
+        const playerField = movedBlock.player.toString();
+        const listIndex = movedBlock.player - 1;
         const atIndex = store.getState().handList[listIndex].length;
-        requestMove(movedBlock.id, atIndex, 0, blockOwner);
+        const move = {
+          id: movedBlock.id,
+          index: atIndex,
+          indent: 0,
+          field: playerField,
+        };
+        requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
       }
 
       e.detail = 0; // resets detail so that other codeblocks can be clicked
