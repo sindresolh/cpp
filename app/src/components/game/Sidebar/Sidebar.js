@@ -19,7 +19,6 @@ import {
 import { arrayIsEqual } from '../../../utils/compareArrays/compareArrays';
 import HintIcon from '../../../utils/images/buttonIcons/hint.png';
 import ClearIcon from '../../../utils/images/buttonIcons/clear.png';
-import SubmitIcon from '../../../utils/images/buttonIcons/submit.png';
 import CheckIcon from '../../../utils/images/buttonIcons/check.png';
 import CrossIcon from '../../../utils/images/buttonIcons/cross.png';
 import { COLORS } from '../../../utils/constants';
@@ -27,6 +26,7 @@ import { clearBoard as clearBoardHelper } from '../../../utils/shuffleCodeblocks
 import store from '../../../redux/store/store';
 import LockIcon from '../../../utils/images/buttonIcons/lock.png';
 import UnlockIcon from '../../../utils/images/buttonIcons/unlock.png';
+import PlayerIndicator from '../Player/PlayerIndicator/PlayerIndicator';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -376,6 +376,8 @@ export default function Sidebar() {
       </div>
 
       <p>{numberOfLockedInPlayers + ' / ' + numberOfPlayers}</p>
+
+      <PlayerIndicator lockArray={lockedInPlayers} />
 
       <div className='BottomButton'>
         <SidebarButton
