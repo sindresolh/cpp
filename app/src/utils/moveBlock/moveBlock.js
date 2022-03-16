@@ -82,9 +82,9 @@ export const moveBlockInSolutionField = (
 
 /**
  * Request a move to the host if it has not already been requested.
- * @param {Object} request
- * @param {Object} lastRequest
- * @param {Function} dispatch_moveRequest
+ * @param {Object} request the move to be requested
+ * @param {Object} lastRequest the last request sent to host
+ * @param {Function} dispatch_moveRequest callback function to dispatch the request to the reducer
  */
 export const requestMove = (request, lastRequest, dispatch_moveRequest) => {
   if (!alreadyRequested(request, lastRequest)) dispatch_moveRequest(request);
@@ -221,11 +221,11 @@ const swapBlockPositionInField = (
 
 /**
  * Swap a block position in the hand list.
- * @param {Object} block
- * @param {Number} fromIndex
- * @param {Number} toIndex
- * @param {Array} handList
- * @param {Number} handListIndex
+ * @param {Object} block code block to be swapped
+ * @param {Number} fromIndex the index the block came from
+ * @param {Number} toIndex the new index for the block
+ * @param {Array} handList the blocks in the list
+ * @param {Number} handListIndex the index of the list
  * @param {Object} dispatches object containing dispatch functions
  */
 const swapBlockPositionInList = (
@@ -251,9 +251,9 @@ const swapBlockPositionInList = (
 /**
  * Check if a move is already been requested to the host.
  * This prevents sending the same request repeatedly while hovering.
- * @param {object} move
- * @param {object} lastMoveRequest
- * @returns true if the move has been requested
+ * @param {object} move {id, index, indent, field}
+ * @param {object} lastMoveRequest the last move requested
+ * @returns true if the move has already been requested
  */
 const alreadyRequested = (move, lastMoveRequest) => {
   if (
