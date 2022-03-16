@@ -18,24 +18,10 @@ import './SolutionField.css';
 import store from '../../../redux/store/store';
 import { COLORS, MAX_INDENT, KEYBOARD_EVENT } from '../../../utils/constants';
 import { objectIsEqual } from '../../../utils/compareArrays/compareArrays';
-
-/**
- * Check if a move is already been requested to the host.
- * This prevents sending the same request repeatedly while hovering.
- * @param {object} move
- * @param {object} lastMoveRequest
- * @returns true if the move has been requested
- */
-const alreadyRequested = (move, lastMoveRequest) => {
-  if (
-    move.id !== lastMoveRequest.id ||
-    move.index !== lastMoveRequest.index ||
-    move.indent !== lastMoveRequest.indent ||
-    move.field !== lastMoveRequest.field
-  )
-    return false;
-  return true;
-};
+import {
+  moveBlockInSolutionField,
+  requestMove,
+} from '../../../utils/moveBlock/moveBlock';
 
 /**
  * @returns true if this player is the host.
@@ -60,20 +46,34 @@ function SolutionField({}) {
   const dispatch = useDispatch();
   const [selectedCodeline, setSelectedCodeline] = useState(null); // block selected for the next keyDown event
 
-  // finds the block, it's index and indent based on id
-  const findBlock = useCallback(
-    (id) => {
-      const block = blocks.filter((block) => block.id === id)[0];
-      if (block === undefined) return undefined; // block came from a hand list
-      const blockIndex = blocks.indexOf(block);
+  const dispatch_fieldEvent = () => {
+    dispatch(fieldEvent());
+  };
 
-      return {
-        block,
-        index: blockIndex,
-      };
-    },
-    [blocks]
-  );
+  const dispatch_listEvent = () => {
+    dispatch(listEvent());
+  };
+
+  const dispatch_setFieldState = (blocks) => {
+    dispatch(setFieldState(blocks));
+  };
+
+  const dispatch_removeBlockFromList = (id, handListIndex) => {
+    dispatch(removeBlockFromList(id, handListIndex));
+  };
+
+  const dispatch_moveRequest = (move) => {
+    dispatch(moveRequest(move));
+  };
+
+  // dispatch functions to be passed as parameters in moveblock
+  const dispatches = {
+    dispatch_fieldEvent,
+    dispatch_listEvent,
+    dispatch_setFieldState,
+    dispatch_removeBlockFromList,
+    dispatch_moveRequest,
+  };
 
   // move the block within the field or to a hand list
   const moveBlock = useCallback(
@@ -83,51 +83,31 @@ function SolutionField({}) {
       }
       // get block if it exists in solutionfield
       if (iAmHost()) {
-        // perform move locally before dispatching field event
-        const block = findBlock(id);
-        if (block === undefined) {
-          // block does not exist in field, get from hand
-          moveBlockFromList(id, atIndex);
-        } else {
-          // block came from the field, swap position
-          swapBlockPositionInField(block, atIndex, atIndent);
-        }
-        dispatch(fieldEvent()); // Move the block for the other players
+        moveBlockInSolutionField(
+          id,
+          atIndex,
+          atIndent,
+          blocks,
+          store.getState().handList,
+          dispatches
+        );
       } else {
-        requestMove(id, atIndex, atIndent, 'SF');
+        const move = { id, index: atIndex, indent: atIndent, field: 'SF' };
+        requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
       }
     },
-    [findBlock, blocks]
+    [blocks]
   );
-
-  /**
-   * Request a move to the host.
-   * @param {*} id
-   * @param {*} index
-   * @param {*} indent
-   */
-  const requestMove = (id, index, indent, field) => {
-    const move = {
-      id,
-      index,
-      indent,
-      field,
-    };
-    const lastMoveRequest = store.getState().moveRequest;
-    if (!alreadyRequested(move, lastMoveRequest)) dispatch(moveRequest(move));
-  };
 
   /**
    * Handle keyboard input for the selected codeblock.
    * Tab and bacskpace changes indenting.
    */
   const handleKeyDown = useCallback((e) => {
+    const block = blocks.filter((block) => block.id === selectedCodeline.id)[0];
+    const blockExists = block !== undefined;
     e.preventDefault(); // do not target adress bar
-    if (
-      selectedCodeline != null &&
-      findBlock(selectedCodeline.id) !== undefined &&
-      e.keyCode != null
-    ) {
+    if (selectedCodeline != null && blockExists && e.keyCode != null) {
       if (
         (e.shiftKey &&
           e.keyCode == KEYBOARD_EVENT.TAB &&
@@ -179,59 +159,6 @@ function SolutionField({}) {
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [handleKeyDown]);
-
-  /**
-   * Swap the position of the dragged block.
-   * @param {object} blockObj     the block and it's originalindex
-   * @param {number} atIndex      the new index the block was dragged into
-   * @param {number} atIndent     the indent the block was dragged into
-   */
-  const swapBlockPositionInField = (blockObj, atIndex, atIndent) => {
-    let block = blockObj.block;
-    block.indent = atIndent;
-    const updatedBlocks = update(blocks, {
-      $splice: [
-        [blockObj.index, 1],
-        [atIndex, 0, block],
-      ],
-    });
-
-    dispatch(setFieldState(updatedBlocks));
-  };
-
-  /**
-   * Move the dragged block from the list it came from
-   * and add it to the solution field.
-   * @param {string} id the id of the block that was dragged
-   * @param {number} atIndex    the index it was dragged into
-   */
-  const moveBlockFromList = (id, atIndex) => {
-    const handLists = store.getState().handList;
-    let blockIsNotFound = true;
-    let handListIndex = 0;
-    let movedBlock;
-    const AMOUNT_OF_PLAYERS = 4;
-
-    // find block and update the correct hand list
-    while (blockIsNotFound && handListIndex < AMOUNT_OF_PLAYERS) {
-      for (let block = 0; block < handLists[handListIndex].length; block++) {
-        if (handLists[handListIndex][block].id === id) {
-          // block is found, stop looking
-          blockIsNotFound = false;
-          movedBlock = handLists[handListIndex][block];
-          dispatch(removeBlockFromList(id, handListIndex));
-          dispatch(listEvent());
-          const updatedBlocks = [
-            ...blocks.slice(0, atIndex),
-            movedBlock,
-            ...blocks.slice(atIndex),
-          ];
-          dispatch(setFieldState(updatedBlocks));
-        }
-      }
-      handListIndex++;
-    }
-  };
 
   const [, emptyLineDrop] = useDrop(
     () => ({
