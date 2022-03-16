@@ -50,9 +50,8 @@ export default function Sidebar() {
   const [finished, setFinished] = useState(false);
   const [locked, setLocked] = useState(false);
 
-  const selectLocks = createSelector([(state) => state.players], (players) =>
-    players.map((players) => players.lock)
-  );
+  const numberOfPlayers = useSelector((state) => state.players.length);
+  const newLockEvent = useSelector((state) => state.lockEvent);
 
   /**
    * Reset current hint when a new task is started.
@@ -77,14 +76,20 @@ export default function Sidebar() {
    * Update when I get a new locked event from host
    */
   useEffect(() => {
-    let players = store.getState().players;
-    for (let p of players) {
-      if (p.id === 'YOU') {
-        alert(p.lock);
-        setLocked(p.lock);
+    if (!iAmHost()) {
+      let players = store.getState().players;
+      console.log(players);
+      for (let p of players) {
+        if (p.id === 'YOU') {
+          if (!p.hasOwnProperty('lock')) {
+            p.lock = false;
+          }
+          setLocked(p.lock);
+          console.log('lock : ' + p.lock);
+        }
       }
     }
-  }, [selectLocks]);
+  }, [newLockEvent]);
 
   /* Close the modal. Callback from SideBarModal*/
   const closeModal = () => {
@@ -322,7 +327,7 @@ export default function Sidebar() {
   };
 
   return (
-    <div className="Sidebar" style={{ background: COLORS.sidebar }}>
+    <div className='Sidebar' style={{ background: COLORS.sidebar }}>
       {/* Popup for hint or submit */}
       <SidebarModal
         modalIsOpen={modalIsOpen}
@@ -346,7 +351,7 @@ export default function Sidebar() {
 
       <div>
         <SidebarButton
-          title="Hint"
+          title='Hint'
           icon={HintIcon}
           color={COLORS.lightyellow}
           handleClick={() => {
@@ -357,14 +362,16 @@ export default function Sidebar() {
 
       <div>
         <SidebarButton
-          title="Clear"
+          title='Clear'
           icon={ClearIcon}
           color={COLORS.lightred}
           handleClick={() => handleClear()}
         />
       </div>
 
-      <div className="BottomButton">
+      <p>{'TODO' + ' / ' + numberOfPlayers}</p>
+
+      <div className='BottomButton'>
         <SidebarButton
           title={locked ? 'Unlock' : 'Lock in'}
           icon={locked ? UnlockIcon : LockIcon}

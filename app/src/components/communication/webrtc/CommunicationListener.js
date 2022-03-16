@@ -168,6 +168,13 @@ class CommunicationListener extends Component {
   }
 
   /**
+   * @returns true if this player is the host.
+   */
+  iAmHost() {
+    return store.getState().host === '';
+  }
+
+  /**
    * Notifies other peers when this player changes the state
    *
    * @param {*} prevProps : Checks that the new value is different
@@ -247,8 +254,10 @@ class CommunicationListener extends Component {
       this.whisper(state.host, LOCK_REQUEST, json);
     } else if (prevProps.lockEvent !== this.props.lockEvent) {
       // I am host and I just approved a lock.
-      const json = JSON.stringify(state.lockEvent);
-      this.shout(LOCK_EVENT, json);
+      if (this.iAmHost()) {
+        const json = JSON.stringify(state.lockEvent);
+        this.shout(LOCK_EVENT, json);
+      }
     }
 
     //Warn users leaving page

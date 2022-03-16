@@ -344,8 +344,6 @@ class CommunicationHandler extends Component {
         break;
       }
     }
-
-    console.log(players);
   }
 
   /**
@@ -362,6 +360,8 @@ class CommunicationHandler extends Component {
         p.lock = lock;
         const { dispatch_setPlayers } = this.props;
         dispatch_setPlayers(players);
+        const { dispatch_lockEvent } = this.props;
+        dispatch_lockEvent({ pid: pid, lock: lock });
         return true;
       }
     }
