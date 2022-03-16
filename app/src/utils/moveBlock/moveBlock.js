@@ -2,68 +2,103 @@ import update from 'immutability-helper';
 
 // TODO: dispatches
 
-export const moveBlockInHandList = (id, index, indent, blocksSF, blocksHL) => {
-  // perform moves locally before dispatching list event
-  const blockObj = findBlock(id);
-  // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
-  if (blockObj !== undefined) {
-    swapBlockPositionInList(blockObj, atIndex);
-  }
-  // move block from solution field to hand list
-  else moveBlockFromField(id, atIndex);
-  dispatch(listEvent()); // Move the block for the other players
-};
-
-export const moveBlockInSolutionField = (
+/**
+ * Move a code block in a hand list. Either swap position or move block from solution field.
+ * @param {String} id identification of code block
+ * @param {Number} index index to place block
+ * @param {Array} blocksSF blocks in solution field
+ * @param {Array} blocksHL blocks in hand list
+ * @param {Number} handListIndex the index of the hand list
+ */
+export const moveBlockInHandList = (
   id,
   index,
-  indent,
   blocksSF,
-  blocksHL
+  blocksHL,
+  handListIndex,
+  dispatch_listEvent,
+  dispatch_setList,
+  dispatch_removeBlockFromField,
+  dispatch_fieldEvent
 ) => {
-  // perform move locally before dispatching field event
-  const block = findBlock(id);
-  if (block === undefined) {
-    // block does not exist in field, get from hand
-    moveBlockFromList(id, atIndex);
-  } else {
-    // block came from the field, swap position
-    swapBlockPositionInField(block, atIndex, atIndent);
+  // perform moves locally before dispatching list event
+  const blockObj = findBlock(id, blocksHL);
+  // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
+  if (blockObj !== undefined) {
+    swapBlockPositionInList(
+      blockObj.block,
+      blockObj.index,
+      index,
+      blocksHL,
+      handListIndex,
+      dispatch_setList
+    );
   }
-  dispatch(fieldEvent()); // Move the block for the other players
+  // move block from solution field to hand list
+  else
+    moveBlockFromField(
+      id,
+      index,
+      blocksSF,
+      blocksHL,
+      handListIndex,
+      dispatch_setList,
+      dispatch_removeBlockFromField,
+      dispatch_fieldEvent
+    );
+  dispatch_listEvent(); // Move the block for the other players
 };
 
-export const moveBlockInHandler = (id, index, indent, blocksSF, blocksHL) => {
-  let blocks;
-  const player = parseInt(moveRequest.field);
-  const handListIndex = player - 1;
-  const isAMoveInSolutionField = moveRequest.field === 'SF';
+// export const moveBlockInSolutionField = (
+//   id,
+//   index,
+//   indent,
+//   blocksSF,
+//   blocksHL
+// ) => {
+//   // perform move locally before dispatching field event
+//   const block = findBlock(id);
+//   if (block === undefined) {
+//     // block does not exist in field, get from hand
+//     moveBlockFromList(id, atIndex);
+//   } else {
+//     // block came from the field, swap position
+//     swapBlockPositionInField(block, atIndex, atIndent);
+//   }
+//   dispatch(fieldEvent()); // Move the block for the other players
+// };
 
-  // get blocks from solution field or handlist depending on where the move is performed
-  blocks = isAMoveInSolutionField
-    ? store.getState().solutionField
-    : store.getState().handList[handListIndex];
+// export const moveBlockInHandler = (id, index, indent, blocksSF, blocksHL) => {
+//   let blocks;
+//   const player = parseInt(moveRequest.field);
+//   const handListIndex = player - 1;
+//   const isAMoveInSolutionField = moveRequest.field === 'SF';
 
-  const block = this.findBlock(moveRequest.id, blocks);
+//   // get blocks from solution field or handlist depending on where the move is performed
+//   blocks = isAMoveInSolutionField
+//     ? store.getState().solutionField
+//     : store.getState().handList[handListIndex];
 
-  // swaps block position in handlist/solution field OR move it from list/field to the other
-  if (block === undefined) {
-    if (isAMoveInSolutionField)
-      this.moveBlockFromList(moveRequest.id, moveRequest.index);
-    else this.moveBlockFromField(moveRequest.id, moveRequest.index, player);
-  } else {
-    if (isAMoveInSolutionField)
-      this.swapBlockPositionInField(
-        block,
-        moveRequest.index,
-        moveRequest.indent
-      );
-    else this.swapBlockPositionInList(block, moveRequest.index, player);
-  }
-};
+//   const block = this.findBlock(moveRequest.id, blocks);
 
-export const requestMove = (request, lastRequest) => {
-  if (!alreadyRequested(move, lastMoveRequest)) dispatch(moveRequest(move));
+//   // swaps block position in handlist/solution field OR move it from list/field to the other
+//   if (block === undefined) {
+//     if (isAMoveInSolutionField)
+//       this.moveBlockFromList(moveRequest.id, moveRequest.index);
+//     else this.moveBlockFromField(moveRequest.id, moveRequest.index, player);
+//   } else {
+//     if (isAMoveInSolutionField)
+//       this.swapBlockPositionInField(
+//         block,
+//         moveRequest.index,
+//         moveRequest.indent
+//       );
+//     else this.swapBlockPositionInList(block, moveRequest.index, player);
+//   }
+// };
+
+export const requestMove = (request, lastRequest, dispatch_moveRequest) => {
+  if (!alreadyRequested(request, lastRequest)) dispatch_moveRequest(request);
 };
 
 /**
@@ -84,39 +119,39 @@ const findBlock = (id, blocks) => {
   };
 };
 
-/**
- * Move a block from a hand list to the solution field.
- * @param {String} id identification of the block to be moved
- * @param {Number} index the index where the block should be moved to
- * @param {Array} solutionField blocks in the solution field
- * @param {Array} handLists blocks for all players
- */
-const moveBlockFromList = (id, index, solutionField, handLists) => {
-  let blockIsNotFound = true;
-  let handListIndex = 0;
-  let movedBlock;
-  const AMOUNT_OF_PLAYERS = 4;
+// /**
+//  * Move a block from a hand list to the solution field.
+//  * @param {String} id identification of the block to be moved
+//  * @param {Number} index the index where the block should be moved to
+//  * @param {Array} solutionField blocks in the solution field
+//  * @param {Array} handLists blocks for all players
+//  */
+// const moveBlockFromList = (id, index, solutionField, handLists) => {
+//   let blockIsNotFound = true;
+//   let handListIndex = 0;
+//   let movedBlock;
+//   const AMOUNT_OF_PLAYERS = 4;
 
-  // find block and update the correct hand list
-  while (blockIsNotFound && handListIndex < AMOUNT_OF_PLAYERS) {
-    for (let block = 0; block < handLists[handListIndex].length; block++) {
-      if (handLists[handListIndex][block].id === id) {
-        // block is found, stop looking
-        blockIsNotFound = false;
-        movedBlock = handLists[handListIndex][block];
-        dispatch(removeBlockFromList(id, handListIndex));
-        dispatch(listEvent());
-        const updatedBlocks = [
-          ...solutionField.slice(0, index),
-          movedBlock,
-          ...solutionField.slice(index),
-        ];
-        dispatch(setFieldState(updatedBlocks));
-      }
-    }
-    handListIndex++;
-  }
-};
+//   // find block and update the correct hand list
+//   while (blockIsNotFound && handListIndex < AMOUNT_OF_PLAYERS) {
+//     for (let block = 0; block < handLists[handListIndex].length; block++) {
+//       if (handLists[handListIndex][block].id === id) {
+//         // block is found, stop looking
+//         blockIsNotFound = false;
+//         movedBlock = handLists[handListIndex][block];
+//         dispatch(removeBlockFromList(id, handListIndex));
+//         dispatch(listEvent());
+//         const updatedBlocks = [
+//           ...solutionField.slice(0, index),
+//           movedBlock,
+//           ...solutionField.slice(index),
+//         ];
+//         dispatch(setFieldState(updatedBlocks));
+//       }
+//     }
+//     handListIndex++;
+//   }
+// };
 
 /**
  * Move a block from the solution field to a hand list.
@@ -131,9 +166,13 @@ const moveBlockFromField = (
   index,
   solutionField,
   handList,
-  handListIndex
+  handListIndex,
+  dispatch_setList,
+  dispatch_removeBlockFromField,
+  dispatch_fieldEvent
 ) => {
   let movedBlock = solutionField.filter((block) => block.id === id)[0];
+  const player = handListIndex + 1;
 
   // players cannot move their own blocks to another player's hand
   // a player can only move their own block to their own hand from solution field
@@ -145,38 +184,38 @@ const moveBlockFromField = (
       ...handList.slice(index),
     ];
 
-    dispatch(setList(updatedBlocks, handListIndex));
-    dispatch(removeBlockFromField(id));
-    dispatch(fieldEvent());
+    dispatch_setList(updatedBlocks, handListIndex);
+    dispatch_removeBlockFromField(id);
+    dispatch_fieldEvent();
   }
 };
 
-/**
- * Swap a block position in the solution field.
- * @param {Object} block the block that should swap position
- * @param {Number} fromIndex which index the block came from
- * @param {Number} toIndex which index the block should be moved to
- * @param {Number} indent the indent to put the block at
- * @param {Array} solutionField the blocks in the solution field
- */
-const swapBlockPositionInField = (
-  block,
-  fromIndex,
-  toIndex,
-  indent,
-  solutionField
-) => {
-  let swappedBlock = { ...block };
-  swappedBlock.indent = indent;
-  const updatedBlocks = update(solutionField, {
-    $splice: [
-      [fromIndex, 1],
-      [toIndex, 0, swappedBlock],
-    ],
-  });
+// /**
+//  * Swap a block position in the solution field.
+//  * @param {Object} block the block that should swap position
+//  * @param {Number} fromIndex which index the block came from
+//  * @param {Number} toIndex which index the block should be moved to
+//  * @param {Number} indent the indent to put the block at
+//  * @param {Array} solutionField the blocks in the solution field
+//  */
+// const swapBlockPositionInField = (
+//   block,
+//   fromIndex,
+//   toIndex,
+//   indent,
+//   solutionField
+// ) => {
+//   let swappedBlock = { ...block };
+//   swappedBlock.indent = indent;
+//   const updatedBlocks = update(solutionField, {
+//     $splice: [
+//       [fromIndex, 1],
+//       [toIndex, 0, swappedBlock],
+//     ],
+//   });
 
-  dispatch(setFieldState(updatedBlocks));
-};
+//   dispatch(setFieldState(updatedBlocks));
+// };
 
 /**
  * Swap a block position in the hand list.
@@ -191,7 +230,8 @@ const swapBlockPositionInList = (
   fromIndex,
   toIndex,
   handList,
-  handListIndex
+  handListIndex,
+  dispatch_setList
 ) => {
   const updatedBlock = { ...block, indent: 0 }; // set indent to 0
   const updatedBlocks = update(handList, {
@@ -201,7 +241,7 @@ const swapBlockPositionInList = (
     ],
   });
 
-  dispatch(setList(updatedBlocks, handListIndex));
+  dispatch_setList(updatedBlocks, handListIndex);
 };
 
 /**

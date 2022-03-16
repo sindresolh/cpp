@@ -16,6 +16,10 @@ import { ItemTypes } from '../../../utils/itemtypes';
 import { useDrop } from 'react-dnd';
 import store from '../../../redux/store/store';
 import CodeLine from '../CodeLine/CodeLine';
+import {
+  moveBlockInHandList,
+  requestMove,
+} from '../../../utils/moveBlock/moveBlock';
 
 /**
  * Check if a move is already been requested to the host.
@@ -57,100 +61,59 @@ function HandList({ player, draggable }) {
   blocks = blocks.map((block) => ({ ...block, indent: 0 })); // set indent to 0
   const emptyList = blocks.length === 0;
 
-  // find the block and index based on id
-  const findBlock = useCallback(
-    (id) => {
-      const block = blocks.filter((block) => block.id === id)[0];
-      if (block === undefined) return undefined; // block came solution field
+  const dispatch_listEvent = () => {
+    dispatch(listEvent());
+  };
 
-      return {
-        block,
-        index: blocks.indexOf(block),
-      };
-    },
-    [blocks]
-  );
+  const dispatch_setList = (blocks, handListIndex) => {
+    dispatch(setList(blocks, handListIndex));
+  };
+
+  const dispatch_removeBlockFromField = (id) => {
+    dispatch(removeBlockFromField(id));
+  };
+
+  const dispatch_fieldEvent = () => {
+    dispatch(fieldEvent());
+  };
+
+  const dispatch_moveRequest = (move) => {
+    dispatch(moveRequest(move));
+  };
 
   // update the position of the block when moved inside a list
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0) => {
       if (iAmHost()) {
-        // perform moves locally before dispatching list event
-        const blockObj = findBlock(id);
-        // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
-        if (blockObj !== undefined) {
-          swapBlockPositionInList(blockObj, atIndex);
-        }
-        // move block from solution field to hand list
-        else moveBlockFromField(id, atIndex);
-        dispatch(listEvent()); // Move the block for the other players
+        // do move locally
+        moveBlockInHandList(
+          id,
+          atIndex,
+          store.getState().solutionField,
+          blocks,
+          handListIndex,
+          dispatch_listEvent,
+          dispatch_setList,
+          dispatch_removeBlockFromField,
+          dispatch_fieldEvent
+        );
       } else {
-        // request a move to the host
-        requestMove(id, atIndex, atIndent, player.toString());
+        // request move to host
+        const move = {
+          id,
+          index: atIndex,
+          indent: atIndent,
+          field: player.toString(),
+        };
+        requestMove(
+          move,
+          store.getState().lastMoveRequest,
+          dispatch_moveRequest
+        );
       }
     },
-    [findBlock, blocks]
+    [blocks]
   );
-
-  /**
-   * Request a move to the host.
-   * @param {*} id
-   * @param {*} index
-   * @param {*} indent
-   */
-  const requestMove = (id, index, indent, field) => {
-    const move = {
-      id,
-      index,
-      indent,
-      field,
-    };
-    const lastMoveRequest = store.getState().moveRequest;
-    if (!alreadyRequested(move, lastMoveRequest)) dispatch(moveRequest(move));
-  };
-
-  /**
-   * Swap the position of the dragged block.
-   * @param {object} block  the moved block and the original index
-   * @param {*} atIndex     the new index of the block
-   */
-  const swapBlockPositionInList = (blockObj, atIndex) => {
-    const updatedBlock = { ...blockObj.block, indent: 0 }; // set indent to 0
-    const updatedBlocks = update(blocks, {
-      $splice: [
-        [blockObj.index, 1],
-        [atIndex, 0, updatedBlock],
-      ],
-    });
-
-    dispatch(setList(updatedBlocks, handListIndex));
-  };
-
-  /**
-   * Move the dragged block from the field
-   * and add it to the player's hand.
-   * @param {string} id     the id of the moved block
-   * @param {number} atIndex    the index the block is moved into
-   */
-  const moveBlockFromField = (id, atIndex) => {
-    let fieldBlocks = store.getState().solutionField;
-    let movedBlock = fieldBlocks.filter((block) => block.id === id)[0];
-
-    // players cannot move their own blocks to another player's hand
-    // a player can only move their own block to their own hand from solution field
-    if (movedBlock !== undefined && movedBlock.player === player) {
-      const updatedBlock = { ...movedBlock, indent: 0 }; // set indent to 0
-      const updatedBlocks = [
-        ...blocks.slice(0, atIndex),
-        updatedBlock,
-        ...blocks.slice(atIndex),
-      ];
-
-      dispatch(setList(updatedBlocks, handListIndex));
-      dispatch(removeBlockFromField(id));
-      dispatch(fieldEvent());
-    }
-  };
 
   // blocks can be dropped into empty hand list
   const [, emptyListDrop] = useDrop(
