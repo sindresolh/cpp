@@ -9,6 +9,7 @@ import update from 'immutability-helper';
  * @param {Array} blocksSF blocks in solution field
  * @param {Array} blocksHL blocks in hand list
  * @param {Number} handListIndex the index of the hand list
+ * @param {Object} dispatches object containing dispatch functions
  */
 export const moveBlockInHandList = (
   id,
@@ -16,11 +17,9 @@ export const moveBlockInHandList = (
   blocksSF,
   blocksHL,
   handListIndex,
-  dispatch_listEvent,
-  dispatch_setList,
-  dispatch_removeBlockFromField,
-  dispatch_fieldEvent
+  dispatches
 ) => {
+  const { dispatch_listEvent } = dispatches;
   // perform moves locally before dispatching list event
   const blockObj = findBlock(id, blocksHL);
   // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
@@ -31,7 +30,7 @@ export const moveBlockInHandList = (
       index,
       blocksHL,
       handListIndex,
-      dispatch_setList
+      dispatches
     );
   }
   // move block from solution field to hand list
@@ -42,9 +41,7 @@ export const moveBlockInHandList = (
       blocksSF,
       blocksHL,
       handListIndex,
-      dispatch_setList,
-      dispatch_removeBlockFromField,
-      dispatch_fieldEvent
+      dispatches
     );
   dispatch_listEvent(); // Move the block for the other players
 };
@@ -97,7 +94,14 @@ export const moveBlockInHandList = (
 //   }
 // };
 
+/**
+ * Request a move to the host if it has not already been requested.
+ * @param {Object} request
+ * @param {Object} lastRequest
+ * @param {Function} dispatch_moveRequest
+ */
 export const requestMove = (request, lastRequest, dispatch_moveRequest) => {
+  console.log(request, lastRequest);
   if (!alreadyRequested(request, lastRequest)) dispatch_moveRequest(request);
 };
 
@@ -160,6 +164,7 @@ const findBlock = (id, blocks) => {
  * @param {Array} solutionField blocks in the solution field
  * @param {Array} handList blocks in the hand list
  * @param {Number} handListIndex index of the handlist
+ * @param {Object} dispatches object containing dispatch functions
  */
 const moveBlockFromField = (
   id,
@@ -167,10 +172,13 @@ const moveBlockFromField = (
   solutionField,
   handList,
   handListIndex,
-  dispatch_setList,
-  dispatch_removeBlockFromField,
-  dispatch_fieldEvent
+  dispatches
 ) => {
+  const {
+    dispatch_setList,
+    dispatch_removeBlockFromField,
+    dispatch_fieldEvent,
+  } = dispatches;
   let movedBlock = solutionField.filter((block) => block.id === id)[0];
   const player = handListIndex + 1;
 
@@ -224,6 +232,7 @@ const moveBlockFromField = (
  * @param {Number} toIndex
  * @param {Array} handList
  * @param {Number} handListIndex
+ * @param {Object} dispatches object containing dispatch functions
  */
 const swapBlockPositionInList = (
   block,
@@ -231,8 +240,9 @@ const swapBlockPositionInList = (
   toIndex,
   handList,
   handListIndex,
-  dispatch_setList
+  dispatches
 ) => {
+  const { dispatch_setList } = dispatches;
   const updatedBlock = { ...block, indent: 0 }; // set indent to 0
   const updatedBlocks = update(handList, {
     $splice: [

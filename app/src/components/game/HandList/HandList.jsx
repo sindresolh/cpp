@@ -22,24 +22,6 @@ import {
 } from '../../../utils/moveBlock/moveBlock';
 
 /**
- * Check if a move is already been requested to the host.
- * This prevents sending the same request repeatedly while hovering.
- * @param {object} move
- * @param {object} lastMoveRequest
- * @returns true if the move has been requested
- */
-const alreadyRequested = (move, lastMoveRequest) => {
-  if (
-    move.id !== lastMoveRequest.id ||
-    move.index !== lastMoveRequest.index ||
-    move.indent !== lastMoveRequest.indent ||
-    move.field !== lastMoveRequest.field
-  )
-    return false;
-  return true;
-};
-
-/**
  * @returns true if this player is the host.
  */
 const iAmHost = () => {
@@ -81,6 +63,15 @@ function HandList({ player, draggable }) {
     dispatch(moveRequest(move));
   };
 
+  // dispatch functions to be passed as parameters in moveblock
+  const dispatches = {
+    dispatch_listEvent,
+    dispatch_setList,
+    dispatch_removeBlockFromField,
+    dispatch_fieldEvent,
+    dispatch_moveRequest,
+  };
+
   // update the position of the block when moved inside a list
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0) => {
@@ -92,10 +83,7 @@ function HandList({ player, draggable }) {
           store.getState().solutionField,
           blocks,
           handListIndex,
-          dispatch_listEvent,
-          dispatch_setList,
-          dispatch_removeBlockFromField,
-          dispatch_fieldEvent
+          dispatches
         );
       } else {
         // request move to host
@@ -105,11 +93,7 @@ function HandList({ player, draggable }) {
           indent: atIndent,
           field: player.toString(),
         };
-        requestMove(
-          move,
-          store.getState().lastMoveRequest,
-          dispatch_moveRequest
-        );
+        requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
       }
     },
     [blocks]
@@ -151,12 +135,13 @@ function HandList({ player, draggable }) {
         dispatch(addBlockToField(movedBlock));
         fieldEventPromise().then(() => dispatch(listEvent()));
       } else {
-        requestMove(
-          movedBlock.id,
-          store.getState().solutionField.length + 1,
-          0,
-          'SF'
-        );
+        const move = {
+          id: movedBlock.id,
+          index: store.getState().solutionField.length + 1,
+          indent: 0,
+          field: 'SF',
+        };
+        requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
       }
 
       e.detail = 0; // resets detail so that other codeblocks can be clicked
