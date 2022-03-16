@@ -27,7 +27,6 @@ import { clearBoard as clearBoardHelper } from '../../../utils/shuffleCodeblocks
 import store from '../../../redux/store/store';
 import LockIcon from '../../../utils/images/buttonIcons/lock.png';
 import UnlockIcon from '../../../utils/images/buttonIcons/unlock.png';
-import { createSelector } from 'reselect';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -49,9 +48,15 @@ export default function Sidebar() {
   const [currentHintNo, setCurrentHintNo] = useState(0);
   const [finished, setFinished] = useState(false);
   const [locked, setLocked] = useState(false);
-  const [numberOfLocks, setNumberOfLocks] = useState(0); // Keeps track of the number of ready players
   const numberOfPlayers = useSelector((state) => state.players.length);
   const newLockEvent = useSelector((state) => state.lockEvent); // Keeps track of new lock events
+  const [lockedInPlayers, setLockedInPlayers] = useState([
+    false,
+    false,
+    false,
+    false,
+  ]); // One for each player and wheter or not they are locked in
+  const [numberOfLockedInPlayers, setNumberOfLockedInPlayers] = useState(0);
 
   /**
    * Reset current hint when a new task is started.
@@ -76,19 +81,25 @@ export default function Sidebar() {
    * Update when I get a new locked event from host
    */
   useEffect(() => {
-    if (!iAmHost()) {
-      let players = store.getState().players;
-      console.log(players);
-      for (let p of players) {
-        if (!p.hasOwnProperty('lock')) {
-          p.lock = false;
-        }
-        if (p.id === 'YOU') {
-          setLocked(p.lock);
-          console.log('lock : ' + p.lock);
-        }
+    // I am NOT HOST and need to update my state
+    let players = store.getState().players;
+    let playerNumber = 0;
+    for (let p of players) {
+      if (!p.hasOwnProperty('lock')) {
+        p.lock = false;
       }
+      if (p.id === 'YOU') {
+        setLocked(p.lock);
+      }
+      lockedInPlayers[playerNumber] = p.lock;
+      setLockedInPlayers(lockedInPlayers);
+      ++playerNumber;
     }
+    console.log(lockedInPlayers);
+
+    setNumberOfLockedInPlayers(
+      lockedInPlayers.filter((lock) => lock === true).length
+    );
   }, [newLockEvent]);
 
   /* Close the modal. Callback from SideBarModal*/
@@ -190,6 +201,7 @@ export default function Sidebar() {
     // If I am the HOST I update for myself and the other players
     if (iAmHost()) {
       let players = store.getState().players;
+      let playerNumber = 0;
 
       for (let p of players) {
         if (p.id === 'YOU') {
@@ -200,10 +212,12 @@ export default function Sidebar() {
           }
           dispatch(setPlayers(players));
           dispatch(lockEvent({ pid: 'HOST', lock: p.lock }));
-          setLocked(p.lock);
-          break;
         }
       }
+      setNumberOfLockedInPlayers(
+        lockedInPlayers.filter((lock) => lock === true).length
+      );
+      console.log(lockedInPlayers + ' I am host');
     } else {
       // If I am not he HOST I need to ask for permission
       dispatch(lockRequest());
@@ -369,7 +383,7 @@ export default function Sidebar() {
         />
       </div>
 
-      <p>{numberOfLocks + ' / ' + numberOfPlayers}</p>
+      <p>{numberOfLockedInPlayers + ' / ' + numberOfPlayers}</p>
 
       <div className='BottomButton'>
         <SidebarButton
