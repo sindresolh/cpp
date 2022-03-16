@@ -293,14 +293,6 @@ class CommunicationHandler extends Component {
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState.currentTask) {
-      this.setState({
-        modalTitle: 'New task',
-        modalDescription:
-          'Your solution was correct! The game will soon present the next task.',
-        isModalOpen: true,
-        modalBorderColor: COLORS.darkgreen,
-        modalButtonColor: COLORS.lightgreen,
-      });
       const { dispatch_nextTask } = this.props;
       dispatch_nextTask();
       //const { dispatch_setAllocatedListsForCurrentTask } = this.props;
@@ -313,7 +305,7 @@ class CommunicationHandler extends Component {
    */
   finished() {
     const { dispatch_removeHost } = this.props;
-    this.setState({ finished: true, isModalOpen: true });
+    this.setState({ finished: true });
     dispatch_removeHost();
   }
 
@@ -693,30 +685,17 @@ class CommunicationHandler extends Component {
       >
         {this.state.connected ? <CommunicationListener /> : <PuzzleGif />}
         {/* Fancy alert for new events, for now only shows when there is a new task*/}
-        {this.state.finished ? (
-          <SidebarModal
-            modalIsOpen={this.state.isModalOpen}
-            icon={CheckIcon}
-            title={'Task set finished'}
-            description={
-              'Congratulations! Your team has ompleted the task set.'
-            }
-            buttonText={'Finish'}
-            buttonColor={COLORS.lightgreen}
-            borderColor={COLORS.darkgreen}
-            closeModal={() => this.finishModal()}
-          />
         ) : (
-          <SidebarModal
-            modalIsOpen={this.state.isModalOpen}
-            icon={SubmitIcon}
-            title={this.state.modalTitle}
-            description={this.state.modalDescription}
-            buttonText={'Ok'}
-            buttonColor={this.state.modalButtonColor}
-            borderColor={this.state.modalBorderColor}
-            closeModal={() => this.closeModal()}
-          />
+        <SidebarModal
+          modalIsOpen={this.state.isModalOpen}
+          icon={SubmitIcon}
+          title={this.state.modalTitle}
+          description={this.state.modalDescription}
+          buttonText={'Ok'}
+          buttonColor={this.state.modalButtonColor}
+          borderColor={this.state.modalBorderColor}
+          closeModal={() => this.closeModal()}
+        />
         )}
       </LioWebRTC>
     );
