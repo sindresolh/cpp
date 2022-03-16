@@ -305,7 +305,7 @@ class CommunicationHandler extends Component {
    */
   finished() {
     const { dispatch_removeHost } = this.props;
-    this.setState({ finished: true });
+    this.setState({ finished: true, isModalOpen: true });
     dispatch_removeHost();
   }
 
@@ -685,7 +685,6 @@ class CommunicationHandler extends Component {
       >
         {this.state.connected ? <CommunicationListener /> : <PuzzleGif />}
         {/* Fancy alert for new events, for now only shows when there is a new task*/}
-        ) : (
         <SidebarModal
           modalIsOpen={this.state.isModalOpen}
           icon={SubmitIcon}
@@ -696,7 +695,6 @@ class CommunicationHandler extends Component {
           borderColor={this.state.modalBorderColor}
           closeModal={() => this.closeModal()}
         />
-        )}
       </LioWebRTC>
     );
   }
