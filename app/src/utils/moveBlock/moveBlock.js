@@ -2,9 +2,69 @@ import update from 'immutability-helper';
 
 // TODO: dispatches
 
-export const moveBlock = (id, index, indent, blocksSF, blocksHL) => {};
+export const moveBlockInHandList = (id, index, indent, blocksSF, blocksHL) => {
+  // perform moves locally before dispatching list event
+  const blockObj = findBlock(id);
+  // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
+  if (blockObj !== undefined) {
+    swapBlockPositionInList(blockObj, atIndex);
+  }
+  // move block from solution field to hand list
+  else moveBlockFromField(id, atIndex);
+  dispatch(listEvent()); // Move the block for the other players
+};
 
-export const requestMove = (request, lastRequest) => {};
+export const moveBlockInSolutionField = (
+  id,
+  index,
+  indent,
+  blocksSF,
+  blocksHL
+) => {
+  // perform move locally before dispatching field event
+  const block = findBlock(id);
+  if (block === undefined) {
+    // block does not exist in field, get from hand
+    moveBlockFromList(id, atIndex);
+  } else {
+    // block came from the field, swap position
+    swapBlockPositionInField(block, atIndex, atIndent);
+  }
+  dispatch(fieldEvent()); // Move the block for the other players
+};
+
+export const moveBlockInHandler = (id, index, indent, blocksSF, blocksHL) => {
+  let blocks;
+  const player = parseInt(moveRequest.field);
+  const handListIndex = player - 1;
+  const isAMoveInSolutionField = moveRequest.field === 'SF';
+
+  // get blocks from solution field or handlist depending on where the move is performed
+  blocks = isAMoveInSolutionField
+    ? store.getState().solutionField
+    : store.getState().handList[handListIndex];
+
+  const block = this.findBlock(moveRequest.id, blocks);
+
+  // swaps block position in handlist/solution field OR move it from list/field to the other
+  if (block === undefined) {
+    if (isAMoveInSolutionField)
+      this.moveBlockFromList(moveRequest.id, moveRequest.index);
+    else this.moveBlockFromField(moveRequest.id, moveRequest.index, player);
+  } else {
+    if (isAMoveInSolutionField)
+      this.swapBlockPositionInField(
+        block,
+        moveRequest.index,
+        moveRequest.indent
+      );
+    else this.swapBlockPositionInList(block, moveRequest.index, player);
+  }
+};
+
+export const requestMove = (request, lastRequest) => {
+  if (!alreadyRequested(move, lastMoveRequest)) dispatch(moveRequest(move));
+};
 
 /**
  * Try to find a block in an array based on id.
@@ -142,4 +202,22 @@ const swapBlockPositionInList = (
   });
 
   dispatch(setList(updatedBlocks, handListIndex));
+};
+
+/**
+ * Check if a move is already been requested to the host.
+ * This prevents sending the same request repeatedly while hovering.
+ * @param {object} move
+ * @param {object} lastMoveRequest
+ * @returns true if the move has been requested
+ */
+const alreadyRequested = (move, lastMoveRequest) => {
+  if (
+    move.id !== lastMoveRequest.id ||
+    move.index !== lastMoveRequest.index ||
+    move.indent !== lastMoveRequest.indent ||
+    move.field !== lastMoveRequest.field
+  )
+    return false;
+  return true;
 };
