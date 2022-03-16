@@ -375,11 +375,9 @@ export default function Sidebar() {
         />
       </div>
 
-      <p>{numberOfLockedInPlayers + ' / ' + numberOfPlayers}</p>
-
-      <PlayerIndicator lockArray={lockedInPlayers} />
-
       <div className='BottomButton'>
+        <p>{numberOfLockedInPlayers + ' / ' + numberOfPlayers}</p>
+        <PlayerIndicator lockArray={lockedInPlayers} />
         <SidebarButton
           title={locked ? 'Unlock' : 'Lock in'}
           icon={locked ? UnlockIcon : LockIcon}

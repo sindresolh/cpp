@@ -35,7 +35,7 @@ function Player({ playerNo, name, codeBlocks }) {
   return (
     <div className={`player p${playerNo}`} data-testid={`player-${playerNo}`}>
       <div className='leftContainerPlayer'>
-        <img
+        <img className='largePlayerIcon'
           data-testid={`player-${playerNo}-icon`}
           src={icon}
           alt={`Player ${playerNo} icon`}
