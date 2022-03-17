@@ -12,12 +12,9 @@ export default function PlayerIndicator({
   numberOfLockedInPlayers,
   numberOfPlayers,
 }) {
-  const ICON_SIZE = 40;
-
   const CIRCLE_SIZE = numberOfLockedInPlayers * 5 + 25;
   const TRIANGLE_POSITION = numberOfLockedInPlayers * 2 + 21;
   const PLAYERICONS_OFFSET = 45 - numberOfLockedInPlayers * 8 + 'px';
-  const COUNTER_OFFSET = 35 - numberOfLockedInPlayers * 8 + 'px';
   return (
     <div className='IndicatorContainer'>
       <div className='PlayerIcons' style={{ marginRight: PLAYERICONS_OFFSET }}>
@@ -54,7 +51,7 @@ export default function PlayerIndicator({
         <g transform='translate(0, 10)'>
           <Poly sides={3} size={10} cx={TRIANGLE_POSITION} cy={75} r={15} />
         </g>
-        <text textAnchor='middle' x='30' y='75'>
+        <text textAnchor='middle' x={CIRCLE_SIZE} y='75'>
           {numberOfLockedInPlayers + ' / ' + numberOfPlayers}
         </text>
       </svg>
