@@ -59,6 +59,8 @@ function SolutionField({}) {
   const players = useSelector((state) => state.players);
   const dispatch = useDispatch();
   const [selectedCodeline, setSelectedCodeline] = useState(null); // block selected for the next keyDown event
+  const newLockEvent = useSelector((state) => state.lockEvent); // Keeps track of new lock events
+  const [locked, setLocked] = useState(false);
 
   // finds the block, it's index and indent based on id
   const findBlock = useCallback(
@@ -169,6 +171,28 @@ function SolutionField({}) {
   useEffect(() => {
     setSelectedCodeline(null);
   }, [currentTaskNumber]);
+
+   /**
+   * Another player has changed their ready status
+   */
+  useEffect(() => {
+    console.log('hei fra soloutionfield')
+
+       let players = store.getState().players;
+
+    for (let p of players) {
+      if (!p.hasOwnProperty('lock')) {
+        p.lock = false;
+      }
+      if (p.id === 'YOU') {
+        setLocked(p.lock);
+      }
+
+    }
+
+    
+    
+  }, [newLockEvent]);
 
   /**
    * Creates an key event listener based on the selected codeblock
@@ -292,7 +316,7 @@ function SolutionField({}) {
               index={index}
               moveBlock={moveBlock}
               maxIndent={MAX_INDENT}
-              draggable={true}
+              draggable={!locked}
               key={`line-${index}`}
               handleDoubbleClick={handleDoubbleClick}
               selectedCodeline={selectedCodeline}

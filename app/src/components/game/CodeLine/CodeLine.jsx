@@ -57,6 +57,7 @@ function CodeLine({
         else if (offsetDifference < 0 && indent > 0)
           moveBlock(item.id, index, indent - 1); // block is moved to the previous indent
       },
+     
     }),
     [block, moveBlock]
   );
@@ -89,7 +90,7 @@ function CodeLine({
         style={{ marginLeft: `${block.indent * OFFSET}px` }}
         onClick={(e) => handleDoubbleClick(e, block, draggable, index)}
       >
-        <CodeBlock {...block} index={index} draggable={draggable} />
+        <CodeBlock {...block} index={index} draggable={draggable} maxIndent={maxIndent} />
       </div>
     </li>
   );

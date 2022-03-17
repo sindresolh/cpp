@@ -3,9 +3,8 @@
 
 .PlayerIcons {
   position: relative;
-  z-index: 10;
+  z-index: 1;
   margin-bottom: -55px;
-  margin-right: 5px;
 }
 
 .Indicator {

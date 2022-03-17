@@ -27,6 +27,7 @@ function CodeBlock({
   index,
   moveBlock,
   draggable,
+  maxIndent// Locked fields in solutionfield are not draggable, but they are visible
 }) {
   // implement dragging
   const [{ isDragging }, drag] = useDrag(
@@ -65,7 +66,14 @@ function CodeBlock({
   let className = isDragging
     ? `cb ${category} player${player} dragging`
     : `cb ${category} player${player}`;
-  className = !draggable ? className + ' invisible' : className;
+
+  if(maxIndent === 0){
+      className = !draggable ? className + ' invisible' : className;
+      console.log(maxIndent)
+
+  }
+
+
 
   return (
     <div 

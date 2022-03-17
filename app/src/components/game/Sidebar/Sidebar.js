@@ -94,7 +94,6 @@ export default function Sidebar() {
       setLockedInPlayers(lockedInPlayers);
       ++playerNumber;
     }
-    console.log(lockedInPlayers);
 
     let readyCount = lockedInPlayers.filter((lock) => lock === true).length;
     setNumberOfLockedInPlayers(readyCount);
@@ -219,7 +218,6 @@ export default function Sidebar() {
       setNumberOfLockedInPlayers(
         lockedInPlayers.filter((lock) => lock === true).length
       );
-      console.log(lockedInPlayers + ' I am host');
     } else {
       // If I am not he HOST I need to ask for permission
       dispatch(lockRequest());
