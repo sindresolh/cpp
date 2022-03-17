@@ -52,7 +52,7 @@ const iAmHost = () => {
  *
  * @returns a div containing the blocks players has moved blocks into
  */
-function SolutionField({}) {
+function SolutionField({minwidth}) {
   const currentTaskNumber = useSelector(
     (state) => state.currentTask.currentTaskNumber
   );
@@ -306,7 +306,7 @@ function SolutionField({}) {
   return (
     <div className={'divSF'} style={{ background: locked ? "#C2C2C2" : COLORS.solutionfield }}>
       <h6>{'Connected players: ' + players.length}</h6>
-      {locked? <div className='bigLockContainer'><img className="bigLock" src={BigLockImage} /> </div> :''}
+      {locked && minwidth? <div className='bigLockContainer'><img className="bigLock" src={BigLockImage} /> </div> :''}
       <ul data-testid='solutionField'>
         {blocks.map((block, index) => {
           return (
@@ -327,7 +327,7 @@ function SolutionField({}) {
         <li
           key={'emptyField'}
           className='empty'
-          style={{ background: locked? COLORS.grey : COLORS.codeline }}
+          style={{ background: COLORS.codeline, visibility: locked? 'hidden' : 'visible' }}
           ref={emptyLineDrop}
         />
       </ul>
