@@ -27,7 +27,7 @@ function CodeBlock({
   index,
   moveBlock,
   draggable,
-  maxIndent// Locked fields in solutionfield are not draggable, but they are visible
+  isAlwaysVisible // Should be visible even if it is not draggable - Special case for a lock
 }) {
   // implement dragging
   const [{ isDragging }, drag] = useDrag(
@@ -66,14 +66,10 @@ function CodeBlock({
   let className = isDragging
     ? `cb ${category} player${player} dragging`
     : `cb ${category} player${player}`;
-
-  if(maxIndent === 0){
+  // If I am inside handlist (no indent) and not draggable -> make me invisible
+  if(!isAlwaysVisible){
       className = !draggable ? className + ' invisible' : className;
-      console.log(maxIndent)
-
   }
-
-
 
   return (
     <div 
@@ -99,6 +95,7 @@ CodeBlock.propTypes = {
   index: PropTypes.number,
   moveBlock: PropTypes.func,
   draggable: PropTypes.bool,
+  isAlwaysVisible: PropTypes.bool
 };
 
 export default CodeBlock;

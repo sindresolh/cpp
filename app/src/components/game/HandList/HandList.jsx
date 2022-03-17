@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import './HandList.css';
 import { useSelector, useDispatch } from 'react-redux';
@@ -56,6 +56,8 @@ function HandList({ player, draggable }) {
   let blocks = useSelector((state) => state.handList[handListIndex]);
   blocks = blocks.map((block) => ({ ...block, indent: 0 })); // set indent to 0
   const emptyList = blocks.length === 0;
+  const newLockEvent = useSelector((state) => state.lockEvent); // Keeps track of new lock events
+  const [locked, setLocked] = useState(false);
 
   // find the block and index based on id
   const findBlock = useCallback(
@@ -74,7 +76,7 @@ function HandList({ player, draggable }) {
   // update the position of the block when moved inside a list
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0) => {
-      if (iAmHost()) {
+    if (iAmHost()) {
         // perform moves locally before dispatching list event
         const blockObj = findBlock(id);
         // get block if it exists in handlist. undefined means the block came from a solutionfield. in that case, state will be updated elsewhere
@@ -84,12 +86,13 @@ function HandList({ player, draggable }) {
         // move block from solution field to hand list
         else moveBlockFromField(id, atIndex);
         dispatch(listEvent()); // Move the block for the other players
-      } else {
+      } 
+    else {
         // request a move to the host
         requestMove(id, atIndex, atIndent, player.toString());
       }
     },
-    [findBlock, blocks]
+    [findBlock, blocks, locked]
   );
 
   /**
@@ -166,6 +169,22 @@ function HandList({ player, draggable }) {
     [blocks, emptyList]
   );
 
+  /**
+   * Another player has changed their ready status
+   * If it is me: Make sure that I cannot move blocks into solutionField
+   */
+  useEffect(() => {
+    let players = store.getState().players;
+    for (let p of players) {
+      if (!p.hasOwnProperty('lock')) {
+        p.lock = false;
+      }
+      if (p.id === 'YOU') {
+        setLocked(p.lock);
+      }
+    }
+  }, [newLockEvent]);
+
   /** Helper function to make sure that the field event is done before sending a new event
    *
    * @returns
@@ -181,7 +200,7 @@ function HandList({ player, draggable }) {
    * @param {*} draggable : wheter or not the player has permission to perform this action
    */
   const handleDoubbleClick = (e, movedBlock, draggable) => {
-    if (e.detail > 1 && draggable && movedBlock != null) {
+    if (!locked && e.detail > 1 && draggable && movedBlock != null) {
       // (e.detauil > 1) if clicked more than once
       if (iAmHost()) {
         dispatch(removeBlockFromList(movedBlock.id, movedBlock.player - 1));
@@ -210,9 +229,10 @@ function HandList({ player, draggable }) {
               index={index}
               moveBlock={moveBlock}
               maxIndent={0}
-              draggable={draggable}
+              draggable={locked? !locked : draggable}
               key={`player-${player}-line-${index}`}
               handleDoubbleClick={handleDoubbleClick}
+              isAlwaysVisible={draggable}
             />
           );
         })}

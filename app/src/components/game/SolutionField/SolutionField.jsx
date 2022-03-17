@@ -176,10 +176,7 @@ function SolutionField({}) {
    * Another player has changed their ready status
    */
   useEffect(() => {
-    console.log('hei fra soloutionfield')
-
-       let players = store.getState().players;
-
+    let players = store.getState().players;
     for (let p of players) {
       if (!p.hasOwnProperty('lock')) {
         p.lock = false;
@@ -189,13 +186,11 @@ function SolutionField({}) {
       }
 
     }
-
-    
-    
   }, [newLockEvent]);
 
   /**
    * Creates an key event listener based on the selected codeblock
+   * If it is me: Lock my board
    */
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -282,27 +277,29 @@ function SolutionField({}) {
    * @param {*} draggable : wheter or not the player has permission to perform this action
    */
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
-    setSelectedCodeline(movedBlock);
-    if (movedBlock != null && draggable) {
-      // the user selected this codeblock
-      movedBlock.index = index;
-    }
-    // (e.detauil > 1) if clicked more than once
-    if (e.detail > 1) {
-      if (iAmHost()) {
-        movedBlock.indent = 0;
-        dispatch(removeBlockFromField(movedBlock.id));
-        dispatch(addBlockToList(movedBlock));
-        fieldEventPromise().then(() => dispatch(listEvent()));
-      } else {
-        const blockOwner = movedBlock.player;
-        const listIndex = blockOwner - 1;
-        const atIndex = store.getState().handList[listIndex].length;
-        requestMove(movedBlock.id, atIndex, 0, blockOwner);
+    if(!locked){
+      setSelectedCodeline(movedBlock);
+      if (movedBlock != null && draggable) {
+        // the user selected this codeblock
+        movedBlock.index = index;
       }
-
-      e.detail = 0; // resets detail so that other codeblocks can be clicked
+      // (e.detauil > 1) if clicked more than once
+      if (e.detail > 1) {
+        if (iAmHost()) {
+          movedBlock.indent = 0;
+          dispatch(removeBlockFromField(movedBlock.id));
+          dispatch(addBlockToList(movedBlock));
+          fieldEventPromise().then(() => dispatch(listEvent()));
+        } else {
+          const blockOwner = movedBlock.player;
+          const listIndex = blockOwner - 1;
+          const atIndex = store.getState().handList[listIndex].length;
+          requestMove(movedBlock.id, atIndex, 0, blockOwner);
+        }
+      }
     }
+    e.detail = 0; // resets detail so that other codeblocks can be clicked
+    
   };
 
   return (
@@ -320,6 +317,7 @@ function SolutionField({}) {
               key={`line-${index}`}
               handleDoubbleClick={handleDoubbleClick}
               selectedCodeline={selectedCodeline}
+              isAlwaysVisible={true}
             />
           );
         })}

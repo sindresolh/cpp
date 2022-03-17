@@ -32,6 +32,7 @@ function CodeLine({
   draggable,
   handleDoubbleClick,
   selectedCodeline,
+  isAlwaysVisible // Should be visible even if it is not draggable - Special case for a lock
 }) {
   const blockRef = useRef(null); // reference to get the position of the DOM element
   // const lastMoveRequest = useSelector((state) => state.lastMoveRequest);
@@ -90,7 +91,7 @@ function CodeLine({
         style={{ marginLeft: `${block.indent * OFFSET}px` }}
         onClick={(e) => handleDoubbleClick(e, block, draggable, index)}
       >
-        <CodeBlock {...block} index={index} draggable={draggable} maxIndent={maxIndent} />
+        <CodeBlock {...block} index={index} draggable={draggable} isAlwaysVisible={isAlwaysVisible} />
       </div>
     </li>
   );
