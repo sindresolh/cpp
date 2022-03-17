@@ -11,6 +11,8 @@ import {
   setListState,
   finishGame,
   finishEvent,
+  listEvent,
+  fieldEvent,
 } from '../../../redux/actions';
 import { arrayIsEqual } from '../../../utils/compareArrays/compareArrays';
 import HintIcon from '../../../utils/images/buttonIcons/hint.png';
@@ -124,10 +126,21 @@ export default function Sidebar() {
   };
 
   /**
-   * Request clear to host.
+   * Clear the board. If host: perform locally before dispatching field and list event. If not: request to host.
    */
   const clearBoard = () => {
-    dispatch(clearEvent());
+    if (store.getState().host === '') {
+      // Clear locally then update all players
+      let initalfield = currentTaskObject.field;
+      let field = store.getState().solutionField;
+      let handList = store.getState().handList;
+      handList = clearBoardHelper(field, handList);
+      dispatch(setFieldState(initalfield));
+      dispatch(setListState(handList));
+      dispatch(clearEvent()); // Request clear to host
+    } else {
+      dispatch(clearEvent()); // Request clear to host
+    }
     closeModal();
   };
 
