@@ -12,11 +12,12 @@ export default function PlayerIndicator({
   numberOfLockedInPlayers,
   numberOfPlayers,
 }) {
+  const VISIBILITY = numberOfLockedInPlayers > 0 ? 'visible' : 'hidden';
   const CIRCLE_SIZE = numberOfLockedInPlayers * 5 + 25;
   const TRIANGLE_POSITION = numberOfLockedInPlayers * 2 + 21;
   const PLAYERICONS_OFFSET = 45 - numberOfLockedInPlayers * 8 + 'px';
   return (
-    <div className='IndicatorContainer'>
+    <div className='IndicatorContainer' style={{ visibility: VISIBILITY }}>
       <div className='PlayerIcons' style={{ marginRight: PLAYERICONS_OFFSET }}>
         {lockArray[PLAYER.P1 - 1] ? (
           <img src={p1Icon} className='smallPlayerIcon' />
