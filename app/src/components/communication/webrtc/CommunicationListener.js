@@ -170,7 +170,6 @@ class CommunicationListener extends Component {
     const state = store.getState();
 
     if (prevProps.listEvent.getTime() < this.props.listEvent.getTime()) {
-      console.log('update all players about LIST event');
       // This peer moved codeblock in an handlist
       const json = JSON.stringify({
         handList: state.handList,
@@ -186,7 +185,6 @@ class CommunicationListener extends Component {
     } else if (
       prevProps.fieldEvent.getTime() < this.props.fieldEvent.getTime()
     ) {
-      console.log('update all players about FIELD event');
       // This peer moved codeblock in soloutionfield
       const json = JSON.stringify(state.solutionField);
       this.setState({ fieldMessage: json });
