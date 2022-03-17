@@ -16,6 +16,7 @@ import { ItemTypes } from '../../../utils/itemtypes';
 import { useDrop } from 'react-dnd';
 import store from '../../../redux/store/store';
 import CodeLine from '../CodeLine/CodeLine';
+import { COLORS } from '../../../utils/constants';
 
 /**
  * Check if a move is already been requested to the host.
@@ -220,7 +221,7 @@ function HandList({ player, draggable }) {
   };
 
   return (
-    <div className={'divHL'} ref={emptyListDrop} key={draggable}>
+    <div className={'divHL'} ref={emptyListDrop} key={draggable} style={{backgroundColor: !locked? COLORS.codeline : COLORS.grey}}>
       <ul data-testid={`handList-player${player}`}>
         {blocks.map((block, index) => {
           return (
@@ -233,6 +234,7 @@ function HandList({ player, draggable }) {
               key={`player-${player}-line-${index}`}
               handleDoubbleClick={handleDoubbleClick}
               isAlwaysVisible={draggable}
+              background={!locked? COLORS.codeline : COLORS.grey}
             />
           );
         })}

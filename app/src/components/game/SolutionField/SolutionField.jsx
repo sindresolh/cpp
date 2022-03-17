@@ -18,6 +18,7 @@ import './SolutionField.css';
 import store from '../../../redux/store/store';
 import { COLORS, MAX_INDENT, KEYBOARD_EVENT } from '../../../utils/constants';
 import { objectIsEqual } from '../../../utils/compareArrays/compareArrays';
+import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
 
 /**
  * Check if a move is already been requested to the host.
@@ -303,8 +304,9 @@ function SolutionField({}) {
   };
 
   return (
-    <div className={'divSF'} style={{ background: COLORS.solutionfield }}>
+    <div className={'divSF'} style={{ background: locked ? "#C2C2C2" : COLORS.solutionfield }}>
       <h6>{'Connected players: ' + players.length}</h6>
+      {locked? <div className='bigLockContainer'><img className="bigLock" src={BigLockImage} /> </div> :''}
       <ul data-testid='solutionField'>
         {blocks.map((block, index) => {
           return (
@@ -318,13 +320,14 @@ function SolutionField({}) {
               handleDoubbleClick={handleDoubbleClick}
               selectedCodeline={selectedCodeline}
               isAlwaysVisible={true}
+              background={!locked? COLORS.codeline : COLORS.grey}
             />
           );
         })}
         <li
           key={'emptyField'}
           className='empty'
-          style={{ background: COLORS.codeline }}
+          style={{ background: locked? COLORS.grey : COLORS.codeline }}
           ref={emptyLineDrop}
         />
       </ul>

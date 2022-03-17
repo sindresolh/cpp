@@ -32,7 +32,8 @@ function CodeLine({
   draggable,
   handleDoubbleClick,
   selectedCodeline,
-  isAlwaysVisible // Should be visible even if it is not draggable - Special case for a lock
+  isAlwaysVisible, // Should be visible even if it is not draggable - Special case for a lock
+  background
 }) {
   const blockRef = useRef(null); // reference to get the position of the DOM element
   // const lastMoveRequest = useSelector((state) => state.lastMoveRequest);
@@ -78,11 +79,11 @@ function CodeLine({
   return (
     <li
       data-testid='codeline'
-      style={{ background: COLORS.codeline, border: border }}
+      style={{ background: background, border: border }}
       ref={lineDrop}
       key={draggable}
     >
-      <hr style={{ width: `${block.indent * OFFSET}px` }} />
+      <hr style={{ width: `${block.indent * OFFSET}px`,  borderTop: draggable? '0.1em solid #c2c2c2' : '0.1em solid black'}} />
 
       <div
         id={`blockref-${block.id}`}
