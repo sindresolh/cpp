@@ -19,7 +19,6 @@ import {
   listEvent,
   fieldEvent,
   finishEvent,
-  setAllocatedListsForCurrentTask,
   setHost,
 } from '../../../redux/actions';
 import { shuffleCodeblocks } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
@@ -43,7 +42,6 @@ const mapStateToProps = (state) => ({
   status: state.status,
   players: state.players,
   finishEvent: state.finishEvent,
-  allocatedLists: state.allocatedLists,
   host: state.host,
   moveRequest: state.moveRequest,
 });
@@ -61,8 +59,6 @@ function mapDispatchToProps(dispatch) {
     dispatch_listEvent: (...args) => dispatch(listEvent(...args)),
     dispatch_fieldEvent: (...args) => dispatch(fieldEvent(...args)),
     dispatch_finishEvent: (...args) => dispatch(finishEvent(...args)),
-    dispatch_setAllocatedListsForCurrentTask: (...args) =>
-      dispatch(setAllocatedListsForCurrentTask(...args)),
     dispatch_setHost: (...args) => dispatch(setHost(...args)),
   };
 }
@@ -116,11 +112,9 @@ class CommunicationListener extends Component {
       state.players.length
     );
 
-    // initialize handLists and set the allocated lists for the current task
-    const { dispatch_setListState, dispatch_setAllocatedListsForCurrentTask } =
-      this.props;
+    // initialize handLists for the current task
+    const { dispatch_setListState } = this.props;
     dispatch_setListState(codeblocks);
-    dispatch_setAllocatedListsForCurrentTask(codeblocks);
   }
 
   /**
@@ -174,7 +168,6 @@ class CommunicationListener extends Component {
       // This peer moved codeblock in an handlist
       const json = JSON.stringify({
         handList: state.handList,
-        allocatedLists: state.allocatedLists,
       });
       this.setState({ listMessage: json });
       setTimeout(() => {
@@ -216,7 +209,7 @@ class CommunicationListener extends Component {
     ) {
       // This peer cleared the board
       const json = JSON.stringify(state.currentTask);
-      this.shout(CLEAR_TASK, json);
+      this.whisper(state.host, CLEAR_TASK, json);
     } else if (prevProps.status !== this.props.status) {
       // This player started the game from the lobby
       let playerIds = state.players.map((p) => p.id);

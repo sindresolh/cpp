@@ -13,7 +13,6 @@ import {
   startGame,
   finishGame,
   setTaskNumber,
-  setAllocatedListsForCurrentTask,
   setHost,
   removeHost,
   listEvent,
@@ -64,8 +63,6 @@ function mapDispatchToProps(dispatch) {
     dispatch_startGame: (...args) => dispatch(startGame(...args)),
     dispatch_finishGame: (...args) => dispatch(finishGame(...args)),
     dispatch_setTaskNumber: (...args) => dispatch(setTaskNumber(...args)),
-    dispatch_setAllocatedListsForCurrentTask: (...args) =>
-      dispatch(setAllocatedListsForCurrentTask(...args)),
     dispatch_setHost: (...args) => dispatch(setHost(...args)),
     dispatch_removeHost: (...args) => dispatch(removeHost(...args)),
     dispatch_listEvent: (...args) => dispatch(listEvent(...args)),
@@ -119,7 +116,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room3');
+  join = (webrtc) => webrtc.joinRoom('cpp-room4');
 
   /**
    * Called when a new peer is added to the room
@@ -230,19 +227,17 @@ class CommunicationHandler extends Component {
   };
 
   /**
-   *  Update the blocks in a hand list as well as the allocated lists for the current task.
+   *  Update the blocks in a hand list for the current task.
    *
    * @param {*} payload the new state for hand list
    */
   setList(payload) {
-    const { dispatch_setListState, dispatch_setAllocatedListsForCurrentTask } =
-      this.props;
+    const { dispatch_setListState } = this.props;
     const prevState = store.getState().handList;
     const payloadState = JSON.parse(payload);
 
     if (!twoDimensionalArrayIsEqual(prevState, payloadState)) {
       dispatch_setListState(payloadState.handList);
-      dispatch_setAllocatedListsForCurrentTask(payloadState.allocatedLists);
     }
     console.log('host has sent LISTS');
   }
@@ -295,8 +290,6 @@ class CommunicationHandler extends Component {
       });
       const { dispatch_nextTask } = this.props;
       dispatch_nextTask();
-      //const { dispatch_setAllocatedListsForCurrentTask } = this.props;
-      //dispatch_setAllocatedListsForCurrentTask(payloadState.handList);
       this.initialFieldFromFile();
     }
   }
@@ -503,19 +496,18 @@ class CommunicationHandler extends Component {
    * Clears the board
    */
   clearTask() {
-    // // Get current board state
-    // let field = store.getState().solutionField;
-    // let handList = store.getState().handList;
-    // // Update board
-    // handList = clearBoard(field, handList);
-    // const { dispatch_setListState } = this.props;
-    // dispatch_setListState(handList);
-    // this.initialFieldFromFile();
-
-    const handList = store.getState().allocatedLists;
-    const { dispatch_setListState } = this.props;
+    // Get current board state
+    let field = store.getState().solutionField;
+    let handList = store.getState().handList;
+    // Update board
+    handList = clearBoard(field, handList);
+    const { dispatch_setListState, dispatch_fieldEvent, dispatch_listEvent } =
+      this.props;
     dispatch_setListState(handList);
     this.initialFieldFromFile();
+
+    dispatch_fieldEvent();
+    dispatch_listEvent();
   }
 
   /**
@@ -572,9 +564,6 @@ class CommunicationHandler extends Component {
     if (prevState !== payloadState.status) {
       const { dispatch_setListState } = this.props;
       dispatch_setListState(payloadState.handList);
-
-      const { dispatch_setAllocatedListsForCurrentTask } = this.props;
-      dispatch_setAllocatedListsForCurrentTask(payloadState.handList);
 
       const { dispatch_setFieldState } = this.props;
       dispatch_setFieldState(payloadState.solutionField);
