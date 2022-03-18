@@ -26,7 +26,11 @@ import store from '../../../redux/store/store';
 import LockIcon from '../../../utils/images/buttonIcons/lock.png';
 import UnlockIcon from '../../../utils/images/buttonIcons/unlock.png';
 import PlayerLockIndicator from '../Player/PlayerIndicator/PlayerLockIndicator';
-import { getAllLocks, getLock } from '../../../utils/lockHelper/lockHelper';
+import {
+  getAllLocks,
+  getLock,
+  setLock,
+} from '../../../utils/lockHelper/lockHelper';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -81,22 +85,20 @@ export default function Sidebar() {
    * Another player has changed their ready status
    */
   useEffect(() => {
-    if (newLockEvent.forAllPlayers === false) {
-      let players = store.getState().players;
-      let allLocks = getAllLocks(players);
-      let readyCount = allLocks.filter((lock) => lock === true).length;
+    let players = store.getState().players;
+    let allLocks = getAllLocks(players);
+    let readyCount = allLocks.filter((lock) => lock === true).length;
 
-      let myLock = getLock(players, 'YOU');
-      if (myLock !== locked) {
-        setLocked(myLock);
-      }
-      setLockedInPlayers(allLocks);
-
-      if (readyCount === numberOfPlayers) {
-        handleSubmit();
-      }
-      setNumberOfLockedInPlayers(readyCount);
+    let myLock = getLock(players, 'YOU');
+    if (myLock !== locked) {
+      setLocked(myLock);
     }
+    setLockedInPlayers(allLocks);
+
+    if (readyCount === numberOfPlayers) {
+      handleSubmit();
+    }
+    setNumberOfLockedInPlayers(readyCount);
   }, [newLockEvent]);
 
   /* Close the modal. Callback from SideBarModal*/
@@ -194,21 +196,18 @@ export default function Sidebar() {
     // If I am the HOST I update for myself and the other players
     if (iAmHost()) {
       let players = store.getState().players;
-      for (let p of players) {
-        if (p.id === 'YOU') {
-          if (!p.hasOwnProperty('lock')) {
-            p.lock = true;
-          } else {
-            p.lock = !p.lock;
-          }
-          dispatch(setPlayers(players));
-          dispatch(
-            lockEvent({ pid: 'HOST', lock: p.lock, forAllPlayers: false })
-          );
-        }
-      }
+
+      dispatch(
+        lockEvent({
+          pid: 'HOST',
+          lock: !locked,
+          forAllPlayers: false,
+        })
+      );
+      dispatch(setPlayers(setLock(players, 'YOU', !locked)));
+
       setNumberOfLockedInPlayers(
-        lockedInPlayers.filter((lock) => lock === true).length
+        getAllLocks(players).filter((lock) => lock === true).length
       );
     } else {
       // If I am not he HOST I need to ask for permission
