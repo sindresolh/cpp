@@ -7,10 +7,7 @@ import { ACTIONS } from '../../actions/ACTIONS';
  * @param {*} action
  * @returns
  */
-const lockEventReducer = (
-  state = { pid: undefined, lock: false, forAllPlayers: false },
-  action
-) => {
+const lockEventReducer = (state = { pid: undefined, lock: false }, action) => {
   switch (action.type) {
     case ACTIONS.LOCK_EVENT: {
       return action.payload.state;

@@ -178,17 +178,6 @@ class CommunicationListener extends Component {
 
     if (prevProps.listEvent !== this.props.listEvent) {
       console.log('update all players about LIST event');
-      const { dispatch_lockEvent } = this.props;
-
-      // Open lock for myself and other players
-      let lockData = {
-        pid: undefined,
-        lock: false,
-        forAllPlayers: true,
-      };
-      dispatch_lockEvent(lockData);
-      this.shout(LOCK_EVENT, JSON.stringify(lockData));
-
       // This peer moved codeblock in an handlist
       const json = JSON.stringify({
         handList: state.handList,

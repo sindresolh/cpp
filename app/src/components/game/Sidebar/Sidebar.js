@@ -201,11 +201,9 @@ export default function Sidebar() {
         lockEvent({
           pid: 'HOST',
           lock: !locked,
-          forAllPlayers: false,
         })
       );
       dispatch(setPlayers(setLock(players, 'YOU', !locked)));
-
       setNumberOfLockedInPlayers(
         getAllLocks(players).filter((lock) => lock === true).length
       );

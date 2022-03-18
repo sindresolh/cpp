@@ -47,7 +47,7 @@ import SidebarModal from '../../Game/Sidebar/SidebarModal/SidebarModal';
 import SubmitIcon from '../../../utils/images/buttonIcons/submit.png';
 import { COLORS } from '../../../utils/constants';
 import configData from '../../../config.json';
-import { setLock } from '../../../utils/lockHelper/lockHelper';
+import { setLock, setAllLocks } from '../../../utils/lockHelper/lockHelper';
 
 const mapStateToProps = (state) => ({
   players: state.players,
@@ -312,7 +312,6 @@ class CommunicationHandler extends Component {
   lockRequest(payload, peer) {
     const lock = JSON.parse(payload);
     let players = store.getState().players;
-
     const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
 
     // Update the players with new locks
@@ -322,7 +321,6 @@ class CommunicationHandler extends Component {
     dispatch_lockEvent({
       pid: peer.id,
       lock: lock,
-      forAllPlayers: false,
     });
   }
 
@@ -335,16 +333,15 @@ class CommunicationHandler extends Component {
   lockEvent(payload) {
     let payloadState = JSON.parse(payload);
     let prevState = store.getState();
+    console.log(payloadState);
 
-    // Me or another player got an approved lock from host.
     let players = prevState.players;
+    const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
 
     // This lock was performed by the HOST, but HOST does not know it's own name.
     if (payloadState.pid === 'HOST') {
       payloadState.pid = prevState.host;
     }
-
-    const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
 
     // Find out if thos long belongs to another player
     if (players.some((p) => p.id === payloadState.pid)) {
@@ -355,7 +352,6 @@ class CommunicationHandler extends Component {
       dispatch_lockEvent({
         pid: payloadState.pid,
         lock: payloadState.lock,
-        forAllPlayers: false,
       });
     }
     // If it does not belong to another player it probably belongs to me
@@ -365,7 +361,6 @@ class CommunicationHandler extends Component {
       dispatch_lockEvent({
         pid: 'YOU',
         lock: payloadState.lock,
-        forAllPlayers: false,
       });
     }
   }
