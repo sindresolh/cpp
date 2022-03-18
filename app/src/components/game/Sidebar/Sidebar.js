@@ -81,22 +81,22 @@ export default function Sidebar() {
    * Another player has changed their ready status
    */
   useEffect(() => {
-    let players = store.getState().players;
-    let allLocks = getAllLocks(players);
-    let readyCount = allLocks.filter((lock) => lock === true).length;
+    if (newLockEvent.forAllPlayers === false) {
+      let players = store.getState().players;
+      let allLocks = getAllLocks(players);
+      let readyCount = allLocks.filter((lock) => lock === true).length;
 
-    console.log(allLocks.filter((lock) => lock === true));
+      let myLock = getLock(players, 'YOU');
+      if (myLock !== locked) {
+        setLocked(myLock);
+      }
+      setLockedInPlayers(allLocks);
 
-    let myLock = getLock(players, 'YOU');
-    if (myLock !== locked) {
-      setLocked(myLock);
+      if (readyCount === numberOfPlayers) {
+        handleSubmit();
+      }
+      setNumberOfLockedInPlayers(readyCount);
     }
-    setLockedInPlayers(allLocks);
-
-    if (readyCount === numberOfPlayers) {
-      handleSubmit();
-    }
-    setNumberOfLockedInPlayers(readyCount);
   }, [newLockEvent]);
 
   /* Close the modal. Callback from SideBarModal*/
@@ -202,7 +202,9 @@ export default function Sidebar() {
             p.lock = !p.lock;
           }
           dispatch(setPlayers(players));
-          dispatch(lockEvent({ pid: 'HOST', lock: p.lock }));
+          dispatch(
+            lockEvent({ pid: 'HOST', lock: p.lock, forAllPlayers: false })
+          );
         }
       }
       setNumberOfLockedInPlayers(

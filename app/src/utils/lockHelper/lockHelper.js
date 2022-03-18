@@ -27,6 +27,7 @@ export const getAllLocks = (players) => {
  */
 export const setLock = (players, pid, lock) => {
   players.map((p) => (p.id === pid ? (p.lock = lock) : p.lock));
+  return players;
 };
 
 /**
@@ -38,14 +39,5 @@ export const setLock = (players, pid, lock) => {
  */
 export const setAllLocks = (players, lock) => {
   players.map((p) => (p.lock = lock));
-};
-
-/** Change the status of a lock to the boolean
- *
- * @param {*} players : list of all players with lock status
- * @param {*} lock : boolean
- * @returns
- */
-export const countLocked = (players, lock) => {
-  return players.map((p) => (p.lock = lock));
+  return players;
 };

@@ -47,6 +47,7 @@ import SidebarModal from '../../Game/Sidebar/SidebarModal/SidebarModal';
 import SubmitIcon from '../../../utils/images/buttonIcons/submit.png';
 import { COLORS } from '../../../utils/constants';
 import configData from '../../../config.json';
+import { setLock } from '../../../utils/lockHelper/lockHelper';
 
 const mapStateToProps = (state) => ({
   players: state.players,
@@ -122,7 +123,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-roomTULL');
+  join = (webrtc) => webrtc.joinRoom('cpp-room-SNART-HELG');
 
   /**
    * Called when a new peer is added to the room
@@ -312,45 +313,17 @@ class CommunicationHandler extends Component {
     const lock = JSON.parse(payload);
     let players = store.getState().players;
 
-    // Handle the request and lock/unlock if approved
-    for (let p of players) {
-      if (p.id == peer.id) {
-        if (!p.hasOwnProperty('lock') || p.lock !== lock) {
-          peer.lock = lock;
+    const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
 
-          // Update for me
-          const { dispatch_setPlayers } = this.props;
-          dispatch_setPlayers(players);
+    // Update the players with new locks
+    dispatch_setPlayers(setLock(players, peer.id, lock));
 
-          // Notify other peers about my approval
-          const { dispatch_lockEvent } = this.props;
-          dispatch_lockEvent({ pid: peer.id, lock: lock });
-        }
-        break;
-      }
-    }
-  }
-
-  /**
-   * Set the lock property for a given player id
-   *
-   * @param {*} players : all players
-   * @param {*} pid : unique player id
-   * @param {*} lock: boolean
-   * @returns
-   */
-  setLock(players, pid, lock) {
-    for (let p of players) {
-      if (pid === p.id) {
-        p.lock = lock;
-        const { dispatch_setPlayers } = this.props;
-        dispatch_setPlayers(players);
-        const { dispatch_lockEvent } = this.props;
-        dispatch_lockEvent({ pid: pid, lock: lock });
-        return true;
-      }
-    }
-    return false;
+    // Notify other peers about my approval
+    dispatch_lockEvent({
+      pid: peer.id,
+      lock: lock,
+      forAllPlayers: false,
+    });
   }
 
   /**
@@ -371,12 +344,29 @@ class CommunicationHandler extends Component {
       payloadState.pid = prevState.host;
     }
 
+    const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
+
     // Find out if thos long belongs to another player
-    if (!this.setLock(players, payloadState.pid, payloadState.lock)) {
-      // If it does not belong to another player it probably belongs to me
-      if (prevState.lockRequest === payloadState.lock) {
-        this.setLock(players, 'YOU', payloadState.lock);
-      }
+    if (players.some((p) => p.id === payloadState.pid)) {
+      // Update the players with new locks
+      dispatch_setPlayers(
+        setLock(players, payloadState.pid, payloadState.lock)
+      );
+      dispatch_lockEvent({
+        pid: payloadState.pid,
+        lock: payloadState.lock,
+        forAllPlayers: false,
+      });
+    }
+    // If it does not belong to another player it probably belongs to me
+    else {
+      // Update the players with new locks
+      dispatch_setPlayers(setLock(players, 'YOU', payloadState.lock));
+      dispatch_lockEvent({
+        pid: 'YOU',
+        lock: payloadState.lock,
+        forAllPlayers: false,
+      });
     }
   }
 
@@ -438,6 +428,8 @@ class CommunicationHandler extends Component {
    * Clears the board
    */
   clearTask() {
+    console.log('clears the board');
+
     // Get current board state
     let field = store.getState().solutionField;
     let handList = store.getState().handList;
