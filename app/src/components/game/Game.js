@@ -14,7 +14,7 @@ export default function Game() {
 
   // change the flex direction based on width and height
   const minwidth = useMediaQuery({
-    query: '(min-width: 1200px)',
+    query: '(min-width: 1600px)',
   });
   const gameFlow = minwidth ? 'row' : 'column';
   const playerFlow = !minwidth ? 'row' : 'column';
@@ -54,7 +54,7 @@ export default function Game() {
         {/*Player 1 and 3 on the left side*/}
         <div
           className='GameLeft'
-          style={{ flexFlow: playerFlow, margin: '7' + playerScale }}
+          style={{ flexFlow: playerFlow, margin: '3' + playerScale }}
         >
           <Player playerNo={PLAYER.P1} name={names[0]} />
           <Player playerNo={PLAYER.P3} name={names[2]} />
@@ -69,7 +69,7 @@ export default function Game() {
         {/*Player 2 and 4 on the right side*/}
         <div
           className='GameRight'
-          style={{ flexFlow: playerFlow, margin: '7' + playerScale }}
+          style={{ flexFlow: playerFlow, margin: '3' + playerScale }}
         >
           <Player playerNo={PLAYER.P2} name={names[1]} />
           <Player playerNo={PLAYER.P4} name={names[3]} />
