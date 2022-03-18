@@ -11,7 +11,6 @@ import {
   removeBlockFromList,
   addBlockToField,
 } from '../../../redux/actions';
-import update from 'immutability-helper';
 import { ItemTypes } from '../../../utils/itemtypes';
 import { useDrop } from 'react-dnd';
 import store from '../../../redux/store/store';
@@ -19,26 +18,9 @@ import CodeLine from '../CodeLine/CodeLine';
 import {
   moveBlockInHandList,
   requestMove,
+  getLock
 } from '../../../utils/moveBlock/moveBlock';
 import { COLORS } from '../../../utils/constants';
-
-/**
- * Check if a move is already been requested to the host.
- * This prevents sending the same request repeatedly while hovering.
- * @param {object} move
- * @param {object} lastMoveRequest
- * @returns true if the move has been requested
- */
-const alreadyRequested = (move, lastMoveRequest) => {
-  if (
-    move.id !== lastMoveRequest.id ||
-    move.index !== lastMoveRequest.index ||
-    move.indent !== lastMoveRequest.indent ||
-    move.field !== lastMoveRequest.field
-  )
-    return false;
-  return true;
-};
 
 /**
  * @returns true if this player is the host.
@@ -140,13 +122,9 @@ function HandList({ player, draggable }) {
    */
   useEffect(() => {
     let players = store.getState().players;
-    for (let p of players) {
-      if (!p.hasOwnProperty('lock')) {
-        p.lock = false;
-      }
-      if (p.id === 'YOU') {
-        setLocked(p.lock);
-      }
+    let myLock = getLock(players, 'YOU');
+    if(myLock !== locked){
+      setLocked(myLock);
     }
   }, [newLockEvent]);
 

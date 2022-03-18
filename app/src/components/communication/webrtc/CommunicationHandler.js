@@ -45,10 +45,8 @@ import {
 import PuzzleGif from '../PuzzleGif';
 import SidebarModal from '../../Game/Sidebar/SidebarModal/SidebarModal';
 import SubmitIcon from '../../../utils/images/buttonIcons/submit.png';
-import CheckIcon from '../../../utils/images/buttonIcons/check.png';
 import { COLORS } from '../../../utils/constants';
 import configData from '../../../config.json';
-import update from 'immutability-helper';
 
 const mapStateToProps = (state) => ({
   players: state.players,
@@ -124,7 +122,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room4');
+  join = (webrtc) => webrtc.joinRoom('cpp-room90');
 
   /**
    * Called when a new peer is added to the room

@@ -28,7 +28,7 @@ import { clearBoard as clearBoardHelper } from '../../../utils/shuffleCodeblocks
 import store from '../../../redux/store/store';
 import LockIcon from '../../../utils/images/buttonIcons/lock.png';
 import UnlockIcon from '../../../utils/images/buttonIcons/unlock.png';
-import PlayerIndicator from '../Player/PlayerIndicator/PlayerIndicator';
+import PlayerLockIndicator from '../Player/PlayerIndicator/PlayerLockIndicator';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -372,7 +372,7 @@ export default function Sidebar() {
       </div>
 
       <div className='BottomButton'>
-        <PlayerIndicator
+        <PlayerLockIndicator
           lockArray={lockedInPlayers}
           numberOfLockedInPlayers={numberOfLockedInPlayers}
           numberOfPlayers={numberOfPlayers}

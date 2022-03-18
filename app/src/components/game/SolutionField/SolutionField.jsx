@@ -11,16 +11,15 @@ import {
   addBlockToList,
   moveRequest,
 } from '../../../redux/actions';
-import update from 'immutability-helper';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from '../../../utils/itemtypes';
 import './SolutionField.css';
 import store from '../../../redux/store/store';
 import { COLORS, MAX_INDENT, KEYBOARD_EVENT } from '../../../utils/constants';
-import { objectIsEqual } from '../../../utils/compareArrays/compareArrays';
 import {
   moveBlockInSolutionField,
   requestMove,
+  getLock
 } from '../../../utils/moveBlock/moveBlock';
 import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
 
@@ -176,14 +175,9 @@ function SolutionField({minwidth}) {
    */
   useEffect(() => {
     let players = store.getState().players;
-    for (let p of players) {
-      if (!p.hasOwnProperty('lock')) {
-        p.lock = false;
-      }
-      if (p.id === 'YOU') {
-        setLocked(p.lock);
-      }
-
+    let myLock = getLock(players, 'YOU');
+    if(myLock !== locked){
+      setLocked(myLock);
     }
   }, [newLockEvent]);
 
