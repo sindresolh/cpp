@@ -19,7 +19,6 @@ import {
   listEvent,
   fieldEvent,
   finishEvent,
-  setAllocatedListsForCurrentTask,
   setHost,
 } from '../../../redux/actions';
 import { shuffleCodeblocks } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
@@ -43,7 +42,6 @@ const mapStateToProps = (state) => ({
   status: state.status,
   players: state.players,
   finishEvent: state.finishEvent,
-  allocatedLists: state.allocatedLists,
   host: state.host,
   moveRequest: state.moveRequest,
 });
@@ -61,8 +59,6 @@ function mapDispatchToProps(dispatch) {
     dispatch_listEvent: (...args) => dispatch(listEvent(...args)),
     dispatch_fieldEvent: (...args) => dispatch(fieldEvent(...args)),
     dispatch_finishEvent: (...args) => dispatch(finishEvent(...args)),
-    dispatch_setAllocatedListsForCurrentTask: (...args) =>
-      dispatch(setAllocatedListsForCurrentTask(...args)),
     dispatch_setHost: (...args) => dispatch(setHost(...args)),
   };
 }
@@ -116,11 +112,9 @@ class CommunicationListener extends Component {
       state.players.length
     );
 
-    // initialize handLists and set the allocated lists for the current task
-    const { dispatch_setListState, dispatch_setAllocatedListsForCurrentTask } =
-      this.props;
+    // initialize handLists for the current task
+    const { dispatch_setListState } = this.props;
     dispatch_setListState(codeblocks);
-    dispatch_setAllocatedListsForCurrentTask(codeblocks);
   }
 
   /**
@@ -169,33 +163,18 @@ class CommunicationListener extends Component {
   componentDidUpdate(prevProps) {
     const state = store.getState();
 
-    if (prevProps.listEvent.getTime() < this.props.listEvent.getTime()) {
+    if (prevProps.listEvent !== this.props.listEvent) {
+      console.log('update all players about LIST event');
       // This peer moved codeblock in an handlist
       const json = JSON.stringify({
         handList: state.handList,
-        allocatedLists: state.allocatedLists,
       });
-      this.setState({ listMessage: json });
-      setTimeout(() => {
-        // As long as this is the last listEvent (componentDidUpdate not called a second time)
-        if (store.getState().listEvent.getTime() <= state.listEvent.getTime()) {
-          this.shout(SET_LIST, this.state.listMessage);
-        }
-      }, this.EVENT_DELAY);
-    } else if (
-      prevProps.fieldEvent.getTime() < this.props.fieldEvent.getTime()
-    ) {
+      this.shout(SET_LIST, json);
+    } else if (prevProps.fieldEvent !== this.props.fieldEvent) {
+      console.log('update all players about FIELD event');
       // This peer moved codeblock in soloutionfield
       const json = JSON.stringify(state.solutionField);
-      this.setState({ fieldMessage: json });
-      setTimeout(() => {
-        // As long as this is the last fieldEvent (componentDidUpdate not called a second time)
-        if (
-          store.getState().fieldEvent.getTime() <= state.fieldEvent.getTime()
-        ) {
-          this.shout(SET_FIELD, this.state.fieldMessage);
-        }
-      }, this.EVENT_DELAY);
+      this.shout(SET_FIELD, json);
     } else if (
       // This peer updated the game state by going to the next task
       prevProps.taskEvent !== this.props.taskEvent
@@ -212,9 +191,16 @@ class CommunicationListener extends Component {
     } else if (
       prevProps.clearEvent.getTime() < this.props.clearEvent.getTime()
     ) {
-      // This peer cleared the board
-      const json = JSON.stringify(state.currentTask);
-      this.shout(CLEAR_TASK, json);
+      if (state.host === '') {
+        // This peer cleared the board
+        console.log('update all players about FIELD and LIST event');
+        let json = JSON.stringify({
+          handList: state.handList,
+        });
+        this.shout(SET_LIST, json);
+        json = JSON.stringify(state.solutionField);
+        this.shout(SET_FIELD, json);
+      } else this.whisper(state.host, CLEAR_TASK, '');
     } else if (prevProps.status !== this.props.status) {
       // This player started the game from the lobby
       let playerIds = state.players.map((p) => p.id);
