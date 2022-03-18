@@ -26,6 +26,7 @@ import store from '../../../redux/store/store';
 import LockIcon from '../../../utils/images/buttonIcons/lock.png';
 import UnlockIcon from '../../../utils/images/buttonIcons/unlock.png';
 import PlayerLockIndicator from '../Player/PlayerIndicator/PlayerLockIndicator';
+import { getAllLocks, getLock } from '../../../utils/lockHelper/lockHelper';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -81,22 +82,16 @@ export default function Sidebar() {
    */
   useEffect(() => {
     let players = store.getState().players;
-    let readyCount = 0;
+    let allLocks = getAllLocks(players);
+    let readyCount = allLocks.filter((lock) => lock === true).length;
 
-    let playerNumber = 0;
-    for (let p of players) {
-      if (!p.hasOwnProperty('lock')) {
-        p.lock = false;
-      }
-      if (p.id === 'YOU') {
-        setLocked(p.lock);
-      }
-      lockedInPlayers[playerNumber] = p.lock;
-      setLockedInPlayers(lockedInPlayers);
-      ++playerNumber;
+    console.log(allLocks.filter((lock) => lock === true));
+
+    let myLock = getLock(players, 'YOU');
+    if (myLock !== locked) {
+      setLocked(myLock);
     }
-
-    readyCount = lockedInPlayers.filter((lock) => lock === true).length;
+    setLockedInPlayers(allLocks);
 
     if (readyCount === numberOfPlayers) {
       handleSubmit();

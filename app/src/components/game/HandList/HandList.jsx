@@ -121,15 +121,11 @@ function HandList({ player, draggable }) {
    * If it is me: Make sure that I cannot move blocks into solutionField
    */
   useEffect(() => {
-    if (newLockEvent.pid === undefined) {
-      setLocked(newLockEvent.lock);
-    }else{
       let players = store.getState().players;
       let myLock = getLock(players, 'YOU');
       if(myLock !== locked){
         setLocked(myLock);
       }
-    }
   }, [newLockEvent]);
 
   /** Helper function to make sure that the field event is done before sending a new event
