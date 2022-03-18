@@ -15,6 +15,8 @@ import {
   lockRequest,
   lockEvent,
   setPlayers,
+  listEvent,
+  fieldEvent,
 } from '../../../redux/actions';
 import { arrayIsEqual } from '../../../utils/compareArrays/compareArrays';
 import HintIcon from '../../../utils/images/buttonIcons/hint.png';
@@ -166,26 +168,22 @@ export default function Sidebar() {
   };
 
   /**
-   * Resets board to initial state
+   * Clear the board. If host: perform locally before dispatching field and list event. If not: request to host.
    */
   const clearBoard = () => {
+    if (store.getState().host === '') {
+      // Clear locally then update all players
+      let initalfield = currentTaskObject.field;
+      let field = store.getState().solutionField;
+      let handList = store.getState().handList;
+      handList = clearBoardHelper(field, handList);
+      dispatch(setFieldState(initalfield));
+      dispatch(setListState(handList));
+      dispatch(clearEvent()); // Request clear to host
+    } else {
+      dispatch(clearEvent()); // Request clear to host
+    }
     closeModal();
-
-    let initalfield = currentTaskObject.field;
-
-    // let field = store.getState().solutionField;
-    // let handList = store.getState().handList;
-    // handList = clearBoardHelper(field, handList);
-
-    // // Update board
-    dispatch(setFieldState(initalfield));
-    // dispatch(setListState(handList));
-
-    const allocatedLists = store.getState().allocatedLists;
-    dispatch(setListState(allocatedLists));
-
-    // Tell my team to reset solutionfield
-    dispatch(clearEvent());
   };
 
   /**

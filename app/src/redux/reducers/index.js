@@ -12,7 +12,6 @@ import taskReducer from './gameState/task';
 import playerReducer from './gameState/players';
 import statusReducer from './gameState/status';
 import finishReducer from './webrtc/finishEvent';
-import allocatedListsReducer from './gameState/allocatedLists';
 import hostReducer from './gameState/host';
 import moveRequestReducer from './gameLogic/moveRequest';
 import lockRequestReducer from './gameLogic/lockRequest';
@@ -34,7 +33,6 @@ const allReducers = combineReducers({
   currentTask: taskReducer,
   players: playerReducer,
   status: statusReducer,
-  allocatedLists: allocatedListsReducer,
   host: hostReducer,
   moveRequest: moveRequestReducer,
   lockRequest: lockRequestReducer,

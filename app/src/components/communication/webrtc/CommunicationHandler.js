@@ -13,7 +13,6 @@ import {
   startGame,
   finishGame,
   setTaskNumber,
-  setAllocatedListsForCurrentTask,
   setHost,
   removeHost,
   listEvent,
@@ -39,6 +38,10 @@ import {
   arrayIsEqual,
 } from '../../../utils/compareArrays/compareArrays';
 import { clearBoard } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
+import {
+  moveBlockInHandList,
+  moveBlockInSolutionField,
+} from '../../../utils/moveBlock/moveBlock';
 import PuzzleGif from '../PuzzleGif';
 import SidebarModal from '../../Game/Sidebar/SidebarModal/SidebarModal';
 import SubmitIcon from '../../../utils/images/buttonIcons/submit.png';
@@ -67,8 +70,6 @@ function mapDispatchToProps(dispatch) {
     dispatch_startGame: (...args) => dispatch(startGame(...args)),
     dispatch_finishGame: (...args) => dispatch(finishGame(...args)),
     dispatch_setTaskNumber: (...args) => dispatch(setTaskNumber(...args)),
-    dispatch_setAllocatedListsForCurrentTask: (...args) =>
-      dispatch(setAllocatedListsForCurrentTask(...args)),
     dispatch_setHost: (...args) => dispatch(setHost(...args)),
     dispatch_removeHost: (...args) => dispatch(removeHost(...args)),
     dispatch_listEvent: (...args) => dispatch(listEvent(...args)),
@@ -123,7 +124,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room3');
+  join = (webrtc) => webrtc.joinRoom('cpp-room4');
 
   /**
    * Called when a new peer is added to the room
@@ -238,21 +239,18 @@ class CommunicationHandler extends Component {
   };
 
   /**
-   *  Update the blocks in a hand list as well as the allocated lists for the current task.
+   *  Update the blocks in a hand list for the current task.
    *
    * @param {*} payload the new state for hand list
    */
   setList(payload) {
-    const { dispatch_setListState, dispatch_setAllocatedListsForCurrentTask } =
-      this.props;
+    const { dispatch_setListState } = this.props;
     const prevState = store.getState().handList;
     const payloadState = JSON.parse(payload);
 
     if (!twoDimensionalArrayIsEqual(prevState, payloadState)) {
       dispatch_setListState(payloadState.handList);
-      dispatch_setAllocatedListsForCurrentTask(payloadState.allocatedLists);
     }
-    console.log('host has sent LISTS');
   }
 
   /**
@@ -268,7 +266,6 @@ class CommunicationHandler extends Component {
     if (!arrayIsEqual(prevState, payloadState)) {
       dispatch_setFieldState(payloadState);
     }
-    console.log('host has sent FIELD');
   }
 
   /**
@@ -295,8 +292,6 @@ class CommunicationHandler extends Component {
     if (prevState !== payloadState.currentTask) {
       const { dispatch_nextTask } = this.props;
       dispatch_nextTask();
-      //const { dispatch_setAllocatedListsForCurrentTask } = this.props;
-      //dispatch_setAllocatedListsForCurrentTask(payloadState.handList);
       this.initialFieldFromFile();
     }
   }
@@ -394,179 +389,43 @@ class CommunicationHandler extends Component {
    * @param {*} peer
    */
   moveRequest(payload, peer) {
-    console.log('someone requested a move');
     const moveRequest = JSON.parse(payload);
-    const { dispatch_fieldEvent, dispatch_listEvent } = this.props;
-    if (this.moveIsAccepted(moveRequest)) {
-      this.moveBlock(moveRequest);
-
-      if (moveRequest.field === 'SF')
-        // broadcast what field is being updated (lists or solution field)
-        dispatch_fieldEvent();
-      else dispatch_listEvent();
-    }
-  }
-
-  /**
-   * Perform the move locally as host.
-   * @param {object} moveRequest {id, index, indent, field}
-   */
-  moveBlock(moveRequest) {
-    let blocks;
-    const player = parseInt(moveRequest.field);
-    const handListIndex = player - 1;
-    const isAMoveInSolutionField = moveRequest.field === 'SF';
-
-    // get blocks from solution field or handlist depending on where the move is performed
-    blocks = isAMoveInSolutionField
-      ? store.getState().solutionField
-      : store.getState().handList[handListIndex];
-
-    const block = this.findBlock(moveRequest.id, blocks);
-
-    // swaps block position in handlist/solution field OR move it from list/field to the other
-    if (block === undefined) {
-      if (isAMoveInSolutionField)
-        this.moveBlockFromList(moveRequest.id, moveRequest.index);
-      else this.moveBlockFromField(moveRequest.id, moveRequest.index, player);
-    } else {
-      if (isAMoveInSolutionField)
-        this.swapBlockPositionInField(
-          block,
-          moveRequest.index,
-          moveRequest.indent
-        );
-      else this.swapBlockPositionInList(block, moveRequest.index, player);
-    }
-  }
-
-  /**
-   * Tried to find the block in an array.
-   * @param {Integer} id
-   * @param {Array} blocks
-   * @returns block object if found; undefined if not
-   */
-  findBlock(id, blocks) {
-    const block = blocks.filter((block) => block.id === id)[0];
-    if (block === undefined) return undefined; // block came from solution field
-
-    return {
-      block,
-      index: blocks.indexOf(block),
+    const dispatches = {
+      dispatch_fieldEvent: this.props.dispatch_fieldEvent,
+      dispatch_listEvent: this.props.dispatch_listEvent,
+      dispatch_removeBlockFromField: this.props.dispatch_removeBlockFromField,
+      dispatch_setFieldState: this.props.dispatch_setFieldState,
+      dispatch_removeBlockFromList: this.props.dispatch_removeBlockFromList,
+      dispatch_setList: this.props.dispatch_setList,
     };
-  }
 
-  /**
-   * Moves a block from hand list to the solution field
-   * @param {Integer} id
-   * @param {Integer} atIndex
-   */
-  moveBlockFromList = (id, atIndex) => {
-    const blocks = store.getState().solutionField;
-    const handLists = store.getState().handList;
-    let blockIsNotFound = true;
-    let handListIndex = 0;
-    let movedBlock;
-    const AMOUNT_OF_PLAYERS = 4;
-    const {
-      dispatch_removeBlockFromList,
-      dispatch_listEvent,
-      dispatch_setFieldState,
-    } = this.props;
+    if (this.moveIsAccepted(moveRequest)) {
+      const { id, index, indent, field } = moveRequest;
+      const player = parseInt(field);
+      const handListIndex = player - 1;
+      const isAMoveInSolutionField = field === 'SF';
 
-    // find block and update the correct hand list
-    while (blockIsNotFound && handListIndex < AMOUNT_OF_PLAYERS) {
-      for (let block = 0; block < handLists[handListIndex].length; block++) {
-        if (handLists[handListIndex][block].id === id) {
-          // block is found, stop looking
-          blockIsNotFound = false;
-          movedBlock = handLists[handListIndex][block];
-          dispatch_removeBlockFromList(id, handListIndex);
-          dispatch_listEvent();
-          const updatedBlocks = [
-            ...blocks.slice(0, atIndex),
-            movedBlock,
-            ...blocks.slice(atIndex),
-          ];
-          dispatch_setFieldState(updatedBlocks);
-        }
+      if (isAMoveInSolutionField) {
+        moveBlockInSolutionField(
+          id,
+          index,
+          indent,
+          store.getState().solutionField,
+          store.getState().handList,
+          dispatches
+        );
+      } else {
+        moveBlockInHandList(
+          id,
+          index,
+          store.getState().solutionField,
+          store.getState().handList[handListIndex],
+          handListIndex,
+          dispatches
+        );
       }
-      handListIndex++;
     }
-  };
-
-  /**
-   * Swap block positions in the solution field.
-   * @param {} blockObj
-   * @param {*} atIndex
-   * @param {*} atIndent
-   */
-  swapBlockPositionInField = (blockObj, atIndex, atIndent) => {
-    const { dispatch_setFieldState } = this.props;
-    const blocks = store.getState().solutionField;
-    let block = blockObj.block;
-    block.indent = atIndent;
-    const updatedBlocks = update(blocks, {
-      $splice: [
-        [blockObj.index, 1],
-        [atIndex, 0, block],
-      ],
-    });
-
-    dispatch_setFieldState(updatedBlocks);
-  };
-
-  /**
-   * Move a block from the field into a hand list.
-   * @param {*} id
-   * @param {*} atIndex
-   * @param {*} player
-   */
-  moveBlockFromField = (id, atIndex, player) => {
-    let fieldBlocks = store.getState().solutionField;
-    let movedBlock = fieldBlocks.filter((block) => block.id === id)[0];
-    const blocks = store.getState().handList[player - 1];
-    const {
-      dispatch_setList,
-      dispatch_removeBlockFromField,
-      dispatch_fieldEvent,
-    } = this.props;
-
-    // players cannot move their own blocks to another player's hand
-    // a player can only move their own block to their own hand from solution field
-    if (movedBlock !== undefined && movedBlock.player === player) {
-      const updatedBlock = { ...movedBlock, indent: 0 }; // set indent to 0
-      const updatedBlocks = [
-        ...blocks.slice(0, atIndex),
-        updatedBlock,
-        ...blocks.slice(atIndex),
-      ];
-
-      dispatch_setList(updatedBlocks, player - 1);
-      dispatch_removeBlockFromField(id);
-      dispatch_fieldEvent();
-    }
-  };
-
-  /**
-   * Swap block positions in a hand list.
-   * @param {*} blockObj
-   * @param {*} atIndex
-   * @param {*} player
-   */
-  swapBlockPositionInList = (blockObj, atIndex, player) => {
-    const { dispatch_setList } = this.props;
-    const blocks = store.getState().handList[player - 1];
-    const updatedBlock = { ...blockObj.block, indent: 0 }; // set indent to 0
-    const updatedBlocks = update(blocks, {
-      $splice: [
-        [blockObj.index, 1],
-        [atIndex, 0, updatedBlock],
-      ],
-    });
-
-    dispatch_setList(updatedBlocks, player - 1);
-  };
+  }
 
   /**
    * Checks if a move should be accepted.
@@ -581,19 +440,18 @@ class CommunicationHandler extends Component {
    * Clears the board
    */
   clearTask() {
-    // // Get current board state
-    // let field = store.getState().solutionField;
-    // let handList = store.getState().handList;
-    // // Update board
-    // handList = clearBoard(field, handList);
-    // const { dispatch_setListState } = this.props;
-    // dispatch_setListState(handList);
-    // this.initialFieldFromFile();
-
-    const handList = store.getState().allocatedLists;
-    const { dispatch_setListState } = this.props;
+    // Get current board state
+    let field = store.getState().solutionField;
+    let handList = store.getState().handList;
+    // Update board
+    handList = clearBoard(field, handList);
+    const { dispatch_setListState, dispatch_fieldEvent, dispatch_listEvent } =
+      this.props;
     dispatch_setListState(handList);
     this.initialFieldFromFile();
+
+    dispatch_fieldEvent();
+    dispatch_listEvent();
   }
 
   /**
@@ -650,9 +508,6 @@ class CommunicationHandler extends Component {
     if (prevState !== payloadState.status) {
       const { dispatch_setListState } = this.props;
       dispatch_setListState(payloadState.handList);
-
-      const { dispatch_setAllocatedListsForCurrentTask } = this.props;
-      dispatch_setAllocatedListsForCurrentTask(payloadState.handList);
 
       const { dispatch_setFieldState } = this.props;
       dispatch_setFieldState(payloadState.solutionField);
