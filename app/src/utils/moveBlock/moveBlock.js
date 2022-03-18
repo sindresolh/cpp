@@ -265,32 +265,3 @@ const alreadyRequested = (move, lastMoveRequest) => {
     return false;
   return true;
 };
-
-/** Get the lock of the player with a given id
- *
- * @param {*} players : list of all players with lock status
- * @param {*} pid : id of peer
- * @returns
- */
-export const getLock = (players, pid) => {
-  for (let p of players) {
-    if (!p.hasOwnProperty('lock')) {
-      return false;
-    }
-    if (p.id === pid) {
-      return p.lock;
-    }
-  }
-};
-
-/** Change the status of a lock to the boolean
- *
- * @param {*} players : list of all players with lock status
- * @param {*} lock : boolean
- * @returns
- */
-export const changeAllLocks = (players, lock) => {
-  for (let p of players) {
-    p.lock = lock;
-  }
-};

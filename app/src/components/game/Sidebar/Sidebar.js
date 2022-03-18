@@ -26,7 +26,6 @@ import store from '../../../redux/store/store';
 import LockIcon from '../../../utils/images/buttonIcons/lock.png';
 import UnlockIcon from '../../../utils/images/buttonIcons/unlock.png';
 import PlayerLockIndicator from '../Player/PlayerIndicator/PlayerLockIndicator';
-import { changeAllLocks } from '../../../utils/moveBlock/moveBlock';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);

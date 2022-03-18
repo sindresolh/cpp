@@ -18,8 +18,8 @@ import CodeLine from '../CodeLine/CodeLine';
 import {
   moveBlockInHandList,
   requestMove,
-  getLock
 } from '../../../utils/moveBlock/moveBlock';
+import { getLock } from '../../../utils/lockHelper/lockHelper';
 import { COLORS } from '../../../utils/constants';
 
 /**

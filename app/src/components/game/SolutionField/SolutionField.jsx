@@ -19,8 +19,8 @@ import { COLORS, MAX_INDENT, KEYBOARD_EVENT } from '../../../utils/constants';
 import {
   moveBlockInSolutionField,
   requestMove,
-  getLock
 } from '../../../utils/moveBlock/moveBlock';
+import { getLock } from '../../../utils/lockHelper/lockHelper';
 import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
 
 /**
