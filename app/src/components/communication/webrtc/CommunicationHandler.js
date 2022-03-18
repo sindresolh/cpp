@@ -122,7 +122,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room90');
+  join = (webrtc) => webrtc.joinRoom('cpp-roomTULL');
 
   /**
    * Called when a new peer is added to the room

@@ -282,3 +282,15 @@ export const getLock = (players, pid) => {
     }
   }
 };
+
+/** Change the status of a lock to the boolean
+ *
+ * @param {*} players : list of all players with lock status
+ * @param {*} lock : boolean
+ * @returns
+ */
+export const changeAllLocks = (players, lock) => {
+  for (let p of players) {
+    p.lock = lock;
+  }
+};

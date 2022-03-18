@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Sidebar.css';
 import SidebarButton from './SidebarButton/SidebarButton';
 import SidebarModal from './SidebarModal/SidebarModal';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   nextTask,
   taskEvent,
@@ -11,12 +11,9 @@ import {
   setListState,
   finishGame,
   finishEvent,
-  setAllocatedListsForCurrentTask,
   lockRequest,
   lockEvent,
   setPlayers,
-  listEvent,
-  fieldEvent,
 } from '../../../redux/actions';
 import { arrayIsEqual } from '../../../utils/compareArrays/compareArrays';
 import HintIcon from '../../../utils/images/buttonIcons/hint.png';
@@ -29,6 +26,7 @@ import store from '../../../redux/store/store';
 import LockIcon from '../../../utils/images/buttonIcons/lock.png';
 import UnlockIcon from '../../../utils/images/buttonIcons/unlock.png';
 import PlayerLockIndicator from '../Player/PlayerIndicator/PlayerLockIndicator';
+import { changeAllLocks } from '../../../utils/moveBlock/moveBlock';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -84,6 +82,8 @@ export default function Sidebar() {
    */
   useEffect(() => {
     let players = store.getState().players;
+    let readyCount = 0;
+
     let playerNumber = 0;
     for (let p of players) {
       if (!p.hasOwnProperty('lock')) {
@@ -97,12 +97,12 @@ export default function Sidebar() {
       ++playerNumber;
     }
 
-    let readyCount = lockedInPlayers.filter((lock) => lock === true).length;
-    setNumberOfLockedInPlayers(readyCount);
+    readyCount = lockedInPlayers.filter((lock) => lock === true).length;
 
     if (readyCount === numberOfPlayers) {
       handleSubmit();
     }
+    setNumberOfLockedInPlayers(readyCount);
   }, [newLockEvent]);
 
   /* Close the modal. Callback from SideBarModal*/
@@ -200,8 +200,6 @@ export default function Sidebar() {
     // If I am the HOST I update for myself and the other players
     if (iAmHost()) {
       let players = store.getState().players;
-      let playerNumber = 0;
-
       for (let p of players) {
         if (p.id === 'YOU') {
           if (!p.hasOwnProperty('lock')) {
