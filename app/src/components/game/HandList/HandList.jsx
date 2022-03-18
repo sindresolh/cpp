@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import './HandList.css';
 import { useSelector, useDispatch } from 'react-redux';
@@ -20,6 +20,25 @@ import {
   moveBlockInHandList,
   requestMove,
 } from '../../../utils/moveBlock/moveBlock';
+import { COLORS } from '../../../utils/constants';
+
+/**
+ * Check if a move is already been requested to the host.
+ * This prevents sending the same request repeatedly while hovering.
+ * @param {object} move
+ * @param {object} lastMoveRequest
+ * @returns true if the move has been requested
+ */
+const alreadyRequested = (move, lastMoveRequest) => {
+  if (
+    move.id !== lastMoveRequest.id ||
+    move.index !== lastMoveRequest.index ||
+    move.indent !== lastMoveRequest.indent ||
+    move.field !== lastMoveRequest.field
+  )
+    return false;
+  return true;
+};
 
 /**
  * @returns true if this player is the host.
@@ -42,6 +61,8 @@ function HandList({ player, draggable }) {
   let blocks = useSelector((state) => state.handList[handListIndex]);
   blocks = blocks.map((block) => ({ ...block, indent: 0 })); // set indent to 0
   const emptyList = blocks.length === 0;
+  const newLockEvent = useSelector((state) => state.lockEvent); // Keeps track of new lock events
+  const [locked, setLocked] = useState(false);
 
   const dispatch_listEvent = () => {
     dispatch(listEvent());
@@ -113,6 +134,22 @@ function HandList({ player, draggable }) {
     [blocks, emptyList]
   );
 
+  /**
+   * Another player has changed their ready status
+   * If it is me: Make sure that I cannot move blocks into solutionField
+   */
+  useEffect(() => {
+    let players = store.getState().players;
+    for (let p of players) {
+      if (!p.hasOwnProperty('lock')) {
+        p.lock = false;
+      }
+      if (p.id === 'YOU') {
+        setLocked(p.lock);
+      }
+    }
+  }, [newLockEvent]);
+
   /** Helper function to make sure that the field event is done before sending a new event
    *
    * @returns
@@ -128,7 +165,7 @@ function HandList({ player, draggable }) {
    * @param {*} draggable : wheter or not the player has permission to perform this action
    */
   const handleDoubbleClick = (e, movedBlock, draggable) => {
-    if (e.detail > 1 && draggable && movedBlock != null) {
+    if (!locked && e.detail > 1 && draggable && movedBlock != null) {
       // (e.detauil > 1) if clicked more than once
       if (iAmHost()) {
         dispatch(removeBlockFromList(movedBlock.id, movedBlock.player - 1));
@@ -149,7 +186,7 @@ function HandList({ player, draggable }) {
   };
 
   return (
-    <div className={'divHL'} ref={emptyListDrop} key={draggable}>
+    <div className={'divHL'} ref={emptyListDrop} key={draggable} style={{backgroundColor: !locked? COLORS.codeline : COLORS.grey}}>
       <ul data-testid={`handList-player${player}`}>
         {blocks.map((block, index) => {
           return (
@@ -158,9 +195,11 @@ function HandList({ player, draggable }) {
               index={index}
               moveBlock={moveBlock}
               maxIndent={0}
-              draggable={draggable}
+              draggable={locked? !locked : draggable}
               key={`player-${player}-line-${index}`}
               handleDoubbleClick={handleDoubbleClick}
+              isAlwaysVisible={draggable}
+              background={!locked? COLORS.codeline : COLORS.grey}
             />
           );
         })}

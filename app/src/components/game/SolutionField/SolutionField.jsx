@@ -22,6 +22,25 @@ import {
   moveBlockInSolutionField,
   requestMove,
 } from '../../../utils/moveBlock/moveBlock';
+import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
+
+/**
+ * Check if a move is already been requested to the host.
+ * This prevents sending the same request repeatedly while hovering.
+ * @param {object} move
+ * @param {object} lastMoveRequest
+ * @returns true if the move has been requested
+ */
+const alreadyRequested = (move, lastMoveRequest) => {
+  if (
+    move.id !== lastMoveRequest.id ||
+    move.index !== lastMoveRequest.index ||
+    move.indent !== lastMoveRequest.indent ||
+    move.field !== lastMoveRequest.field
+  )
+    return false;
+  return true;
+};
 
 /**
  * @returns true if this player is the host.
@@ -37,7 +56,7 @@ const iAmHost = () => {
  *
  * @returns a div containing the blocks players has moved blocks into
  */
-function SolutionField({}) {
+function SolutionField({minwidth}) {
   const currentTaskNumber = useSelector(
     (state) => state.currentTask.currentTaskNumber
   );
@@ -45,6 +64,8 @@ function SolutionField({}) {
   const players = useSelector((state) => state.players);
   const dispatch = useDispatch();
   const [selectedCodeline, setSelectedCodeline] = useState(null); // block selected for the next keyDown event
+  const newLockEvent = useSelector((state) => state.lockEvent); // Keeps track of new lock events
+  const [locked, setLocked] = useState(false);
 
   const dispatch_fieldEvent = () => {
     dispatch(fieldEvent());
@@ -150,8 +171,25 @@ function SolutionField({}) {
     setSelectedCodeline(null);
   }, [currentTaskNumber]);
 
+   /**
+   * Another player has changed their ready status
+   */
+  useEffect(() => {
+    let players = store.getState().players;
+    for (let p of players) {
+      if (!p.hasOwnProperty('lock')) {
+        p.lock = false;
+      }
+      if (p.id === 'YOU') {
+        setLocked(p.lock);
+      }
+
+    }
+  }, [newLockEvent]);
+
   /**
    * Creates an key event listener based on the selected codeblock
+   * If it is me: Lock my board
    */
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -185,7 +223,9 @@ function SolutionField({}) {
    * @param {*} draggable : wheter or not the player has permission to perform this action
    */
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
-    setSelectedCodeline(movedBlock);
+    if(!locked){
+      setSelectedCodeline(movedBlock);
+       setSelectedCodeline(movedBlock);
     if (movedBlock != null && draggable) {
       // the user selected this codeblock
       movedBlock.index = index;
@@ -208,15 +248,17 @@ function SolutionField({}) {
           field: playerField,
         };
         requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
+        }
       }
-
-      e.detail = 0; // resets detail so that other codeblocks can be clicked
     }
+    e.detail = 0; // resets detail so that other codeblocks can be clicked
+    
   };
 
   return (
-    <div className={'divSF'} style={{ background: COLORS.solutionfield }}>
+    <div className={'divSF'} style={{ background: locked ? "#C2C2C2" : COLORS.solutionfield }}>
       <h6>{'Connected players: ' + players.length}</h6>
+      {locked && minwidth? <div className='bigLockContainer'><img className="bigLock" src={BigLockImage} /> </div> :''}
       <ul data-testid='solutionField'>
         {blocks.map((block, index) => {
           return (
@@ -225,17 +267,19 @@ function SolutionField({}) {
               index={index}
               moveBlock={moveBlock}
               maxIndent={MAX_INDENT}
-              draggable={true}
+              draggable={!locked}
               key={`line-${index}`}
               handleDoubbleClick={handleDoubbleClick}
               selectedCodeline={selectedCodeline}
+              isAlwaysVisible={true}
+              background={!locked? COLORS.codeline : COLORS.grey}
             />
           );
         })}
         <li
           key={'emptyField'}
           className='empty'
-          style={{ background: COLORS.codeline }}
+          style={{ background: COLORS.codeline, visibility: locked? 'hidden' : 'visible' }}
           ref={emptyLineDrop}
         />
       </ul>

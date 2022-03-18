@@ -11,6 +11,8 @@ import {
   START_GAME,
   FINISHED,
   MOVE_REQUEST,
+  LOCK_REQUEST,
+  LOCK_EVENT,
 } from './messages';
 import {
   startGame,
@@ -20,6 +22,8 @@ import {
   fieldEvent,
   finishEvent,
   setHost,
+  lockEvent,
+  lockRequest,
 } from '../../../redux/actions';
 import { shuffleCodeblocks } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
 import { STATUS } from '../../../utils/constants';
@@ -44,6 +48,8 @@ const mapStateToProps = (state) => ({
   finishEvent: state.finishEvent,
   host: state.host,
   moveRequest: state.moveRequest,
+  lockRequest: state.lockRequest,
+  lockEvent: state.lockEvent,
 });
 
 /** Helper function to let us call dispatch from a class function
@@ -156,6 +162,13 @@ class CommunicationListener extends Component {
   }
 
   /**
+   * @returns true if this player is the host.
+   */
+  iAmHost() {
+    return store.getState().host === '';
+  }
+
+  /**
    * Notifies other peers when this player changes the state
    *
    * @param {*} prevProps : Checks that the new value is different
@@ -219,6 +232,17 @@ class CommunicationListener extends Component {
     } else if (prevProps.moveRequest !== this.props.moveRequest) {
       const json = JSON.stringify(state.moveRequest);
       this.whisper(state.host, MOVE_REQUEST, json);
+    } else if (prevProps.lockRequest !== this.props.lockRequest) {
+      // I am not host and need to request a lock board for myself
+      const json = JSON.stringify(state.lockRequest);
+      this.whisper(state.host, LOCK_REQUEST, json);
+    } else if (prevProps.lockEvent !== this.props.lockEvent) {
+      // A new player has changed their ready status - See Sidebar.js
+      if (this.iAmHost()) {
+        // I am host and I just approved a lock.
+        const json = JSON.stringify(state.lockEvent);
+        this.shout(LOCK_EVENT, json);
+      }
     }
 
     //Warn users leaving page

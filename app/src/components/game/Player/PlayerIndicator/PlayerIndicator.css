@@ -1,0 +1,19 @@
+.IndicatorContainer {
+}
+
+.PlayerIcons {
+  position: relative;
+  z-index: 1;
+  margin-bottom: -55px;
+}
+
+.Indicator {
+  position: relative;
+  left: 0;
+  top: 0;
+  margin-bottom: -10px;
+}
+
+.smallPlayerIcon {
+  width: 20px;
+}

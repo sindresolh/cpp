@@ -20,6 +20,7 @@ import {
   removeBlockFromField,
   removeBlockFromList,
   setList,
+  lockEvent,
 } from '../../../redux/actions';
 import {
   SET_LIST,
@@ -29,6 +30,8 @@ import {
   START_GAME,
   FINISHED,
   MOVE_REQUEST,
+  LOCK_REQUEST,
+  LOCK_EVENT,
 } from './messages';
 import {
   twoDimensionalArrayIsEqual,
@@ -75,6 +78,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(removeBlockFromField(...args)),
     dispatch_removeBlockFromList: (...args) =>
       dispatch(removeBlockFromList(...args)),
+    dispatch_lockEvent: (...args) => dispatch(lockEvent(...args)),
   };
 }
 
@@ -226,7 +230,11 @@ class CommunicationHandler extends Component {
         this.moveRequest(payload, peer);
         break;
       default:
+      case LOCK_REQUEST:
+        this.lockRequest(payload, peer);
         return;
+      case LOCK_EVENT:
+        this.lockEvent(payload);
     }
   };
 
@@ -282,14 +290,6 @@ class CommunicationHandler extends Component {
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState.currentTask) {
-      this.setState({
-        modalTitle: 'New task',
-        modalDescription:
-          'Your solution was correct! Another player initiated a new task.',
-        isModalOpen: true,
-        modalBorderColor: COLORS.darkgreen,
-        modalButtonColor: COLORS.lightgreen,
-      });
       const { dispatch_nextTask } = this.props;
       dispatch_nextTask();
       this.initialFieldFromFile();
@@ -302,6 +302,84 @@ class CommunicationHandler extends Component {
     const { dispatch_removeHost } = this.props;
     this.setState({ finished: true, isModalOpen: true });
     dispatch_removeHost();
+  }
+
+  /**
+   * As a HOST it is my resposibility to handle a lock request
+   *
+   * @param {*} payload
+   * @param {*} peer
+   */
+  lockRequest(payload, peer) {
+    const lock = JSON.parse(payload);
+    let players = store.getState().players;
+
+    // Handle the request and lock/unlock if approved
+    for (let p of players) {
+      if (p.id == peer.id) {
+        if (!p.hasOwnProperty('lock') || p.lock !== lock) {
+          peer.lock = lock;
+
+          // Update for me
+          const { dispatch_setPlayers } = this.props;
+          dispatch_setPlayers(players);
+
+          // Notify other peers about my approval
+          const { dispatch_lockEvent } = this.props;
+          dispatch_lockEvent({ pid: peer.id, lock: lock });
+        }
+        break;
+      }
+    }
+  }
+
+  /**
+   * Set the lock property for a given player id
+   *
+   * @param {*} players : all players
+   * @param {*} pid : unique player id
+   * @param {*} lock: boolean
+   * @returns
+   */
+  setLock(players, pid, lock) {
+    for (let p of players) {
+      if (pid === p.id) {
+        p.lock = lock;
+        const { dispatch_setPlayers } = this.props;
+        dispatch_setPlayers(players);
+        const { dispatch_lockEvent } = this.props;
+        dispatch_lockEvent({ pid: pid, lock: lock });
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * The HOST just handled a lock request (I am NOT the HOST)
+   *
+   * @param {*} payload
+   * @param {*} peer
+   */
+  lockEvent(payload) {
+    let payloadState = JSON.parse(payload);
+    let prevState = store.getState();
+
+    // Me or another player got an approved lock from host.
+    let players = prevState.players;
+
+    // This lock was performed by the HOST, but HOST does not know it's own name.
+    if (payloadState.pid === 'HOST') {
+      payloadState.pid = prevState.host;
+    }
+
+    // Find out if thos long belongs to another player
+    if (!this.setLock(players, payloadState.pid, payloadState.lock)) {
+      // If it does not belong to another player it probably belongs to me
+      if (prevState.lockRequest === payloadState.lock) {
+        this.setLock(players, 'YOU', payloadState.lock);
+      }
+    }
   }
 
   /**
@@ -462,31 +540,16 @@ class CommunicationHandler extends Component {
       >
         {this.state.connected ? <CommunicationListener /> : <PuzzleGif />}
         {/* Fancy alert for new events, for now only shows when there is a new task*/}
-        {this.state.finished ? (
-          <SidebarModal
-            modalIsOpen={this.state.isModalOpen}
-            icon={CheckIcon}
-            title={'Task set finished'}
-            description={
-              'Congratulations! Another player submitted the last task.'
-            }
-            buttonText={'Finish'}
-            buttonColor={COLORS.lightgreen}
-            borderColor={COLORS.darkgreen}
-            closeModal={() => this.finishModal()}
-          />
-        ) : (
-          <SidebarModal
-            modalIsOpen={this.state.isModalOpen}
-            icon={SubmitIcon}
-            title={this.state.modalTitle}
-            description={this.state.modalDescription}
-            buttonText={'Ok'}
-            buttonColor={this.state.modalButtonColor}
-            borderColor={this.state.modalBorderColor}
-            closeModal={() => this.closeModal()}
-          />
-        )}
+        <SidebarModal
+          modalIsOpen={this.state.isModalOpen}
+          icon={SubmitIcon}
+          title={this.state.modalTitle}
+          description={this.state.modalDescription}
+          buttonText={'Ok'}
+          buttonColor={this.state.modalButtonColor}
+          borderColor={this.state.modalBorderColor}
+          closeModal={() => this.closeModal()}
+        />
       </LioWebRTC>
     );
   }

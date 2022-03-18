@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Sidebar.css';
 import SidebarButton from './SidebarButton/SidebarButton';
 import SidebarModal from './SidebarModal/SidebarModal';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import {
   nextTask,
   taskEvent,
@@ -11,18 +11,24 @@ import {
   setListState,
   finishGame,
   finishEvent,
+  setAllocatedListsForCurrentTask,
+  lockRequest,
+  lockEvent,
+  setPlayers,
   listEvent,
   fieldEvent,
 } from '../../../redux/actions';
 import { arrayIsEqual } from '../../../utils/compareArrays/compareArrays';
 import HintIcon from '../../../utils/images/buttonIcons/hint.png';
 import ClearIcon from '../../../utils/images/buttonIcons/clear.png';
-import SubmitIcon from '../../../utils/images/buttonIcons/submit.png';
 import CheckIcon from '../../../utils/images/buttonIcons/check.png';
 import CrossIcon from '../../../utils/images/buttonIcons/cross.png';
 import { COLORS } from '../../../utils/constants';
 import { clearBoard as clearBoardHelper } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
 import store from '../../../redux/store/store';
+import LockIcon from '../../../utils/images/buttonIcons/lock.png';
+import UnlockIcon from '../../../utils/images/buttonIcons/unlock.png';
+import PlayerIndicator from '../Player/PlayerIndicator/PlayerIndicator';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -43,6 +49,16 @@ export default function Sidebar() {
   const fieldBlocks = useSelector((state) => state.solutionField);
   const [currentHintNo, setCurrentHintNo] = useState(0);
   const [finished, setFinished] = useState(false);
+  const [locked, setLocked] = useState(false);
+  const numberOfPlayers = useSelector((state) => state.players.length);
+  const newLockEvent = useSelector((state) => state.lockEvent); // Keeps track of new lock events
+  const [lockedInPlayers, setLockedInPlayers] = useState([
+    false,
+    false,
+    false,
+    false,
+  ]); // One for each player and wheter or not they are locked in
+  const [numberOfLockedInPlayers, setNumberOfLockedInPlayers] = useState(0);
 
   /**
    * Reset current hint when a new task is started.
@@ -62,6 +78,32 @@ export default function Sidebar() {
       handleHint();
     }
   }, [currentHintNo]);
+
+  /**
+   * Another player has changed their ready status
+   */
+  useEffect(() => {
+    let players = store.getState().players;
+    let playerNumber = 0;
+    for (let p of players) {
+      if (!p.hasOwnProperty('lock')) {
+        p.lock = false;
+      }
+      if (p.id === 'YOU') {
+        setLocked(p.lock);
+      }
+      lockedInPlayers[playerNumber] = p.lock;
+      setLockedInPlayers(lockedInPlayers);
+      ++playerNumber;
+    }
+
+    let readyCount = lockedInPlayers.filter((lock) => lock === true).length;
+    setNumberOfLockedInPlayers(readyCount);
+
+    if (readyCount === numberOfPlayers) {
+      handleSubmit();
+    }
+  }, [newLockEvent]);
 
   /* Close the modal. Callback from SideBarModal*/
   const closeModal = () => {
@@ -145,19 +187,39 @@ export default function Sidebar() {
   };
 
   /**
-   * Confirm modal to be displayed before the feedbackmodal
+   * @returns true if this player is the host.
    */
-  const confirmSubmit = () => {
-    openModal(
-      SubmitIcon,
-      'Submit',
-      'Are you sure you want to submit for the entire group?',
-      'Cancel',
-      COLORS.lightred,
-      COLORS.darkgreen,
-      'none',
-      'inline-block'
-    );
+  const iAmHost = () => {
+    return store.getState().host === '';
+  };
+
+  /**
+   * Handle a click on the lock button.
+   */
+  const handleLock = () => {
+    // If I am the HOST I update for myself and the other players
+    if (iAmHost()) {
+      let players = store.getState().players;
+      let playerNumber = 0;
+
+      for (let p of players) {
+        if (p.id === 'YOU') {
+          if (!p.hasOwnProperty('lock')) {
+            p.lock = true;
+          } else {
+            p.lock = !p.lock;
+          }
+          dispatch(setPlayers(players));
+          dispatch(lockEvent({ pid: 'HOST', lock: p.lock }));
+        }
+      }
+      setNumberOfLockedInPlayers(
+        lockedInPlayers.filter((lock) => lock === true).length
+      );
+    } else {
+      // If I am not he HOST I need to ask for permission
+      dispatch(lockRequest());
+    }
   };
 
   /**
@@ -185,7 +247,10 @@ export default function Sidebar() {
     const lastTask = currentTaskNumber === currentTask.tasks.length - 1;
 
     if (correctSolution && lastTask) {
-      dispatch(finishEvent()); // notify other players this peer submitted the final task
+      if (iAmHost()) {
+        dispatch(finishEvent()); // notify other players this peer submitted the final task
+      }
+
       openModal(
         CheckIcon,
         'Task set finished',
@@ -197,8 +262,11 @@ export default function Sidebar() {
       );
       setFinished(true);
     } else if (correctSolution) {
-      dispatch(nextTask());
-      dispatch(taskEvent());
+      if (iAmHost()) {
+        dispatch(nextTask());
+        dispatch(taskEvent());
+      }
+
       openModal(
         CheckIcon,
         'Correct',
@@ -304,11 +372,16 @@ export default function Sidebar() {
       </div>
 
       <div className='BottomButton'>
+        <PlayerIndicator
+          lockArray={lockedInPlayers}
+          numberOfLockedInPlayers={numberOfLockedInPlayers}
+          numberOfPlayers={numberOfPlayers}
+        />
         <SidebarButton
-          title='Submit'
-          icon={SubmitIcon}
-          color={COLORS.lightgreen}
-          handleClick={() => confirmSubmit()}
+          title={locked ? 'Unlock' : 'Lock in'}
+          icon={locked ? UnlockIcon : LockIcon}
+          color={locked ? COLORS.lightred : COLORS.lightgreen}
+          handleClick={() => handleLock()}
         />
       </div>
     </div>

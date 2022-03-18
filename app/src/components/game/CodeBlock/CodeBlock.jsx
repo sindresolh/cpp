@@ -27,6 +27,7 @@ function CodeBlock({
   index,
   moveBlock,
   draggable,
+  isAlwaysVisible // Should be visible even if it is not draggable - Special case for a lock
 }) {
   // implement dragging
   const [{ isDragging }, drag] = useDrag(
@@ -65,7 +66,10 @@ function CodeBlock({
   let className = isDragging
     ? `cb ${category} player${player} dragging`
     : `cb ${category} player${player}`;
-  className = !draggable ? className + ' invisible' : className;
+  // If I am inside handlist (no indent) and not draggable -> make me invisible
+  if(!isAlwaysVisible){
+      className = !draggable ? className + ' invisible' : className;
+  }
 
   return (
     <div 
@@ -91,6 +95,7 @@ CodeBlock.propTypes = {
   index: PropTypes.number,
   moveBlock: PropTypes.func,
   draggable: PropTypes.bool,
+  isAlwaysVisible: PropTypes.bool
 };
 
 export default CodeBlock;

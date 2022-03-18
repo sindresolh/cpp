@@ -34,6 +34,7 @@ export const COLORS = {
   lightyellow: '#fbd392',
   lightblue: '#c4ccf5',
   lightgreen: '#8bbe95',
+  grey: '#B1B1B1',
 };
 
 export const OFFSET = 50;

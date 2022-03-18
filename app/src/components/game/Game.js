@@ -62,7 +62,7 @@ export default function Game() {
 
         {/*Middle : Soloutionfield and Sidebar*/}
         <div className='GameCenter'>
-          <SolutionField />
+          <SolutionField minwidth={minwidth} />
           <Sidebar />
         </div>
 
