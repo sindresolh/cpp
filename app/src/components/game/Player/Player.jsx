@@ -39,6 +39,7 @@ function Player({ playerNo, name, codeBlocks }) {
           data-testid={`player-${playerNo}-icon`}
           src={icon}
           alt={`Player ${playerNo} icon`}
+          draggable={false}
         />
         <div
           className={`player-${playerNo} name`}

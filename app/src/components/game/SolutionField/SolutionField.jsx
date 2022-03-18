@@ -258,7 +258,7 @@ function SolutionField({minwidth}) {
   return (
     <div className={'divSF'} style={{ background: locked ? "#C2C2C2" : COLORS.solutionfield }}>
       <h6>{'Connected players: ' + players.length}</h6>
-      {locked && minwidth? <div className='bigLockContainer'><img className="bigLock" src={BigLockImage} /> </div> :''}
+      {locked && minwidth? <div className='bigLockContainer'><img draggable={false} className="bigLock" src={BigLockImage} /> </div> :''}
       <ul data-testid='solutionField'>
         {blocks.map((block, index) => {
           return (
