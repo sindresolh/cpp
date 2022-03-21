@@ -310,11 +310,8 @@ class CommunicationHandler extends Component {
    * @param {*} peer
    */
   lockRequest(payload, peer) {
-    console.log('req');
     const payloadState = JSON.parse(payload);
     let lock = payloadState.lock;
-
-    console.log(payloadState);
 
     let players = store.getState().players;
     const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
@@ -340,7 +337,6 @@ class CommunicationHandler extends Component {
    * @param {*} peer
    */
   lockEvent(payload) {
-    console.log('host handled');
     let payloadState = JSON.parse(payload);
     let prevState = store.getState();
 
@@ -372,7 +368,6 @@ class CommunicationHandler extends Component {
       // If it does not belong to another player it probably belongs to me
       else {
         // Update the players with new locks
-        console.log('this belongs to me' + payloadState.lock);
         dispatch_setPlayers(setLock(players, 'YOU', payloadState.lock));
         dispatch_lockEvent({
           pid: 'YOU',
