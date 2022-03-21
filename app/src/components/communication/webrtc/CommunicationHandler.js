@@ -333,35 +333,40 @@ class CommunicationHandler extends Component {
   lockEvent(payload) {
     let payloadState = JSON.parse(payload);
     let prevState = store.getState();
-    console.log(payloadState);
-
     let players = prevState.players;
     const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
-
-    // This lock was performed by the HOST, but HOST does not know it's own name.
-    if (payloadState.pid === 'HOST') {
-      payloadState.pid = prevState.host;
-    }
-
-    // Find out if thos long belongs to another player
-    if (players.some((p) => p.id === payloadState.pid)) {
-      // Update the players with new locks
-      dispatch_setPlayers(
-        setLock(players, payloadState.pid, payloadState.lock)
-      );
+    if (payloadState.pid === 'ALL_PLAYERS') {
+      dispatch_setPlayers(setAllLocks(players, payloadState.lock));
       dispatch_lockEvent({
         pid: payloadState.pid,
         lock: payloadState.lock,
       });
-    }
-    // If it does not belong to another player it probably belongs to me
-    else {
-      // Update the players with new locks
-      dispatch_setPlayers(setLock(players, 'YOU', payloadState.lock));
-      dispatch_lockEvent({
-        pid: 'YOU',
-        lock: payloadState.lock,
-      });
+    } else {
+      // This lock was performed by the HOST, but HOST does not know it's own name.
+      if (payloadState.pid === 'HOST') {
+        payloadState.pid = prevState.host;
+      }
+
+      // Find out if thos long belongs to another player
+      if (players.some((p) => p.id === payloadState.pid)) {
+        // Update the players with new locks
+        dispatch_setPlayers(
+          setLock(players, payloadState.pid, payloadState.lock)
+        );
+        dispatch_lockEvent({
+          pid: payloadState.pid,
+          lock: payloadState.lock,
+        });
+      }
+      // If it does not belong to another player it probably belongs to me
+      else {
+        // Update the players with new locks
+        dispatch_setPlayers(setLock(players, 'YOU', payloadState.lock));
+        dispatch_lockEvent({
+          pid: 'YOU',
+          lock: payloadState.lock,
+        });
+      }
     }
   }
 
@@ -423,11 +428,18 @@ class CommunicationHandler extends Component {
    * Clears the board
    */
   clearTask() {
-    console.log('clears the board');
+    console.log('Jeg er IKKE host?');
 
     // Get current board state
     let field = store.getState().solutionField;
     let handList = store.getState().handList;
+    let players = store.getState().players;
+
+    // Open the locks
+    const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
+    dispatch_setPlayers(setAllLocks(players, false));
+    dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: false });
+
     // Update board
     handList = clearBoard(field, handList);
     const { dispatch_setListState, dispatch_fieldEvent, dispatch_listEvent } =

@@ -204,10 +204,13 @@ class CommunicationListener extends Component {
     } else if (
       prevProps.clearEvent.getTime() < this.props.clearEvent.getTime()
     ) {
-      if (state.host === '') {
+      if (this.iAmHost()) {
+        let json = JSON.stringify(state.lockEvent);
+        this.shout(LOCK_EVENT, json);
+
         // This peer cleared the board
         console.log('update all players about FIELD and LIST event');
-        let json = JSON.stringify({
+        json = JSON.stringify({
           handList: state.handList,
         });
         this.shout(SET_LIST, json);

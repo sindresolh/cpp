@@ -86,7 +86,8 @@ export default function Sidebar() {
    * Another player has changed their ready status
    */
   useEffect(() => {
-    if (newLockEvent.pid === undefined) {
+    if (newLockEvent.pid === 'ALL_PLAYERS') {
+      console.log('clear');
       setLocked(false);
       setNumberOfLockedInPlayers([]);
       setNumberOfLockedInPlayers(0);
@@ -184,11 +185,12 @@ export default function Sidebar() {
       handList = clearBoardHelper(field, handList);
 
       dispatch(setPlayers(setAllLocks(players, false)));
-      dispatch(lockEvent({ pid: undefined, lock: false }));
+      dispatch(lockEvent({ pid: 'ALL_PLAYERS', lock: false }));
       dispatch(setFieldState(initalfield));
       dispatch(setListState(handList));
       dispatch(clearEvent()); // Request clear to host
     } else {
+      dispatch(lockRequest());
       dispatch(clearEvent()); // Request clear to host
     }
     closeModal();
