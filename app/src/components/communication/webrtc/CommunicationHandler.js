@@ -316,7 +316,7 @@ class CommunicationHandler extends Component {
     let players = store.getState().players;
     const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
 
-    if (payloadState.forWho === LOCKTYPES.MYSELF) {
+    if (payloadState.forWho === LOCKTYPES.FOR_MYSELF) {
       // Update the players with new locks
       dispatch_setPlayers(setLock(players, peer.id, lock));
       // Notify other peers about my approval
