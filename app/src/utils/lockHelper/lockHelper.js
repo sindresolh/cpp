@@ -5,7 +5,11 @@
  * @returns
  */
 export const getLock = (players, pid) => {
-  return players.filter((p) => p.id === pid)[0].lock;
+  try {
+    return players.filter((p) => p.id === pid)[0].lock;
+  } catch (error) {
+    return false;
+  }
 };
 
 /** Get the lock of the player with a given id
