@@ -94,9 +94,7 @@ export default function Sidebar() {
       let readyCount = allLocks.filter((lock) => lock === true).length;
 
       let myLock = getLock(players, 'YOU');
-      if (myLock !== locked) {
-        setLocked(myLock);
-      }
+      setLocked(myLock);
       setLockedInPlayers(allLocks);
 
       if (readyCount === numberOfPlayers) {
@@ -179,7 +177,7 @@ export default function Sidebar() {
    * Clear the board. If host: perform locally before dispatching field and list event. If not: request to host.
    */
   const clearBoard = () => {
-    if (store.getState().host === '') {
+    if (iAmHost()) {
       // Clear locally then update all players
       let initalfield = currentTaskObject.field;
       let state = store.getState();
@@ -235,6 +233,14 @@ export default function Sidebar() {
    * Make all players go to the next task of the submit is correct
    */
   const handleSubmit = () => {
+    if (iAmHost()) {
+      let players = store.getState().players;
+      // Clear the locks for all players
+      dispatch(setPlayers(setAllLocks(players, false)));
+      dispatch(lockEvent({ pid: 'ALL_PLAYERS', lock: false }));
+    } else {
+      dispatch(lockRequest());
+    }
     closeModal();
     setCurrentFieldBlocks(fieldBlocks);
     let correctSolution = arrayIsEqual(
@@ -272,10 +278,7 @@ export default function Sidebar() {
       setFinished(true);
     } else if (correctSolution) {
       if (iAmHost()) {
-        let players = store.getState().players;
-        // Clear the locks for all players
-        dispatch(setPlayers(setAllLocks(players, false)));
-        dispatch(lockEvent({ pid: 'ALL_PLAYERS', lock: false }));
+        // Update the task
         dispatch(nextTask());
         dispatch(taskEvent());
       }
@@ -299,13 +302,6 @@ export default function Sidebar() {
         COLORS.darkred,
         'block'
       );
-
-      if (iAmHost()) {
-        let players = store.getState().players;
-        // Clear the locks for all players
-        dispatch(setPlayers(setAllLocks(players, false)));
-        dispatch(lockEvent({ pid: 'ALL_PLAYERS', lock: false }));
-      }
     }
   };
 

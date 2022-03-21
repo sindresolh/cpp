@@ -123,7 +123,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room-SNART-HELG');
+  join = (webrtc) => webrtc.joinRoom('cpp-room-mondayy');
 
   /**
    * Called when a new peer is added to the room
@@ -279,6 +279,12 @@ class CommunicationHandler extends Component {
     dispatch_setFieldState(initialfield);
   }
 
+  /** Open the locks for all players */
+  openAllLocks() {
+    const { dispatch_lockEvent } = this.props;
+    dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: false });
+  }
+
   /**
    * Update the current task
    *
@@ -288,11 +294,7 @@ class CommunicationHandler extends Component {
     const prevState = store.getState().currentTask;
     const payloadState = JSON.parse(payload);
 
-    // Open the locks
-    const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
-    let players = store.getState().players;
-    dispatch_setPlayers(setAllLocks(players, false));
-    dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: false });
+    this.openAllLocks();
 
     if (prevState !== payloadState.currentTask) {
       const { dispatch_nextTask } = this.props;
@@ -339,6 +341,7 @@ class CommunicationHandler extends Component {
   lockEvent(payload) {
     let payloadState = JSON.parse(payload);
     let prevState = store.getState();
+
     let players = prevState.players;
     const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
     if (payloadState.pid === 'ALL_PLAYERS') {
@@ -367,6 +370,7 @@ class CommunicationHandler extends Component {
       // If it does not belong to another player it probably belongs to me
       else {
         // Update the players with new locks
+        console.log('this belongs to me' + payloadState.lock);
         dispatch_setPlayers(setLock(players, 'YOU', payloadState.lock));
         dispatch_lockEvent({
           pid: 'YOU',
@@ -437,12 +441,8 @@ class CommunicationHandler extends Component {
     // Get current board state
     let field = store.getState().solutionField;
     let handList = store.getState().handList;
-    let players = store.getState().players;
 
-    // Open the locks
-    const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
-    dispatch_setPlayers(setAllLocks(players, false));
-    dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: false });
+    this.openAllLocks();
 
     // Update board
     handList = clearBoard(field, handList);
