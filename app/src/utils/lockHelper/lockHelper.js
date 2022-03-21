@@ -5,12 +5,7 @@
  * @returns
  */
 export const getLock = (players, pid) => {
-  try {
-    return players.filter((p) => p.id === pid)[0].lock;
-  } catch (error) {
-    // Before initialization the lock is open
-    return false;
-  }
+  return players.filter((p) => p.id === pid)[0].lock;
 };
 
 /** Get the lock of the player with a given id
