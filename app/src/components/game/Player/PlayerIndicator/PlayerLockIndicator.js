@@ -20,22 +20,22 @@ export default function PlayerIndicator({
     <div className='IndicatorContainer' style={{ visibility: VISIBILITY }}>
       <div className='PlayerIcons' style={{ marginRight: PLAYERICONS_OFFSET }}>
         {lockArray[PLAYER.P1 - 1] ? (
-          <img src={p1Icon} className='smallPlayerIcon' />
+          <img draggable={false} src={p1Icon} className='smallPlayerIcon' />
         ) : (
           ''
         )}
         {lockArray[PLAYER.P2 - 1] ? (
-          <img src={p2Icon} className='smallPlayerIcon' />
+          <img draggable={false} src={p2Icon} className='smallPlayerIcon' />
         ) : (
           ''
         )}
         {lockArray[PLAYER.P3 - 1] ? (
-          <img src={p3Icon} className='smallPlayerIcon' />
+          <img draggable={false} src={p3Icon} className='smallPlayerIcon' />
         ) : (
           ''
         )}
         {lockArray[PLAYER.P4 - 1] ? (
-          <img src={p4Icon} className='smallPlayerIcon' />
+          <img draggable={false} src={p4Icon} className='smallPlayerIcon' />
         ) : (
           ''
         )}

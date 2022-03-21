@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Sidebar.css';
 import SidebarButton from './SidebarButton/SidebarButton';
 import SidebarModal from './SidebarModal/SidebarModal';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   nextTask,
   taskEvent,
@@ -11,24 +11,27 @@ import {
   setListState,
   finishGame,
   finishEvent,
-  setAllocatedListsForCurrentTask,
   lockRequest,
   lockEvent,
   setPlayers,
-  listEvent,
-  fieldEvent,
 } from '../../../redux/actions';
 import { arrayIsEqual } from '../../../utils/compareArrays/compareArrays';
 import HintIcon from '../../../utils/images/buttonIcons/hint.png';
 import ClearIcon from '../../../utils/images/buttonIcons/clear.png';
 import CheckIcon from '../../../utils/images/buttonIcons/check.png';
 import CrossIcon from '../../../utils/images/buttonIcons/cross.png';
-import { COLORS } from '../../../utils/constants';
+import { COLORS, LOCKTYPES } from '../../../utils/constants';
 import { clearBoard as clearBoardHelper } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
 import store from '../../../redux/store/store';
 import LockIcon from '../../../utils/images/buttonIcons/lock.png';
 import UnlockIcon from '../../../utils/images/buttonIcons/unlock.png';
-import PlayerIndicator from '../Player/PlayerIndicator/PlayerIndicator';
+import PlayerLockIndicator from '../Player/PlayerIndicator/PlayerLockIndicator';
+import {
+  getAllLocks,
+  getLock,
+  setLock,
+  setAllLocks,
+} from '../../../utils/lockHelper/lockHelper';
 
 export default function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -83,27 +86,30 @@ export default function Sidebar() {
    * Another player has changed their ready status
    */
   useEffect(() => {
-    let players = store.getState().players;
-    let playerNumber = 0;
-    for (let p of players) {
-      if (!p.hasOwnProperty('lock')) {
-        p.lock = false;
-      }
-      if (p.id === 'YOU') {
-        setLocked(p.lock);
-      }
-      lockedInPlayers[playerNumber] = p.lock;
-      setLockedInPlayers(lockedInPlayers);
-      ++playerNumber;
-    }
+    if (newLockEvent.pid === LOCKTYPES.ALL_PLAYERS) {
+      openAllLocksInSidebar();
+    } else {
+      let players = store.getState().players;
+      let allLocks = getAllLocks(players);
+      let readyCount = allLocks.filter((lock) => lock === true).length;
 
-    let readyCount = lockedInPlayers.filter((lock) => lock === true).length;
-    setNumberOfLockedInPlayers(readyCount);
+      let myLock = getLock(players, 'YOU');
+      setLocked(myLock);
+      setLockedInPlayers(allLocks);
 
-    if (readyCount === numberOfPlayers) {
-      handleSubmit();
+      if (readyCount === numberOfPlayers) {
+        handleSubmit();
+      }
+      setNumberOfLockedInPlayers(readyCount);
     }
   }, [newLockEvent]);
+
+  /* Open all locks for the UI in the Sidebar component*/
+  const openAllLocksInSidebar = () => {
+    setLocked(false);
+    setNumberOfLockedInPlayers([]);
+    setNumberOfLockedInPlayers(0);
+  };
 
   /* Close the modal. Callback from SideBarModal*/
   const closeModal = () => {
@@ -171,16 +177,21 @@ export default function Sidebar() {
    * Clear the board. If host: perform locally before dispatching field and list event. If not: request to host.
    */
   const clearBoard = () => {
-    if (store.getState().host === '') {
+    if (iAmHost()) {
       // Clear locally then update all players
       let initalfield = currentTaskObject.field;
-      let field = store.getState().solutionField;
-      let handList = store.getState().handList;
+      let state = store.getState();
+      let field = state.solutionField;
+      let handList = state.handList;
       handList = clearBoardHelper(field, handList);
+      let players = state.players;
+      dispatch(setPlayers(setAllLocks(players, false)));
+      dispatch(lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: false }));
       dispatch(setFieldState(initalfield));
       dispatch(setListState(handList));
       dispatch(clearEvent()); // Request clear to host
     } else {
+      dispatch(lockRequest({ forWho: LOCKTYPES.ALL_PLAYERS }));
       dispatch(clearEvent()); // Request clear to host
     }
     closeModal();
@@ -200,25 +211,20 @@ export default function Sidebar() {
     // If I am the HOST I update for myself and the other players
     if (iAmHost()) {
       let players = store.getState().players;
-      let playerNumber = 0;
 
-      for (let p of players) {
-        if (p.id === 'YOU') {
-          if (!p.hasOwnProperty('lock')) {
-            p.lock = true;
-          } else {
-            p.lock = !p.lock;
-          }
-          dispatch(setPlayers(players));
-          dispatch(lockEvent({ pid: 'HOST', lock: p.lock }));
-        }
-      }
+      dispatch(
+        lockEvent({
+          pid: 'HOST',
+          lock: !locked,
+        })
+      );
+      dispatch(setPlayers(setLock(players, 'YOU', !locked)));
       setNumberOfLockedInPlayers(
-        lockedInPlayers.filter((lock) => lock === true).length
+        getAllLocks(players).filter((lock) => lock === true).length
       );
     } else {
       // If I am not he HOST I need to ask for permission
-      dispatch(lockRequest());
+      dispatch(lockRequest({ forWho: LOCKTYPES.FOR_MYSELF }));
     }
   };
 
@@ -226,6 +232,14 @@ export default function Sidebar() {
    * Make all players go to the next task of the submit is correct
    */
   const handleSubmit = () => {
+    if (iAmHost()) {
+      let players = store.getState().players;
+      // Clear the locks for all players
+      dispatch(setPlayers(setAllLocks(players, false)));
+      dispatch(lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: false }));
+    } else {
+      dispatch(lockRequest({ forWho: LOCKTYPES.ALL_PLAYERS }));
+    }
     closeModal();
     setCurrentFieldBlocks(fieldBlocks);
     let correctSolution = arrayIsEqual(
@@ -263,6 +277,7 @@ export default function Sidebar() {
       setFinished(true);
     } else if (correctSolution) {
       if (iAmHost()) {
+        // Update the task
         dispatch(nextTask());
         dispatch(taskEvent());
       }
@@ -372,7 +387,7 @@ export default function Sidebar() {
       </div>
 
       <div className='BottomButton'>
-        <PlayerIndicator
+        <PlayerLockIndicator
           lockArray={lockedInPlayers}
           numberOfLockedInPlayers={numberOfLockedInPlayers}
           numberOfPlayers={numberOfPlayers}

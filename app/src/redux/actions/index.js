@@ -352,11 +352,11 @@ export const moveRequest = (moveRequest) => {
  * @param {*} state : Date when this reducer was called last time
  * @returns
  */
-export const lockRequest = (state) => {
+export const lockRequest = (forWho) => {
   return {
     type: ACTIONS.LOCK_REQUEST,
     payload: {
-      state,
+      ...forWho,
     },
   };
 };

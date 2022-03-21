@@ -45,10 +45,9 @@ import {
 import PuzzleGif from '../PuzzleGif';
 import SidebarModal from '../../Game/Sidebar/SidebarModal/SidebarModal';
 import SubmitIcon from '../../../utils/images/buttonIcons/submit.png';
-import CheckIcon from '../../../utils/images/buttonIcons/check.png';
-import { COLORS } from '../../../utils/constants';
+import { COLORS, LOCKTYPES } from '../../../utils/constants';
 import configData from '../../../config.json';
-import update from 'immutability-helper';
+import { setLock, setAllLocks } from '../../../utils/lockHelper/lockHelper';
 
 const mapStateToProps = (state) => ({
   players: state.players,
@@ -124,7 +123,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room4');
+  join = (webrtc) => webrtc.joinRoom('cpp-room-mondayy');
 
   /**
    * Called when a new peer is added to the room
@@ -311,48 +310,24 @@ class CommunicationHandler extends Component {
    * @param {*} peer
    */
   lockRequest(payload, peer) {
-    const lock = JSON.parse(payload);
+    const payloadState = JSON.parse(payload);
+    let lock = payloadState.lock;
+
     let players = store.getState().players;
+    const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
 
-    // Handle the request and lock/unlock if approved
-    for (let p of players) {
-      if (p.id == peer.id) {
-        if (!p.hasOwnProperty('lock') || p.lock !== lock) {
-          peer.lock = lock;
-
-          // Update for me
-          const { dispatch_setPlayers } = this.props;
-          dispatch_setPlayers(players);
-
-          // Notify other peers about my approval
-          const { dispatch_lockEvent } = this.props;
-          dispatch_lockEvent({ pid: peer.id, lock: lock });
-        }
-        break;
-      }
+    if (payloadState.forWho === LOCKTYPES.FOR_MYSELF) {
+      // Update the players with new locks
+      dispatch_setPlayers(setLock(players, peer.id, lock));
+      // Notify other peers about my approval
+      dispatch_lockEvent({
+        pid: peer.id,
+        lock: lock,
+      });
+    } else if (payloadState.forWho === LOCKTYPES.ALL_PLAYERS) {
+      dispatch_setPlayers(setAllLocks(players, lock));
+      dispatch_lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: lock });
     }
-  }
-
-  /**
-   * Set the lock property for a given player id
-   *
-   * @param {*} players : all players
-   * @param {*} pid : unique player id
-   * @param {*} lock: boolean
-   * @returns
-   */
-  setLock(players, pid, lock) {
-    for (let p of players) {
-      if (pid === p.id) {
-        p.lock = lock;
-        const { dispatch_setPlayers } = this.props;
-        dispatch_setPlayers(players);
-        const { dispatch_lockEvent } = this.props;
-        dispatch_lockEvent({ pid: pid, lock: lock });
-        return true;
-      }
-    }
-    return false;
   }
 
   /**
@@ -365,19 +340,39 @@ class CommunicationHandler extends Component {
     let payloadState = JSON.parse(payload);
     let prevState = store.getState();
 
-    // Me or another player got an approved lock from host.
     let players = prevState.players;
+    const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
+    if (payloadState.pid === LOCKTYPES.ALL_PLAYERS) {
+      dispatch_setPlayers(setAllLocks(players, payloadState.lock));
+      dispatch_lockEvent({
+        pid: payloadState.pid,
+        lock: payloadState.lock,
+      });
+    } else {
+      // This lock was performed by the HOST, but HOST does not know it's own name.
+      if (payloadState.pid === 'HOST') {
+        payloadState.pid = prevState.host;
+      }
 
-    // This lock was performed by the HOST, but HOST does not know it's own name.
-    if (payloadState.pid === 'HOST') {
-      payloadState.pid = prevState.host;
-    }
-
-    // Find out if thos long belongs to another player
-    if (!this.setLock(players, payloadState.pid, payloadState.lock)) {
+      // Find out if thos long belongs to another player
+      if (players.some((p) => p.id === payloadState.pid)) {
+        // Update the players with new locks
+        dispatch_setPlayers(
+          setLock(players, payloadState.pid, payloadState.lock)
+        );
+        dispatch_lockEvent({
+          pid: payloadState.pid,
+          lock: payloadState.lock,
+        });
+      }
       // If it does not belong to another player it probably belongs to me
-      if (prevState.lockRequest === payloadState.lock) {
-        this.setLock(players, 'YOU', payloadState.lock);
+      else {
+        // Update the players with new locks
+        dispatch_setPlayers(setLock(players, 'YOU', payloadState.lock));
+        dispatch_lockEvent({
+          pid: 'YOU',
+          lock: payloadState.lock,
+        });
       }
     }
   }
@@ -440,13 +435,25 @@ class CommunicationHandler extends Component {
    * Clears the board
    */
   clearTask() {
+    const {
+      dispatch_setListState,
+      dispatch_fieldEvent,
+      dispatch_listEvent,
+      dispatch_lockEvent,
+      dispatch_setPlayers,
+    } = this.props;
+
     // Get current board state
     let field = store.getState().solutionField;
     let handList = store.getState().handList;
+
+    let players = store.getState().players;
+    dispatch_setPlayers(setAllLocks(players, false));
+    dispatch_lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: false });
+
     // Update board
     handList = clearBoard(field, handList);
-    const { dispatch_setListState, dispatch_fieldEvent, dispatch_listEvent } =
-      this.props;
+
     dispatch_setListState(handList);
     this.initialFieldFromFile();
 

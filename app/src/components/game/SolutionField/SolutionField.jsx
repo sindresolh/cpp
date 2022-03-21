@@ -11,17 +11,16 @@ import {
   addBlockToList,
   moveRequest,
 } from '../../../redux/actions';
-import update from 'immutability-helper';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from '../../../utils/itemtypes';
 import './SolutionField.css';
 import store from '../../../redux/store/store';
 import { COLORS, MAX_INDENT, KEYBOARD_EVENT } from '../../../utils/constants';
-import { objectIsEqual } from '../../../utils/compareArrays/compareArrays';
 import {
   moveBlockInSolutionField,
   requestMove,
 } from '../../../utils/moveBlock/moveBlock';
+import { getLock } from '../../../utils/lockHelper/lockHelper';
 import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
 
 /**
@@ -125,10 +124,11 @@ function SolutionField({minwidth}) {
    * Tab and bacskpace changes indenting.
    */
   const handleKeyDown = useCallback((e) => {
-    const block = blocks.filter((block) => block.id === selectedCodeline.id)[0];
-    const blockExists = block !== undefined;
-    e.preventDefault(); // do not target adress bar
-    if (selectedCodeline != null && blockExists && e.keyCode != null) {
+    if(!locked){
+      const block = blocks.filter((block) => block.id === selectedCodeline.id)[0];
+      const blockExists = block !== undefined;
+      e.preventDefault(); // do not target adress bar
+      if (selectedCodeline != null && blockExists && e.keyCode != null) {
       if (
         (e.shiftKey &&
           e.keyCode == KEYBOARD_EVENT.TAB &&
@@ -164,6 +164,9 @@ function SolutionField({minwidth}) {
         );
       }
     }
+
+    }
+    
   });
 
   /* Reset selected block when a new task starts*/
@@ -175,16 +178,11 @@ function SolutionField({minwidth}) {
    * Another player has changed their ready status
    */
   useEffect(() => {
-    let players = store.getState().players;
-    for (let p of players) {
-      if (!p.hasOwnProperty('lock')) {
-        p.lock = false;
+      let players = store.getState().players;
+      let myLock = getLock(players, 'YOU');
+      if(myLock !== locked){
+        setLocked(myLock);
       }
-      if (p.id === 'YOU') {
-        setLocked(p.lock);
-      }
-
-    }
   }, [newLockEvent]);
 
   /**
@@ -258,7 +256,7 @@ function SolutionField({minwidth}) {
   return (
     <div className={'divSF'} style={{ background: locked ? "#C2C2C2" : COLORS.solutionfield }}>
       <h6>{'Connected players: ' + players.length}</h6>
-      {locked && minwidth? <div className='bigLockContainer'><img className="bigLock" src={BigLockImage} /> </div> :''}
+      {locked && minwidth? <div className='bigLockContainer'><img draggable={false} className="bigLock" src={BigLockImage} /> </div> :''}
       <ul data-testid='solutionField'>
         {blocks.map((block, index) => {
           return (

@@ -23,7 +23,6 @@ import {
   finishEvent,
   setHost,
   lockEvent,
-  lockRequest,
 } from '../../../redux/actions';
 import { shuffleCodeblocks } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
 import { STATUS } from '../../../utils/constants';
@@ -66,6 +65,7 @@ function mapDispatchToProps(dispatch) {
     dispatch_fieldEvent: (...args) => dispatch(fieldEvent(...args)),
     dispatch_finishEvent: (...args) => dispatch(finishEvent(...args)),
     dispatch_setHost: (...args) => dispatch(setHost(...args)),
+    dispatch_lockEvent: (...args) => dispatch(lockEvent(...args)),
   };
 }
 
@@ -177,14 +177,12 @@ class CommunicationListener extends Component {
     const state = store.getState();
 
     if (prevProps.listEvent !== this.props.listEvent) {
-      console.log('update all players about LIST event');
       // This peer moved codeblock in an handlist
       const json = JSON.stringify({
         handList: state.handList,
       });
       this.shout(SET_LIST, json);
     } else if (prevProps.fieldEvent !== this.props.fieldEvent) {
-      console.log('update all players about FIELD event');
       // This peer moved codeblock in soloutionfield
       const json = JSON.stringify(state.solutionField);
       this.shout(SET_FIELD, json);
@@ -204,9 +202,10 @@ class CommunicationListener extends Component {
     } else if (
       prevProps.clearEvent.getTime() < this.props.clearEvent.getTime()
     ) {
-      if (state.host === '') {
+      if (this.iAmHost()) {
         // This peer cleared the board
-        console.log('update all players about FIELD and LIST event');
+        const { dispatch_lockEvent } = this.props;
+        dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: false });
         let json = JSON.stringify({
           handList: state.handList,
         });
