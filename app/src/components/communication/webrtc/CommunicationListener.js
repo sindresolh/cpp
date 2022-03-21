@@ -203,10 +203,10 @@ class CommunicationListener extends Component {
       prevProps.clearEvent.getTime() < this.props.clearEvent.getTime()
     ) {
       if (this.iAmHost()) {
-        let json = JSON.stringify(state.lockEvent);
-        this.shout(LOCK_EVENT, json);
         // This peer cleared the board
-        json = JSON.stringify({
+        const { dispatch_lockEvent } = this.props;
+        dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: false });
+        let json = JSON.stringify({
           handList: state.handList,
         });
         this.shout(SET_LIST, json);

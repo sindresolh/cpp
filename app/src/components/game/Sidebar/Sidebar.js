@@ -181,18 +181,17 @@ export default function Sidebar() {
       // Clear locally then update all players
       let initalfield = currentTaskObject.field;
       let state = store.getState();
-      let players = state.players;
       let field = state.solutionField;
       let handList = state.handList;
       handList = clearBoardHelper(field, handList);
-
+      let players = state.players;
       dispatch(setPlayers(setAllLocks(players, false)));
       dispatch(lockEvent({ pid: 'ALL_PLAYERS', lock: false }));
       dispatch(setFieldState(initalfield));
       dispatch(setListState(handList));
       dispatch(clearEvent()); // Request clear to host
     } else {
-      dispatch(lockRequest());
+      dispatch(lockRequest({ forWho: 'ALL_PLAYERS' }));
       dispatch(clearEvent()); // Request clear to host
     }
     closeModal();
@@ -225,7 +224,7 @@ export default function Sidebar() {
       );
     } else {
       // If I am not he HOST I need to ask for permission
-      dispatch(lockRequest());
+      dispatch(lockRequest({ forWho: 'MYSELF' }));
     }
   };
 
@@ -239,7 +238,7 @@ export default function Sidebar() {
       dispatch(setPlayers(setAllLocks(players, false)));
       dispatch(lockEvent({ pid: 'ALL_PLAYERS', lock: false }));
     } else {
-      dispatch(lockRequest());
+      dispatch(lockRequest({ forWho: 'ALL_PLAYERS' }));
     }
     closeModal();
     setCurrentFieldBlocks(fieldBlocks);

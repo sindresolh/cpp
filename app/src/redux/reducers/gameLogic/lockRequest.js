@@ -7,11 +7,14 @@ import { ACTIONS } from '../../actions/ACTIONS';
  * @param {*} action
  * @returns
  */
-const lockRequestReducer = (state = false, action) => {
+const lockRequestReducer = (
+  state = { lock: false, forWho: 'NONE' },
+  action
+) => {
   switch (action.type) {
     // Toggle between lock an unlock
     case ACTIONS.LOCK_REQUEST: {
-      return !state;
+      return { lock: !state.lock, forWho: action.payload.forWho };
     }
     default:
       return state;

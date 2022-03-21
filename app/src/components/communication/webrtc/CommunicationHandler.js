@@ -279,12 +279,6 @@ class CommunicationHandler extends Component {
     dispatch_setFieldState(initialfield);
   }
 
-  /** Open the locks for all players */
-  openAllLocks() {
-    const { dispatch_lockEvent } = this.props;
-    dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: false });
-  }
-
   /**
    * Update the current task
    *
@@ -293,8 +287,6 @@ class CommunicationHandler extends Component {
   nextTask(payload) {
     const prevState = store.getState().currentTask;
     const payloadState = JSON.parse(payload);
-
-    this.openAllLocks();
 
     if (prevState !== payloadState.currentTask) {
       const { dispatch_nextTask } = this.props;
@@ -318,18 +310,27 @@ class CommunicationHandler extends Component {
    * @param {*} peer
    */
   lockRequest(payload, peer) {
-    const lock = JSON.parse(payload);
+    console.log('req');
+    const payloadState = JSON.parse(payload);
+    let lock = payloadState.lock;
+
+    console.log(payloadState);
+
     let players = store.getState().players;
     const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
 
-    // Update the players with new locks
-    dispatch_setPlayers(setLock(players, peer.id, lock));
-
-    // Notify other peers about my approval
-    dispatch_lockEvent({
-      pid: peer.id,
-      lock: lock,
-    });
+    if (payloadState.forWho === 'MYSELF') {
+      // Update the players with new locks
+      dispatch_setPlayers(setLock(players, peer.id, lock));
+      // Notify other peers about my approval
+      dispatch_lockEvent({
+        pid: peer.id,
+        lock: lock,
+      });
+    } else if (payloadState.forWho === 'ALL_PLAYERS') {
+      dispatch_setPlayers(setAllLocks(players, lock));
+      dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: lock });
+    }
   }
 
   /**
@@ -339,6 +340,7 @@ class CommunicationHandler extends Component {
    * @param {*} peer
    */
   lockEvent(payload) {
+    console.log('host handled');
     let payloadState = JSON.parse(payload);
     let prevState = store.getState();
 
@@ -438,16 +440,25 @@ class CommunicationHandler extends Component {
    * Clears the board
    */
   clearTask() {
+    const {
+      dispatch_setListState,
+      dispatch_fieldEvent,
+      dispatch_listEvent,
+      dispatch_lockEvent,
+      dispatch_setPlayers,
+    } = this.props;
+
     // Get current board state
     let field = store.getState().solutionField;
     let handList = store.getState().handList;
 
-    this.openAllLocks();
+    let players = store.getState().players;
+    dispatch_setPlayers(setAllLocks(players, false));
+    dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: false });
 
     // Update board
     handList = clearBoard(field, handList);
-    const { dispatch_setListState, dispatch_fieldEvent, dispatch_listEvent } =
-      this.props;
+
     dispatch_setListState(handList);
     this.initialFieldFromFile();
 
