@@ -30,6 +30,7 @@ import {
   getAllLocks,
   getLock,
   setLock,
+  setAllLocks,
 } from '../../../utils/lockHelper/lockHelper';
 
 export default function Sidebar() {
@@ -85,20 +86,26 @@ export default function Sidebar() {
    * Another player has changed their ready status
    */
   useEffect(() => {
-    let players = store.getState().players;
-    let allLocks = getAllLocks(players);
-    let readyCount = allLocks.filter((lock) => lock === true).length;
+    if (newLockEvent.pid === undefined) {
+      setLocked(false);
+      setNumberOfLockedInPlayers([]);
+      setNumberOfLockedInPlayers(0);
+    } else {
+      let players = store.getState().players;
+      let allLocks = getAllLocks(players);
+      let readyCount = allLocks.filter((lock) => lock === true).length;
 
-    let myLock = getLock(players, 'YOU');
-    if (myLock !== locked) {
-      setLocked(myLock);
-    }
-    setLockedInPlayers(allLocks);
+      let myLock = getLock(players, 'YOU');
+      if (myLock !== locked) {
+        setLocked(myLock);
+      }
+      setLockedInPlayers(allLocks);
 
-    if (readyCount === numberOfPlayers) {
-      handleSubmit();
+      if (readyCount === numberOfPlayers) {
+        handleSubmit();
+      }
+      setNumberOfLockedInPlayers(readyCount);
     }
-    setNumberOfLockedInPlayers(readyCount);
   }, [newLockEvent]);
 
   /* Close the modal. Callback from SideBarModal*/
@@ -170,9 +177,14 @@ export default function Sidebar() {
     if (store.getState().host === '') {
       // Clear locally then update all players
       let initalfield = currentTaskObject.field;
-      let field = store.getState().solutionField;
-      let handList = store.getState().handList;
+      let state = store.getState();
+      let players = state.players;
+      let field = state.solutionField;
+      let handList = state.handList;
       handList = clearBoardHelper(field, handList);
+
+      dispatch(setPlayers(setAllLocks(players, false)));
+      dispatch(lockEvent({ pid: undefined, lock: false }));
       dispatch(setFieldState(initalfield));
       dispatch(setListState(handList));
       dispatch(clearEvent()); // Request clear to host
