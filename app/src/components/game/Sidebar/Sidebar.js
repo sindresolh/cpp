@@ -87,10 +87,7 @@ export default function Sidebar() {
    */
   useEffect(() => {
     if (newLockEvent.pid === 'ALL_PLAYERS') {
-      console.log('clear');
-      setLocked(false);
-      setNumberOfLockedInPlayers([]);
-      setNumberOfLockedInPlayers(0);
+      openAllLocksInSidebar();
     } else {
       let players = store.getState().players;
       let allLocks = getAllLocks(players);
@@ -108,6 +105,13 @@ export default function Sidebar() {
       setNumberOfLockedInPlayers(readyCount);
     }
   }, [newLockEvent]);
+
+  /* Open all locks for the UI in the Sidebar component*/
+  const openAllLocksInSidebar = () => {
+    setLocked(false);
+    setNumberOfLockedInPlayers([]);
+    setNumberOfLockedInPlayers(0);
+  };
 
   /* Close the modal. Callback from SideBarModal*/
   const closeModal = () => {
@@ -268,6 +272,10 @@ export default function Sidebar() {
       setFinished(true);
     } else if (correctSolution) {
       if (iAmHost()) {
+        let players = store.getState().players;
+        // Clear the locks for all players
+        dispatch(setPlayers(setAllLocks(players, false)));
+        dispatch(lockEvent({ pid: 'ALL_PLAYERS', lock: false }));
         dispatch(nextTask());
         dispatch(taskEvent());
       }
@@ -291,6 +299,13 @@ export default function Sidebar() {
         COLORS.darkred,
         'block'
       );
+
+      if (iAmHost()) {
+        let players = store.getState().players;
+        // Clear the locks for all players
+        dispatch(setPlayers(setAllLocks(players, false)));
+        dispatch(lockEvent({ pid: 'ALL_PLAYERS', lock: false }));
+      }
     }
   };
 

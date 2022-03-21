@@ -177,14 +177,12 @@ class CommunicationListener extends Component {
     const state = store.getState();
 
     if (prevProps.listEvent !== this.props.listEvent) {
-      console.log('update all players about LIST event');
       // This peer moved codeblock in an handlist
       const json = JSON.stringify({
         handList: state.handList,
       });
       this.shout(SET_LIST, json);
     } else if (prevProps.fieldEvent !== this.props.fieldEvent) {
-      console.log('update all players about FIELD event');
       // This peer moved codeblock in soloutionfield
       const json = JSON.stringify(state.solutionField);
       this.shout(SET_FIELD, json);
@@ -207,9 +205,7 @@ class CommunicationListener extends Component {
       if (this.iAmHost()) {
         let json = JSON.stringify(state.lockEvent);
         this.shout(LOCK_EVENT, json);
-
         // This peer cleared the board
-        console.log('update all players about FIELD and LIST event');
         json = JSON.stringify({
           handList: state.handList,
         });

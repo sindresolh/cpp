@@ -288,6 +288,12 @@ class CommunicationHandler extends Component {
     const prevState = store.getState().currentTask;
     const payloadState = JSON.parse(payload);
 
+    // Open the locks
+    const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
+    let players = store.getState().players;
+    dispatch_setPlayers(setAllLocks(players, false));
+    dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: false });
+
     if (prevState !== payloadState.currentTask) {
       const { dispatch_nextTask } = this.props;
       dispatch_nextTask();
@@ -428,8 +434,6 @@ class CommunicationHandler extends Component {
    * Clears the board
    */
   clearTask() {
-    console.log('Jeg er IKKE host?');
-
     // Get current board state
     let field = store.getState().solutionField;
     let handList = store.getState().handList;
