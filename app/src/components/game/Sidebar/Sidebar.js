@@ -20,7 +20,7 @@ import HintIcon from '../../../utils/images/buttonIcons/hint.png';
 import ClearIcon from '../../../utils/images/buttonIcons/clear.png';
 import CheckIcon from '../../../utils/images/buttonIcons/check.png';
 import CrossIcon from '../../../utils/images/buttonIcons/cross.png';
-import { COLORS } from '../../../utils/constants';
+import { COLORS, LOCKTYPES } from '../../../utils/constants';
 import { clearBoard as clearBoardHelper } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
 import store from '../../../redux/store/store';
 import LockIcon from '../../../utils/images/buttonIcons/lock.png';
@@ -86,7 +86,7 @@ export default function Sidebar() {
    * Another player has changed their ready status
    */
   useEffect(() => {
-    if (newLockEvent.pid === 'ALL_PLAYERS') {
+    if (newLockEvent.pid === LOCKTYPES.ALL_PLAYERS) {
       openAllLocksInSidebar();
     } else {
       let players = store.getState().players;
@@ -186,12 +186,12 @@ export default function Sidebar() {
       handList = clearBoardHelper(field, handList);
       let players = state.players;
       dispatch(setPlayers(setAllLocks(players, false)));
-      dispatch(lockEvent({ pid: 'ALL_PLAYERS', lock: false }));
+      dispatch(lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: false }));
       dispatch(setFieldState(initalfield));
       dispatch(setListState(handList));
       dispatch(clearEvent()); // Request clear to host
     } else {
-      dispatch(lockRequest({ forWho: 'ALL_PLAYERS' }));
+      dispatch(lockRequest({ forWho: LOCKTYPES.ALL_PLAYERS }));
       dispatch(clearEvent()); // Request clear to host
     }
     closeModal();
@@ -224,7 +224,7 @@ export default function Sidebar() {
       );
     } else {
       // If I am not he HOST I need to ask for permission
-      dispatch(lockRequest({ forWho: 'MYSELF' }));
+      dispatch(lockRequest({ forWho: LOCKTYPES.FOR_MYSELF }));
     }
   };
 
@@ -236,9 +236,9 @@ export default function Sidebar() {
       let players = store.getState().players;
       // Clear the locks for all players
       dispatch(setPlayers(setAllLocks(players, false)));
-      dispatch(lockEvent({ pid: 'ALL_PLAYERS', lock: false }));
+      dispatch(lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: false }));
     } else {
-      dispatch(lockRequest({ forWho: 'ALL_PLAYERS' }));
+      dispatch(lockRequest({ forWho: LOCKTYPES.ALL_PLAYERS }));
     }
     closeModal();
     setCurrentFieldBlocks(fieldBlocks);

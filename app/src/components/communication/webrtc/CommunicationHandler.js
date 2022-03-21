@@ -45,7 +45,7 @@ import {
 import PuzzleGif from '../PuzzleGif';
 import SidebarModal from '../../Game/Sidebar/SidebarModal/SidebarModal';
 import SubmitIcon from '../../../utils/images/buttonIcons/submit.png';
-import { COLORS } from '../../../utils/constants';
+import { COLORS, LOCKTYPES } from '../../../utils/constants';
 import configData from '../../../config.json';
 import { setLock, setAllLocks } from '../../../utils/lockHelper/lockHelper';
 
@@ -316,7 +316,7 @@ class CommunicationHandler extends Component {
     let players = store.getState().players;
     const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
 
-    if (payloadState.forWho === 'MYSELF') {
+    if (payloadState.forWho === LOCKTYPES.MYSELF) {
       // Update the players with new locks
       dispatch_setPlayers(setLock(players, peer.id, lock));
       // Notify other peers about my approval
@@ -324,9 +324,9 @@ class CommunicationHandler extends Component {
         pid: peer.id,
         lock: lock,
       });
-    } else if (payloadState.forWho === 'ALL_PLAYERS') {
+    } else if (payloadState.forWho === LOCKTYPES.ALL_PLAYERS) {
       dispatch_setPlayers(setAllLocks(players, lock));
-      dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: lock });
+      dispatch_lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: lock });
     }
   }
 
@@ -342,7 +342,7 @@ class CommunicationHandler extends Component {
 
     let players = prevState.players;
     const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
-    if (payloadState.pid === 'ALL_PLAYERS') {
+    if (payloadState.pid === LOCKTYPES.ALL_PLAYERS) {
       dispatch_setPlayers(setAllLocks(players, payloadState.lock));
       dispatch_lockEvent({
         pid: payloadState.pid,
@@ -449,7 +449,7 @@ class CommunicationHandler extends Component {
 
     let players = store.getState().players;
     dispatch_setPlayers(setAllLocks(players, false));
-    dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: false });
+    dispatch_lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: false });
 
     // Update board
     handList = clearBoard(field, handList);

@@ -51,3 +51,11 @@ export const KEYBOARD_EVENT = {
   BACKSPACE: 8,
   TAB: 9,
 };
+
+/**
+ * A board lock should either be set for all players or myself
+ */
+export const LOCKTYPES = {
+  FOR_MYSELF: 'FOR_MYSELF',
+  ALL_PLAYERS: 'ALL_PLAYERS',
+};
