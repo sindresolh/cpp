@@ -34,6 +34,7 @@ import {
   LOCK_REQUEST,
   LOCK_EVENT,
   SELECT_REQUEST,
+  SELECT_EVENT,
 } from './messages';
 import {
   twoDimensionalArrayIsEqual,
@@ -240,6 +241,9 @@ class CommunicationHandler extends Component {
       case SELECT_REQUEST:
         this.selectRequest(payload, peer);
         break;
+      case SELECT_EVENT:
+        console.log('TODO: handle select event from host');
+        break;
       default:
         break;
     }
@@ -395,13 +399,11 @@ class CommunicationHandler extends Component {
     const payloadState = JSON.parse(payload);
     const { dispatch_selectEvent } = this.props;
     console.log(payloadState.index);
-    let pid,
-      index = null;
+    let index = null;
     if (payloadState != null) {
-      pid = peer;
       index = payloadState.index;
     }
-    dispatch_selectEvent({ pid: pid, index: index });
+    dispatch_selectEvent({ pid: peer.id, index: index });
   }
 
   /**
