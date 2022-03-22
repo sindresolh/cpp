@@ -81,12 +81,6 @@ function SolutionField({minwidth}) {
   // move the block within the field or to a hand list
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0, mouseEvent = true) => {
-      if (mouseEvent) {
-         if(store.getState().selectRequest !== selectedCodeline){
-          dispatch(selectRequest(null));
-        } 
-        setSelectedCodeline(null); // reset selected codeblocks
-      }
       // get block if it exists in solutionfield
       if (iAmHost()) {
         moveBlockInSolutionField(
