@@ -13,6 +13,7 @@ import {
   MOVE_REQUEST,
   LOCK_REQUEST,
   LOCK_EVENT,
+  SELECT_REQUEST,
 } from './messages';
 import {
   startGame,
@@ -49,6 +50,7 @@ const mapStateToProps = (state) => ({
   moveRequest: state.moveRequest,
   lockRequest: state.lockRequest,
   lockEvent: state.lockEvent,
+  selectRequest: state.selectRequest,
 });
 
 /** Helper function to let us call dispatch from a class function
@@ -242,6 +244,9 @@ class CommunicationListener extends Component {
         const json = JSON.stringify(state.lockEvent);
         this.shout(LOCK_EVENT, json);
       }
+    } else if (prevProps.selectRequest !== this.props.selectRequest) {
+      const json = JSON.stringify(state.selectRequest);
+      this.shout(SELECT_REQUEST, json);
     }
 
     //Warn users leaving page

@@ -15,6 +15,7 @@ import finishReducer from './webrtc/finishEvent';
 import hostReducer from './gameState/host';
 import moveRequestReducer from './gameLogic/moveRequest';
 import selectRequestReducer from './gameLogic/selectRequest';
+import selectEventReducer from './webrtc/selectEvent';
 import lockRequestReducer from './gameLogic/lockRequest';
 import lockEventReducer from './webrtc/lockEvent';
 
@@ -37,6 +38,7 @@ const allReducers = combineReducers({
   host: hostReducer,
   moveRequest: moveRequestReducer,
   selectRequest: selectRequestReducer,
+  selectEvent: selectEventReducer,
   lockRequest: lockRequestReducer,
   lockEvent: lockEventReducer,
 });

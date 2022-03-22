@@ -377,12 +377,26 @@ export const lockRequest = (forWho) => {
 
 /** As host notify other peers that the locks are updated
  *
- * @param {*} state : Date when this reducer was called last time
+ * @param {*} state : Player and wheter the lock was open last time
  * @returns
  */
 export const lockEvent = (state) => {
   return {
     type: ACTIONS.LOCK_EVENT,
+    payload: {
+      state,
+    },
+  };
+};
+
+/** As host notify other peers that the locks are updated
+ *
+ * @param {*} state : Player and selected index last time
+ * @returns
+ */
+export const selectEvent = (state) => {
+  return {
+    type: ACTIONS.SELECT_EVENT,
     payload: {
       state,
     },

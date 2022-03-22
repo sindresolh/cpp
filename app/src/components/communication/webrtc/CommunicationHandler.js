@@ -32,6 +32,7 @@ import {
   MOVE_REQUEST,
   LOCK_REQUEST,
   LOCK_EVENT,
+  SELECT_REQUEST,
 } from './messages';
 import {
   twoDimensionalArrayIsEqual,
@@ -228,12 +229,17 @@ class CommunicationHandler extends Component {
       case MOVE_REQUEST:
         this.moveRequest(payload, peer);
         break;
-      default:
       case LOCK_REQUEST:
         this.lockRequest(payload, peer);
-        return;
+        break;
       case LOCK_EVENT:
         this.lockEvent(payload);
+        break;
+      case SELECT_REQUEST:
+        this.selectRequest(payload, peer);
+        break;
+      default:
+        break;
     }
   };
 
@@ -375,6 +381,17 @@ class CommunicationHandler extends Component {
         });
       }
     }
+  }
+
+  /**
+   * As a HOST it is my resposibility to handle a select request
+   *
+   * @param {*} payload
+   * @param {*} peer
+   */
+  selectRequest(payload, peer) {
+    const payloadState = JSON.parse(payload);
+    console.log(payloadState);
   }
 
   /**

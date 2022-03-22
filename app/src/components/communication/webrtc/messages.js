@@ -7,3 +7,4 @@ export const FINISHED = 'FINISHED';
 export const MOVE_REQUEST = 'MOVE_REQUEST';
 export const LOCK_REQUEST = 'LOCK_REQUEST';
 export const LOCK_EVENT = 'LOCK_EVENT';
+export const SELECT_REQUEST = 'SELECT_REQUEST';
