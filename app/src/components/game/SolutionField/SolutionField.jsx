@@ -24,24 +24,6 @@ import { getLock } from '../../../utils/lockHelper/lockHelper';
 import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
 
 /**
- * Check if a move is already been requested to the host.
- * This prevents sending the same request repeatedly while hovering.
- * @param {object} move
- * @param {object} lastMoveRequest
- * @returns true if the move has been requested
- */
-const alreadyRequested = (move, lastMoveRequest) => {
-  if (
-    move.id !== lastMoveRequest.id ||
-    move.index !== lastMoveRequest.index ||
-    move.indent !== lastMoveRequest.indent ||
-    move.field !== lastMoveRequest.field
-  )
-    return false;
-  return true;
-};
-
-/**
  * @returns true if this player is the host.
  */
 const iAmHost = () => {
@@ -223,7 +205,6 @@ function SolutionField({minwidth}) {
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
     if(!locked){
       setSelectedCodeline(movedBlock);
-       setSelectedCodeline(movedBlock);
     if (movedBlock != null && draggable) {
       // the user selected this codeblock
       movedBlock.index = index;
@@ -250,8 +231,24 @@ function SolutionField({minwidth}) {
       }
     }
     e.detail = 0; // resets detail so that other codeblocks can be clicked
-    
   };
+
+  /**
+   * A new codeline is dragged by me. Make sure it it selected.
+   * 
+   * @param {*} block 
+   * @param {*} draggable 
+   * @param {*} index 
+   */
+  const handleDrag = (movedBlock, draggable, index) =>{
+    if(!locked){
+      setSelectedCodeline(movedBlock);
+      if (movedBlock != null && draggable) {
+      // the user selected this codeblock
+      movedBlock.index = index;
+    }
+    }
+  }
 
   return (
     <div className={'divSF'} style={{ background: locked ? "#C2C2C2" : COLORS.solutionfield }}>
@@ -268,6 +265,7 @@ function SolutionField({minwidth}) {
               draggable={!locked}
               key={`line-${index}`}
               handleDoubbleClick={handleDoubbleClick}
+              handleDrag={handleDrag}
               selectedCodeline={selectedCodeline}
               isAlwaysVisible={true}
               background={!locked? COLORS.codeline : COLORS.grey}

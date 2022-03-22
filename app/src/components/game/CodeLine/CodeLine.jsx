@@ -33,7 +33,8 @@ function CodeLine({
   handleDoubbleClick,
   selectedCodeline,
   isAlwaysVisible, // Should be visible even if it is not draggable - Special case for a lock
-  background
+  background,
+  handleDrag
 }) {
   const blockRef = useRef(null); // reference to get the position of the DOM element
   // const lastMoveRequest = useSelector((state) => state.lastMoveRequest);
@@ -45,7 +46,14 @@ function CodeLine({
       canDrop: (item, monitor) => {
         return true; // TODO: yes for now
       },
+      
       hover: (item, monitor) => {
+
+        //Get my index if I am in solutionField
+        if(MAX_INDENT > 0){
+          handleDrag(block, draggable, monitor.getItem().index);
+        }
+
         const dragOffset = monitor.getSourceClientOffset().x; // get continous offset of moving (preview) block
         const blockPosition = blockRef.current.getBoundingClientRect().x; // get position of codeblock DOM
         const offsetDifference = dragOffset - blockPosition; // check if a block is dragged over its "indent boundary"
@@ -92,7 +100,7 @@ function CodeLine({
         style={{ marginLeft: `${block.indent * OFFSET}px` }}
         onClick={(e) => handleDoubbleClick(e, block, draggable, index)}
       >
-        <CodeBlock {...block} index={index} draggable={draggable} isAlwaysVisible={isAlwaysVisible} />
+        <CodeBlock {...block} index={index} draggable={draggable} isAlwaysVisible={isAlwaysVisible} inField={maxIndent > 0} />
       </div>
     </li>
   );
