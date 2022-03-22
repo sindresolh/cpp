@@ -347,6 +347,20 @@ export const moveRequest = (moveRequest) => {
   };
 };
 
+/**
+ * Player requests a block to be selected. Locks the block for the other players
+ * @param {*} state
+ * @returns
+ */
+export const selectRequest = (selectRequest) => {
+  return {
+    type: ACTIONS.SELECT_REQUEST,
+    payload: {
+      selectRequest,
+    },
+  };
+};
+
 /** Player requests a board lock for themself. Store this request.
  *
  * @param {*} state : Date when this reducer was called last time

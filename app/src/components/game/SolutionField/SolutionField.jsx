@@ -10,6 +10,7 @@ import {
   removeBlockFromField,
   addBlockToList,
   moveRequest,
+  selectRequest
 } from '../../../redux/actions';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from '../../../utils/itemtypes';
@@ -81,6 +82,9 @@ function SolutionField({minwidth}) {
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0, mouseEvent = true) => {
       if (mouseEvent) {
+         if(store.getState().selectRequest !== selectedCodeline){
+          dispatch(selectRequest(null));
+        } 
         setSelectedCodeline(null); // reset selected codeblocks
       }
       // get block if it exists in solutionfield
@@ -118,10 +122,15 @@ function SolutionField({minwidth}) {
         (e.keyCode === KEYBOARD_EVENT.BACKSPACE && selectedCodeline.indent > 0)
       ) {
         // SHIFT TAB OR BACKSPACE
-        setSelectedCodeline((selectedCodeline) => ({
+        let newSelectedCodeline = {
           ...selectedCodeline,
           indent: selectedCodeline.indent - 1,
-        }));
+        }
+        if(store.getState().selectRequest !== selectedCodeline){
+          dispatch(selectRequest(newSelectedCodeline));
+        } 
+        setSelectedCodeline((newSelectedCodeline));
+
         moveBlock(
           selectedCodeline.id,
           selectedCodeline.index,
@@ -134,10 +143,14 @@ function SolutionField({minwidth}) {
         selectedCodeline.indent < MAX_INDENT
       ) {
         // TAB
-        setSelectedCodeline((selectedCodeline) => ({
-          ...selectedCodeline,
+        let newSelectedCodeline ={
+         ...selectedCodeline,
           indent: selectedCodeline.indent + 1,
-        }));
+        }
+        if(store.getState().selectRequest !== selectedCodeline){
+          dispatch(selectRequest(newSelectedCodeline));
+        } 
+        setSelectedCodeline(newSelectedCodeline);
         moveBlock(
           selectedCodeline.id,
           selectedCodeline.index,
@@ -154,6 +167,7 @@ function SolutionField({minwidth}) {
   /* Reset selected block when a new task starts*/
   useEffect(() => {
     setSelectedCodeline(null);
+    dispatch(selectRequest(null));
   }, [currentTaskNumber]);
 
    /**
@@ -164,6 +178,11 @@ function SolutionField({minwidth}) {
       let myLock = getLock(players, 'YOU');
       if(myLock !== locked){
         setLocked(myLock);
+        if(store.getState().selectRequest !== selectedCodeline){
+          dispatch(selectRequest(null));
+        } 
+        setSelectedCodeline(null);
+        
       }
   }, [newLockEvent]);
 
@@ -204,6 +223,9 @@ function SolutionField({minwidth}) {
    */
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
     if(!locked){
+       if(store.getState().selectRequest !== selectedCodeline){
+          dispatch(selectRequest(movedBlock));
+       } 
       setSelectedCodeline(movedBlock);
     if (movedBlock != null && draggable) {
       // the user selected this codeblock
@@ -242,7 +264,11 @@ function SolutionField({minwidth}) {
    */
   const handleDrag = (movedBlock, draggable, index) =>{
     if(!locked){
+      if(store.getState().selectRequest !== selectedCodeline){
+        dispatch(selectRequest(movedBlock));
+       } 
       setSelectedCodeline(movedBlock);
+      
       if (movedBlock != null && draggable) {
       // the user selected this codeblock
       movedBlock.index = index;
