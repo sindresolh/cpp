@@ -21,6 +21,7 @@ import {
   removeBlockFromList,
   setList,
   lockEvent,
+  selectEvent,
 } from '../../../redux/actions';
 import {
   SET_LIST,
@@ -79,6 +80,7 @@ function mapDispatchToProps(dispatch) {
     dispatch_removeBlockFromList: (...args) =>
       dispatch(removeBlockFromList(...args)),
     dispatch_lockEvent: (...args) => dispatch(lockEvent(...args)),
+    dispatch_selectEvent: (...args) => dispatch(selectEvent(...args)),
   };
 }
 
@@ -391,7 +393,15 @@ class CommunicationHandler extends Component {
    */
   selectRequest(payload, peer) {
     const payloadState = JSON.parse(payload);
-    console.log(payloadState);
+    const { dispatch_selectEvent } = this.props;
+    console.log(payloadState.index);
+    let pid,
+      index = null;
+    if (payloadState != null) {
+      pid = peer;
+      index = payloadState.index;
+    }
+    dispatch_selectEvent({ pid: pid, index: index });
   }
 
   /**
