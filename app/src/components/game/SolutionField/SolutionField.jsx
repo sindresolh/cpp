@@ -81,6 +81,10 @@ function SolutionField({minwidth}) {
   // move the block within the field or to a hand list
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0, mouseEvent = true) => {
+      if (mouseEvent) {
+        setSelectedCodeline(null); // reset selected codeblocks
+        dispatch(selectRequest(null));
+      }
       // get block if it exists in solutionfield
       if (iAmHost()) {
         moveBlockInSolutionField(
@@ -120,11 +124,8 @@ function SolutionField({minwidth}) {
           ...selectedCodeline,
           indent: selectedCodeline.indent - 1,
         }
-        if(store.getState().selectRequest !== selectedCodeline){
-          dispatch(selectRequest(newSelectedCodeline));
-        } 
         setSelectedCodeline((newSelectedCodeline));
-
+        dispatch(selectRequest(newSelectedCodeline));
         moveBlock(
           selectedCodeline.id,
           selectedCodeline.index,
@@ -141,10 +142,8 @@ function SolutionField({minwidth}) {
          ...selectedCodeline,
           indent: selectedCodeline.indent + 1,
         }
-        if(store.getState().selectRequest !== selectedCodeline){
-          dispatch(selectRequest(newSelectedCodeline));
-        } 
         setSelectedCodeline(newSelectedCodeline);
+        dispatch(selectRequest(newSelectedCodeline));
         moveBlock(
           selectedCodeline.id,
           selectedCodeline.index,
@@ -172,11 +171,8 @@ function SolutionField({minwidth}) {
       let myLock = getLock(players, 'YOU');
       if(myLock !== locked){
         setLocked(myLock);
-        if(store.getState().selectRequest !== selectedCodeline){
-          dispatch(selectRequest(null));
-        } 
         setSelectedCodeline(null);
-        
+        dispatch(selectRequest(null));
       }
   }, [newLockEvent]);
 
@@ -217,10 +213,8 @@ function SolutionField({minwidth}) {
    */
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
     if(!locked){
-       if(store.getState().selectRequest !== selectedCodeline){
-          dispatch(selectRequest(movedBlock));
-       } 
       setSelectedCodeline(movedBlock);
+      dispatch(selectRequest(movedBlock));
     if (movedBlock != null && draggable) {
       // the user selected this codeblock
       movedBlock.index = index;
@@ -258,11 +252,8 @@ function SolutionField({minwidth}) {
    */
   const handleDrag = (movedBlock, draggable, index) =>{
     if(!locked){
-      if(store.getState().selectRequest !== selectedCodeline){
-        dispatch(selectRequest(movedBlock));
-       } 
       setSelectedCodeline(movedBlock);
-      
+      dispatch(selectRequest(movedBlock));
       if (movedBlock != null && draggable) {
       // the user selected this codeblock
       movedBlock.index = index;
