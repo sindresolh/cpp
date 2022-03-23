@@ -34,12 +34,13 @@ function CodeLine({
   selectedCodeline,
   isAlwaysVisible, // Should be visible even if it is not draggable - Special case for a lock
   background,
-  handleDrag
+  handleDrag,
+  allSelectedLines
 }) {
   const blockRef = useRef(null); // reference to get the position of the DOM element
-  // const lastMoveRequest = useSelector((state) => state.lastMoveRequest);
   const [border, setBorder] = useState('none');
   const MAX_INDENT = maxIndent;
+  const [isSelectedByPlayer, setSelectedByPlayer] = useState(false);
   const [, lineDrop] = useDrop(
     () => ({
       accept: ItemTypes.CODEBLOCK,
@@ -84,6 +85,18 @@ function CodeLine({
     }
   }, [selectedCodeline]);
 
+    /**
+   * Sets a border on selected codelines.
+   * For visual aid.
+   */
+  useEffect(() => {
+    if(allSelectedLines != null){
+      let isSelected = allSelectedLines.includes(index);
+      let isSelectedByMe = selectedCodeline && selectedCodeline.id === block.i;
+      setSelectedByPlayer(isSelected && !isSelectedByMe);  // Cannot be dragged if selected by someone else than me
+    } 
+  }, [allSelectedLines]);
+
   return (
     <li
       data-testid='codeline'
@@ -100,7 +113,7 @@ function CodeLine({
         style={{ marginLeft: `${block.indent * OFFSET}px` }}
         onClick={(e) => handleDoubbleClick(e, block, draggable, index)}
       >
-        <CodeBlock {...block} index={index} draggable={draggable} isAlwaysVisible={isAlwaysVisible} inField={maxIndent > 0} />
+        <CodeBlock {...block} index={index} draggable={isSelectedByPlayer? false : draggable} isAlwaysVisible={isAlwaysVisible} inField={maxIndent > 0} />
       </div>
     </li>
   );
@@ -113,6 +126,7 @@ CodeLine.propTypes = {
   unSelectOnHover: PropTypes.func,
   maxIndent: PropTypes.number,
   draggable: PropTypes.bool,
+  allSelectedLines: PropTypes.array
 };
 
 export default CodeLine;

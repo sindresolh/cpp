@@ -23,7 +23,7 @@ import {
   moveBlockInSolutionField,
   requestMove,
 } from '../../../utils/moveBlock/moveBlock';
-import { getLock } from '../../../utils/lockHelper/lockHelper';
+import { getLock, getSelectedBy } from '../../../utils/lockHelper/lockHelper';
 import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
 import { setSelected, getSelectedBlocks } from '../../../utils/lockHelper/lockHelper';
 
@@ -52,7 +52,7 @@ function SolutionField({minwidth}) {
   const newLockEvent = useSelector((state) => state.lockEvent); // Keeps track of new lock events
   const [locked, setLocked] = useState(false);
   const newSelectEvent = useSelector((state) => state.selectEvent); // Keeps track of new lock events
-   const [selectedPlayers, setSelectedPlayers] = useState([
+   const [allSelectedLines, setAllSelectedLines] = useState([
     false,
     false,
     false,
@@ -201,8 +201,13 @@ function SolutionField({minwidth}) {
     useEffect(() => {
       let players = store.getState().players;
       let newSelectedBlocks = getSelectedBlocks(players);
+      if(newSelectedBlocks != null && newSelectedBlocks[0] != null){
+        setAllSelectedLines(newSelectedBlocks);
+      }
+/*       let mySelectedIndex = getSelectedBy(players, 'YOU')
       console.log(newSelectedBlocks)
       console.log(newSelectEvent) 
+      console.log(mySelectedIndex) */
     }, [newSelectEvent]);
 
   /**
@@ -309,6 +314,7 @@ function SolutionField({minwidth}) {
               selectedCodeline={selectedCodeline}
               isAlwaysVisible={true}
               background={!locked? COLORS.codeline : COLORS.grey}
+              allSelectedLines={allSelectedLines != null? allSelectedLines : allSelectedLines}
             />
           );
         })}

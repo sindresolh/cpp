@@ -52,6 +52,20 @@ export const setAllLocks = (players, lock) => {
  * @param {*} pid : id of peer
  * @returns
  */
+export const getSelectedBy = (players, pid) => {
+  try {
+    return players.filter((p) => p.id === pid)[0].selected;
+  } catch (error) {
+    return false;
+  }
+};
+
+/** Get all the selected blocks
+ *
+ * @param {*} players : list of all players with select status
+ * @param {*} pid : id of peer
+ * @returns
+ */
 export const getSelectedBlocks = (players) => {
   return players.map((p) => p.selected);
 };
