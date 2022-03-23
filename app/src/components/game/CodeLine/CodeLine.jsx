@@ -41,7 +41,7 @@ function CodeLine({
   const blockRef = useRef(null); // reference to get the position of the DOM element
   const [border, setBorder] = useState('none');
   const MAX_INDENT = maxIndent;
-  const [selectedPlayer, setSelectedPlayer] = useState(null);
+  const [selectedPlayer, setSelectedPlayer] = useState(-1);
   const [, lineDrop] = useDrop(
     () => ({
       accept: ItemTypes.CODEBLOCK,
@@ -98,7 +98,7 @@ function CodeLine({
 
       let player = allSelectedLines.findIndex(checkIndex); // Player that has selected this index
 
-      setSelectedPlayer(player);
+      setSelectedPlayer(player + 1);
 
       /* let isSelected = allSelectedLines.includes(index);
       let isSelectedByMe = selectedCodeline.id === block.id;

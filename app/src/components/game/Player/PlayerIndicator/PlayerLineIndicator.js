@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './PlayerLineIndicator.css';
 import { COLORS } from '../../../../utils/constants';
 import Poly from '../../../../utils/drawing/Poly';
@@ -8,30 +8,29 @@ import p3Icon from '../../../../utils/images/playerIcons/player_icon_3.png';
 import p4Icon from '../../../../utils/images/playerIcons/player_icon_4.png';
 import { PLAYER } from '../../../../utils/constants';
 export default function PlayerIndicator({ player }) {
-  const VISIBILITY = player > 0 ? 'visible' : 'hidden';
+  let imgSrc = '';
+
+  switch (player) {
+    case PLAYER.P1:
+      imgSrc = p1Icon;
+      break;
+    case PLAYER.P2:
+      imgSrc = p2Icon;
+      break;
+    case PLAYER.P3:
+      imgSrc = p3Icon;
+      break;
+    case PLAYER.P4:
+      imgSrc = p4Icon;
+      break;
+    default:
+      break;
+  }
+  const VISIBILITY = imgSrc != '' ? 'visible' : 'hidden';
   return (
     <div className='IndicatorContainer' style={{ visibility: VISIBILITY }}>
       <div className='PlayerIcons'>
-        {player === PLAYER.P1 - 1 ? (
-          <img draggable={false} src={p1Icon} className='smallPlayerIcon' />
-        ) : (
-          ''
-        )}
-        {player === PLAYER.P2 - 1 ? (
-          <img draggable={false} src={p2Icon} className='smallPlayerIcon' />
-        ) : (
-          ''
-        )}
-        {player === PLAYER.P3 - 1 ? (
-          <img draggable={false} src={p3Icon} className='smallPlayerIcon' />
-        ) : (
-          ''
-        )}
-        {player === PLAYER.P4 - 1 ? (
-          <img draggable={false} src={p4Icon} className='smallPlayerIcon' />
-        ) : (
-          ''
-        )}
+        <img draggable={false} src={imgSrc} className='smallPlayerIcon' />
       </div>
 
       <svg height='100' width='100' className='Indicator'>
