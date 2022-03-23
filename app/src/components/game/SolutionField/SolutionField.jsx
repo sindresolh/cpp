@@ -10,7 +10,8 @@ import {
   removeBlockFromField,
   addBlockToList,
   moveRequest,
-  selectRequest
+  selectRequest,
+  selectEvent
 } from '../../../redux/actions';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from '../../../utils/itemtypes';
@@ -48,6 +49,13 @@ function SolutionField({minwidth}) {
   const [selectedCodeline, setSelectedCodeline] = useState(null); // block selected for the next keyDown event
   const newLockEvent = useSelector((state) => state.lockEvent); // Keeps track of new lock events
   const [locked, setLocked] = useState(false);
+  const newSelectEvent = useSelector((state) => state.selectEvent); // Keeps track of new lock events
+   const [selectedPlayers, setSelectedPlayers] = useState([
+    false,
+    false,
+    false,
+    false,
+  ]); // One for each player and where they have currently selected
 
   const dispatch_fieldEvent = () => {
     dispatch(fieldEvent());
@@ -81,9 +89,6 @@ function SolutionField({minwidth}) {
   // move the block within the field or to a hand list
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0, mouseEvent = true) => {
-      if (mouseEvent) {
-        setSelectedCodeline(null); // reset selected codeblocks
-      }
       // get block if it exists in solutionfield
       if (iAmHost()) {
         moveBlockInSolutionField(
@@ -97,7 +102,6 @@ function SolutionField({minwidth}) {
       } else {
         const move = { id, index: atIndex, indent: atIndent, field: 'SF' };
         requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
-        dispatch(selectRequest(null));
       }
     },
     [blocks]
@@ -125,7 +129,7 @@ function SolutionField({minwidth}) {
           indent: selectedCodeline.indent - 1,
         }
         setSelectedCodeline((newSelectedCodeline));
-        if(!iAmHost()) dispatch(selectRequest(newSelectedCodeline));
+        iAmHost()? dispatch(selectEvent({pid: 'HOST', index: newSelectedCodeline.index})) : dispatch(selectRequest(newSelectedCodeline));
         moveBlock(
           selectedCodeline.id,
           selectedCodeline.index,
@@ -143,7 +147,7 @@ function SolutionField({minwidth}) {
           indent: selectedCodeline.indent + 1,
         }
         setSelectedCodeline(newSelectedCodeline);
-        if(!iAmHost()) dispatch(selectRequest(newSelectedCodeline));
+        iAmHost()? dispatch(selectEvent({pid: 'HOST', index: newSelectedCodeline.index})) : dispatch(selectRequest(newSelectedCodeline));
         moveBlock(
           selectedCodeline.id,
           selectedCodeline.index,
@@ -160,7 +164,7 @@ function SolutionField({minwidth}) {
   /* Reset selected block when a new task starts*/
   useEffect(() => {
     setSelectedCodeline(null);
-    if(!iAmHost()) dispatch(selectRequest(null));
+    iAmHost()? dispatch(selectEvent(null)) : dispatch(selectRequest(null));
   }, [currentTaskNumber]);
 
    /**
@@ -172,9 +176,16 @@ function SolutionField({minwidth}) {
       if(myLock !== locked){
         setLocked(myLock);
         setSelectedCodeline(null);
-        if(!iAmHost()) dispatch(selectRequest(null));
+        iAmHost()? dispatch(selectEvent(null)) : dispatch(selectRequest(null));
       }
   }, [newLockEvent]);
+
+    /**
+   * Another player has selected a codeblock
+   */
+    useEffect(() => {
+      console.log(newSelectEvent)
+    }, [newSelectEvent]);
 
   /**
    * Creates an key event listener based on the selected codeblock
@@ -214,7 +225,7 @@ function SolutionField({minwidth}) {
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
     if(!locked){
       setSelectedCodeline(movedBlock);
-      if(!iAmHost()) dispatch(selectRequest(movedBlock));
+      iAmHost()? dispatch(selectEvent(null)) : dispatch(selectRequest(movedBlock));
     if (movedBlock != null && draggable) {
       // the user selected this codeblock
       movedBlock.index = index;
@@ -253,7 +264,7 @@ function SolutionField({minwidth}) {
   const handleDrag = (movedBlock, draggable, index) =>{
     if(!locked){
       setSelectedCodeline(movedBlock);
-      if(!iAmHost()) dispatch(selectRequest(movedBlock));
+      iAmHost()? dispatch(selectEvent({pid : 'HOST', index})) : dispatch(selectRequest(movedBlock));
       if (movedBlock != null && draggable) {
       // the user selected this codeblock
       movedBlock.index = index;

@@ -71,7 +71,7 @@ function CodeLine({
     }),
     [block, moveBlock]
   );
-
+  
   /**
    * Sets a border on selected codelines.
    * For visual aid.

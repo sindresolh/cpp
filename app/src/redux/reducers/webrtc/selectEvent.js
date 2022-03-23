@@ -3,7 +3,7 @@ import { ACTIONS } from '../../actions/ACTIONS';
 /** Event triggered by host to update locks for all players
  *  Triggers componentDidUpdate in CommunicationListener
  *
- * @param {*} state : Date when this reducer was called last time
+ * @param {*} state : Who to change lock on, and wheter it should be open or closed
  * @param {*} action
  * @returns
  */

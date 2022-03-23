@@ -242,7 +242,7 @@ class CommunicationHandler extends Component {
         this.selectRequest(payload, peer);
         break;
       case SELECT_EVENT:
-        console.log('TODO: handle select event from host');
+        this.selectEvent(payload);
         break;
       default:
         break;
@@ -398,12 +398,15 @@ class CommunicationHandler extends Component {
   selectRequest(payload, peer) {
     const payloadState = JSON.parse(payload);
     const { dispatch_selectEvent } = this.props;
-    console.log(payloadState.index);
     let index = null;
     if (payloadState != null) {
       index = payloadState.index;
     }
     dispatch_selectEvent({ pid: peer.id, index: index });
+  }
+
+  selectEvent(payload) {
+    console.log('select event i handler');
   }
 
   /**
