@@ -50,7 +50,11 @@ import SidebarModal from '../../Game/Sidebar/SidebarModal/SidebarModal';
 import SubmitIcon from '../../../utils/images/buttonIcons/submit.png';
 import { COLORS, LOCKTYPES } from '../../../utils/constants';
 import configData from '../../../config.json';
-import { setLock, setAllLocks } from '../../../utils/lockHelper/lockHelper';
+import {
+  setLock,
+  setAllLocks,
+  setSelected,
+} from '../../../utils/lockHelper/lockHelper';
 
 const mapStateToProps = (state) => ({
   players: state.players,
@@ -127,7 +131,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room-mondayy');
+  join = (webrtc) => webrtc.joinRoom('cpp-room-frogdayy');
 
   /**
    * Called when a new peer is added to the room
@@ -396,17 +400,39 @@ class CommunicationHandler extends Component {
    * @param {*} peer
    */
   selectRequest(payload, peer) {
-    const payloadState = JSON.parse(payload);
-    const { dispatch_selectEvent } = this.props;
-    let index = null;
-    if (payloadState != null) {
-      index = payloadState.index;
-    }
+    const index = JSON.parse(payload);
+    let prevState = store.getState();
+    let players = prevState.players;
+    const { dispatch_selectEvent, dispatch_setPlayers } = this.props;
+    dispatch_setPlayers(
+      setSelected(players, peer.id === 'HOST' ? 'YOU' : peer.id, index)
+    );
     dispatch_selectEvent({ pid: peer.id, index: index });
   }
 
+  /**
+   * The HOST just handled a select request (I am NOT the HOST)
+   *
+   * @param {*} payload
+   */
   selectEvent(payload) {
-    console.log('select event i handler');
+    const payloadState = JSON.parse(payload);
+    let pid = payloadState.pid;
+    let index = payloadState.index;
+    let prevState = store.getState();
+    let players = prevState.players;
+    const { dispatch_selectEvent, dispatch_setPlayers } = this.props;
+
+    // The host does not know its own name
+    if (pid === 'HOST') {
+      pid = prevState.host;
+    }
+    // If the player cannot be found it probablt belongs to me
+    if (!players.some((p) => p.id === pid)) {
+      pid = 'YOU';
+    }
+    dispatch_setPlayers(setSelected(players, pid, index));
+    dispatch_selectEvent({ pid: pid, index: index });
   }
 
   /**

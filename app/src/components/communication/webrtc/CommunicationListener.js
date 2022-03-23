@@ -247,10 +247,12 @@ class CommunicationListener extends Component {
         this.shout(LOCK_EVENT, json);
       }
     } else if (prevProps.selectRequest !== this.props.selectRequest) {
+      console.log('req');
       const json = JSON.stringify(state.selectRequest);
-      this.shout(SELECT_REQUEST, json);
+      this.whisper(state.host, SELECT_REQUEST, json);
     } else if (prevProps.selectEvent !== this.props.selectEvent) {
       if (this.iAmHost()) {
+        console.log('approve');
         // I am host and I just approved a select.
         const json = JSON.stringify(state.selectEvent);
         this.shout(SELECT_EVENT, json);

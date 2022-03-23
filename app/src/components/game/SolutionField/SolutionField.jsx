@@ -11,7 +11,8 @@ import {
   addBlockToList,
   moveRequest,
   selectRequest,
-  selectEvent
+  selectEvent,
+  setPlayers
 } from '../../../redux/actions';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from '../../../utils/itemtypes';
@@ -24,6 +25,7 @@ import {
 } from '../../../utils/moveBlock/moveBlock';
 import { getLock } from '../../../utils/lockHelper/lockHelper';
 import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
+import { setSelected, getSelectedBlocks } from '../../../utils/lockHelper/lockHelper';
 
 /**
  * @returns true if this player is the host.
@@ -106,6 +108,20 @@ function SolutionField({minwidth}) {
     },
     [blocks]
   );
+  
+  /**
+   * I am the HOST.
+   * Select an index and notify my peers.
+   * 
+   * @param {*} index 
+   */
+  const handleSelect = (index) =>{
+    let players =store.getState().players;
+          dispatch(setPlayers(
+      setSelected(players, 'YOU', index))
+    );
+    dispatch(selectEvent({ pid: 'HOST', index: index }));
+  }
 
   /**
    * Handle keyboard input for the selected codeblock.
@@ -129,7 +145,7 @@ function SolutionField({minwidth}) {
           indent: selectedCodeline.indent - 1,
         }
         setSelectedCodeline((newSelectedCodeline));
-        iAmHost()? dispatch(selectEvent({pid: 'HOST', index: newSelectedCodeline.index})) : dispatch(selectRequest(newSelectedCodeline));
+      iAmHost()? handleSelect(newSelectedCodeline.index) : dispatch(selectRequest(newSelectedCodeline.index));
         moveBlock(
           selectedCodeline.id,
           selectedCodeline.index,
@@ -147,7 +163,7 @@ function SolutionField({minwidth}) {
           indent: selectedCodeline.indent + 1,
         }
         setSelectedCodeline(newSelectedCodeline);
-        iAmHost()? dispatch(selectEvent({pid: 'HOST', index: newSelectedCodeline.index})) : dispatch(selectRequest(newSelectedCodeline));
+        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest(newSelectedCodeline.index));
         moveBlock(
           selectedCodeline.id,
           selectedCodeline.index,
@@ -164,7 +180,7 @@ function SolutionField({minwidth}) {
   /* Reset selected block when a new task starts*/
   useEffect(() => {
     setSelectedCodeline(null);
-    iAmHost()? dispatch(selectEvent(null)) : dispatch(selectRequest(null));
+    iAmHost()? handleSelect(null)  : dispatch(selectRequest(null));
   }, [currentTaskNumber]);
 
    /**
@@ -176,7 +192,6 @@ function SolutionField({minwidth}) {
       if(myLock !== locked){
         setLocked(myLock);
         setSelectedCodeline(null);
-        iAmHost()? dispatch(selectEvent(null)) : dispatch(selectRequest(null));
       }
   }, [newLockEvent]);
 
@@ -184,7 +199,10 @@ function SolutionField({minwidth}) {
    * Another player has selected a codeblock
    */
     useEffect(() => {
-      console.log(newSelectEvent)
+      let players = store.getState().players;
+      let newSelectedBlocks = getSelectedBlocks(players);
+      console.log(newSelectedBlocks)
+      console.log(newSelectEvent) 
     }, [newSelectEvent]);
 
   /**
@@ -225,10 +243,10 @@ function SolutionField({minwidth}) {
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
     if(!locked){
       setSelectedCodeline(movedBlock);
-      iAmHost()? dispatch(selectEvent(null)) : dispatch(selectRequest(movedBlock));
     if (movedBlock != null && draggable) {
       // the user selected this codeblock
       movedBlock.index = index;
+      iAmHost()? handleSelect(index)  : dispatch(selectRequest(index));
     }
     // (e.detauil > 1) if clicked more than once
     if (e.detail > 1) {
@@ -263,8 +281,8 @@ function SolutionField({minwidth}) {
    */
   const handleDrag = (movedBlock, draggable, index) =>{
     if(!locked){
+      iAmHost()? handleSelect(index) : dispatch(selectRequest(index));
       setSelectedCodeline(movedBlock);
-      iAmHost()? dispatch(selectEvent({pid : 'HOST', index})) : dispatch(selectRequest(movedBlock));
       if (movedBlock != null && draggable) {
       // the user selected this codeblock
       movedBlock.index = index;

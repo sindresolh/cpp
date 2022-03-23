@@ -2,7 +2,7 @@ import { ACTIONS } from '../../actions/ACTIONS';
 
 /** Reducer for requesting a lock for the selected codeblock for this player
  *
- * @param {*} state : Date when this reducer was called last time
+ * @param {*} state : Index to request for
  * @param {*} action
  * @returns
  */

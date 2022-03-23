@@ -45,3 +45,25 @@ export const setAllLocks = (players, lock) => {
   players.map((p) => (p.lock = lock));
   return players;
 };
+
+/** Get all the selected blocks
+ *
+ * @param {*} players : list of all players with select status
+ * @param {*} pid : id of peer
+ * @returns
+ */
+export const getSelectedBlocks = (players) => {
+  return players.map((p) => p.selected);
+};
+
+/**
+ * Set a players selected block
+ *
+ * @param {*} players : list of all players with lock status
+ * @param {*} pid : player id
+ * @param {*} index : int
+ */
+export const setSelected = (players, pid, index) => {
+  players.map((p) => (p.id === pid ? (p.selected = index) : p.selected));
+  return players;
+};
