@@ -1,12 +1,13 @@
 .IndicatorContainer {
   position: absolute;
-  left: 25vw;
 }
 
 .PlayerIcons {
   position: relative;
-  z-index: 1;
-  margin-bottom: -55px;
+
+  left: 0;
+  top: 0;
+  margin-bottom: -10px;
 }
 
 .Indicator {
