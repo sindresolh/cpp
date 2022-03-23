@@ -204,10 +204,6 @@ function SolutionField({minwidth}) {
       if(newSelectedBlocks != null && newSelectedBlocks != allSelectedLines){
         setAllSelectedLines(newSelectedBlocks);
       }
-      let mySelectedIndex = getSelectedBy(players, 'YOU')
-      console.log(newSelectedBlocks)
-      console.log(newSelectEvent) 
-      console.log(mySelectedIndex)
     }, [newSelectEvent]);
 
   /**

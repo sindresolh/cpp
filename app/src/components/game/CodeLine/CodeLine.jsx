@@ -100,6 +100,7 @@ function CodeLine({
 
       setSelectedPlayer(player + 1);
 
+      /* TODO : lock lines that are selected by other players than me
       /* let isSelected = allSelectedLines.includes(index);
       let isSelectedByMe = selectedCodeline.id === block.id;
       console.log('selected by me' + isSelectedByMe + 'is selecteded by other player' + isSelected)

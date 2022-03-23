@@ -28,12 +28,12 @@ export default function PlayerIndicator({ player }) {
   }
   const VISIBILITY = imgSrc != '' ? 'visible' : 'hidden';
   return (
-    <div className='IndicatorContainer' style={{ visibility: VISIBILITY }}>
-      <div className='PlayerIcons'>
-        <img draggable={false} src={imgSrc} className='smallPlayerIcon' />
+    <div className='LineIndicatorContainer' style={{ visibility: VISIBILITY }}>
+      <div className='LinePlayerIcons'>
+        <img draggable={false} src={imgSrc} className='LinesmallPlayerIcon' />
       </div>
 
-      <svg height='100' width='100' className='Indicator'>
+      <svg height='100' width='100' className='LineIndicator'>
         <ellipse cx='50' cy='45' rx='25' ry='25' fill={COLORS.solutionfield} />
         <g transform='rotate(-90, 32.5, 32.5)'>
           <Poly sides={3} size={10} cx={20} cy={75} r={15} />

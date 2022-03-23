@@ -1,17 +1,19 @@
-.IndicatorContainer {
+.LineIndicatorContainer {
   position: absolute;
 }
 
-.PlayerIcons {
+.LinePlayerIcons {
   position: relative;
+  z-index: 1;
 }
 
-.Indicator {
+.LineIndicator {
   position: relative;
   margin-left: -6vw;
+  margin-top: -3vw;
 }
 
-.smallPlayerIcon {
+.LinesmallPlayerIcon {
   width: 20px;
   margin-left: -6vw;
 }
