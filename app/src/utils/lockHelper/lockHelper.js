@@ -81,3 +81,14 @@ export const setSelected = (players, pid, index) => {
   players.map((p) => (p.id === pid ? (p.selected = index) : p.selected));
   return players;
 };
+
+/**
+ * Set a players selected block
+ *
+ * @param {*} players : list of all players with lock status
+ * @param {*} pid : player id
+ * @param {*} index : int
+ */
+export const isIndexSelected = (players, index) => {
+  return players.some((p) => p.selected === index);
+};

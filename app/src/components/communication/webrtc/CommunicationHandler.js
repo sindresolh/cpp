@@ -54,6 +54,7 @@ import {
   setLock,
   setAllLocks,
   setSelected,
+  isIndexSelected,
 } from '../../../utils/lockHelper/lockHelper';
 
 const mapStateToProps = (state) => ({
@@ -400,10 +401,11 @@ class CommunicationHandler extends Component {
    * @param {*} peer
    */
   selectRequest(payload, peer) {
-    const index = JSON.parse(payload);
     let prevState = store.getState();
     let players = prevState.players;
+    const index = JSON.parse(payload);
     const { dispatch_selectEvent, dispatch_setPlayers } = this.props;
+
     dispatch_setPlayers(
       setSelected(players, peer.id === 'HOST' ? 'YOU' : peer.id, index)
     );

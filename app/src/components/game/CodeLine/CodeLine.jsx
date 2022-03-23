@@ -7,6 +7,7 @@ import './CodeLine.css';
 import { OFFSET } from '../../../utils/constants';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
+import PlayerLineIndicator from '../Player/PlayerIndicator/PlayerLineIndicator';
 
 /**
  * A line which contains a code block. Can either be in a hand or in the solution field.
@@ -40,14 +41,13 @@ function CodeLine({
   const blockRef = useRef(null); // reference to get the position of the DOM element
   const [border, setBorder] = useState('none');
   const MAX_INDENT = maxIndent;
-  const [isSelectedByPlayer, setSelectedByPlayer] = useState(false);
+  const [selectedPlayer, setSelectedPlayer] = useState(null);
   const [, lineDrop] = useDrop(
     () => ({
       accept: ItemTypes.CODEBLOCK,
       canDrop: (item, monitor) => {
         return true; // TODO: yes for now
-      },
-      
+      },   
       hover: (item, monitor) => {
 
         //Get my index if I am in solutionField
@@ -85,15 +85,25 @@ function CodeLine({
     }
   }, [selectedCodeline]);
 
+  function checkIndex(i) {
+    return i === index;
+  }
+
     /**
    * Sets a border on selected codelines.
    * For visual aid.
    */
   useEffect(() => {
     if(allSelectedLines != null){
-      let isSelected = allSelectedLines.includes(index);
-      let isSelectedByMe = selectedCodeline && selectedCodeline.id === block.i;
-      setSelectedByPlayer(isSelected && !isSelectedByMe);  // Cannot be dragged if selected by someone else than me
+
+      let player = allSelectedLines.findIndex(checkIndex); // Player that has selected this index
+
+      setSelectedPlayer(player);
+
+      /* let isSelected = allSelectedLines.includes(index);
+      let isSelectedByMe = selectedCodeline.id === block.id;
+      console.log('selected by me' + isSelectedByMe + 'is selecteded by other player' + isSelected)
+      setSelectedByPlayer(isSelected && !isSelectedByMe);  // Cannot be dragged if selected by someone else than me */
     } 
   }, [allSelectedLines]);
 
@@ -104,8 +114,9 @@ function CodeLine({
       ref={lineDrop}
       key={draggable}
     >
-      <hr style={{ width: `${block.indent * OFFSET}px`,  borderTop: draggable? '0.1em solid #c2c2c2' : '0.1em solid black'}} />
+      <PlayerLineIndicator player={selectedPlayer}/>
 
+      <hr style={{ width: `${block.indent * OFFSET}px`,  borderTop: draggable? '0.1em solid #c2c2c2' : '0.1em solid black'}} />
       <div
         id={`blockref-${block.id}`}
         data-testid={`blockref-${block.id}`}
@@ -113,7 +124,7 @@ function CodeLine({
         style={{ marginLeft: `${block.indent * OFFSET}px` }}
         onClick={(e) => handleDoubbleClick(e, block, draggable, index)}
       >
-        <CodeBlock {...block} index={index} draggable={isSelectedByPlayer? false : draggable} isAlwaysVisible={isAlwaysVisible} inField={maxIndent > 0} />
+        <CodeBlock {...block} index={index} draggable={ draggable} isAlwaysVisible={isAlwaysVisible} inField={maxIndent > 0} />
       </div>
     </li>
   );

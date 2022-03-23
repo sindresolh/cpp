@@ -1,4 +1,6 @@
 .IndicatorContainer {
+  position: absolute;
+  left: 25vw;
 }
 
 .PlayerIcons {
@@ -9,9 +11,6 @@
 
 .Indicator {
   position: relative;
-  left: 0;
-  top: 0;
-  margin-bottom: -10px;
 }
 
 .smallPlayerIcon {

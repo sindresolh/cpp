@@ -201,13 +201,13 @@ function SolutionField({minwidth}) {
     useEffect(() => {
       let players = store.getState().players;
       let newSelectedBlocks = getSelectedBlocks(players);
-      if(newSelectedBlocks != null && newSelectedBlocks[0] != null){
+      if(newSelectedBlocks != null && newSelectedBlocks != allSelectedLines){
         setAllSelectedLines(newSelectedBlocks);
       }
-/*       let mySelectedIndex = getSelectedBy(players, 'YOU')
+      let mySelectedIndex = getSelectedBy(players, 'YOU')
       console.log(newSelectedBlocks)
       console.log(newSelectEvent) 
-      console.log(mySelectedIndex) */
+      console.log(mySelectedIndex)
     }, [newSelectEvent]);
 
   /**
@@ -314,7 +314,7 @@ function SolutionField({minwidth}) {
               selectedCodeline={selectedCodeline}
               isAlwaysVisible={true}
               background={!locked? COLORS.codeline : COLORS.grey}
-              allSelectedLines={allSelectedLines != null? allSelectedLines : allSelectedLines}
+              allSelectedLines={allSelectedLines}
             />
           );
         })}
