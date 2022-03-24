@@ -35,7 +35,7 @@ function CodeLine({
   selectedCodeline,
   isAlwaysVisible, // Should be visible even if it is not draggable - Special case for a lock
   background,
-  handleDrag,
+  removedSelected,
   allSelectedLines
 }) {
   const blockRef = useRef(null); // reference to get the position of the DOM element
@@ -46,15 +46,10 @@ function CodeLine({
     () => ({
       accept: ItemTypes.CODEBLOCK,
       canDrop: (item, monitor) => {
+        //Get my index if I am in solutionField
         return true; // TODO: yes for now
       },   
       hover: (item, monitor) => {
-
-        //Get my index if I am in solutionField
-        if(MAX_INDENT > 0){
-          handleDrag(block, draggable, monitor.getItem().index);
-        }
-
         const dragOffset = monitor.getSourceClientOffset().x; // get continous offset of moving (preview) block
         const blockPosition = blockRef.current.getBoundingClientRect().x; // get position of codeblock DOM
         const offsetDifference = dragOffset - blockPosition; // check if a block is dragged over its "indent boundary"
@@ -74,6 +69,18 @@ function CodeLine({
   );
   
   /**
+   * Notify solutionField when a selected block was removed from field
+   */
+  useEffect(() => {
+        return () => {
+          if(allSelectedLines){
+            let player = allSelectedLines.findIndex(checkIndex); // Player that has selected this index
+            if(player > -1) removedSelected(player);
+          }
+        }
+    }, [])
+  
+  /**
    * Sets a border on selected codelines.
    * For visual aid.
    */
@@ -85,6 +92,12 @@ function CodeLine({
     }
   }, [selectedCodeline]);
 
+  /**
+   * Check where in the array the index is stored
+   * 
+   * @param {*} i 
+   * @returns 
+   */
   function checkIndex(i) {
     return i === index;
   }
@@ -97,6 +110,7 @@ function CodeLine({
     if(allSelectedLines != null){
       let player = allSelectedLines.findIndex(checkIndex); // Player that has selected this index
       setSelectedPlayer(player + 1);
+      console.log(allSelectedLines)
     } 
   }, [allSelectedLines]);
 

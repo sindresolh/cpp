@@ -23,7 +23,7 @@ import {
   moveBlockInSolutionField,
   requestMove,
 } from '../../../utils/moveBlock/moveBlock';
-import { getLock, getSelectedBy } from '../../../utils/lockHelper/lockHelper';
+import { getLock } from '../../../utils/lockHelper/lockHelper';
 import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
 import { setSelected, getSelectedBlocks } from '../../../utils/lockHelper/lockHelper';
 
@@ -93,7 +93,6 @@ function SolutionField({minwidth}) {
     (id, atIndex, atIndent = 0) => {
       // get block if it exists in solutionfield
       if (iAmHost()) {
-          handleSelect(atIndex);
           moveBlockInSolutionField(
           id,
           atIndex,
@@ -102,11 +101,12 @@ function SolutionField({minwidth}) {
           store.getState().handList,
           dispatches
         );
-        
+        handleSelect(atIndex);
       } else {
-        dispatch(selectRequest(atIndex));
+
         const move = { id, index: atIndex, indent: atIndent, field: 'SF' };
         requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
+        dispatch(selectRequest(atIndex));
       }
     },
     [blocks]
@@ -179,6 +179,7 @@ function SolutionField({minwidth}) {
   /* Reset selected block when a new task starts*/
   useEffect(() => {
     setSelectedCodeline(null);
+    iAmHost()? handleSelect(null)  : dispatch(selectRequest(null));
   }, [currentTaskNumber]);
 
    /**
@@ -273,19 +274,23 @@ function SolutionField({minwidth}) {
   };
 
   /**
-   * A new codeline is dragged by me. Make sure it it selected.
+   * A new codeline is removed. Make sure that no player has selected this index
    * 
    * @param {*} block 
    * @param {*} draggable 
    * @param {*} index 
    */
-  const handleDrag = (movedBlock, draggable, index) =>{
-    if(!locked){
-      setSelectedCodeline(movedBlock);
-      if (movedBlock != null && draggable) {
-      // the user selected this codeblock
-      movedBlock.index = index;
-    }
+  const removedSelected = (p) =>{
+    if(iAmHost()){
+       let players =store.getState().players;
+       let pid = players[p].id;
+      dispatch(setPlayers(
+        setSelected(players, pid, -1))
+      );
+      if(pid === 'YOU') pid = 'HOST';
+      dispatch(selectEvent({ pid: pid, index: -1 }));
+
+      console.log(' a selected was removed  -- ' + pid);
     }
   }
 
@@ -304,7 +309,7 @@ function SolutionField({minwidth}) {
               draggable={!locked}
               key={`line-${index}`}
               handleDoubbleClick={handleDoubbleClick}
-              handleDrag={handleDrag}
+              removedSelected={removedSelected}
               selectedCodeline={selectedCodeline}
               isAlwaysVisible={true}
               background={!locked? COLORS.codeline : COLORS.grey}
