@@ -34,10 +34,13 @@ function CodeLine({
   maxIndent,
   draggable,
   handleDoubbleClick,
+  handleDraggedLine,
+  handleDroppedLine,
   selectedCodeline,
   isAlwaysVisible, // Should be visible even if it is not draggable - Special case for a lock
   background,
-  allSelectedLines
+  allSelectedLines,
+  setSelectedCodeLine
 }) {
   const blockRef = useRef(null); // reference to get the position of the DOM element
   const [border, setBorder] = useState('none');
@@ -63,6 +66,8 @@ function CodeLine({
       else {
         dispatch(selectRequest(index));
       }
+    
+      handleDraggedLine(block, draggable, index);
     }
   }
   const [, lineDrop] = useDrop(
@@ -143,7 +148,7 @@ function CodeLine({
         style={{ marginLeft: `${block.indent * OFFSET}px` }}
         onClick={(e) => handleDoubbleClick(e, block, draggable, index)}
       >
-        <CodeBlock {...block} index={index} draggable={ draggable} isAlwaysVisible={isAlwaysVisible} inField={maxIndent > 0} />
+        <CodeBlock {...block} index={index} draggable={ draggable} isAlwaysVisible={isAlwaysVisible} inField={maxIndent > 0} handleDroppedLine={handleDroppedLine} />
       </div>
     </li>
   );

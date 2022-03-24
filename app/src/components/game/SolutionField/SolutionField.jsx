@@ -144,12 +144,14 @@ function SolutionField({minwidth}) {
           ...selectedCodeline,
           indent: selectedCodeline.indent - 1,
         }
+        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest(newSelectedCodeline.index));
         setSelectedCodeline((newSelectedCodeline));
         moveBlock(
           selectedCodeline.id,
           selectedCodeline.index,
           selectedCodeline.indent - 1,
         );
+
       } else if (
         !e.shiftKey &&
         e.keyCode === KEYBOARD_EVENT.TAB &&
@@ -160,6 +162,7 @@ function SolutionField({minwidth}) {
          ...selectedCodeline,
           indent: selectedCodeline.indent + 1,
         }
+        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest(newSelectedCodeline.index));
         setSelectedCodeline(newSelectedCodeline);
         moveBlock(
           selectedCodeline.id,
@@ -168,7 +171,6 @@ function SolutionField({minwidth}) {
         );
       }
     }
-
     }
     
   });
@@ -249,11 +251,13 @@ function SolutionField({minwidth}) {
     // (e.detauil > 1) if clicked more than once
     if (e.detail > 1) {
       if (iAmHost()) {
+        handleSelect(null) ;
         movedBlock.indent = 0;
         dispatch(removeBlockFromField(movedBlock.id));
         dispatch(addBlockToList(movedBlock));
         fieldEventPromise().then(() => dispatch(listEvent()));
       } else {
+        dispatch(selectRequest(null));
         const playerField = movedBlock.player.toString();
         const listIndex = movedBlock.player - 1;
         const atIndex = store.getState().handList[listIndex].length;
@@ -270,6 +274,28 @@ function SolutionField({minwidth}) {
     e.detail = 0; // resets detail so that other codeblocks can be clicked
   };
 
+  /**
+   * Select block on drag
+   * 
+   * @param {*} movedBlock 
+   * @param {*} draggable 
+   * @param {*} index 
+   */
+  const handleDraggedLine = (movedBlock, draggable, index) => {
+    if(!locked && movedBlock != null && draggable){
+      movedBlock.index = index;
+      setSelectedCodeline(movedBlock);
+    }
+  }
+
+  /**
+   * Unselect on drop
+   * 
+   */
+  const handleDroppedLine = () => {
+    setSelectedCodeline(null);
+  }
+
   return (
     <div className={'divSF'} style={{ background: locked ? "#C2C2C2" : COLORS.solutionfield }}>
       <h6>{'Connected players: ' + players.length}</h6>
@@ -285,6 +311,8 @@ function SolutionField({minwidth}) {
               draggable={!locked}
               key={`line-${index}`}
               handleDoubbleClick={handleDoubbleClick}
+              handleDraggedLine={handleDraggedLine}
+              handleDroppedLine={handleDroppedLine}
               selectedCodeline={selectedCodeline}
               isAlwaysVisible={true}
               background={!locked? COLORS.codeline : COLORS.grey}

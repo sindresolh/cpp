@@ -33,13 +33,13 @@ function CodeBlock({
   draggable,
   isAlwaysVisible, // Should be visible even if it is not draggable - Special case for a lock
   inField,
+  handleDroppedLine,
 }) {
   const dispatch = useDispatch();
 
   /**
-   * A player just moved a codeblock. Notify my peers about the index.
+   * I just dropped a codeblock. Notify my peers that I am not holding it anymore.
    * 
-   * @param {*} index : Index that was moved. -1 if the block was dropped
    */
   const handleDrop = () =>{
     if(inField){
@@ -54,6 +54,7 @@ function CodeBlock({
       else {
         dispatch(selectRequest(null));
       }
+      handleDroppedLine();
     }
   }
 
