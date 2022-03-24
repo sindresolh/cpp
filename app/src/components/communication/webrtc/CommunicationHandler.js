@@ -406,8 +406,6 @@ class CommunicationHandler extends Component {
     const index = JSON.parse(payload);
     const { dispatch_selectEvent, dispatch_setPlayers } = this.props;
 
-    console.log(index);
-
     dispatch_setPlayers(
       setSelected(players, peer.id === 'HOST' ? 'YOU' : peer.id, index)
     );

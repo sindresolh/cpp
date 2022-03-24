@@ -35,7 +35,6 @@ function CodeLine({
   selectedCodeline,
   isAlwaysVisible, // Should be visible even if it is not draggable - Special case for a lock
   background,
-  removedSelected,
   allSelectedLines
 }) {
   const blockRef = useRef(null); // reference to get the position of the DOM element
@@ -48,7 +47,7 @@ function CodeLine({
       canDrop: (item, monitor) => {
         //Get my index if I am in solutionField
         return true; // TODO: yes for now
-      },   
+      },
       hover: (item, monitor) => {
         const dragOffset = monitor.getSourceClientOffset().x; // get continous offset of moving (preview) block
         const blockPosition = blockRef.current.getBoundingClientRect().x; // get position of codeblock DOM
@@ -63,22 +62,9 @@ function CodeLine({
         else if (offsetDifference < 0 && indent > 0)
           moveBlock(item.id, index, indent - 1); // block is moved to the previous indent
       },
-     
     }),
     [block, moveBlock]
   );
-  
-  /**
-   * Notify solutionField when a selected block was removed from field
-   */
-  useEffect(() => {
-        return () => {
-          if(allSelectedLines){
-            let player = allSelectedLines.findIndex(checkIndex); // Player that has selected this index
-            if(player > -1) removedSelected(player);
-          }
-        }
-    }, [])
   
   /**
    * Sets a border on selected codelines.
@@ -110,7 +96,6 @@ function CodeLine({
     if(allSelectedLines != null){
       let player = allSelectedLines.findIndex(checkIndex); // Player that has selected this index
       setSelectedPlayer(player + 1);
-      console.log(allSelectedLines)
     } 
   }, [allSelectedLines]);
 

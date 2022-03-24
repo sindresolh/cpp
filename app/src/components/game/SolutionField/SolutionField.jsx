@@ -5,9 +5,9 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   setFieldState,
   removeBlockFromList,
+  removeBlockFromField,
   fieldEvent,
   listEvent,
-  removeBlockFromField,
   addBlockToList,
   moveRequest,
   selectRequest,
@@ -273,27 +273,6 @@ function SolutionField({minwidth}) {
     e.detail = 0; // resets detail so that other codeblocks can be clicked
   };
 
-  /**
-   * A new codeline is removed. Make sure that no player has selected this index
-   * 
-   * @param {*} block 
-   * @param {*} draggable 
-   * @param {*} index 
-   */
-  const removedSelected = (p) =>{
-    if(iAmHost()){
-       let players =store.getState().players;
-       let pid = players[p].id;
-      dispatch(setPlayers(
-        setSelected(players, pid, -1))
-      );
-      if(pid === 'YOU') pid = 'HOST';
-      dispatch(selectEvent({ pid: pid, index: -1 }));
-
-      console.log(' a selected was removed  -- ' + pid);
-    }
-  }
-
   return (
     <div className={'divSF'} style={{ background: locked ? "#C2C2C2" : COLORS.solutionfield }}>
       <h6>{'Connected players: ' + players.length}</h6>
@@ -309,7 +288,6 @@ function SolutionField({minwidth}) {
               draggable={!locked}
               key={`line-${index}`}
               handleDoubbleClick={handleDoubbleClick}
-              removedSelected={removedSelected}
               selectedCodeline={selectedCodeline}
               isAlwaysVisible={true}
               background={!locked? COLORS.codeline : COLORS.grey}
