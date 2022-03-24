@@ -1,13 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { COLORS } from '../../../utils/constants';
 import CodeBlock from '../CodeBlock/CodeBlock';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from '../../../utils/itemtypes';
 import './CodeLine.css';
 import { OFFSET } from '../../../utils/constants';
 import PropTypes from 'prop-types';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import PlayerLineIndicator from '../Player/PlayerIndicator/PlayerLineIndicator';
+import { selectEvent, selectRequest, setPlayers} from '../../../redux/actions';
+import store from '../../../redux/store/store';
+import {setSelected} from '../../../utils/lockHelper/lockHelper';
 
 /**
  * A line which contains a code block. Can either be in a hand or in the solution field.
@@ -41,6 +43,28 @@ function CodeLine({
   const [border, setBorder] = useState('none');
   const MAX_INDENT = maxIndent;
   const [selectedPlayer, setSelectedPlayer] = useState(-1);
+  const dispatch = useDispatch();
+
+  /**
+   * I am currently moving a block on this codeline
+   * 
+   * @param {*} index : Index that was moved. -1 if the block was dropped
+   */
+  const handleDrag = () =>{
+    if(MAX_INDENT > 0){
+      if(store.getState().host === ''){
+        console.log('drop')
+        let players =store.getState().players;
+        dispatch(setPlayers(
+        setSelected(players, 'YOU', index))
+        );
+        dispatch(selectEvent({ pid: 'HOST', index: index }));
+      }
+      else {
+        dispatch(selectRequest(index));
+      }
+    }
+  }
   const [, lineDrop] = useDrop(
     () => ({
       accept: ItemTypes.CODEBLOCK,
@@ -49,6 +73,8 @@ function CodeLine({
         return true; // TODO: yes for now
       },
       hover: (item, monitor) => {
+        handleDrag();
+
         const dragOffset = monitor.getSourceClientOffset().x; // get continous offset of moving (preview) block
         const blockPosition = blockRef.current.getBoundingClientRect().x; // get position of codeblock DOM
         const offsetDifference = dragOffset - blockPosition; // check if a block is dragged over its "indent boundary"
