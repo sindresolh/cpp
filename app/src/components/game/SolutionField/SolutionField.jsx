@@ -23,7 +23,7 @@ import {
   moveBlockInSolutionField,
   requestMove,
 } from '../../../utils/moveBlock/moveBlock';
-import { getLock } from '../../../utils/lockHelper/lockHelper';
+import { getLock, getSelectedBy } from '../../../utils/lockHelper/lockHelper';
 import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
 import { setSelected, getSelectedBlocks } from '../../../utils/lockHelper/lockHelper';
 
@@ -90,10 +90,11 @@ function SolutionField({minwidth}) {
 
   // move the block within the field or to a hand list
   const moveBlock = useCallback(
-    (id, atIndex, atIndent = 0, mouseEvent = true) => {
+    (id, atIndex, atIndent = 0) => {
       // get block if it exists in solutionfield
       if (iAmHost()) {
-        moveBlockInSolutionField(
+          handleSelect(atIndex);
+          moveBlockInSolutionField(
           id,
           atIndex,
           atIndent,
@@ -101,7 +102,9 @@ function SolutionField({minwidth}) {
           store.getState().handList,
           dispatches
         );
+        
       } else {
+        dispatch(selectRequest(atIndex));
         const move = { id, index: atIndex, indent: atIndent, field: 'SF' };
         requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
       }
@@ -145,12 +148,10 @@ function SolutionField({minwidth}) {
           indent: selectedCodeline.indent - 1,
         }
         setSelectedCodeline((newSelectedCodeline));
-      iAmHost()? handleSelect(newSelectedCodeline.index) : dispatch(selectRequest(newSelectedCodeline.index));
         moveBlock(
           selectedCodeline.id,
           selectedCodeline.index,
           selectedCodeline.indent - 1,
-          false
         );
       } else if (
         !e.shiftKey &&
@@ -163,12 +164,10 @@ function SolutionField({minwidth}) {
           indent: selectedCodeline.indent + 1,
         }
         setSelectedCodeline(newSelectedCodeline);
-        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest(newSelectedCodeline.index));
         moveBlock(
           selectedCodeline.id,
           selectedCodeline.index,
           selectedCodeline.indent + 1,
-          false
         );
       }
     }
@@ -180,7 +179,6 @@ function SolutionField({minwidth}) {
   /* Reset selected block when a new task starts*/
   useEffect(() => {
     setSelectedCodeline(null);
-    iAmHost()? handleSelect(null)  : dispatch(selectRequest(null));
   }, [currentTaskNumber]);
 
    /**
@@ -282,7 +280,6 @@ function SolutionField({minwidth}) {
    */
   const handleDrag = (movedBlock, draggable, index) =>{
     if(!locked){
-      iAmHost()? handleSelect(index) : dispatch(selectRequest(index));
       setSelectedCodeline(movedBlock);
       if (movedBlock != null && draggable) {
       // the user selected this codeblock
