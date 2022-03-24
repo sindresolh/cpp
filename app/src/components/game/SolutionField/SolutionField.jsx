@@ -103,7 +103,6 @@ function SolutionField({minwidth}) {
         );
         handleSelect(atIndex);
       } else {
-
         const move = { id, index: atIndex, indent: atIndent, field: 'SF' };
         requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
         dispatch(selectRequest(atIndex));

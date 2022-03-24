@@ -96,6 +96,7 @@ function CodeLine({
     if(allSelectedLines != null){
       let player = allSelectedLines.findIndex(checkIndex); // Player that has selected this index
       setSelectedPlayer(player + 1);
+      console.log(allSelectedLines)
     } 
   }, [allSelectedLines]);
 

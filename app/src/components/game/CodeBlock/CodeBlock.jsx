@@ -2,7 +2,11 @@ import React from 'react';
 import './CodeBlock.css';
 import { ItemTypes } from '../../../utils/itemtypes';
 import { useDrag } from 'react-dnd';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+import { selectEvent, selectRequest, setPlayers} from '../../../redux/actions';
+import store from '../../../redux/store/store';
+import {setSelected} from '../../../utils/lockHelper/lockHelper';
 
 /**
  * This component represents a code block. Can be either in a player list or in a code line in the solution field.
@@ -27,8 +31,32 @@ function CodeBlock({
   index,
   moveBlock,
   draggable,
-  isAlwaysVisible // Should be visible even if it is not draggable - Special case for a lock
+  isAlwaysVisible, // Should be visible even if it is not draggable - Special case for a lock
+  inField,
 }) {
+  const dispatch = useDispatch();
+
+  /**
+   * A player just moved a codeblock. Notify my peers about the index.
+   * 
+   * @param {*} index : Index that was moved. -1 if the block was dropped
+   */
+  const handleDrop = () =>{
+    if(inField){
+      if(store.getState().host === ''){
+        console.log('drop')
+        let players =store.getState().players;
+        dispatch(setPlayers(
+        setSelected(players, 'YOU', null))
+        );
+        dispatch(selectEvent({ pid: 'HOST', index: null }));
+      }
+      else {
+        dispatch(selectRequest(null));
+      }
+    }
+  }
+
   // implement dragging
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -47,6 +75,7 @@ function CodeBlock({
         isDragging: monitor.isDragging(),
       }),
       end: (item, monitor) => {
+        handleDrop();
         //const { id: droppedId, originalIndex, originalIndent } = item;
         const didDrop = monitor.didDrop();
 
@@ -95,7 +124,8 @@ CodeBlock.propTypes = {
   index: PropTypes.number,
   moveBlock: PropTypes.func,
   draggable: PropTypes.bool,
-  isAlwaysVisible: PropTypes.bool
+  isAlwaysVisible: PropTypes.bool,
+  inField: PropTypes.bool,
 };
 
 export default CodeBlock;
