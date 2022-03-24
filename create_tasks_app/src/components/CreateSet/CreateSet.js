@@ -1,6 +1,28 @@
 import './CreateSet.css';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import exportFromJSON from 'export-from-json';
+
+/**
+ * Credit: https://www.codegrepper.com/code-examples/javascript/javascript+check+if+valid+json
+ *
+ * Modified to also check properties.
+ */
+const jsonFormatIsValid = (str) => {
+  try {
+    JSON.parse(str);
+  } catch (e) {
+    return false;
+  }
+  const json = JSON.parse(str)[0];
+  const containsCorrectProperties =
+    json.hasOwnProperty('codeBlocks') &&
+    json.hasOwnProperty('distractors') &&
+    json.hasOwnProperty('hints') &&
+    json.hasOwnProperty('attempts') &&
+    json.hasOwnProperty('field');
+  return containsCorrectProperties;
+};
 
 /**
  * Read files locally and combine them into a tasks set.
@@ -28,10 +50,19 @@ function CreateSet() {
           name: file.name,
           content: await readFileContents(file),
         };
-        return fileContents;
+        if (jsonFormatIsValid(fileContents.content)) {
+          return fileContents;
+        } else {
+          alert(`File ${file.name} was discared due to invalid json format.`);
+          return undefined;
+        }
       })
     );
-    return results;
+
+    // remove invalid data
+    let validResults = results.filter((result) => result !== undefined);
+
+    return validResults;
   };
 
   const handleUpload = (e) => {
@@ -46,10 +77,17 @@ function CreateSet() {
         alert(err);
       });
   };
-
+  /**
+   * Export tasks to a taskset json file.
+   */
   const saveTaskSet = () => {
-    const contents = tasks.map((task) => task.content);
-    console.log(contents);
+    let data = tasks.map((task) => JSON.parse(task.content));
+    if (data.length !== 0) {
+      const fileName = 'taskset';
+      const exportType = exportFromJSON.types.json;
+
+      exportFromJSON({ data, fileName, exportType });
+    } else alert('No files are selected.');
   };
 
   return (
