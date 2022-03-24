@@ -112,6 +112,7 @@ function CreateSet() {
               style={{ color: 'black', fontSize: '2vh' }}
               name='tasks'
               multiple='multiple'
+              accept='.json'
               onChange={handleUpload}
             />
           </label>
