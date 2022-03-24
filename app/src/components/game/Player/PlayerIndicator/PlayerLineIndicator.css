@@ -9,11 +9,11 @@
 
 .LineIndicator {
   position: relative;
-  margin-left: -6vw;
-  margin-top: -3vw;
+  margin-left: -100px;
+  margin-top: -55px;
 }
 
 .LinesmallPlayerIcon {
   width: 20px;
-  margin-left: -6vw;
+  margin-left: -100px;
 }
