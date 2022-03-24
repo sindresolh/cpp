@@ -188,6 +188,7 @@ function SolutionField({minwidth}) {
       let players = store.getState().players;
       let myLock = getLock(players, 'YOU');
       if(myLock !== locked){
+        iAmHost()? handleSelect(null)  : dispatch(selectRequest(null));
         setLocked(myLock);
         setSelectedCodeline(null);
       }
