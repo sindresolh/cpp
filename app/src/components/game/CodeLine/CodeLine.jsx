@@ -95,16 +95,8 @@ function CodeLine({
    */
   useEffect(() => {
     if(allSelectedLines != null){
-
       let player = allSelectedLines.findIndex(checkIndex); // Player that has selected this index
-
       setSelectedPlayer(player + 1);
-
-      /* TODO : lock lines that are selected by other players than me
-      /* let isSelected = allSelectedLines.includes(index);
-      let isSelectedByMe = selectedCodeline.id === block.id;
-      console.log('selected by me' + isSelectedByMe + 'is selecteded by other player' + isSelected)
-      setSelectedByPlayer(isSelected && !isSelectedByMe);  // Cannot be dragged if selected by someone else than me */
     } 
   }, [allSelectedLines]);
 

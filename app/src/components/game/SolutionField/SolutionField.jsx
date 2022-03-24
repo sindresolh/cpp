@@ -23,7 +23,7 @@ import {
   moveBlockInSolutionField,
   requestMove,
 } from '../../../utils/moveBlock/moveBlock';
-import { getLock, getSelectedBy } from '../../../utils/lockHelper/lockHelper';
+import { getLock } from '../../../utils/lockHelper/lockHelper';
 import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
 import { setSelected, getSelectedBlocks } from '../../../utils/lockHelper/lockHelper';
 
