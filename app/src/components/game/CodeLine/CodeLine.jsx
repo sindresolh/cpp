@@ -56,7 +56,6 @@ function CodeLine({
   const handleDrag = () =>{
     if(MAX_INDENT > 0){
       if(store.getState().host === ''){
-        console.log('drop')
         let players =store.getState().players;
         dispatch(setPlayers(
         setSelected(players, 'YOU', index))

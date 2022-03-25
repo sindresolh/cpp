@@ -115,12 +115,13 @@ function SolutionField({minwidth}) {
    * 
    * @param {*} index 
    */
-  const handleSelect = (index) =>{
+  const handleSelect = (index, pid = 'YOU') =>{
     let players =store.getState().players;
           dispatch(setPlayers(
-      setSelected(players, 'YOU', index))
+      setSelected(players, pid, index))
     );
-    dispatch(selectEvent({ pid: 'HOST', index: index }));
+    pid === 'YOU'? pid = 'HOST': pid = pid;
+    dispatch(selectEvent({ pid: pid, index: index }));
   }
 
   /**
@@ -205,6 +206,21 @@ function SolutionField({minwidth}) {
       }
     }, [newSelectEvent]);
 
+
+   /**
+   * Deselect codeblocks that are removed from field. TODO: Probably a more effective solution.
+   */
+    useEffect(() => {
+      if(iAmHost){
+        let players = store.getState().players;
+        for(let p of players){
+          if(p.selected < blocks.length){
+            console.log(p.selected + ' - ' + blocks.length)
+          }
+        }
+      }
+    }, [blocks.length]);
+
   /**
    * Creates an key event listener based on the selected codeblock
    * If it is me: Lock my board
@@ -251,13 +267,15 @@ function SolutionField({minwidth}) {
     // (e.detauil > 1) if clicked more than once
     if (e.detail > 1) {
       if (iAmHost()) {
-        handleSelect(null) ;
+        handleSelect(null);
+        console.log('select')
         movedBlock.indent = 0;
         dispatch(removeBlockFromField(movedBlock.id));
         dispatch(addBlockToList(movedBlock));
         fieldEventPromise().then(() => dispatch(listEvent()));
       } else {
-        dispatch(selectRequest(null));
+        console.log('deselect')
+        dispatch(selectRequest(null))
         const playerField = movedBlock.player.toString();
         const listIndex = movedBlock.player - 1;
         const atIndex = store.getState().handList[listIndex].length;
