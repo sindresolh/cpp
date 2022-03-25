@@ -1,11 +1,12 @@
 .LineIndicatorContainer {
   position: absolute;
+  margin-left: -20px;
 }
 
 .LinePlayerIcons {
   position: relative;
   z-index: 1;
-  margin-left: -100px;
+  margin-left: -90px;
 }
 
 .LineIndicator {

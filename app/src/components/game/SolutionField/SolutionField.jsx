@@ -208,7 +208,7 @@ function SolutionField({minwidth}) {
 
 
    /**
-   * Deselect codeblocks that are removed from field. TODO: Probably a more effective solution.
+   * Deselect codeblocks that are removed from field (only needed for doubbleclick). TODO: Probably a more effective solution.
    */
     useEffect(() => {
       if(iAmHost){
