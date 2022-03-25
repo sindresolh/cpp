@@ -299,6 +299,17 @@ function SolutionField({minwidth}) {
     if(!locked && movedBlock != null && draggable){
       movedBlock.index = index;
       setSelectedCodeline(movedBlock);
+
+      if(iAmHost()){
+        let players =store.getState().players;
+        dispatch(setPlayers(
+        setSelected(players, 'YOU', index))
+        );
+        dispatch(selectEvent({ pid: 'HOST', index: index }));
+      }
+      else {
+        dispatch(selectRequest(index));
+      }
     }
   }
 
@@ -308,6 +319,17 @@ function SolutionField({minwidth}) {
    */
   const handleDroppedLine = () => {
     setSelectedCodeline(null);
+
+     if(iAmHost()){
+        let players =store.getState().players;
+        dispatch(setPlayers(
+        setSelected(players, 'YOU', null))
+        );
+        dispatch(selectEvent({ pid: 'HOST', index: null }));
+      }
+      else {
+        dispatch(selectRequest(null));
+      }
   }
 
   return (

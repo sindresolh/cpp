@@ -35,7 +35,6 @@ function CodeBlock({
   inField,
   handleDroppedLine,
 }) {
-  const dispatch = useDispatch();
 
   /**
    * I just dropped a codeblock. Notify my peers that I am not holding it anymore.
@@ -43,16 +42,6 @@ function CodeBlock({
    */
   const handleDrop = () =>{
     if(inField){
-      if(store.getState().host === ''){
-        let players =store.getState().players;
-        dispatch(setPlayers(
-        setSelected(players, 'YOU', null))
-        );
-        dispatch(selectEvent({ pid: 'HOST', index: null }));
-      }
-      else {
-        dispatch(selectRequest(null));
-      }
       handleDroppedLine();
     }
   }

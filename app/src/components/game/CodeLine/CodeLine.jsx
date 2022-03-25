@@ -44,7 +44,6 @@ function CodeLine({
   const [border, setBorder] = useState('none');
   const MAX_INDENT = maxIndent;
   const [selectedPlayers, setSelectedPlayers] = useState([false, false, false, false]);
-  const dispatch = useDispatch();
 
   /**
    * I am currently moving a block on this codeline
@@ -53,17 +52,6 @@ function CodeLine({
    */
   const handleDrag = () =>{
     if(MAX_INDENT > 0){
-      if(store.getState().host === ''){
-        let players =store.getState().players;
-        dispatch(setPlayers(
-        setSelected(players, 'YOU', index))
-        );
-        dispatch(selectEvent({ pid: 'HOST', index: index }));
-      }
-      else {
-        dispatch(selectRequest(index));
-      }
-    
       handleDraggedLine(block, draggable, index);
     }
   }
