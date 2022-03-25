@@ -27,7 +27,7 @@ function CodeBlock({
   index,
   moveBlock,
   draggable,
-  isAlwaysVisible // Should be visible even if it is not draggable - Special case for a lock
+  isAlwaysVisible, // Should be visible even if it is not draggable - Special case for a lock
 }) {
   // implement dragging
   const [{ isDragging }, drag] = useDrag(
@@ -67,21 +67,21 @@ function CodeBlock({
     ? `cb ${category} player${player} dragging`
     : `cb ${category} player${player}`;
   // If I am inside handlist (no indent) and not draggable -> make me invisible
-  if(!isAlwaysVisible){
-      className = !draggable ? className + ' invisible' : className;
+  if (!isAlwaysVisible) {
+    className = !draggable ? className + ' invisible' : className;
   }
 
+  if (draggable) className = className + ' draggable';
+
   return (
-    <div 
+    <div
       ref={drag}
       data-testid={`codeBlock-player${player}`}
       id={id}
       className={className}
       key={`block-${id}`}
     >
-      <code class="python">
-        {code}
-      </code>
+      <code class='python'>{code}</code>
     </div>
   );
 }
@@ -95,7 +95,7 @@ CodeBlock.propTypes = {
   index: PropTypes.number,
   moveBlock: PropTypes.func,
   draggable: PropTypes.bool,
-  isAlwaysVisible: PropTypes.bool
+  isAlwaysVisible: PropTypes.bool,
 };
 
 export default CodeBlock;
