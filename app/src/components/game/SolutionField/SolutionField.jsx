@@ -214,10 +214,10 @@ function SolutionField({minwidth}) {
       if(iAmHost){
         let players = store.getState().players;
         for(let p of players){
-          if(p.selected < blocks.length){
-            console.log(p.selected + ' - ' + blocks.length)
+          if(p.selected > blocks.length-1){
+            handleSelect(null, p.id)
           }
-        }
+      }
       }
     }, [blocks.length]);
 
@@ -267,15 +267,11 @@ function SolutionField({minwidth}) {
     // (e.detauil > 1) if clicked more than once
     if (e.detail > 1) {
       if (iAmHost()) {
-        handleSelect(null);
-        console.log('select')
         movedBlock.indent = 0;
         dispatch(removeBlockFromField(movedBlock.id));
         dispatch(addBlockToList(movedBlock));
         fieldEventPromise().then(() => dispatch(listEvent()));
       } else {
-        console.log('deselect')
-        dispatch(selectRequest(null))
         const playerField = movedBlock.player.toString();
         const listIndex = movedBlock.player - 1;
         const atIndex = store.getState().handList[listIndex].length;

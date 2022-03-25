@@ -24,7 +24,6 @@ import {setSelected} from '../../../utils/lockHelper/lockHelper';
  *  @param {Function} unselectOnHover callback to set the selected block to be null
  * @param {number} maxIndent  the max indent a block can have
  * @param {boolean} draggable whether the player shall be able to drag the block or not
- * @param {int} selectedCodeline information about the currently selected codeline. This could be this codeline.
  * @returns CodeLine component
  */
 function CodeLine({
@@ -40,12 +39,11 @@ function CodeLine({
   isAlwaysVisible, // Should be visible even if it is not draggable - Special case for a lock
   background,
   allSelectedLines,
-  setSelectedCodeLine
 }) {
   const blockRef = useRef(null); // reference to get the position of the DOM element
   const [border, setBorder] = useState('none');
   const MAX_INDENT = maxIndent;
-  const [selectedPlayer, setSelectedPlayer] = useState(-1);
+  const [selectedPlayers, setSelectedPlayers] = useState([false, false, false, false]);
   const dispatch = useDispatch();
 
   /**
@@ -119,14 +117,17 @@ function CodeLine({
   }
 
     /**
-   * Sets a border on selected codelines.
-   * For visual aid.
+   * Updates the codeline with the players that are currently moving the line
    */
   useEffect(() => {
     if(allSelectedLines != null){
-      let player = allSelectedLines.findIndex(checkIndex); // Player that has selected this index
-      setSelectedPlayer(player + 1);
-      console.log(allSelectedLines)
+      let newSelected = [false, false, false, false];
+      for (let i = 0; i <= allSelectedLines.length; i++) {
+        if(allSelectedLines[i] === index) {
+          newSelected[i] = true;
+        }
+      }
+      setSelectedPlayers(newSelected);
     } 
   }, [allSelectedLines]);
 
@@ -137,7 +138,7 @@ function CodeLine({
       ref={lineDrop}
       key={draggable}
     >
-      <PlayerLineIndicator player={selectedPlayer}/>
+      <PlayerLineIndicator selectedPlayers={selectedPlayers}/>
 
       <hr style={{ width: `${block.indent * OFFSET}px`,  borderTop: draggable? '0.1em solid #c2c2c2' : '0.1em solid black'}} />
       <div

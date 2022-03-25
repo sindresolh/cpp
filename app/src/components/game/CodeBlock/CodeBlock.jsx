@@ -44,7 +44,6 @@ function CodeBlock({
   const handleDrop = () =>{
     if(inField){
       if(store.getState().host === ''){
-        console.log('drop')
         let players =store.getState().players;
         dispatch(setPlayers(
         setSelected(players, 'YOU', null))

@@ -5,6 +5,7 @@
 .LinePlayerIcons {
   position: relative;
   z-index: 1;
+  margin-left: -100px;
 }
 
 .LineIndicator {
@@ -15,5 +16,4 @@
 
 .LinesmallPlayerIcon {
   width: 20px;
-  margin-left: -100px;
 }
