@@ -21,25 +21,7 @@ import {
   requestMove,
 } from '../../../utils/moveBlock/moveBlock';
 import { getLock } from '../../../utils/lockHelper/lockHelper';
-import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
-
-/**
- * Check if a move is already been requested to the host.
- * This prevents sending the same request repeatedly while hovering.
- * @param {object} move
- * @param {object} lastMoveRequest
- * @returns true if the move has been requested
- */
-const alreadyRequested = (move, lastMoveRequest) => {
-  if (
-    move.id !== lastMoveRequest.id ||
-    move.index !== lastMoveRequest.index ||
-    move.indent !== lastMoveRequest.indent ||
-    move.field !== lastMoveRequest.field
-  )
-    return false;
-  return true;
-};
+import BigLockImage from '../../../utils/images/buttonIcons/biglock.png';
 
 /**
  * @returns true if this player is the host.
@@ -55,7 +37,7 @@ const iAmHost = () => {
  *
  * @returns a div containing the blocks players has moved blocks into
  */
-function SolutionField({minwidth}) {
+function SolutionField({ minwidth }) {
   const currentTaskNumber = useSelector(
     (state) => state.currentTask.currentTaskNumber
   );
@@ -124,49 +106,50 @@ function SolutionField({minwidth}) {
    * Tab and bacskpace changes indenting.
    */
   const handleKeyDown = useCallback((e) => {
-    if(!locked){
-      const block = blocks.filter((block) => block.id === selectedCodeline.id)[0];
+    if (!locked) {
+      const block = blocks.filter(
+        (block) => block.id === selectedCodeline.id
+      )[0];
       const blockExists = block !== undefined;
       e.preventDefault(); // do not target adress bar
       if (selectedCodeline != null && blockExists && e.keyCode != null) {
-      if (
-        (e.shiftKey &&
-          e.keyCode == KEYBOARD_EVENT.TAB &&
-          selectedCodeline.indent > 0) ||
-        (e.keyCode === KEYBOARD_EVENT.BACKSPACE && selectedCodeline.indent > 0)
-      ) {
-        // SHIFT TAB OR BACKSPACE
-        setSelectedCodeline((selectedCodeline) => ({
-          ...selectedCodeline,
-          indent: selectedCodeline.indent - 1,
-        }));
-        moveBlock(
-          selectedCodeline.id,
-          selectedCodeline.index,
-          selectedCodeline.indent - 1,
-          false
-        );
-      } else if (
-        !e.shiftKey &&
-        e.keyCode === KEYBOARD_EVENT.TAB &&
-        selectedCodeline.indent < MAX_INDENT
-      ) {
-        // TAB
-        setSelectedCodeline((selectedCodeline) => ({
-          ...selectedCodeline,
-          indent: selectedCodeline.indent + 1,
-        }));
-        moveBlock(
-          selectedCodeline.id,
-          selectedCodeline.index,
-          selectedCodeline.indent + 1,
-          false
-        );
+        if (
+          (e.shiftKey &&
+            e.keyCode == KEYBOARD_EVENT.TAB &&
+            selectedCodeline.indent > 0) ||
+          (e.keyCode === KEYBOARD_EVENT.BACKSPACE &&
+            selectedCodeline.indent > 0)
+        ) {
+          // SHIFT TAB OR BACKSPACE
+          setSelectedCodeline((selectedCodeline) => ({
+            ...selectedCodeline,
+            indent: selectedCodeline.indent - 1,
+          }));
+          moveBlock(
+            selectedCodeline.id,
+            selectedCodeline.index,
+            selectedCodeline.indent - 1,
+            false
+          );
+        } else if (
+          !e.shiftKey &&
+          e.keyCode === KEYBOARD_EVENT.TAB &&
+          selectedCodeline.indent < MAX_INDENT
+        ) {
+          // TAB
+          setSelectedCodeline((selectedCodeline) => ({
+            ...selectedCodeline,
+            indent: selectedCodeline.indent + 1,
+          }));
+          moveBlock(
+            selectedCodeline.id,
+            selectedCodeline.index,
+            selectedCodeline.indent + 1,
+            false
+          );
+        }
       }
     }
-
-    }
-    
   });
 
   /* Reset selected block when a new task starts*/
@@ -174,15 +157,15 @@ function SolutionField({minwidth}) {
     setSelectedCodeline(null);
   }, [currentTaskNumber]);
 
-   /**
+  /**
    * Another player has changed their ready status
    */
   useEffect(() => {
-      let players = store.getState().players;
-      let myLock = getLock(players, 'YOU');
-      if(myLock !== locked){
-        setLocked(myLock);
-      }
+    let players = store.getState().players;
+    let myLock = getLock(players, 'YOU');
+    if (myLock !== locked) {
+      setLocked(myLock);
+    }
   }, [newLockEvent]);
 
   /**
@@ -221,42 +204,50 @@ function SolutionField({minwidth}) {
    * @param {*} draggable : wheter or not the player has permission to perform this action
    */
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
-    if(!locked){
+    if (!locked) {
       setSelectedCodeline(movedBlock);
-       setSelectedCodeline(movedBlock);
-    if (movedBlock != null && draggable) {
-      // the user selected this codeblock
-      movedBlock.index = index;
-    }
-    // (e.detauil > 1) if clicked more than once
-    if (e.detail > 1) {
-      if (iAmHost()) {
-        movedBlock.indent = 0;
-        dispatch(removeBlockFromField(movedBlock.id));
-        dispatch(addBlockToList(movedBlock));
-        fieldEventPromise().then(() => dispatch(listEvent()));
-      } else {
-        const playerField = movedBlock.player.toString();
-        const listIndex = movedBlock.player - 1;
-        const atIndex = store.getState().handList[listIndex].length;
-        const move = {
-          id: movedBlock.id,
-          index: atIndex,
-          indent: 0,
-          field: playerField,
-        };
-        requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
+      setSelectedCodeline(movedBlock);
+      if (movedBlock != null && draggable) {
+        // the user selected this codeblock
+        movedBlock.index = index;
+      }
+      // (e.detauil > 1) if clicked more than once
+      if (e.detail > 1) {
+        if (iAmHost()) {
+          movedBlock.indent = 0;
+          dispatch(removeBlockFromField(movedBlock.id));
+          dispatch(addBlockToList(movedBlock));
+          fieldEventPromise().then(() => dispatch(listEvent()));
+        } else {
+          const playerField = movedBlock.player.toString();
+          const listIndex = movedBlock.player - 1;
+          const atIndex = store.getState().handList[listIndex].length;
+          const move = {
+            id: movedBlock.id,
+            index: atIndex,
+            indent: 0,
+            field: playerField,
+          };
+          requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
         }
       }
     }
     e.detail = 0; // resets detail so that other codeblocks can be clicked
-    
   };
 
   return (
-    <div className={'divSF'} style={{ background: locked ? "#C2C2C2" : COLORS.solutionfield }}>
+    <div
+      className={'divSF'}
+      style={{ background: locked ? '#C2C2C2' : COLORS.solutionfield }}
+    >
       <h6>{'Connected players: ' + players.length}</h6>
-      {locked && minwidth? <div className='bigLockContainer'><img draggable={false} className="bigLock" src={BigLockImage} /> </div> :''}
+      {locked && minwidth ? (
+        <div className='bigLockContainer'>
+          <img draggable={false} className='bigLock' src={BigLockImage} />{' '}
+        </div>
+      ) : (
+        ''
+      )}
       <ul data-testid='solutionField'>
         {blocks.map((block, index) => {
           return (
@@ -270,14 +261,17 @@ function SolutionField({minwidth}) {
               handleDoubbleClick={handleDoubbleClick}
               selectedCodeline={selectedCodeline}
               isAlwaysVisible={true}
-              background={!locked? COLORS.codeline : COLORS.grey}
+              background={!locked ? COLORS.codeline : COLORS.grey}
             />
           );
         })}
         <li
           key={'emptyField'}
           className='empty'
-          style={{ background: COLORS.codeline, visibility: locked? 'hidden' : 'visible' }}
+          style={{
+            background: COLORS.codeline,
+            visibility: locked ? 'hidden' : 'visible',
+          }}
           ref={emptyLineDrop}
         />
       </ul>
