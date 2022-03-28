@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import CodeLine from '../CodeLine/CodeLine';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import {
   setFieldState,
   removeBlockFromList,
@@ -58,6 +58,7 @@ function SolutionField({ minwidth }) {
     false,
     false,
   ]); // One for each player and where they have currently selected
+  const prevDragIndex = useRef(0);
 
   const dispatch_fieldEvent = () => {
     dispatch(fieldEvent());
@@ -311,15 +312,48 @@ function SolutionField({ minwidth }) {
       movedBlock.index = index;
       setSelectedCodeline(movedBlock);
 
+      // Find out wheter it was dragged up or down
+      let type = SELECT_TYPES.UNDEFINED;
+      if(prevDragIndex.current > index){
+           console.log('Drag over')
+           type = SELECT_TYPES.DRAG_OVER;
+      }else if(prevDragIndex.current < index){
+        console.log('Drag under')
+        type = SELECT_TYPES.DRAG_UNDER;
+      }
+      prevDragIndex.current = index; 
+
       if(iAmHost()){
         let players =store.getState().players;
         dispatch(setPlayers(
         setSelected(players, 'YOU', index))
         );
-        dispatch(selectEvent({ pid: 'HOST', index: index , type: SELECT_TYPES.UNDEFINED }));
+        dispatch(selectEvent({ pid: 'HOST', index: index , type: type}));
+
+        if (type === SELECT_TYPES.DRAG_OVER) {
+          for (let p of players) {
+          if (
+          p.id !== 'YOU' &&
+          p.selected != null &&
+          index != null &&
+          p.selected > index
+        )
+          dispatch(setPlayers(setSelected(players, p.id, p.selected - 1)));
+      }
+      } else if (type === SELECT_TYPES.DRAG_UNDER) {
+      for (let p of players) {
+        if (
+          p.id !== 'YOU' &&
+          p.selected != null &&
+          index != null &&
+          p.selected < index
+        )
+          dispatch(setPlayers(setSelected(players, p.id, p.selected + 1)));
+      }
+    }
       }
       else {
-        dispatch(selectRequest({index: index, type: SELECT_TYPES.UNDEFINED}));
+        dispatch(selectRequest({index: index, type: type}));
       }
     }
   }

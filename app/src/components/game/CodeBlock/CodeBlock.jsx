@@ -40,9 +40,9 @@ function CodeBlock({
    * I just dropped a codeblock. Notify my peers that I am not holding it anymore.
    * 
    */
-  const handleDrop = () =>{
-    if(inField){
-      handleDroppedLine();
+  const handleDrop = (index) =>{
+    if(inField && index != null){
+      handleDroppedLine(null);
     }
   }
 
@@ -64,7 +64,7 @@ function CodeBlock({
         isDragging: monitor.isDragging(),
       }),
       end: (item, monitor) => {
-        handleDrop();
+        handleDrop(item.index);
         //const { id: droppedId, originalIndex, originalIndent } = item;
         const didDrop = monitor.didDrop();
 

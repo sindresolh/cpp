@@ -132,7 +132,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room-frogdayy');
+  join = (webrtc) => webrtc.joinRoom('cpp-room-mondayy');
 
   /**
    * Called when a new peer is added to the room
@@ -435,10 +435,35 @@ class CommunicationHandler extends Component {
     if (pid === 'HOST') {
       pid = prevState.host;
     }
-    // If the player cannot be found it probablt belongs to me
+    // If the player cannot be found it probably belongs to me
     if (!players.some((p) => p.id === pid)) {
       pid = 'YOU';
     }
+
+    // If this codeblock was dragged over or under any of my peers selected codeblocks: move their index
+
+    if (type === SELECT_TYPES.DRAG_OVER) {
+      for (let p of players) {
+        if (
+          p.id !== pid &&
+          p.selected != null &&
+          index != null &&
+          p.selected >= index
+        )
+          dispatch_setPlayers(setSelected(players, p.id, p.selected - 1));
+      }
+    } else if (type === SELECT_TYPES.DRAG_UNDER) {
+      for (let p of players) {
+        if (
+          p.id !== pid &&
+          p.selected != null &&
+          index != null &&
+          p.selected <= index
+        )
+          dispatch_setPlayers(setSelected(players, p.id, p.selected + 1));
+      }
+    }
+
     dispatch_setPlayers(setSelected(players, pid, index));
     dispatch_selectEvent({ pid: pid, index: index, type: type });
   }

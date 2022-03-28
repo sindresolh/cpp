@@ -51,7 +51,7 @@ function CodeLine({
       handleDraggedLine(block, draggable, index);
     }
     else{
-      handleDroppedLine();
+      handleDroppedLine(null);
     }
   }
   const [, lineDrop] = useDrop(
