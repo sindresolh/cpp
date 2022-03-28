@@ -148,6 +148,7 @@ function HandList({ player, draggable }) {
    */
   const handleDoubbleClick = (e, movedBlock, draggable) => {
     if (!locked && e.detail > 1 && draggable && movedBlock != null) {
+      let index = store.getState().solutionField.length + 1;
       // (e.detauil > 1) if clicked more than once
       if (iAmHost()) {
         dispatch(removeBlockFromList(movedBlock.id, movedBlock.player - 1));
@@ -156,7 +157,7 @@ function HandList({ player, draggable }) {
       } else {
         const move = {
           id: movedBlock.id,
-          index: store.getState().solutionField.length + 1,
+          index: index,
           indent: 0,
           field: 'SF',
         };

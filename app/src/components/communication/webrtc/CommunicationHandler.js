@@ -48,7 +48,7 @@ import {
 import PuzzleGif from '../PuzzleGif';
 import SidebarModal from '../../Game/Sidebar/SidebarModal/SidebarModal';
 import SubmitIcon from '../../../utils/images/buttonIcons/submit.png';
-import { COLORS, LOCKTYPES } from '../../../utils/constants';
+import { COLORS, LOCKTYPES, SELECT_TYPES } from '../../../utils/constants';
 import configData from '../../../config.json';
 import {
   setLock,
@@ -403,13 +403,18 @@ class CommunicationHandler extends Component {
   selectRequest(payload, peer) {
     let prevState = store.getState();
     let players = prevState.players;
-    const index = JSON.parse(payload);
-    const { dispatch_selectEvent, dispatch_setPlayers } = this.props;
+    let payloadState = JSON.parse(payload);
 
-    dispatch_setPlayers(
-      setSelected(players, peer.id === 'HOST' ? 'YOU' : peer.id, index)
-    );
-    dispatch_selectEvent({ pid: peer.id, index: index });
+    if (payloadState != null) {
+      const index = payloadState.index;
+      const type = payloadState.type;
+      const { dispatch_selectEvent, dispatch_setPlayers } = this.props;
+
+      dispatch_setPlayers(
+        setSelected(players, peer.id === 'HOST' ? 'YOU' : peer.id, index)
+      );
+      dispatch_selectEvent({ pid: peer.id, index: index, type: type });
+    }
   }
 
   /**
@@ -421,6 +426,7 @@ class CommunicationHandler extends Component {
     const payloadState = JSON.parse(payload);
     let pid = payloadState.pid;
     let index = payloadState.index;
+    let type = payloadState.type;
     let prevState = store.getState();
     let players = prevState.players;
     const { dispatch_selectEvent, dispatch_setPlayers } = this.props;
@@ -434,7 +440,7 @@ class CommunicationHandler extends Component {
       pid = 'YOU';
     }
     dispatch_setPlayers(setSelected(players, pid, index));
-    dispatch_selectEvent({ pid: pid, index: index });
+    dispatch_selectEvent({ pid: pid, index: index, type: type });
   }
 
   /**

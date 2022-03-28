@@ -18,7 +18,7 @@ import { useDrop } from 'react-dnd';
 import { ItemTypes } from '../../../utils/itemtypes';
 import './SolutionField.css';
 import store from '../../../redux/store/store';
-import { COLORS, MAX_INDENT, KEYBOARD_EVENT } from '../../../utils/constants';
+import { COLORS, MAX_INDENT, KEYBOARD_EVENT, SELECT_TYPES } from '../../../utils/constants';
 import {
   moveBlockInSolutionField,
   requestMove,
@@ -121,7 +121,7 @@ function SolutionField({ minwidth }) {
       setSelected(players, pid, index))
     );
     pid === 'YOU'? pid = 'HOST': pid = pid;
-    dispatch(selectEvent({ pid: pid, index: index }));
+    dispatch(selectEvent({ pid: pid, index: index, type: SELECT_TYPES.UNDEFINED }));
   }
 
   /**
@@ -148,7 +148,7 @@ function SolutionField({ minwidth }) {
           ...selectedCodeline,
           indent: selectedCodeline.indent - 1,
         }
-        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest(newSelectedCodeline.index));
+        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest({index: newSelectedCodeline.index, type: SELECT_TYPES.UNDEFINED}));
         setSelectedCodeline((newSelectedCodeline));
         moveBlock(
           selectedCodeline.id,
@@ -166,7 +166,7 @@ function SolutionField({ minwidth }) {
          ...selectedCodeline,
           indent: selectedCodeline.indent + 1,
         }
-        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest(newSelectedCodeline.index));
+        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest({index: newSelectedCodeline.index, type: SELECT_TYPES.UNDEFINED}));
         setSelectedCodeline(newSelectedCodeline);
         moveBlock(
           selectedCodeline.id,
@@ -181,7 +181,7 @@ function SolutionField({ minwidth }) {
   /* Reset selected block when a new task starts*/
   useEffect(() => {
     setSelectedCodeline(null);
-    iAmHost()? handleSelect(null)  : dispatch(selectRequest(null));
+    iAmHost()? handleSelect(null)  : dispatch(selectRequest({index: null, type: SELECT_TYPES.UNDEFINED}));
   }, [currentTaskNumber]);
 
   /**
@@ -191,7 +191,7 @@ function SolutionField({ minwidth }) {
       let players = store.getState().players;
       let myLock = getLock(players, 'YOU');
       if(myLock !== locked){
-        iAmHost()? handleSelect(null)  : dispatch(selectRequest(null));
+        iAmHost()? handleSelect(null)  : dispatch(selectRequest({index: null, type: SELECT_TYPES.UNDEFINED}));
         setLocked(myLock);
         setSelectedCodeline(null);
       }
@@ -219,7 +219,7 @@ function SolutionField({ minwidth }) {
           if(p.selected > blocks.length-1){
             handleSelect(null, p.id)
           }
-      }
+        }
       }
     }, [blocks.length]);
 
@@ -261,12 +261,11 @@ function SolutionField({ minwidth }) {
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
     if (!locked) {
       
-   
       if (movedBlock != null && draggable) {
         // the user selected this codeblock
         setSelectedCodeline(movedBlock);
         movedBlock.index = index;
-        iAmHost()? handleSelect(index)  : dispatch(selectRequest(index));
+        iAmHost()? handleSelect(index)  : dispatch(selectRequest({index: index, type: SELECT_TYPES.UNDEFINED}));
         
         // (e.detauil > 1) if clicked more than once
         if (e.detail > 1) {
@@ -291,7 +290,7 @@ function SolutionField({ minwidth }) {
       }
 
       if(movedBlock === selectedCodeline ){
-        iAmHost()? handleSelect(null)  : dispatch(selectRequest(null));
+        iAmHost()? handleSelect(null)  : dispatch(selectRequest({index: null, type: SELECT_TYPES.UNDEFINED}));
         setSelectedCodeline(null);
       }
 
@@ -317,10 +316,10 @@ function SolutionField({ minwidth }) {
         dispatch(setPlayers(
         setSelected(players, 'YOU', index))
         );
-        dispatch(selectEvent({ pid: 'HOST', index: index }));
+        dispatch(selectEvent({ pid: 'HOST', index: index , type: SELECT_TYPES.UNDEFINED }));
       }
       else {
-        dispatch(selectRequest(index));
+        dispatch(selectRequest({index: index, type: SELECT_TYPES.UNDEFINED}));
       }
     }
   }
@@ -337,10 +336,10 @@ function SolutionField({ minwidth }) {
         dispatch(setPlayers(
         setSelected(players, 'YOU', null))
         );
-        dispatch(selectEvent({ pid: 'HOST', index: null }));
+        dispatch(selectEvent({ pid: 'HOST', index: null, type: SELECT_TYPES.UNDEFINED  }));
       }
       else {
-        dispatch(selectRequest(null));
+        dispatch(selectRequest({index: null, type: SELECT_TYPES.UNDEFINED}));
       }
   }
 

@@ -1,4 +1,5 @@
 import { ACTIONS } from '../../actions/ACTIONS';
+import { SELECT_TYPES } from '../../../utils/constants';
 
 /** Event triggered by host to update locks for all players
  *  Triggers componentDidUpdate in CommunicationListener
@@ -7,7 +8,10 @@ import { ACTIONS } from '../../actions/ACTIONS';
  * @param {*} action
  * @returns
  */
-const selectEventReducer = (state = { pid: null, index: null }, action) => {
+const selectEventReducer = (
+  state = { pid: null, index: null, type: SELECT_TYPES.UNDEFINED },
+  action
+) => {
   switch (action.type) {
     case ACTIONS.SELECT_EVENT: {
       return action.payload.state;
