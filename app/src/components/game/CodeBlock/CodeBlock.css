@@ -5,9 +5,13 @@
   padding: 0.5em;
   text-align: left;
   font-size: calc(8px + 0.4vw);
-  cursor: pointer;
   width: fit-content;
   white-space: nowrap;
+  cursor: not-allowed;
+}
+
+.draggable {
+  cursor: grab;
 }
 
 .invisible {
@@ -23,7 +27,7 @@
   background-color: #fcc6be;
 }
 
-.player1:hover {
+.player1.draggable:hover {
   background-color: #ffe2de;
 }
 
@@ -32,7 +36,7 @@
   background-color: #c4ccf5;
 }
 
-.player2:hover {
+.player2.draggable:hover {
   background-color: #e6eaff;
 }
 
@@ -41,7 +45,7 @@
   background-color: #fbd392;
 }
 
-.player3:hover {
+.player3.draggable:hover {
   background-color: #fcedd4;
 }
 
@@ -50,6 +54,6 @@
   background-color: #8bbe95;
 }
 
-.player4:hover {
+.player4.draggable:hover {
   background-color: #cfe3d3;
 }

@@ -12,7 +12,7 @@ function SelectScreen() {
   return (
     <div className='selectScreen' data-testid={'selectScreen'}>
       <h1 className='title' data-testid={'title'}>
-        Create-tasks-app (working title)
+        Task set creation tool
       </h1>
       <div className='buttonContainer'>
         <button
@@ -22,7 +22,11 @@ function SelectScreen() {
         >
           Create task
         </button>
-        <button data-testid={'createSetButton'} className='button disabled'>
+        <button
+          data-testid={'createSetButton'}
+          className='button'
+          onClick={() => navigate('/createSet')}
+        >
           Create set
         </button>
       </div>

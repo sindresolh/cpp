@@ -26,6 +26,7 @@ import {
 import { getLock } from '../../../utils/lockHelper/lockHelper';
 import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
 import { setSelected, getSelectedBlocks } from '../../../utils/lockHelper/lockHelper';
+import BigLockImage from '../../../utils/images/buttonIcons/biglock.png';
 
 /**
  * @returns true if this player is the host.
@@ -41,7 +42,7 @@ const iAmHost = () => {
  *
  * @returns a div containing the blocks players has moved blocks into
  */
-function SolutionField({minwidth}) {
+function SolutionField({ minwidth }) {
   const currentTaskNumber = useSelector(
     (state) => state.currentTask.currentTaskNumber
   );
@@ -129,11 +130,14 @@ function SolutionField({minwidth}) {
    * Tab and bacskpace changes indenting.
    */
   const handleKeyDown = useCallback((e) => {
-    if(!locked){
-      const block = blocks.filter((block) => block.id === selectedCodeline.id)[0];
+    if (!locked) {
+      const block = blocks.filter(
+        (block) => block.id === selectedCodeline.id
+      )[0];
       const blockExists = block !== undefined;
       e.preventDefault(); // do not target adress bar
       if (selectedCodeline != null && blockExists && e.keyCode != null) {
+
       if (
         (e.shiftKey &&
           e.keyCode == KEYBOARD_EVENT.TAB &&
@@ -173,7 +177,6 @@ function SolutionField({minwidth}) {
       }
     }
     }
-    
   });
 
   /* Reset selected block when a new task starts*/
@@ -182,7 +185,7 @@ function SolutionField({minwidth}) {
     iAmHost()? handleSelect(null)  : dispatch(selectRequest(null));
   }, [currentTaskNumber]);
 
-   /**
+  /**
    * Another player has changed their ready status
    */
   useEffect(() => {
@@ -257,7 +260,7 @@ function SolutionField({minwidth}) {
    * @param {*} draggable : wheter or not the player has permission to perform this action
    */
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
-    if(!locked){
+    if (!locked) {
       setSelectedCodeline(movedBlock);
     if (movedBlock != null && draggable) {
       // the user selected this codeblock
@@ -333,9 +336,18 @@ function SolutionField({minwidth}) {
   }
 
   return (
-    <div className={'divSF'} style={{ background: locked ? "#C2C2C2" : COLORS.solutionfield }}>
+    <div
+      className={'divSF'}
+      style={{ background: locked ? '#C2C2C2' : COLORS.solutionfield }}
+    >
       <h6>{'Connected players: ' + players.length}</h6>
-      {locked && minwidth? <div className='bigLockContainer'><img draggable={false} className="bigLock" src={BigLockImage} /> </div> :''}
+      {locked && minwidth ? (
+        <div className='bigLockContainer'>
+          <img draggable={false} className='bigLock' src={BigLockImage} />{' '}
+        </div>
+      ) : (
+        ''
+      )}
       <ul data-testid='solutionField'>
         {blocks.map((block, index) => {
           return (
@@ -359,7 +371,10 @@ function SolutionField({minwidth}) {
         <li
           key={'emptyField'}
           className='empty'
-          style={{ background: COLORS.codeline, visibility: locked? 'hidden' : 'visible' }}
+          style={{
+            background: COLORS.codeline,
+            visibility: locked ? 'hidden' : 'visible',
+          }}
           ref={emptyLineDrop}
         />
       </ul>
