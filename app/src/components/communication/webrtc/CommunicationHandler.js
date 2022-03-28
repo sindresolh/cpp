@@ -442,7 +442,7 @@ class CommunicationHandler extends Component {
 
     // If this codeblock was dragged over or under any of my peers selected codeblocks: move their index
 
-    if (type === SELECT_TYPES.DRAG_OVER) {
+    /*     if (type === SELECT_TYPES.DRAG_OVER) {
       for (let p of players) {
         if (
           p.id !== pid &&
@@ -451,6 +451,11 @@ class CommunicationHandler extends Component {
           p.selected >= index
         )
           dispatch_setPlayers(setSelected(players, p.id, p.selected - 1));
+        dispatch_selectEvent({
+          pid: p.id,
+          index: p.selected - 1,
+          type: type,
+        });
       }
     } else if (type === SELECT_TYPES.DRAG_UNDER) {
       for (let p of players) {
@@ -461,8 +466,13 @@ class CommunicationHandler extends Component {
           p.selected <= index
         )
           dispatch_setPlayers(setSelected(players, p.id, p.selected + 1));
+        dispatch_selectEvent({
+          pid: p.id,
+          index: p.selected - 1,
+          type: type,
+        }); 
       }
-    }
+    }*/
 
     dispatch_setPlayers(setSelected(players, pid, index));
     dispatch_selectEvent({ pid: pid, index: index, type: type });

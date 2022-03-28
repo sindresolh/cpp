@@ -315,10 +315,8 @@ function SolutionField({ minwidth }) {
       // Find out wheter it was dragged up or down
       let type = SELECT_TYPES.UNDEFINED;
       if(prevDragIndex.current > index){
-           console.log('Drag over')
            type = SELECT_TYPES.DRAG_OVER;
       }else if(prevDragIndex.current < index){
-        console.log('Drag under')
         type = SELECT_TYPES.DRAG_UNDER;
       }
       prevDragIndex.current = index; 
@@ -330,13 +328,13 @@ function SolutionField({ minwidth }) {
         );
         dispatch(selectEvent({ pid: 'HOST', index: index , type: type}));
 
-        if (type === SELECT_TYPES.DRAG_OVER) {
+/*         if (type === SELECT_TYPES.DRAG_OVER) {
           for (let p of players) {
           if (
           p.id !== 'YOU' &&
           p.selected != null &&
           index != null &&
-          p.selected > index
+          p.selected >= index
         )
           dispatch(setPlayers(setSelected(players, p.id, p.selected - 1)));
       }
@@ -346,11 +344,11 @@ function SolutionField({ minwidth }) {
           p.id !== 'YOU' &&
           p.selected != null &&
           index != null &&
-          p.selected < index
+          p.selected <= index
         )
           dispatch(setPlayers(setSelected(players, p.id, p.selected + 1)));
       }
-    }
+    }  */
       }
       else {
         dispatch(selectRequest({index: index, type: type}));
