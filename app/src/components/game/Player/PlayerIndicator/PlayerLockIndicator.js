@@ -1,5 +1,5 @@
 import React from 'react';
-import './PlayerIndicator.css';
+import './PlayerLockIndicator.css';
 import { COLORS } from '../../../../utils/constants';
 import Poly from '../../../../utils/drawing/Poly';
 import p1Icon from '../../../../utils/images/playerIcons/player_icon_1.png';

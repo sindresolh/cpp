@@ -13,6 +13,8 @@ import {
   MOVE_REQUEST,
   LOCK_REQUEST,
   LOCK_EVENT,
+  SELECT_REQUEST,
+  SELECT_EVENT,
 } from './messages';
 import {
   startGame,
@@ -49,6 +51,8 @@ const mapStateToProps = (state) => ({
   moveRequest: state.moveRequest,
   lockRequest: state.lockRequest,
   lockEvent: state.lockEvent,
+  selectRequest: state.selectRequest,
+  selectEvent: state.selectEvent,
 });
 
 /** Helper function to let us call dispatch from a class function
@@ -241,6 +245,15 @@ class CommunicationListener extends Component {
         // I am host and I just approved a lock.
         const json = JSON.stringify(state.lockEvent);
         this.shout(LOCK_EVENT, json);
+      }
+    } else if (prevProps.selectRequest !== this.props.selectRequest) {
+      const json = JSON.stringify(state.selectRequest);
+      this.whisper(state.host, SELECT_REQUEST, json);
+    } else if (prevProps.selectEvent !== this.props.selectEvent) {
+      if (this.iAmHost()) {
+        // I am host and I just approved a select.
+        const json = JSON.stringify(state.selectEvent);
+        this.shout(SELECT_EVENT, json);
       }
     }
 

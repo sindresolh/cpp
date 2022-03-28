@@ -86,21 +86,23 @@ export default function Sidebar() {
    * Another player has changed their ready status
    */
   useEffect(() => {
-    if (newLockEvent.pid === LOCKTYPES.ALL_PLAYERS) {
-      openAllLocksInSidebar();
-    } else {
-      let players = store.getState().players;
-      let allLocks = getAllLocks(players);
-      let readyCount = allLocks.filter((lock) => lock === true).length;
+    if (newLockEvent != null) {
+      if (newLockEvent.pid === LOCKTYPES.ALL_PLAYERS) {
+        openAllLocksInSidebar();
+      } else {
+        let players = store.getState().players;
+        let allLocks = getAllLocks(players);
+        let readyCount = allLocks.filter((lock) => lock === true).length;
 
-      let myLock = getLock(players, 'YOU');
-      setLocked(myLock);
-      setLockedInPlayers(allLocks);
+        let myLock = getLock(players, 'YOU');
+        setLocked(myLock);
+        setLockedInPlayers(allLocks);
 
-      if (readyCount === numberOfPlayers) {
-        handleSubmit();
+        if (readyCount === numberOfPlayers) {
+          handleSubmit();
+        }
+        setNumberOfLockedInPlayers(readyCount);
       }
-      setNumberOfLockedInPlayers(readyCount);
     }
   }, [newLockEvent]);
 

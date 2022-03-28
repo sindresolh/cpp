@@ -97,7 +97,7 @@ export const requestMove = (request, lastRequest, dispatch_moveRequest) => {
  * @param {Array} blocks an array with blocks (solutionfield or handlist)
  * @returns the block and its index OR undefined
  */
-const findBlock = (id, blocks) => {
+export const findBlock = (id, blocks) => {
   const block = blocks.filter((block) => block.id === id)[0];
   if (block === undefined) return undefined; // block came from somewhere else
   const index = blocks.indexOf(block);

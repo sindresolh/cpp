@@ -2,7 +2,11 @@ import React from 'react';
 import './CodeBlock.css';
 import { ItemTypes } from '../../../utils/itemtypes';
 import { useDrag } from 'react-dnd';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+import { selectEvent, selectRequest, setPlayers} from '../../../redux/actions';
+import store from '../../../redux/store/store';
+import {setSelected} from '../../../utils/lockHelper/lockHelper';
 
 /**
  * This component represents a code block. Can be either in a player list or in a code line in the solution field.
@@ -28,7 +32,20 @@ function CodeBlock({
   moveBlock,
   draggable,
   isAlwaysVisible, // Should be visible even if it is not draggable - Special case for a lock
+  inField,
+  handleDroppedLine,
 }) {
+
+  /**
+   * I just dropped a codeblock. Notify my peers that I am not holding it anymore.
+   * 
+   */
+  const handleDrop = () =>{
+    if(inField){
+      handleDroppedLine();
+    }
+  }
+
   // implement dragging
   const [{ isDragging }, drag] = useDrag(
     () => ({
@@ -47,6 +64,7 @@ function CodeBlock({
         isDragging: monitor.isDragging(),
       }),
       end: (item, monitor) => {
+        handleDrop();
         //const { id: droppedId, originalIndex, originalIndent } = item;
         const didDrop = monitor.didDrop();
 
@@ -96,6 +114,7 @@ CodeBlock.propTypes = {
   moveBlock: PropTypes.func,
   draggable: PropTypes.bool,
   isAlwaysVisible: PropTypes.bool,
+  inField: PropTypes.bool,
 };
 
 export default CodeBlock;

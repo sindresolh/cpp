@@ -347,6 +347,20 @@ export const moveRequest = (moveRequest) => {
   };
 };
 
+/**
+ * Player requests a block to be selected. Locks the block for the other players
+ * @param {*} state
+ * @returns
+ */
+export const selectRequest = (selectRequest) => {
+  return {
+    type: ACTIONS.SELECT_REQUEST,
+    payload: {
+      selectRequest,
+    },
+  };
+};
+
 /** Player requests a board lock for themself. Store this request.
  *
  * @param {*} state : Date when this reducer was called last time
@@ -363,12 +377,26 @@ export const lockRequest = (forWho) => {
 
 /** As host notify other peers that the locks are updated
  *
- * @param {*} state : Date when this reducer was called last time
+ * @param {*} state : Player and wheter the lock was open last time
  * @returns
  */
 export const lockEvent = (state) => {
   return {
     type: ACTIONS.LOCK_EVENT,
+    payload: {
+      state,
+    },
+  };
+};
+
+/** As host notify other peers that the locks are updated
+ *
+ * @param {*} state : Player and selected index last time
+ * @returns
+ */
+export const selectEvent = (state) => {
+  return {
+    type: ACTIONS.SELECT_EVENT,
     payload: {
       state,
     },

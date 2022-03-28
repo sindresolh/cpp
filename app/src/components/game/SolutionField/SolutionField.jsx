@@ -5,11 +5,14 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   setFieldState,
   removeBlockFromList,
+  removeBlockFromField,
   fieldEvent,
   listEvent,
-  removeBlockFromField,
   addBlockToList,
   moveRequest,
+  selectRequest,
+  selectEvent,
+  setPlayers
 } from '../../../redux/actions';
 import { useDrop } from 'react-dnd';
 import { ItemTypes } from '../../../utils/itemtypes';
@@ -21,7 +24,8 @@ import {
   requestMove,
 } from '../../../utils/moveBlock/moveBlock';
 import { getLock } from '../../../utils/lockHelper/lockHelper';
-import BigLockImage from '../../../utils/images/buttonIcons/biglock.png';
+import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
+import { setSelected, getSelectedBlocks } from '../../../utils/lockHelper/lockHelper';
 
 /**
  * @returns true if this player is the host.
@@ -47,6 +51,13 @@ function SolutionField({ minwidth }) {
   const [selectedCodeline, setSelectedCodeline] = useState(null); // block selected for the next keyDown event
   const newLockEvent = useSelector((state) => state.lockEvent); // Keeps track of new lock events
   const [locked, setLocked] = useState(false);
+  const newSelectEvent = useSelector((state) => state.selectEvent); // Keeps track of new lock events
+   const [allSelectedLines, setAllSelectedLines] = useState([
+    false,
+    false,
+    false,
+    false,
+  ]); // One for each player and where they have currently selected
 
   const dispatch_fieldEvent = () => {
     dispatch(fieldEvent());
@@ -79,13 +90,10 @@ function SolutionField({ minwidth }) {
 
   // move the block within the field or to a hand list
   const moveBlock = useCallback(
-    (id, atIndex, atIndent = 0, mouseEvent = true) => {
-      if (mouseEvent) {
-        setSelectedCodeline(null); // reset selected codeblocks
-      }
+    (id, atIndex, atIndent = 0) => {
       // get block if it exists in solutionfield
       if (iAmHost()) {
-        moveBlockInSolutionField(
+          moveBlockInSolutionField(
           id,
           atIndex,
           atIndent,
@@ -100,6 +108,21 @@ function SolutionField({ minwidth }) {
     },
     [blocks]
   );
+  
+  /**
+   * I am the HOST.
+   * Select an index and notify my peers.
+   * 
+   * @param {*} index 
+   */
+  const handleSelect = (index, pid = 'YOU') =>{
+    let players =store.getState().players;
+          dispatch(setPlayers(
+      setSelected(players, pid, index))
+    );
+    pid === 'YOU'? pid = 'HOST': pid = pid;
+    dispatch(selectEvent({ pid: pid, index: index }));
+  }
 
   /**
    * Handle keyboard input for the selected codeblock.
@@ -113,60 +136,92 @@ function SolutionField({ minwidth }) {
       const blockExists = block !== undefined;
       e.preventDefault(); // do not target adress bar
       if (selectedCodeline != null && blockExists && e.keyCode != null) {
-        if (
-          (e.shiftKey &&
-            e.keyCode == KEYBOARD_EVENT.TAB &&
-            selectedCodeline.indent > 0) ||
-          (e.keyCode === KEYBOARD_EVENT.BACKSPACE &&
-            selectedCodeline.indent > 0)
-        ) {
-          // SHIFT TAB OR BACKSPACE
-          setSelectedCodeline((selectedCodeline) => ({
-            ...selectedCodeline,
-            indent: selectedCodeline.indent - 1,
-          }));
-          moveBlock(
-            selectedCodeline.id,
-            selectedCodeline.index,
-            selectedCodeline.indent - 1,
-            false
-          );
-        } else if (
-          !e.shiftKey &&
-          e.keyCode === KEYBOARD_EVENT.TAB &&
-          selectedCodeline.indent < MAX_INDENT
-        ) {
-          // TAB
-          setSelectedCodeline((selectedCodeline) => ({
-            ...selectedCodeline,
-            indent: selectedCodeline.indent + 1,
-          }));
-          moveBlock(
-            selectedCodeline.id,
-            selectedCodeline.index,
-            selectedCodeline.indent + 1,
-            false
-          );
+
+      if (
+        (e.shiftKey &&
+          e.keyCode == KEYBOARD_EVENT.TAB &&
+          selectedCodeline.indent > 0) ||
+        (e.keyCode === KEYBOARD_EVENT.BACKSPACE && selectedCodeline.indent > 0)
+      ) {
+        // SHIFT TAB OR BACKSPACE
+        let newSelectedCodeline = {
+          ...selectedCodeline,
+          indent: selectedCodeline.indent - 1,
         }
+        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest(newSelectedCodeline.index));
+        setSelectedCodeline((newSelectedCodeline));
+        moveBlock(
+          selectedCodeline.id,
+          selectedCodeline.index,
+          selectedCodeline.indent - 1,
+        );
+
+      } else if (
+        !e.shiftKey &&
+        e.keyCode === KEYBOARD_EVENT.TAB &&
+        selectedCodeline.indent < MAX_INDENT
+      ) {
+        // TAB
+        let newSelectedCodeline ={
+         ...selectedCodeline,
+          indent: selectedCodeline.indent + 1,
+        }
+        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest(newSelectedCodeline.index));
+        setSelectedCodeline(newSelectedCodeline);
+        moveBlock(
+          selectedCodeline.id,
+          selectedCodeline.index,
+          selectedCodeline.indent + 1,
+        );
       }
+    }
     }
   });
 
   /* Reset selected block when a new task starts*/
   useEffect(() => {
     setSelectedCodeline(null);
+    iAmHost()? handleSelect(null)  : dispatch(selectRequest(null));
   }, [currentTaskNumber]);
 
   /**
    * Another player has changed their ready status
    */
   useEffect(() => {
-    let players = store.getState().players;
-    let myLock = getLock(players, 'YOU');
-    if (myLock !== locked) {
-      setLocked(myLock);
-    }
+      let players = store.getState().players;
+      let myLock = getLock(players, 'YOU');
+      if(myLock !== locked){
+        iAmHost()? handleSelect(null)  : dispatch(selectRequest(null));
+        setLocked(myLock);
+        setSelectedCodeline(null);
+      }
   }, [newLockEvent]);
+
+    /**
+   * Another player has selected a codeblock
+   */
+    useEffect(() => {
+      let players = store.getState().players;
+      let newSelectedBlocks = getSelectedBlocks(players);
+      if(newSelectedBlocks != null && newSelectedBlocks != allSelectedLines){
+        setAllSelectedLines(newSelectedBlocks);
+      }
+    }, [newSelectEvent]);
+
+
+   /**
+   * Deselect codeblocks that are removed from field (only needed for doubbleclick). TODO: Probably a more effective solution.
+   */
+    useEffect(() => {
+      if(iAmHost){
+        let players = store.getState().players;
+        for(let p of players){
+          if(p.selected > blocks.length-1){
+            handleSelect(null, p.id)
+          }
+      }
+      }
+    }, [blocks.length]);
 
   /**
    * Creates an key event listener based on the selected codeblock
@@ -206,34 +261,78 @@ function SolutionField({ minwidth }) {
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
     if (!locked) {
       setSelectedCodeline(movedBlock);
-      setSelectedCodeline(movedBlock);
-      if (movedBlock != null && draggable) {
-        // the user selected this codeblock
-        movedBlock.index = index;
-      }
-      // (e.detauil > 1) if clicked more than once
-      if (e.detail > 1) {
-        if (iAmHost()) {
-          movedBlock.indent = 0;
-          dispatch(removeBlockFromField(movedBlock.id));
-          dispatch(addBlockToList(movedBlock));
-          fieldEventPromise().then(() => dispatch(listEvent()));
-        } else {
-          const playerField = movedBlock.player.toString();
-          const listIndex = movedBlock.player - 1;
-          const atIndex = store.getState().handList[listIndex].length;
-          const move = {
-            id: movedBlock.id,
-            index: atIndex,
-            indent: 0,
-            field: playerField,
-          };
-          requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
+    if (movedBlock != null && draggable) {
+      // the user selected this codeblock
+      movedBlock.index = index;
+      iAmHost()? handleSelect(index)  : dispatch(selectRequest(index));
+    }
+    // (e.detauil > 1) if clicked more than once
+    if (e.detail > 1) {
+      if (iAmHost()) {
+        movedBlock.indent = 0;
+        dispatch(removeBlockFromField(movedBlock.id));
+        dispatch(addBlockToList(movedBlock));
+        fieldEventPromise().then(() => dispatch(listEvent()));
+      } else {
+        const playerField = movedBlock.player.toString();
+        const listIndex = movedBlock.player - 1;
+        const atIndex = store.getState().handList[listIndex].length;
+        const move = {
+          id: movedBlock.id,
+          index: atIndex,
+          indent: 0,
+          field: playerField,
+        };
+        requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
         }
       }
     }
     e.detail = 0; // resets detail so that other codeblocks can be clicked
   };
+
+  /**
+   * Select block on drag
+   * 
+   * @param {*} movedBlock 
+   * @param {*} draggable 
+   * @param {*} index 
+   */
+  const handleDraggedLine = (movedBlock, draggable, index) => {
+    if(!locked && movedBlock != null && draggable){
+      movedBlock.index = index;
+      setSelectedCodeline(movedBlock);
+
+      if(iAmHost()){
+        let players =store.getState().players;
+        dispatch(setPlayers(
+        setSelected(players, 'YOU', index))
+        );
+        dispatch(selectEvent({ pid: 'HOST', index: index }));
+      }
+      else {
+        dispatch(selectRequest(index));
+      }
+    }
+  }
+
+  /**
+   * Unselect on drop
+   * 
+   */
+  const handleDroppedLine = () => {
+    setSelectedCodeline(null);
+
+     if(iAmHost()){
+        let players =store.getState().players;
+        dispatch(setPlayers(
+        setSelected(players, 'YOU', null))
+        );
+        dispatch(selectEvent({ pid: 'HOST', index: null }));
+      }
+      else {
+        dispatch(selectRequest(null));
+      }
+  }
 
   return (
     <div
@@ -259,9 +358,12 @@ function SolutionField({ minwidth }) {
               draggable={!locked}
               key={`line-${index}`}
               handleDoubbleClick={handleDoubbleClick}
+              handleDraggedLine={handleDraggedLine}
+              handleDroppedLine={handleDroppedLine}
               selectedCodeline={selectedCodeline}
               isAlwaysVisible={true}
-              background={!locked ? COLORS.codeline : COLORS.grey}
+              background={!locked? COLORS.codeline : COLORS.grey}
+              allSelectedLines={allSelectedLines}
             />
           );
         })}

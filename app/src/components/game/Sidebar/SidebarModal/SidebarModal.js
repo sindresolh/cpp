@@ -74,6 +74,7 @@ export default function SidebarModal({
       borderRadius: '1em',
       background: '#f5f5f5',
     },
+    overlay: { zIndex: 10 },
   };
   /**
    * Sets the backround color of the button. CSS hover cannot be used since color is set inline from a prop.

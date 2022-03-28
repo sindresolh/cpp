@@ -18,9 +18,14 @@ function App({ startGame }) {
    * @returns the correct component based on status
    */
   const getPage = (status) => {
-    if (status === STATUS.LOBBY) return <Lobby handleClick={startGame} />;
-    else if (status === STATUS.GAME) return <MainPage />;
-    else if (status === STATUS.FINISHED) return <Finished />;
+    switch (status) {
+      case STATUS.LOBBY:
+        return <Lobby handleClick={startGame} />;
+      case STATUS.GAME:
+        return <MainPage />;
+      case STATUS.FINISHED:
+        return <Finished />;
+    }
   };
 
   return getPage(status);
