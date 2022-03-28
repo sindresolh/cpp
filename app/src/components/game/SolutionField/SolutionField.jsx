@@ -261,11 +261,8 @@ function SolutionField({ minwidth }) {
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
     if (!locked) {
       
-      if(movedBlock === selectedCodeline ){
-        iAmHost()? handleSelect(null)  : dispatch(selectRequest(null));
-        setSelectedCodeline(null);
-      }
-      else if (movedBlock != null && draggable) {
+   
+      if (movedBlock != null && draggable) {
         // the user selected this codeblock
         setSelectedCodeline(movedBlock);
         movedBlock.index = index;
@@ -291,6 +288,11 @@ function SolutionField({ minwidth }) {
             requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
           }
         }
+      }
+
+      if(movedBlock === selectedCodeline ){
+        iAmHost()? handleSelect(null)  : dispatch(selectRequest(null));
+        setSelectedCodeline(null);
       }
 
 
