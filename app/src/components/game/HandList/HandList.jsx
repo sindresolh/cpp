@@ -10,6 +10,9 @@ import {
   moveRequest,
   removeBlockFromList,
   addBlockToField,
+  setPlayers,
+  selectEvent,
+  selectRequest,
 } from '../../../redux/actions';
 import { ItemTypes } from '../../../utils/itemtypes';
 import { useDrop } from 'react-dnd';
@@ -21,6 +24,7 @@ import {
 } from '../../../utils/moveBlock/moveBlock';
 import { getLock } from '../../../utils/lockHelper/lockHelper';
 import { COLORS } from '../../../utils/constants';
+import { setSelected} from '../../../utils/lockHelper/lockHelper';
 
 /**
  * @returns true if this player is the host.
@@ -163,6 +167,23 @@ function HandList({ player, draggable }) {
     }
   };
 
+    /**
+   * Unselect on drop
+   * 
+   */
+  const handleDroppedLine = () => {
+     if(iAmHost()){
+        let players =store.getState().players;
+        dispatch(setPlayers(
+        setSelected(players, 'YOU', null))
+        );
+        dispatch(selectEvent({ pid: 'HOST', index: null }));
+      }
+      else {
+        dispatch(selectRequest(null));
+      }
+    }
+
   return (
     <div className={'divHL'} ref={emptyListDrop} key={draggable} style={{backgroundColor: !locked? COLORS.codeline : COLORS.grey}}>
       <ul data-testid={`handList-player${player}`}>
@@ -178,6 +199,7 @@ function HandList({ player, draggable }) {
               handleDoubbleClick={handleDoubbleClick}
               isAlwaysVisible={draggable}
               background={!locked? COLORS.codeline : COLORS.grey}
+              handleDroppedLine={handleDroppedLine}
             />
           );
         })}

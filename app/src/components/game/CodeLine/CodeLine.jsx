@@ -54,6 +54,9 @@ function CodeLine({
     if(MAX_INDENT > 0){
       handleDraggedLine(block, draggable, index);
     }
+    else{
+      handleDroppedLine();
+    }
   }
   const [, lineDrop] = useDrop(
     () => ({
