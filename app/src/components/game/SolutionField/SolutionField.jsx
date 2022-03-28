@@ -26,7 +26,6 @@ import {
 import { getLock } from '../../../utils/lockHelper/lockHelper';
 import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
 import { setSelected, getSelectedBlocks } from '../../../utils/lockHelper/lockHelper';
-import BigLockImage from '../../../utils/images/buttonIcons/biglock.png';
 
 /**
  * @returns true if this player is the host.
