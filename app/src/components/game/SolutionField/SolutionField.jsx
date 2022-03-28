@@ -260,33 +260,41 @@ function SolutionField({ minwidth }) {
    */
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
     if (!locked) {
-      setSelectedCodeline(movedBlock);
-    if (movedBlock != null && draggable) {
-      // the user selected this codeblock
-      movedBlock.index = index;
-      iAmHost()? handleSelect(index)  : dispatch(selectRequest(index));
-    }
-    // (e.detauil > 1) if clicked more than once
-    if (e.detail > 1) {
-      if (iAmHost()) {
-        movedBlock.indent = 0;
-        dispatch(removeBlockFromField(movedBlock.id));
-        dispatch(addBlockToList(movedBlock));
-        fieldEventPromise().then(() => dispatch(listEvent()));
-      } else {
-        const playerField = movedBlock.player.toString();
-        const listIndex = movedBlock.player - 1;
-        const atIndex = store.getState().handList[listIndex].length;
-        const move = {
-          id: movedBlock.id,
-          index: atIndex,
-          indent: 0,
-          field: playerField,
-        };
-        requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
+      
+      if(movedBlock === selectedCodeline ){
+        iAmHost()? handleSelect(null)  : dispatch(selectRequest(null));
+        setSelectedCodeline(null);
+      }
+      else if (movedBlock != null && draggable) {
+        // the user selected this codeblock
+        setSelectedCodeline(movedBlock);
+        movedBlock.index = index;
+        iAmHost()? handleSelect(index)  : dispatch(selectRequest(index));
+        
+        // (e.detauil > 1) if clicked more than once
+        if (e.detail > 1) {
+          if (iAmHost()) {
+            movedBlock.indent = 0;
+            dispatch(removeBlockFromField(movedBlock.id));
+            dispatch(addBlockToList(movedBlock));
+            fieldEventPromise().then(() => dispatch(listEvent()));
+          } else {
+            const playerField = movedBlock.player.toString();
+            const listIndex = movedBlock.player - 1;
+            const atIndex = store.getState().handList[listIndex].length;
+            const move = {
+              id: movedBlock.id,
+              index: atIndex,
+              indent: 0,
+              field: playerField,
+            };
+            requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
+          }
         }
       }
-    }
+
+
+      }
     e.detail = 0; // resets detail so that other codeblocks can be clicked
   };
 
