@@ -106,6 +106,7 @@ class CommunicationHandler extends Component {
       modalButtonColor: '',
       isModalOpen: false,
       finished: false,
+      room: props.room,
     };
   }
 
@@ -132,7 +133,7 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room-frogdayy');
+  join = (webrtc) => webrtc.joinRoom(this.state.room);
 
   /**
    * Called when a new peer is added to the room

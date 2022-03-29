@@ -5,9 +5,12 @@ import { COLORS } from '../../utils/constants';
 import { useState } from 'react';
 import CommunicationHandler from './webrtc/CommunicationHandler';
 
+const ROOMS = ['Room-1', 'Room-2', 'Room-3', 'Room-4', 'Room-5'];
+
 export default function JoinGame() {
   const [nick, setNick] = useState('');
   const [ready, setReady] = useState(false);
+  const [room, setRoom] = useState(ROOMS[0]);
 
   /**
    * Join game with buttonclick or enter
@@ -20,11 +23,15 @@ export default function JoinGame() {
       handleSubmit();
     }
   };
+  /** Set room */
+  const handleChange = (event) => {
+    setRoom(event.target.value);
+  };
 
   return (
     <>
       {ready ? (
-        <CommunicationHandler nick={nick} />
+        <CommunicationHandler nick={nick} room={room} />
       ) : (
         <div
           style={{
@@ -71,6 +78,14 @@ export default function JoinGame() {
                 }}
               />
             </label>
+            <h2 style={{ fontSize: 'calc(12px + 0.4vw)' }}>
+              Select a game lobby
+            </h2>
+            <select value={room} onChange={handleChange}>
+              {ROOMS.map((room) => (
+                <option value={room}>{room}</option>
+              ))}
+            </select>
             <div style={{ paddingTop: '1.5em' }}>
               <SidebarButton
                 title='Join game'
