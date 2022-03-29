@@ -407,18 +407,28 @@ class CommunicationHandler extends Component {
 
     if (payloadState != null) {
       const index = payloadState.index;
-      let pid = payloadState.pid;
       const { dispatch_selectEvent, dispatch_setPlayers } = this.props;
+      let pid = payloadState.pid === 'ME' ? peer.id : payloadState.pid;
 
-      dispatch_setPlayers(
-        setSelected(players, pid === 'ME' ? peer.id : pid, index)
-      );
+      console.log(pid + ' --- ' + index);
 
-      dispatch_selectEvent({
-        pid: pid === 'ME' ? peer.id : pid,
-        index: index,
-        type: SELECT_TYPES.UNDEFINED,
-      });
+      // If the player cannot be found it probably belongs to me
+      if (!players.some((p) => p.id === pid)) {
+        pid = 'YOU';
+        dispatch_setPlayers(setSelected(players, 'YOU', index));
+        dispatch_selectEvent({
+          pid: 'HOST',
+          index: index,
+          type: SELECT_TYPES.UNDEFINED,
+        });
+      } else {
+        dispatch_setPlayers(setSelected(players, pid, index));
+        dispatch_selectEvent({
+          pid: pid,
+          index: index,
+          type: SELECT_TYPES.UNDEFINED,
+        });
+      }
     }
   }
 
@@ -434,8 +444,6 @@ class CommunicationHandler extends Component {
     let prevState = store.getState();
     let players = prevState.players;
     const { dispatch_selectEvent, dispatch_setPlayers } = this.props;
-
-    console.log(pid);
 
     // The host does not know its own name
     if (pid === 'HOST') {

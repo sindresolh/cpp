@@ -337,33 +337,40 @@ function SolutionField({ minwidth }) {
 
       if(p.id !== 'YOU'){
         if(p.selected > index && p.selected <= prevDragIndex.current){
-        console.log('dragged under')
+
+        let newIndex = p.selected-1;
+
+        console.log('dragged over  ' + newIndex);
 
         // Update my peers indicators
         if(iAmHost()){
           dispatch(setPlayers(
-          setSelected(players, p.id, p.selected-1 ))
+          setSelected(players, p.id, newIndex ))
         );
-        dispatch(selectEvent({ pid: p.id, index: p.selected-1, type: SELECT_TYPES.UNDEFINED  }))
+        dispatch(selectEvent({ pid: p.id, index: newIndex, type: SELECT_TYPES.UNDEFINED  }))
         } 
         else {
-          dispatch(selectRequest({index: p.selected-1, pid: p.id}));
+          dispatch(selectRequest({index: newIndex, pid: p.id}));
         }
 
       }
       // The new index is dragged down
       else if(p.selected < index && p.selected >= prevDragIndex.current){
-        console.log('dragged over')
+        
+
+        let newIndex = p.selected+1;
+
+        console.log('dragged over  ' + newIndex);
 
         // Update my peers indicators
         if(iAmHost()){
           dispatch(setPlayers(
-            setSelected(players, p.id, p.selected+1 ))
+            setSelected(players, p.id, newIndex ))
           );
-          dispatch(selectEvent({ pid: p.id, index:  p.selected+1, type: SELECT_TYPES.UNDEFINED  }))
+          dispatch(selectEvent({ pid: p.id, index: newIndex, type: SELECT_TYPES.UNDEFINED  }))
         } 
         else {
-          dispatch(selectRequest({index: p.selected+1, pid: p.id}));
+          dispatch(selectRequest({index: newIndex, pid: p.id}));
         }
       }
       }
