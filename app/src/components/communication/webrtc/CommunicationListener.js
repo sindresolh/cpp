@@ -231,6 +231,7 @@ class CommunicationListener extends Component {
         handList: state.handList,
         solutionField: state.solutionField,
         playerIds: playerIds,
+        tasksetNumber: state.currentTask.selectedTaskSet,
       });
       if (state.status === STATUS.GAME) {
         this.shout(START_GAME, json);

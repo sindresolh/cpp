@@ -588,6 +588,9 @@ class CommunicationHandler extends Component {
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState.status) {
+      const { dispatch_setTaskSet } = this.props;
+      dispatch_setTaskSet(parseInt(payloadState.tasksetNumber));
+
       const { dispatch_setListState } = this.props;
       dispatch_setListState(payloadState.handList);
 
