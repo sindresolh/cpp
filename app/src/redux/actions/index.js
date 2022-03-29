@@ -260,6 +260,21 @@ export const setTaskNumber = (number) => {
   };
 };
 
+/** Set task set number.
+ *  See reducers/gameState/task
+ *
+ * @param {*} state : int
+ * @returns
+ */
+export const setTaskSet = (number) => {
+  return {
+    type: ACTIONS.SET_TASKSET,
+    payload: {
+      number,
+    },
+  };
+};
+
 /** Update a player object
  * See reducers/gameState/player
  *

@@ -102,6 +102,7 @@ class CommunicationListener extends Component {
 
     // initalize solutionfield
     const { dispatch_setFieldState } = this.props;
+    console.log('sf', solutionField);
     dispatch_setFieldState(solutionField);
 
     // Create new arrays to prevent mutation

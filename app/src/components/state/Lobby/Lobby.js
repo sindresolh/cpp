@@ -10,7 +10,13 @@ import ReactPlayer from 'react-player';
 import Video from '../../../utils/images/tutorial.mp4';
 import Modal from 'react-modal';
 import SidebarModal from '../../Game/Sidebar/SidebarModal/SidebarModal';
-import { removePlayer } from '../../../redux/actions';
+import { removePlayer, setTaskSet } from '../../../redux/actions';
+
+const TASKSETS = [
+  { label: 'Dummy tasks', number: 0 },
+  { label: 'Simple tasks', number: 1 },
+  { label: 'Medium tasks', number: 2 },
+];
 
 /** Show the players in the lobby based on their nickname
  *
@@ -23,6 +29,9 @@ function Lobby({ handleClick }) {
   const [data, setData] = useState(false);
   const [videoModalIsOpen, setVideoModalIsOpen] = useState(false);
   const [confirmStartModalIsOpen, setConfirmStartIsOpen] = useState(false);
+  const selectedTaskSet = parseInt(
+    useSelector((state) => state.currentTask.selectedTaskSet)
+  );
 
   const modalStyle = {
     content: {
@@ -81,6 +90,11 @@ function Lobby({ handleClick }) {
 
     // Return all resolved promises
     return Promise.all(promises);
+  };
+
+  /** Set taskset */
+  const handleChange = (event) => {
+    dispatch(setTaskSet(event.target.value));
   };
 
   /** Rerender after ensuring that all players have their nicks present
@@ -151,6 +165,14 @@ function Lobby({ handleClick }) {
             );
           })}
         </ul>
+        <h2 style={{ fontSize: 'calc(10px + 0.4vw)' }}>Select a task set</h2>
+        <div style={{ marginBottom: '1em' }}>
+          <select value={selectedTaskSet} onChange={handleChange}>
+            {TASKSETS.map((taskset) => (
+              <option value={taskset.number}>{taskset.label}</option>
+            ))}
+          </select>
+        </div>
 
         <div>
           <SidebarButton
