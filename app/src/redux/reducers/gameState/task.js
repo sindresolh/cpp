@@ -44,15 +44,12 @@ const taskReducer = (state = initialState, action) => {
       };
     case ACTIONS.SET_TASK:
       return { ...state, currentTaskNumber: action.payload.number };
-    case ACTIONS.SET_TASKSET: {
-      console.log('set task set', action.payload.number);
-      console.log('tasks', getTasksFromSet(action.payload.number));
+    case ACTIONS.SET_TASKSET:
       return {
         ...state,
         selectedTaskSet: action.payload.number,
         tasks: getTasksFromSet(action.payload.number),
       };
-    }
     default:
       return state;
   }
