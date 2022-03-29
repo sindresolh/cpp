@@ -42,7 +42,7 @@ function CodeBlock({
    */
   const handleDrop = (index) =>{
     if(inField && index != null){
-      handleDroppedLine(null);
+      handleDroppedLine(index);
     }
   }
 

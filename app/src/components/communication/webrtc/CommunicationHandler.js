@@ -356,9 +356,9 @@ class CommunicationHandler extends Component {
   lockEvent(payload) {
     let payloadState = JSON.parse(payload);
     let prevState = store.getState();
-
     let players = prevState.players;
     const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
+
     if (payloadState.pid === LOCKTYPES.ALL_PLAYERS) {
       dispatch_setPlayers(setAllLocks(players, payloadState.lock));
       dispatch_lockEvent({
@@ -371,7 +371,7 @@ class CommunicationHandler extends Component {
         payloadState.pid = prevState.host;
       }
 
-      // Find out if thos long belongs to another player
+      // Find out if this long belongs to another player
       if (players.some((p) => p.id === payloadState.pid)) {
         // Update the players with new locks
         dispatch_setPlayers(
@@ -407,13 +407,18 @@ class CommunicationHandler extends Component {
 
     if (payloadState != null) {
       const index = payloadState.index;
-      const type = payloadState.type;
+      let pid = payloadState.pid;
       const { dispatch_selectEvent, dispatch_setPlayers } = this.props;
 
       dispatch_setPlayers(
-        setSelected(players, peer.id === 'HOST' ? 'YOU' : peer.id, index)
+        setSelected(players, pid === 'ME' ? peer.id : pid, index)
       );
-      dispatch_selectEvent({ pid: peer.id, index: index, type: type });
+
+      dispatch_selectEvent({
+        pid: pid === 'ME' ? peer.id : pid,
+        index: index,
+        type: SELECT_TYPES.UNDEFINED,
+      });
     }
   }
 
@@ -426,10 +431,11 @@ class CommunicationHandler extends Component {
     const payloadState = JSON.parse(payload);
     let pid = payloadState.pid;
     let index = payloadState.index;
-    let type = payloadState.type;
     let prevState = store.getState();
     let players = prevState.players;
     const { dispatch_selectEvent, dispatch_setPlayers } = this.props;
+
+    console.log(pid);
 
     // The host does not know its own name
     if (pid === 'HOST') {
@@ -440,42 +446,12 @@ class CommunicationHandler extends Component {
       pid = 'YOU';
     }
 
-    // If this codeblock was dragged over or under any of my peers selected codeblocks: move their index
-
-    /*     if (type === SELECT_TYPES.DRAG_OVER) {
-      for (let p of players) {
-        if (
-          p.id !== pid &&
-          p.selected != null &&
-          index != null &&
-          p.selected >= index
-        )
-          dispatch_setPlayers(setSelected(players, p.id, p.selected - 1));
-        dispatch_selectEvent({
-          pid: p.id,
-          index: p.selected - 1,
-          type: type,
-        });
-      }
-    } else if (type === SELECT_TYPES.DRAG_UNDER) {
-      for (let p of players) {
-        if (
-          p.id !== pid &&
-          p.selected != null &&
-          index != null &&
-          p.selected <= index
-        )
-          dispatch_setPlayers(setSelected(players, p.id, p.selected + 1));
-        dispatch_selectEvent({
-          pid: p.id,
-          index: p.selected - 1,
-          type: type,
-        }); 
-      }
-    }*/
-
     dispatch_setPlayers(setSelected(players, pid, index));
-    dispatch_selectEvent({ pid: pid, index: index, type: type });
+    dispatch_selectEvent({
+      pid: pid,
+      index: index,
+      type: SELECT_TYPES.UNDEFINED,
+    });
   }
 
   /**

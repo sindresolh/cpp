@@ -149,7 +149,7 @@ function SolutionField({ minwidth }) {
           ...selectedCodeline,
           indent: selectedCodeline.indent - 1,
         }
-        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest({index: newSelectedCodeline.index, type: SELECT_TYPES.UNDEFINED}));
+        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest({index: newSelectedCodeline.index, pid: 'ME'}));
         setSelectedCodeline((newSelectedCodeline));
         moveBlock(
           selectedCodeline.id,
@@ -167,7 +167,7 @@ function SolutionField({ minwidth }) {
          ...selectedCodeline,
           indent: selectedCodeline.indent + 1,
         }
-        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest({index: newSelectedCodeline.index, type: SELECT_TYPES.UNDEFINED}));
+        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest({index: newSelectedCodeline.index, pid: 'ME'}));
         setSelectedCodeline(newSelectedCodeline);
         moveBlock(
           selectedCodeline.id,
@@ -182,7 +182,7 @@ function SolutionField({ minwidth }) {
   /* Reset selected block when a new task starts*/
   useEffect(() => {
     setSelectedCodeline(null);
-    iAmHost()? handleSelect(null)  : dispatch(selectRequest({index: null, type: SELECT_TYPES.UNDEFINED}));
+    iAmHost()? handleSelect(null)  : dispatch(selectRequest({index: null, pid: 'ME'}));
   }, [currentTaskNumber]);
 
   /**
@@ -192,7 +192,7 @@ function SolutionField({ minwidth }) {
       let players = store.getState().players;
       let myLock = getLock(players, 'YOU');
       if(myLock !== locked){
-        iAmHost()? handleSelect(null)  : dispatch(selectRequest({index: null, type: SELECT_TYPES.UNDEFINED}));
+        iAmHost()? handleSelect(null)  : dispatch(selectRequest({index: null, pid: 'ME'}));
         setLocked(myLock);
         setSelectedCodeline(null);
       }
@@ -260,13 +260,11 @@ function SolutionField({ minwidth }) {
    * @param {*} draggable : wheter or not the player has permission to perform this action
    */
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
-    if (!locked) {
-      
-      if (movedBlock != null && draggable) {
+    if (!locked && movedBlock != null && draggable) {
         // the user selected this codeblock
         setSelectedCodeline(movedBlock);
         movedBlock.index = index;
-        iAmHost()? handleSelect(index)  : dispatch(selectRequest({index: index, type: SELECT_TYPES.UNDEFINED}));
+        iAmHost()? handleSelect(index)  : dispatch(selectRequest({index: index, pid: 'ME'}));
         
         // (e.detauil > 1) if clicked more than once
         if (e.detail > 1) {
@@ -291,12 +289,10 @@ function SolutionField({ minwidth }) {
       }
 
       if(movedBlock === selectedCodeline ){
-        iAmHost()? handleSelect(null)  : dispatch(selectRequest({index: null, type: SELECT_TYPES.UNDEFINED}));
+        iAmHost()? handleSelect(null)  : dispatch(selectRequest({index: null, pid: 'ME'}));
         setSelectedCodeline(null);
       }
 
-
-      }
     e.detail = 0; // resets detail so that other codeblocks can be clicked
   };
 
@@ -312,13 +308,6 @@ function SolutionField({ minwidth }) {
       movedBlock.index = index;
       setSelectedCodeline(movedBlock);
 
-      // Find out wheter it was dragged up or down
-      let type = SELECT_TYPES.UNDEFINED;
-      if(prevDragIndex.current > index){
-           type = SELECT_TYPES.DRAG_OVER;
-      }else if(prevDragIndex.current < index){
-        type = SELECT_TYPES.DRAG_UNDER;
-      }
       prevDragIndex.current = index; 
 
       if(iAmHost()){
@@ -326,32 +315,10 @@ function SolutionField({ minwidth }) {
         dispatch(setPlayers(
         setSelected(players, 'YOU', index))
         );
-        dispatch(selectEvent({ pid: 'HOST', index: index , type: type}));
-
-/*         if (type === SELECT_TYPES.DRAG_OVER) {
-          for (let p of players) {
-          if (
-          p.id !== 'YOU' &&
-          p.selected != null &&
-          index != null &&
-          p.selected >= index
-        )
-          dispatch(setPlayers(setSelected(players, p.id, p.selected - 1)));
-      }
-      } else if (type === SELECT_TYPES.DRAG_UNDER) {
-      for (let p of players) {
-        if (
-          p.id !== 'YOU' &&
-          p.selected != null &&
-          index != null &&
-          p.selected <= index
-        )
-          dispatch(setPlayers(setSelected(players, p.id, p.selected + 1)));
-      }
-    }  */
+        dispatch(selectEvent({ pid: 'HOST', index: index , type: SELECT_TYPES.UNDEFINED}));
       }
       else {
-        dispatch(selectRequest({index: index, type: type}));
+        dispatch(selectRequest({index: index, pid: 'ME'}));
       }
     }
   }
@@ -360,19 +327,57 @@ function SolutionField({ minwidth }) {
    * Unselect on drop
    * 
    */
-  const handleDroppedLine = () => {
+  const handleDroppedLine = (index) => {
     setSelectedCodeline(null);
+    let players =store.getState().players;
+
+    for (let p of players){
+
+      // The new index is dragged up
+
+      if(p.id !== 'YOU'){
+        if(p.selected > index && p.selected <= prevDragIndex.current){
+        console.log('dragged under')
+
+        // Update my peers indicators
+        if(iAmHost()){
+          dispatch(setPlayers(
+          setSelected(players, p.id, p.selected-1 ))
+        );
+        dispatch(selectEvent({ pid: p.id, index: p.selected-1, type: SELECT_TYPES.UNDEFINED  }))
+        } 
+        else {
+          dispatch(selectRequest({index: p.selected-1, pid: p.id}));
+        }
+
+      }
+      // The new index is dragged down
+      else if(p.selected < index && p.selected >= prevDragIndex.current){
+        console.log('dragged over')
+
+        // Update my peers indicators
+        if(iAmHost()){
+          dispatch(setPlayers(
+            setSelected(players, p.id, p.selected+1 ))
+          );
+          dispatch(selectEvent({ pid: p.id, index:  p.selected+1, type: SELECT_TYPES.UNDEFINED  }))
+        } 
+        else {
+          dispatch(selectRequest({index: p.selected+1, pid: p.id}));
+        }
+      }
+      }
+    }
 
      if(iAmHost()){
-        let players =store.getState().players;
         dispatch(setPlayers(
-        setSelected(players, 'YOU', null))
+          setSelected(players, 'YOU', null))
         );
-        dispatch(selectEvent({ pid: 'HOST', index: null, type: SELECT_TYPES.UNDEFINED  }));
-      }
-      else {
-        dispatch(selectRequest({index: null, type: SELECT_TYPES.UNDEFINED}));
-      }
+        dispatch(selectEvent({ pid: 'HOST', index: null, type: SELECT_TYPES.UNDEFINED  }))
+    } 
+    else {
+        dispatch(selectRequest({index: null, pid: 'ME'}));
+    }
   }
 
   return (
