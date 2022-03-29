@@ -18,12 +18,12 @@ import { useDrop } from 'react-dnd';
 import { ItemTypes } from '../../../utils/itemtypes';
 import './SolutionField.css';
 import store from '../../../redux/store/store';
-import { COLORS, MAX_INDENT, KEYBOARD_EVENT, SELECT_TYPES } from '../../../utils/constants';
+import { COLORS, MAX_INDENT, KEYBOARD_EVENT } from '../../../utils/constants';
 import {
   moveBlockInSolutionField,
   requestMove,
 } from '../../../utils/moveBlock/moveBlock';
-import { getLock } from '../../../utils/lockHelper/lockHelper';
+import { getLock, getSelectedBy } from '../../../utils/lockHelper/lockHelper';
 import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
 import { setSelected, getSelectedBlocks } from '../../../utils/lockHelper/lockHelper';
 
@@ -122,7 +122,7 @@ function SolutionField({ minwidth }) {
       setSelected(players, pid, index))
     );
     pid === 'YOU'? pid = 'HOST': pid = pid;
-    dispatch(selectEvent({ pid: pid, index: index, type: SELECT_TYPES.UNDEFINED }));
+    dispatch(selectEvent({ pid: pid, index: index}));
   }
 
   /**
@@ -205,7 +205,15 @@ function SolutionField({ minwidth }) {
       let players = store.getState().players;
       let newSelectedBlocks = getSelectedBlocks(players);
       if(newSelectedBlocks != null && newSelectedBlocks != allSelectedLines){
+        // Update indicators if they are different
         setAllSelectedLines(newSelectedBlocks);
+        let mySelectedBlock = getSelectedBy(players, 'YOU');
+        if(selectedCodeline != null && mySelectedBlock !== selectedCodeline.index){
+          // Update my selected codeline if they are different
+          let selected = blocks[mySelectedBlock];
+          if(selected != null) selected.index = mySelectedBlock;
+          setSelectedCodeline(selected);
+        }
       }
     }, [newSelectEvent]);
 
@@ -315,7 +323,7 @@ function SolutionField({ minwidth }) {
         dispatch(setPlayers(
         setSelected(players, 'YOU', index))
         );
-        dispatch(selectEvent({ pid: 'HOST', index: index , type: SELECT_TYPES.UNDEFINED}));
+        dispatch(selectEvent({ pid: 'HOST', index: index}));
       }
       else {
         dispatch(selectRequest({index: index, pid: 'ME'}));
@@ -347,7 +355,7 @@ function SolutionField({ minwidth }) {
           dispatch(setPlayers(
           setSelected(players, p.id, newIndex ))
         );
-        dispatch(selectEvent({ pid: p.id, index: newIndex, type: SELECT_TYPES.UNDEFINED  }))
+        dispatch(selectEvent({ pid: p.id, index: newIndex}))
         } 
         else {
           dispatch(selectRequest({index: newIndex, pid: p.id}));
@@ -367,7 +375,7 @@ function SolutionField({ minwidth }) {
           dispatch(setPlayers(
             setSelected(players, p.id, newIndex ))
           );
-          dispatch(selectEvent({ pid: p.id, index: newIndex, type: SELECT_TYPES.UNDEFINED  }))
+          dispatch(selectEvent({ pid: p.id, index: newIndex  }))
         } 
         else {
           dispatch(selectRequest({index: newIndex, pid: p.id}));
@@ -380,7 +388,7 @@ function SolutionField({ minwidth }) {
         dispatch(setPlayers(
           setSelected(players, 'YOU', null))
         );
-        dispatch(selectEvent({ pid: 'HOST', index: null, type: SELECT_TYPES.UNDEFINED  }))
+        dispatch(selectEvent({ pid: 'HOST', index: null}))
     } 
     else {
         dispatch(selectRequest({index: null, pid: 'ME'}));

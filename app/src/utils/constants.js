@@ -59,13 +59,3 @@ export const LOCKTYPES = {
   FOR_MYSELF: 'FOR_MYSELF',
   ALL_PLAYERS: 'ALL_PLAYERS',
 };
-
-/**
- * In certain select events we need to know what triggered it.
- */
-export const SELECT_TYPES = {
-  CLICK_IN: 'CLICK_IN',
-  DRAG_OVER: 'DRAG_OVER',
-  DRAG_UNDER: 'DRAG_UNDER',
-  UNDEFINED: 'UNDEFINED',
-};

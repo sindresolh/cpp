@@ -48,13 +48,12 @@ import {
 import PuzzleGif from '../PuzzleGif';
 import SidebarModal from '../../Game/Sidebar/SidebarModal/SidebarModal';
 import SubmitIcon from '../../../utils/images/buttonIcons/submit.png';
-import { COLORS, LOCKTYPES, SELECT_TYPES } from '../../../utils/constants';
+import { COLORS, LOCKTYPES } from '../../../utils/constants';
 import configData from '../../../config.json';
 import {
   setLock,
   setAllLocks,
   setSelected,
-  isIndexSelected,
 } from '../../../utils/lockHelper/lockHelper';
 
 const mapStateToProps = (state) => ({
@@ -419,14 +418,12 @@ class CommunicationHandler extends Component {
         dispatch_selectEvent({
           pid: 'HOST',
           index: index,
-          type: SELECT_TYPES.UNDEFINED,
         });
       } else {
         dispatch_setPlayers(setSelected(players, pid, index));
         dispatch_selectEvent({
           pid: pid,
           index: index,
-          type: SELECT_TYPES.UNDEFINED,
         });
       }
     }
@@ -458,7 +455,6 @@ class CommunicationHandler extends Component {
     dispatch_selectEvent({
       pid: pid,
       index: index,
-      type: SELECT_TYPES.UNDEFINED,
     });
   }
 
