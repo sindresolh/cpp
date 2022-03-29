@@ -22,6 +22,7 @@ import {
   setList,
   lockEvent,
   selectEvent,
+  setTaskSet,
 } from '../../../redux/actions';
 import {
   SET_LIST,
@@ -35,6 +36,7 @@ import {
   LOCK_EVENT,
   SELECT_REQUEST,
   SELECT_EVENT,
+  SET_TASKSET,
 } from './messages';
 import {
   twoDimensionalArrayIsEqual,
@@ -87,6 +89,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(removeBlockFromList(...args)),
     dispatch_lockEvent: (...args) => dispatch(lockEvent(...args)),
     dispatch_selectEvent: (...args) => dispatch(selectEvent(...args)),
+    dispatch_setTaskSet: (...args) => dispatch(setTaskSet(...args)),
   };
 }
 
@@ -250,6 +253,8 @@ class CommunicationHandler extends Component {
       case SELECT_EVENT:
         this.selectEvent(payload);
         break;
+      case SET_TASKSET:
+        this.setTaskSet(payload);
       default:
         break;
     }
@@ -520,6 +525,15 @@ class CommunicationHandler extends Component {
 
     dispatch_fieldEvent();
     dispatch_listEvent();
+  }
+  /**
+   * Set task set number selected by another player.
+   * @param {} payload
+   */
+  setTaskSet(payload) {
+    const number = parseInt(JSON.parse(payload));
+    const { dispatch_setTaskSet } = this.props;
+    dispatch_setTaskSet(number);
   }
 
   /**

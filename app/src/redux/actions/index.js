@@ -216,6 +216,21 @@ export const taskEvent = (state) => {
   };
 };
 
+/** Notify other peers in CommunicationListener ComponentDidUpdate
+ *  The taskset is updated in the lobby
+ *
+ * @param {*} state : Date when this reducer was called last time
+ * @returns
+ */
+export const tasksetEvent = (state) => {
+  return {
+    type: ACTIONS.TASKSET_EVENT,
+    payload: {
+      state,
+    },
+  };
+};
+
 /**
  * Notify other players peers that the final task was submitted.
  * @param {*} state : Date when this reducer was called last time

@@ -10,7 +10,7 @@ import ReactPlayer from 'react-player';
 import Video from '../../../utils/images/tutorial.mp4';
 import Modal from 'react-modal';
 import SidebarModal from '../../Game/Sidebar/SidebarModal/SidebarModal';
-import { removePlayer, setTaskSet } from '../../../redux/actions';
+import { removePlayer, setTaskSet, tasksetEvent } from '../../../redux/actions';
 
 const TASKSETS = [
   { label: 'Dummy tasks', number: 0 },
@@ -92,9 +92,10 @@ function Lobby({ handleClick }) {
     return Promise.all(promises);
   };
 
-  /** Set taskset */
+  /** Set taskset and update other players*/
   const handleChange = (event) => {
     dispatch(setTaskSet(event.target.value));
+    dispatch(tasksetEvent());
   };
 
   /** Rerender after ensuring that all players have their nicks present

@@ -15,6 +15,7 @@ import {
   LOCK_EVENT,
   SELECT_REQUEST,
   SELECT_EVENT,
+  SET_TASKSET,
 } from './messages';
 import {
   startGame,
@@ -43,6 +44,7 @@ const mapStateToProps = (state) => ({
   listEvent: state.listEvent,
   fieldEvent: state.fieldEvent,
   taskEvent: state.taskEvent,
+  tasksetEvent: state.tasksetEvent,
   clearEvent: state.clearEvent,
   status: state.status,
   players: state.players,
@@ -203,6 +205,9 @@ class CommunicationListener extends Component {
       this.shout(NEXT_TASK, json);
       const { dispatch_listEvent } = this.props;
       dispatch_listEvent();
+    } else if (prevProps.tasksetEvent !== this.props.tasksetEvent) {
+      const json = JSON.stringify(state.currentTask.selectedTaskSet);
+      this.shout(SET_TASKSET, json);
     } else if (
       prevProps.clearEvent.getTime() < this.props.clearEvent.getTime()
     ) {

@@ -18,6 +18,7 @@ import selectRequestReducer from './gameLogic/selectRequest';
 import selectEventReducer from './webrtc/selectEvent';
 import lockRequestReducer from './gameLogic/lockRequest';
 import lockEventReducer from './webrtc/lockEvent';
+import tasksetEventReducer from './webrtc/tasksetEvent';
 
 const allReducers = combineReducers({
   // Handles communicication to the other peers
@@ -26,6 +27,7 @@ const allReducers = combineReducers({
   listEvent: listEventReducer,
   taskEvent: taskEventReducer,
   finishEvent: finishReducer,
+  tasksetEvent: tasksetEventReducer,
 
   // Controls the game board
   handList: handListReducer,
