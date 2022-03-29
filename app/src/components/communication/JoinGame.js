@@ -78,7 +78,7 @@ export default function JoinGame() {
                 }}
               />
             </label>
-            <h2 style={{ fontSize: 'calc(12px + 0.4vw)' }}>
+            <h2 style={{ fontSize: 'calc(12px + 0.4vw)', marginTop: '3em' }}>
               Select a game lobby
             </h2>
             <select value={room} onChange={handleChange}>
