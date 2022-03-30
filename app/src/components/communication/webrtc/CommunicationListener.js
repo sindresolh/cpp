@@ -277,7 +277,7 @@ class CommunicationListener extends Component {
         this.whisper(state.host, LOCK_REQUEST, state.lockRequest);
         break;
       case prevProps.lockEvent !== this.props.lockEvent: // Board locked
-        this.shout(LOCK_EVENT, state.lockEvent);
+        this.shoutIfHost(state.host, LOCK_EVENT, state.lockEvent);
         break;
       case prevProps.taskEvent !== this.props.taskEvent: // New task
         this.goToNextTask(state);
