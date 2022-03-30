@@ -182,7 +182,14 @@ class CommunicationListener extends Component {
   componentDidUpdate(prevProps) {
     const state = store.getState();
 
-    if (prevProps.selectRequest !== this.props.selectRequest) {
+    if (prevProps.fieldEvent !== this.props.fieldEvent) {
+      // This peer moved codeblock in soloutionfield
+      const json = JSON.stringify(state.solutionField);
+      this.shout(SET_FIELD, json);
+    } else if (prevProps.moveRequest !== this.props.moveRequest) {
+      const json = JSON.stringify(state.moveRequest);
+      this.whisper(state.host, MOVE_REQUEST, json);
+    } else if (prevProps.selectRequest !== this.props.selectRequest) {
       const json = JSON.stringify(state.selectRequest);
       this.whisper(state.host, SELECT_REQUEST, json);
     } else if (prevProps.selectEvent !== this.props.selectEvent) {
@@ -191,19 +198,26 @@ class CommunicationListener extends Component {
         const json = JSON.stringify(state.selectEvent);
         this.shout(SELECT_EVENT, json);
       }
-    } else if (prevProps.fieldEvent !== this.props.fieldEvent) {
-      // This peer moved codeblock in soloutionfield
-      const json = JSON.stringify(state.solutionField);
-      this.shout(SET_FIELD, json);
     } else if (prevProps.listEvent !== this.props.listEvent) {
       // This peer moved codeblock in an handlist
       const json = JSON.stringify({
         handList: state.handList,
       });
       this.shout(SET_LIST, json);
-    } else if (prevProps.moveRequest !== this.props.moveRequest) {
-      const json = JSON.stringify(state.moveRequest);
-      this.whisper(state.host, MOVE_REQUEST, json);
+    } else if (
+      prevProps.clearEvent.getTime() < this.props.clearEvent.getTime()
+    ) {
+      if (this.iAmHost()) {
+        // This peer cleared the board
+        const { dispatch_lockEvent } = this.props;
+        dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: false });
+        let json = JSON.stringify({
+          handList: state.handList,
+        });
+        this.shout(SET_LIST, json);
+        json = JSON.stringify(state.solutionField);
+        this.shout(SET_FIELD, json);
+      } else this.whisper(state.host, CLEAR_TASK, '');
     } else if (prevProps.lockRequest !== this.props.lockRequest) {
       // I am not host and need to request a lock board for myself
       const json = JSON.stringify(state.lockRequest);
@@ -231,20 +245,6 @@ class CommunicationListener extends Component {
     } else if (prevProps.tasksetEvent !== this.props.tasksetEvent) {
       const json = JSON.stringify(state.currentTask.selectedTaskSet);
       this.shout(SET_TASKSET, json);
-    } else if (
-      prevProps.clearEvent.getTime() < this.props.clearEvent.getTime()
-    ) {
-      if (this.iAmHost()) {
-        // This peer cleared the board
-        const { dispatch_lockEvent } = this.props;
-        dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: false });
-        let json = JSON.stringify({
-          handList: state.handList,
-        });
-        this.shout(SET_LIST, json);
-        json = JSON.stringify(state.solutionField);
-        this.shout(SET_FIELD, json);
-      } else this.whisper(state.host, CLEAR_TASK, '');
     } else if (prevProps.status !== this.props.status) {
       // This player started the game from the lobby
       let playerIds = state.players.map((p) => p.id);

@@ -243,7 +243,6 @@ class CommunicationHandler extends Component {
       case CLEAR_TASK:
         this.clearTask();
         break;
-
       case NEXT_TASK:
         this.nextTask(payload);
         break;
