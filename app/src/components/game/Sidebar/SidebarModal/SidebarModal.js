@@ -1,6 +1,6 @@
 import React from 'react';
 import Modal from 'react-modal';
-import { useSelector } from 'react-redux';
+import store from '../../../../redux/store/store';
 import { linebasedfeedback } from '../../../../utils/compareArrays/compareArrays';
 import './SidebarModal.css';
 
@@ -39,15 +39,18 @@ export default function SidebarModal({
   decrementHint = null,
   hintModal = 'none',
 }) {
-  const currentTask = useSelector((state) => state.currentTask);
-  let currentTaskNumber = currentTask.currentTaskNumber;
-  let correctSolution = currentTask.tasks[currentTaskNumber].codeBlocks;
-  let otherSolutions = currentTask.tasks[currentTaskNumber].otherSolutions;
-  let feedbackArray = linebasedfeedback(
-    fieldBlocks,
-    correctSolution,
-    otherSolutions
-  );
+  let feedbackArray = [];
+  if (showFeedback) {
+    const currentTask = store.getState().currentTask;
+    let currentTaskNumber = currentTask.currentTaskNumber;
+    let correctSolution = currentTask.tasks[currentTaskNumber].codeBlocks;
+    let otherSolutions = currentTask.tasks[currentTaskNumber].otherSolutions;
+    feedbackArray = linebasedfeedback(
+      fieldBlocks,
+      correctSolution,
+      otherSolutions
+    );
+  }
 
   Modal.setAppElement('body');
 

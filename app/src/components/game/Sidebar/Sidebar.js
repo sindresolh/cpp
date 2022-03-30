@@ -49,7 +49,6 @@ export default function Sidebar() {
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
   let currentTaskObject = currentTask.tasks[currentTaskNumber];
-  const fieldBlocks = useSelector((state) => state.solutionField);
   const [currentHintNo, setCurrentHintNo] = useState(0);
   const [finished, setFinished] = useState(false);
   const [locked, setLocked] = useState(false);
@@ -243,6 +242,7 @@ export default function Sidebar() {
       dispatch(lockRequest({ forWho: LOCKTYPES.ALL_PLAYERS }));
     }
     closeModal();
+    let fieldBlocks = store.getState().solutionField;
     setCurrentFieldBlocks(fieldBlocks);
     let correctSolution = arrayIsEqual(
       fieldBlocks,
