@@ -115,6 +115,7 @@ function SolutionField({ minwidth }) {
    * Select an index and notify my peers.
    * 
    * @param {*} index 
+   * @param {*} pid: player id
    */
   const handleSelect = (index, pid = 'YOU') =>{
     let players =store.getState().players;
@@ -123,6 +124,34 @@ function SolutionField({ minwidth }) {
     );
     pid === 'YOU'? pid = 'HOST': pid = pid;
     dispatch(selectEvent({ pid: pid, index: index}));
+  }
+
+    /**
+   * Perform a selectEvent if I am HOST, if not send a request
+   * 
+   * @param {*} index 
+   * @param {*} pid: player id
+   */
+  const select = (index, pid = 'YOU') =>{
+    iAmHost()? handleSelect(index)  : dispatch(selectRequest({index: index, pid: pid}));
+  }
+
+  /**
+   * A codeblock was dropped at a given index. Change the indicator.
+   * 
+   * @param {*} index 
+   * @param {*} pid: player id
+   */
+  const changeIndicator = (players, index, pid) =>{
+    if(iAmHost()){
+      dispatch(setPlayers(
+      setSelected(players, pid, index ))
+    );
+    dispatch(selectEvent({ pid: pid, index: index}))
+    } 
+    else {
+      dispatch(selectRequest({index: index, pid: pid}));
+    }
   }
 
   /**
@@ -149,7 +178,7 @@ function SolutionField({ minwidth }) {
           ...selectedCodeline,
           indent: selectedCodeline.indent - 1,
         }
-        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest({index: newSelectedCodeline.index, pid: 'ME'}));
+        select(newSelectedCodeline.index, 'ME')
         setSelectedCodeline((newSelectedCodeline));
         moveBlock(
           selectedCodeline.id,
@@ -167,7 +196,7 @@ function SolutionField({ minwidth }) {
          ...selectedCodeline,
           indent: selectedCodeline.indent + 1,
         }
-        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest({index: newSelectedCodeline.index, pid: 'ME'}));
+        select(newSelectedCodeline.index, 'ME')
         setSelectedCodeline(newSelectedCodeline);
         moveBlock(
           selectedCodeline.id,
@@ -182,7 +211,7 @@ function SolutionField({ minwidth }) {
   /* Reset selected block when a new task starts*/
   useEffect(() => {
     setSelectedCodeline(null);
-    iAmHost()? handleSelect(null)  : dispatch(selectRequest({index: null, pid: 'ME'}));
+    select(null, 'ME')
   }, [currentTaskNumber]);
 
   /**
@@ -192,7 +221,7 @@ function SolutionField({ minwidth }) {
       let players = store.getState().players;
       let myLock = getLock(players, 'YOU');
       if(myLock !== locked){
-        iAmHost()? handleSelect(null)  : dispatch(selectRequest({index: null, pid: 'ME'}));
+        select(null, 'ME')
         setLocked(myLock);
         setSelectedCodeline(null);
       }
@@ -272,7 +301,7 @@ function SolutionField({ minwidth }) {
         // the user selected this codeblock
         setSelectedCodeline(movedBlock);
         movedBlock.index = index;
-        iAmHost()? handleSelect(index)  : dispatch(selectRequest({index: index, pid: 'ME'}));
+        select(index, 'ME')
         
         // (e.detauil > 1) if clicked more than once
         if (e.detail > 1) {
@@ -297,7 +326,7 @@ function SolutionField({ minwidth }) {
       }
 
       if(movedBlock === selectedCodeline ){
-        iAmHost()? handleSelect(null)  : dispatch(selectRequest({index: null, pid: 'ME'}));
+        select(null, 'ME')
         setSelectedCodeline(null);
       }
 
@@ -341,67 +370,24 @@ function SolutionField({ minwidth }) {
 
     for (let p of players){
 
-  
       if(p.id !== 'YOU'){
         // The new index is dragged up
         if(p.selected > index && p.selected <= prevDragIndex.current){
-
-        let newIndex = p.selected-1;
-
-        // Update my peers indicators
-        if(iAmHost()){
-          dispatch(setPlayers(
-          setSelected(players, p.id, newIndex ))
-        );
-        dispatch(selectEvent({ pid: p.id, index: newIndex}))
-        } 
-        else {
-          dispatch(selectRequest({index: newIndex, pid: p.id}));
+          changeIndicator(players, p.selected-1, p.id);
         }
-
-      }
       // The new index is dragged down
       else if(p.selected < index && p.selected >= prevDragIndex.current){
-        
-
-        let newIndex = p.selected+1;
-        
-        // Update my peers indicators
-        if(iAmHost()){
-          dispatch(setPlayers(
-            setSelected(players, p.id, newIndex ))
-          );
-          dispatch(selectEvent({ pid: p.id, index: newIndex  }))
-        } 
-        else {
-          dispatch(selectRequest({index: newIndex, pid: p.id}));
-        }
+        changeIndicator(players, p.selected+1, p.id);
       }
       else if(p.selected === index){
-        console.log('my block')
         // The block this player was holding was dragged
-        if(iAmHost()){
-          dispatch(setPlayers(
-            setSelected(players, p.id, prevDragIndex.current ))
-          );
-          dispatch(selectEvent({ pid: p.id, index: prevDragIndex.current  }))
-        } 
-        else {
-          dispatch(selectRequest({index: prevDragIndex.current , pid: p.id}));
-        }
+        changeIndicator(players, prevDragIndex.current, p.id);
       }
       }
     }
 
-     if(iAmHost()){
-        dispatch(setPlayers(
-          setSelected(players, 'YOU', null))
-        );
-        dispatch(selectEvent({ pid: 'HOST', index: null}))
-    } 
-    else {
-        dispatch(selectRequest({index: null, pid: 'ME'}));
-    }
+    // The codeline was dropped, I am no longer holding a codelblock.
+    select(null, 'ME')
   }
 
   return (
