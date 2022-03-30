@@ -348,8 +348,6 @@ function SolutionField({ minwidth }) {
 
         let newIndex = p.selected-1;
 
-        console.log('dragged over  ' + newIndex);
-
         // Update my peers indicators
         if(iAmHost()){
           dispatch(setPlayers(
@@ -367,9 +365,7 @@ function SolutionField({ minwidth }) {
         
 
         let newIndex = p.selected+1;
-
-        console.log('dragged over  ' + newIndex);
-
+        
         // Update my peers indicators
         if(iAmHost()){
           dispatch(setPlayers(

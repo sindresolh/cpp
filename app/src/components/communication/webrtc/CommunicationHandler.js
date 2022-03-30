@@ -409,8 +409,6 @@ class CommunicationHandler extends Component {
       const { dispatch_selectEvent, dispatch_setPlayers } = this.props;
       let pid = payloadState.pid === 'ME' ? peer.id : payloadState.pid;
 
-      console.log(pid + ' --- ' + index);
-
       // If the player cannot be found it probably belongs to me
       if (!players.some((p) => p.id === pid)) {
         pid = 'YOU';
