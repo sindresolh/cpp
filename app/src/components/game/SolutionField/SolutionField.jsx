@@ -128,6 +128,18 @@ function SolutionField({ minwidth }) {
     dispatch(selectEvent({ pid: pid, index: index}));
   }
 
+  /** Ask for a new request if the old request was not the same
+   * 
+   * @param {*} index 
+   * @param {*} pid 
+   */
+  const requestSelect = (index, pid) =>{
+    let lastRequest = store.getState().selectRequest;
+    if(lastRequest == null || pid !== lastRequest.pid || index !== lastRequest.index){
+          dispatch(selectRequest({index: index, pid: pid}));
+    }
+  }
+
     /**
    * Perform a selectEvent if I am HOST, if not send a request
    * 
@@ -135,7 +147,7 @@ function SolutionField({ minwidth }) {
    * @param {*} pid: player id
    */
   const select = (index, pid = 'YOU') =>{
-    iAmHost()? handleSelect(index)  : dispatch(selectRequest({index: index, pid: pid}));
+    iAmHost()? handleSelect(index)  : requestSelect(index, pid);
   }
 
   /**
