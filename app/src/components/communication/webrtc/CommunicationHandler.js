@@ -56,7 +56,6 @@ import {
   setLock,
   setAllLocks,
   setSelected,
-  isIndexSelected,
 } from '../../../utils/lockHelper/lockHelper';
 
 const mapStateToProps = (state) => ({
@@ -137,6 +136,7 @@ class CommunicationHandler extends Component {
    * @returns
    */
   join = (webrtc) => webrtc.joinRoom(this.state.room);
+
 
   /**
    * Called when a new peer is added to the room
@@ -362,9 +362,9 @@ class CommunicationHandler extends Component {
   lockEvent(payload) {
     let payloadState = JSON.parse(payload);
     let prevState = store.getState();
-
     let players = prevState.players;
     const { dispatch_lockEvent, dispatch_setPlayers } = this.props;
+
     if (payloadState.pid === LOCKTYPES.ALL_PLAYERS) {
       dispatch_setPlayers(setAllLocks(players, payloadState.lock));
       dispatch_lockEvent({
@@ -377,7 +377,7 @@ class CommunicationHandler extends Component {
         payloadState.pid = prevState.host;
       }
 
-      // Find out if thos long belongs to another player
+      // Find out if this long belongs to another player
       if (players.some((p) => p.id === payloadState.pid)) {
         // Update the players with new locks
         dispatch_setPlayers(
@@ -409,13 +409,29 @@ class CommunicationHandler extends Component {
   selectRequest(payload, peer) {
     let prevState = store.getState();
     let players = prevState.players;
-    const index = JSON.parse(payload);
-    const { dispatch_selectEvent, dispatch_setPlayers } = this.props;
+    let payloadState = JSON.parse(payload);
 
-    dispatch_setPlayers(
-      setSelected(players, peer.id === 'HOST' ? 'YOU' : peer.id, index)
-    );
-    dispatch_selectEvent({ pid: peer.id, index: index });
+    if (payloadState != null) {
+      const index = payloadState.index;
+      const { dispatch_selectEvent, dispatch_setPlayers } = this.props;
+      let pid = payloadState.pid === 'ME' ? peer.id : payloadState.pid;
+
+      // If the player cannot be found it probably belongs to me
+      if (!players.some((p) => p.id === pid)) {
+        pid = 'YOU';
+        dispatch_setPlayers(setSelected(players, 'YOU', index));
+        dispatch_selectEvent({
+          pid: 'HOST',
+          index: index,
+        });
+      } else {
+        dispatch_setPlayers(setSelected(players, pid, index));
+        dispatch_selectEvent({
+          pid: pid,
+          index: index,
+        });
+      }
+    }
   }
 
   /**
@@ -435,12 +451,16 @@ class CommunicationHandler extends Component {
     if (pid === 'HOST') {
       pid = prevState.host;
     }
-    // If the player cannot be found it probablt belongs to me
+    // If the player cannot be found it probably belongs to me
     if (!players.some((p) => p.id === pid)) {
       pid = 'YOU';
     }
+
     dispatch_setPlayers(setSelected(players, pid, index));
-    dispatch_selectEvent({ pid: pid, index: index });
+    dispatch_selectEvent({
+      pid: pid,
+      index: index,
+    });
   }
 
   /**

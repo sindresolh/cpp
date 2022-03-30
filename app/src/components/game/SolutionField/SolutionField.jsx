@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import CodeLine from '../CodeLine/CodeLine';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useRef } from 'react';
 import {
   setFieldState,
   removeBlockFromList,
@@ -23,7 +23,7 @@ import {
   moveBlockInSolutionField,
   requestMove,
 } from '../../../utils/moveBlock/moveBlock';
-import { getLock } from '../../../utils/lockHelper/lockHelper';
+import { getLock, getSelectedBy } from '../../../utils/lockHelper/lockHelper';
 import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
 import { setSelected, getSelectedBlocks } from '../../../utils/lockHelper/lockHelper';
 
@@ -58,6 +58,7 @@ function SolutionField({ minwidth }) {
     false,
     false,
   ]); // One for each player and where they have currently selected
+  const prevDragIndex = useRef(0);
 
   const dispatch_fieldEvent = () => {
     dispatch(fieldEvent());
@@ -121,7 +122,7 @@ function SolutionField({ minwidth }) {
       setSelected(players, pid, index))
     );
     pid === 'YOU'? pid = 'HOST': pid = pid;
-    dispatch(selectEvent({ pid: pid, index: index }));
+    dispatch(selectEvent({ pid: pid, index: index}));
   }
 
   /**
@@ -148,7 +149,7 @@ function SolutionField({ minwidth }) {
           ...selectedCodeline,
           indent: selectedCodeline.indent - 1,
         }
-        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest(newSelectedCodeline.index));
+        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest({index: newSelectedCodeline.index, pid: 'ME'}));
         setSelectedCodeline((newSelectedCodeline));
         moveBlock(
           selectedCodeline.id,
@@ -166,7 +167,7 @@ function SolutionField({ minwidth }) {
          ...selectedCodeline,
           indent: selectedCodeline.indent + 1,
         }
-        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest(newSelectedCodeline.index));
+        iAmHost()? handleSelect(newSelectedCodeline.index)  : dispatch(selectRequest({index: newSelectedCodeline.index, pid: 'ME'}));
         setSelectedCodeline(newSelectedCodeline);
         moveBlock(
           selectedCodeline.id,
@@ -181,7 +182,7 @@ function SolutionField({ minwidth }) {
   /* Reset selected block when a new task starts*/
   useEffect(() => {
     setSelectedCodeline(null);
-    iAmHost()? handleSelect(null)  : dispatch(selectRequest(null));
+    iAmHost()? handleSelect(null)  : dispatch(selectRequest({index: null, pid: 'ME'}));
   }, [currentTaskNumber]);
 
   /**
@@ -191,7 +192,7 @@ function SolutionField({ minwidth }) {
       let players = store.getState().players;
       let myLock = getLock(players, 'YOU');
       if(myLock !== locked){
-        iAmHost()? handleSelect(null)  : dispatch(selectRequest(null));
+        iAmHost()? handleSelect(null)  : dispatch(selectRequest({index: null, pid: 'ME'}));
         setLocked(myLock);
         setSelectedCodeline(null);
       }
@@ -204,7 +205,15 @@ function SolutionField({ minwidth }) {
       let players = store.getState().players;
       let newSelectedBlocks = getSelectedBlocks(players);
       if(newSelectedBlocks != null && newSelectedBlocks != allSelectedLines){
+        // Update indicators if they are different
         setAllSelectedLines(newSelectedBlocks);
+        let mySelectedBlock = getSelectedBy(players, 'YOU');
+        if(selectedCodeline != null && mySelectedBlock !== selectedCodeline.index){
+          // Update my selected codeline if they are different
+          let selected = blocks[mySelectedBlock];
+          if(selected != null) selected.index = mySelectedBlock;
+          setSelectedCodeline(selected);
+        }
       }
     }, [newSelectEvent]);
 
@@ -219,7 +228,7 @@ function SolutionField({ minwidth }) {
           if(p.selected > blocks.length-1){
             handleSelect(null, p.id)
           }
-      }
+        }
       }
     }, [blocks.length]);
 
@@ -259,34 +268,39 @@ function SolutionField({ minwidth }) {
    * @param {*} draggable : wheter or not the player has permission to perform this action
    */
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
-    if (!locked) {
-      setSelectedCodeline(movedBlock);
-    if (movedBlock != null && draggable) {
-      // the user selected this codeblock
-      movedBlock.index = index;
-      iAmHost()? handleSelect(index)  : dispatch(selectRequest(index));
-    }
-    // (e.detauil > 1) if clicked more than once
-    if (e.detail > 1) {
-      if (iAmHost()) {
-        movedBlock.indent = 0;
-        dispatch(removeBlockFromField(movedBlock.id));
-        dispatch(addBlockToList(movedBlock));
-        fieldEventPromise().then(() => dispatch(listEvent()));
-      } else {
-        const playerField = movedBlock.player.toString();
-        const listIndex = movedBlock.player - 1;
-        const atIndex = store.getState().handList[listIndex].length;
-        const move = {
-          id: movedBlock.id,
-          index: atIndex,
-          indent: 0,
-          field: playerField,
-        };
-        requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
+    if (!locked && movedBlock != null && draggable) {
+        // the user selected this codeblock
+        setSelectedCodeline(movedBlock);
+        movedBlock.index = index;
+        iAmHost()? handleSelect(index)  : dispatch(selectRequest({index: index, pid: 'ME'}));
+        
+        // (e.detauil > 1) if clicked more than once
+        if (e.detail > 1) {
+          if (iAmHost()) {
+            movedBlock.indent = 0;
+            dispatch(removeBlockFromField(movedBlock.id));
+            dispatch(addBlockToList(movedBlock));
+            fieldEventPromise().then(() => dispatch(listEvent()));
+          } else {
+            const playerField = movedBlock.player.toString();
+            const listIndex = movedBlock.player - 1;
+            const atIndex = store.getState().handList[listIndex].length;
+            const move = {
+              id: movedBlock.id,
+              index: atIndex,
+              indent: 0,
+              field: playerField,
+            };
+            requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
+          }
         }
       }
-    }
+
+      if(movedBlock === selectedCodeline ){
+        iAmHost()? handleSelect(null)  : dispatch(selectRequest({index: null, pid: 'ME'}));
+        setSelectedCodeline(null);
+      }
+
     e.detail = 0; // resets detail so that other codeblocks can be clicked
   };
 
@@ -302,15 +316,17 @@ function SolutionField({ minwidth }) {
       movedBlock.index = index;
       setSelectedCodeline(movedBlock);
 
+      prevDragIndex.current = index; 
+
       if(iAmHost()){
         let players =store.getState().players;
         dispatch(setPlayers(
         setSelected(players, 'YOU', index))
         );
-        dispatch(selectEvent({ pid: 'HOST', index: index }));
+        dispatch(selectEvent({ pid: 'HOST', index: index}));
       }
       else {
-        dispatch(selectRequest(index));
+        dispatch(selectRequest({index: index, pid: 'ME'}));
       }
     }
   }
@@ -319,19 +335,60 @@ function SolutionField({ minwidth }) {
    * Unselect on drop
    * 
    */
-  const handleDroppedLine = () => {
+  const handleDroppedLine = (index) => {
     setSelectedCodeline(null);
+    let players =store.getState().players;
+
+    for (let p of players){
+
+      // The new index is dragged up
+
+      if(p.id !== 'YOU'){
+        if(p.selected > index && p.selected <= prevDragIndex.current){
+
+        let newIndex = p.selected-1;
+
+        // Update my peers indicators
+        if(iAmHost()){
+          dispatch(setPlayers(
+          setSelected(players, p.id, newIndex ))
+        );
+        dispatch(selectEvent({ pid: p.id, index: newIndex}))
+        } 
+        else {
+          dispatch(selectRequest({index: newIndex, pid: p.id}));
+        }
+
+      }
+      // The new index is dragged down
+      else if(p.selected < index && p.selected >= prevDragIndex.current){
+        
+
+        let newIndex = p.selected+1;
+        
+        // Update my peers indicators
+        if(iAmHost()){
+          dispatch(setPlayers(
+            setSelected(players, p.id, newIndex ))
+          );
+          dispatch(selectEvent({ pid: p.id, index: newIndex  }))
+        } 
+        else {
+          dispatch(selectRequest({index: newIndex, pid: p.id}));
+        }
+      }
+      }
+    }
 
      if(iAmHost()){
-        let players =store.getState().players;
         dispatch(setPlayers(
-        setSelected(players, 'YOU', null))
+          setSelected(players, 'YOU', null))
         );
-        dispatch(selectEvent({ pid: 'HOST', index: null }));
-      }
-      else {
-        dispatch(selectRequest(null));
-      }
+        dispatch(selectEvent({ pid: 'HOST', index: null}))
+    } 
+    else {
+        dispatch(selectRequest({index: null, pid: 'ME'}));
+    }
   }
 
   return (
