@@ -440,4 +440,4 @@ function SolutionField({ minwidth }) {
   );
 }
 
-export default memo(SolutionField);
+export default SolutionField;
