@@ -5,11 +5,7 @@ import { ItemTypes } from '../../../utils/itemtypes';
 import './CodeLine.css';
 import { OFFSET } from '../../../utils/constants';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
 import PlayerLineIndicator from '../Player/PlayerIndicator/PlayerLineIndicator';
-import { selectEvent, selectRequest, setPlayers} from '../../../redux/actions';
-import store from '../../../redux/store/store';
-import {setSelected} from '../../../utils/lockHelper/lockHelper';
 
 /**
  * A line which contains a code block. Can either be in a hand or in the solution field.
@@ -54,6 +50,9 @@ function CodeLine({
     if(MAX_INDENT > 0){
       handleDraggedLine(block, draggable, index);
     }
+    else{
+      handleDroppedLine(null);
+    }
   }
   const [, lineDrop] = useDrop(
     () => ({
@@ -93,16 +92,6 @@ function CodeLine({
       setBorder('none');
     }
   }, [selectedCodeline]);
-
-  /**
-   * Check where in the array the index is stored
-   * 
-   * @param {*} i 
-   * @returns 
-   */
-  function checkIndex(i) {
-    return i === index;
-  }
 
     /**
    * Updates the codeline with the players that are currently moving the line

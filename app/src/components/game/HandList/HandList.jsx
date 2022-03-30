@@ -10,6 +10,9 @@ import {
   moveRequest,
   removeBlockFromList,
   addBlockToField,
+  setPlayers,
+  selectEvent,
+  selectRequest,
 } from '../../../redux/actions';
 import { ItemTypes } from '../../../utils/itemtypes';
 import { useDrop } from 'react-dnd';
@@ -21,6 +24,7 @@ import {
 } from '../../../utils/moveBlock/moveBlock';
 import { getLock } from '../../../utils/lockHelper/lockHelper';
 import { COLORS } from '../../../utils/constants';
+import { setSelected} from '../../../utils/lockHelper/lockHelper';
 
 /**
  * @returns true if this player is the host.
@@ -144,6 +148,7 @@ function HandList({ player, draggable }) {
    */
   const handleDoubbleClick = (e, movedBlock, draggable) => {
     if (!locked && e.detail > 1 && draggable && movedBlock != null) {
+      let index = store.getState().solutionField.length + 1;
       // (e.detauil > 1) if clicked more than once
       if (iAmHost()) {
         dispatch(removeBlockFromList(movedBlock.id, movedBlock.player - 1));
@@ -152,7 +157,7 @@ function HandList({ player, draggable }) {
       } else {
         const move = {
           id: movedBlock.id,
-          index: store.getState().solutionField.length + 1,
+          index: index,
           indent: 0,
           field: 'SF',
         };
@@ -162,6 +167,23 @@ function HandList({ player, draggable }) {
       e.detail = 0; // resets detail so that other codeblocks can be clicked
     }
   };
+
+    /**
+   * Unselect on drop
+   * 
+   */
+  const handleDroppedLine = () => {
+     if(iAmHost()){
+        let players =store.getState().players;
+        dispatch(setPlayers(
+        setSelected(players, 'YOU', null))
+        );
+        dispatch(selectEvent({ pid: 'HOST', index: null }));
+      }
+      else {
+        dispatch(selectRequest(null));
+      }
+    }
 
   return (
     <div className={'divHL'} ref={emptyListDrop} key={draggable} style={{backgroundColor: !locked? COLORS.codeline : COLORS.grey}}>
@@ -178,6 +200,7 @@ function HandList({ player, draggable }) {
               handleDoubbleClick={handleDoubbleClick}
               isAlwaysVisible={draggable}
               background={!locked? COLORS.codeline : COLORS.grey}
+              handleDroppedLine={handleDroppedLine}
             />
           );
         })}
