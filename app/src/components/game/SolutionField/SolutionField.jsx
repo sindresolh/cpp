@@ -159,13 +159,13 @@ function SolutionField({ minwidth }) {
    * Tab and bacskpace changes indenting.
    */
   const handleKeyDown = useCallback((e) => {
-    if (!locked) {
+    if (!locked && selectedCodeline != null) {
       const block = blocks.filter(
         (block) => block.id === selectedCodeline.id
       )[0];
       const blockExists = block !== undefined;
       e.preventDefault(); // do not target adress bar
-      if (selectedCodeline != null && blockExists && e.keyCode != null) {
+      if (blockExists && e.keyCode != null) {
 
       if (
         (e.shiftKey &&
