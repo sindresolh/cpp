@@ -253,11 +253,11 @@ class CommunicationListener extends Component {
     const state = store.getState();
 
     switch (true) {
-      case prevProps.selectRequest !== this.props.selectRequest: // I want to select a new block
-        this.whisper(state.host, SELECT_REQUEST, state.selectRequest);
-        break;
       case prevProps.selectEvent !== this.props.selectEvent: // New block selected
         this.shoutIfHost(state.host, SELECT_EVENT, state.selectEvent);
+        break;
+      case prevProps.selectRequest !== this.props.selectRequest: // I want to select a new block
+        this.whisper(state.host, SELECT_REQUEST, state.selectRequest);
         break;
       case prevProps.moveRequest !== this.props.moveRequest: // I want to move a block
         this.whisper(state.host, MOVE_REQUEST, state.moveRequest);

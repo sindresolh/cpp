@@ -376,19 +376,19 @@ function SolutionField({ minwidth }) {
 
     for (let p of players){
 
-      if(p.id !== 'YOU'){
+      if(p.id !== 'YOU' && p.selected != null){
         // The new index is dragged up
         if(p.selected > index && p.selected <= prevDragIndex.current){
           changeIndicator(players, p.selected-1, p.id);
         }
-      // The new index is dragged down
-      else if(p.selected < index && p.selected >= prevDragIndex.current){
-        changeIndicator(players, p.selected+1, p.id);
-      }
-      else if(p.selected === index){
+        // The new index is dragged down
+        else if(p.selected < index && p.selected >= prevDragIndex.current){
+          changeIndicator(players, p.selected+1, p.id);
+        }
+        else if(p.selected === index){
         // The block this player was holding was dragged
         changeIndicator(players, prevDragIndex.current, p.id);
-      }
+        }
       }
     }
 
