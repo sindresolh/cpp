@@ -22,6 +22,7 @@ import {
   setList,
   lockEvent,
   selectEvent,
+  setTaskSet,
 } from '../../../redux/actions';
 import {
   SET_LIST,
@@ -35,6 +36,7 @@ import {
   LOCK_EVENT,
   SELECT_REQUEST,
   SELECT_EVENT,
+  SET_TASKSET,
 } from './messages';
 import {
   twoDimensionalArrayIsEqual,
@@ -86,6 +88,7 @@ function mapDispatchToProps(dispatch) {
       dispatch(removeBlockFromList(...args)),
     dispatch_lockEvent: (...args) => dispatch(lockEvent(...args)),
     dispatch_selectEvent: (...args) => dispatch(selectEvent(...args)),
+    dispatch_setTaskSet: (...args) => dispatch(setTaskSet(...args)),
   };
 }
 
@@ -105,6 +108,7 @@ class CommunicationHandler extends Component {
       modalButtonColor: '',
       isModalOpen: false,
       finished: false,
+      room: props.room,
     };
   }
 
@@ -131,7 +135,8 @@ class CommunicationHandler extends Component {
    * @param {*} webrtc : : Keeps information about the room
    * @returns
    */
-  join = (webrtc) => webrtc.joinRoom('cpp-room-mondayy');
+  join = (webrtc) => webrtc.joinRoom(this.state.room);
+
 
   /**
    * Called when a new peer is added to the room
@@ -248,6 +253,8 @@ class CommunicationHandler extends Component {
       case SELECT_EVENT:
         this.selectEvent(payload);
         break;
+      case SET_TASKSET:
+        this.setTaskSet(payload);
       default:
         break;
     }
@@ -539,6 +546,15 @@ class CommunicationHandler extends Component {
     dispatch_fieldEvent();
     dispatch_listEvent();
   }
+  /**
+   * Set task set number selected by another player.
+   * @param {} payload
+   */
+  setTaskSet(payload) {
+    const number = parseInt(JSON.parse(payload));
+    const { dispatch_setTaskSet } = this.props;
+    dispatch_setTaskSet(number);
+  }
 
   /**
    * Finds a player with a given player id.
@@ -592,6 +608,9 @@ class CommunicationHandler extends Component {
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState.status) {
+      const { dispatch_setTaskSet } = this.props;
+      dispatch_setTaskSet(parseInt(payloadState.tasksetNumber));
+
       const { dispatch_setListState } = this.props;
       dispatch_setListState(payloadState.handList);
 

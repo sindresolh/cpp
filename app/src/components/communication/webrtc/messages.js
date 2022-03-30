@@ -9,3 +9,4 @@ export const LOCK_REQUEST = 'LOCK_REQUEST';
 export const LOCK_EVENT = 'LOCK_EVENT';
 export const SELECT_REQUEST = 'SELECT_REQUEST';
 export const SELECT_EVENT = 'SELECT_EVENT';
+export const SET_TASKSET = 'SET_TASKSET';
