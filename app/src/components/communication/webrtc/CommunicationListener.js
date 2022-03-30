@@ -186,18 +186,18 @@ class CommunicationListener extends Component {
       // This peer moved codeblock in soloutionfield
       const json = JSON.stringify(state.solutionField);
       this.shout(SET_FIELD, json);
-    } else if (prevProps.moveRequest !== this.props.moveRequest) {
-      const json = JSON.stringify(state.moveRequest);
-      this.whisper(state.host, MOVE_REQUEST, json);
-    } else if (prevProps.selectRequest !== this.props.selectRequest) {
-      const json = JSON.stringify(state.selectRequest);
-      this.whisper(state.host, SELECT_REQUEST, json);
     } else if (prevProps.selectEvent !== this.props.selectEvent) {
       if (this.iAmHost()) {
         // I am host and I just approved a select.
         const json = JSON.stringify(state.selectEvent);
         this.shout(SELECT_EVENT, json);
       }
+    } else if (prevProps.selectRequest !== this.props.selectRequest) {
+      const json = JSON.stringify(state.selectRequest);
+      this.whisper(state.host, SELECT_REQUEST, json);
+    } else if (prevProps.moveRequest !== this.props.moveRequest) {
+      const json = JSON.stringify(state.moveRequest);
+      this.whisper(state.host, MOVE_REQUEST, json);
     } else if (prevProps.listEvent !== this.props.listEvent) {
       // This peer moved codeblock in an handlist
       const json = JSON.stringify({
