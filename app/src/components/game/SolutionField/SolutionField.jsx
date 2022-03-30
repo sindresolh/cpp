@@ -344,19 +344,8 @@ function SolutionField({ minwidth }) {
     if(!locked && movedBlock != null && draggable){
       movedBlock.index = index;
       setSelectedCodeline(movedBlock);
-
       prevDragIndex.current = index; 
-
-      if(iAmHost()){
-        let players =store.getState().players;
-        dispatch(setPlayers(
-        setSelected(players, 'YOU', index))
-        );
-        dispatch(selectEvent({ pid: 'HOST', index: index}));
-      }
-      else {
-        dispatch(selectRequest({index: index, pid: 'ME'}));
-      }
+      select(index, 'ME')
     }
   }
 
