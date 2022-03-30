@@ -59,6 +59,8 @@ function SolutionField({ minwidth }) {
     false,
   ]); // One for each player and where they have currently selected
   const prevDragIndex = useRef(0);
+  // increase margin to keep indicators within the screen if column layout
+  const marginSide = minwidth ? '0px' : '70px';
 
   const dispatch_fieldEvent = () => {
     dispatch(fieldEvent());
@@ -382,7 +384,7 @@ function SolutionField({ minwidth }) {
   return (
     <div
       className={'divSF'}
-      style={{ background: locked ? '#C2C2C2' : COLORS.solutionfield }}
+      style={{ background: locked ? '#C2C2C2' : COLORS.solutionfield, marginLeft: marginSide, marginRight: marginSide }}
     >
       <h6>{'Connected players: ' + players.length}</h6>
       {locked && minwidth ? (
