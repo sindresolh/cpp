@@ -137,7 +137,6 @@ class CommunicationHandler extends Component {
    */
   join = (webrtc) => webrtc.joinRoom(this.state.room);
 
-
   /**
    * Called when a new peer is added to the room
    *
@@ -411,6 +410,7 @@ class CommunicationHandler extends Component {
     let players = prevState.players;
     let payloadState = JSON.parse(payload);
 
+    // The selectRequest is called on game initialization with payload null, ignore the first call.
     if (payloadState != null) {
       const index = payloadState.index;
       const { dispatch_selectEvent, dispatch_setPlayers } = this.props;
