@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import Task from './Task/Task';
 import './Topbar.css';
 import { COLORS } from '../../utils/constants';
@@ -7,10 +7,12 @@ import { COLORS } from '../../utils/constants';
  *
  * @returns
  */
-export default function Topbar() {
+function Topbar() {
   return (
     <div className='Topbar' style={{ background: COLORS.header }}>
       <Task />
     </div>
   );
 }
+
+export default memo(Topbar);

@@ -8,8 +8,9 @@ import Player from './Player/Player';
 import { useSelector } from 'react-redux';
 import { COLORS } from '../../utils/constants';
 import { useMediaQuery } from 'react-responsive';
+import { memo } from 'react';
 
-export default function Game() {
+function Game() {
   const players = useSelector((state) => state.players);
 
   // change the flex direction based on width and height
@@ -90,3 +91,5 @@ export default function Game() {
     </DndProvider>
   );
 }
+
+export default memo(Game);

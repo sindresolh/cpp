@@ -219,38 +219,39 @@ class CommunicationHandler extends Component {
    */
   handlePeerData = (webrtc, type, payload, peer) => {
     switch (type) {
-      case SET_LIST:
-        this.setList(payload);
-        break;
       case SET_FIELD:
         this.setField(payload);
         break;
-      case NEXT_TASK:
-        this.nextTask(payload);
-        break;
-      case CLEAR_TASK:
-        this.clearTask();
-        break;
-      case START_GAME:
-        this.startGame(payload, peer);
-        break;
-      case FINISHED:
-        this.finished();
-        break;
       case MOVE_REQUEST:
         this.moveRequest(payload, peer);
-        break;
-      case LOCK_REQUEST:
-        this.lockRequest(payload, peer);
-        break;
-      case LOCK_EVENT:
-        this.lockEvent(payload);
         break;
       case SELECT_REQUEST:
         this.selectRequest(payload, peer);
         break;
       case SELECT_EVENT:
         this.selectEvent(payload);
+        break;
+      case SET_LIST:
+        this.setList(payload);
+        break;
+      case LOCK_EVENT:
+        this.lockEvent(payload);
+        break;
+      case LOCK_REQUEST:
+        this.lockRequest(payload, peer);
+        break;
+      case CLEAR_TASK:
+        this.clearTask();
+        break;
+
+      case NEXT_TASK:
+        this.nextTask(payload);
+        break;
+      case START_GAME:
+        this.startGame(payload, peer);
+        break;
+      case FINISHED:
+        this.finished();
         break;
       case SET_TASKSET:
         this.setTaskSet(payload);

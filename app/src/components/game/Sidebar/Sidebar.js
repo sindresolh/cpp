@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import './Sidebar.css';
 import SidebarButton from './SidebarButton/SidebarButton';
 import SidebarModal from './SidebarModal/SidebarModal';
@@ -33,7 +33,7 @@ import {
   setAllLocks,
 } from '../../../utils/lockHelper/lockHelper';
 
-export default function Sidebar() {
+function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalIcon, setModalIcon] = useState(HintIcon);
   const [modalTitle, setModalTitle] = useState('');
@@ -404,3 +404,5 @@ export default function Sidebar() {
     </div>
   );
 }
+
+export default Sidebar = memo(Sidebar);

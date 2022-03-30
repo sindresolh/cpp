@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import HandList from '../HandList/HandList';
 import './Player.css';
 import p1Icon from '../../../utils/images/playerIcons/player_icon_1.png';
@@ -59,4 +59,4 @@ function Player({ playerNo, name, codeBlocks }) {
   );
 }
 
-export default Player;
+export default memo(Player);

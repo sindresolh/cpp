@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import CodeLine from '../CodeLine/CodeLine';
 import { useCallback, useEffect, useState, useRef } from 'react';
@@ -440,4 +440,4 @@ function SolutionField({ minwidth }) {
   );
 }
 
-export default SolutionField;
+export default memo(SolutionField);
