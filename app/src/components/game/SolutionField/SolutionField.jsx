@@ -341,9 +341,9 @@ function SolutionField({ minwidth }) {
 
     for (let p of players){
 
-      // The new index is dragged up
-
+  
       if(p.id !== 'YOU'){
+        // The new index is dragged up
         if(p.selected > index && p.selected <= prevDragIndex.current){
 
         let newIndex = p.selected-1;
@@ -375,6 +375,19 @@ function SolutionField({ minwidth }) {
         } 
         else {
           dispatch(selectRequest({index: newIndex, pid: p.id}));
+        }
+      }
+      else if(p.selected === index){
+        console.log('my block')
+        // The block this player was holding was dragged
+        if(iAmHost()){
+          dispatch(setPlayers(
+            setSelected(players, p.id, prevDragIndex.current ))
+          );
+          dispatch(selectEvent({ pid: p.id, index: prevDragIndex.current  }))
+        } 
+        else {
+          dispatch(selectRequest({index: prevDragIndex.current , pid: p.id}));
         }
       }
       }
