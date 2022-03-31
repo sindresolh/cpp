@@ -263,7 +263,10 @@ class CommunicationListener extends Component {
         this.whisper(state.host, MOVE_REQUEST, state.moveRequest);
         break;
       case prevProps.fieldEvent !== this.props.fieldEvent: // Block moved in field
-        this.shout(SET_FIELD, state.solutionField);
+        this.shout(SET_FIELD, {
+          solutionField: state.solutionField,
+          timestamp: this.props.fieldEvent.getTime(),
+        });
         break;
       case prevProps.listEvent !== this.props.listEvent: // Block moved in list
         this.shout(SET_LIST, {

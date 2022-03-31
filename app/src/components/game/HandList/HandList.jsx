@@ -82,7 +82,6 @@ function HandList({ player, draggable }) {
   // update the position of the block when moved inside a list
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0) => {
-      if (iAmHost()) {
         // do move locally
         moveBlockInHandList(
           id,
@@ -92,13 +91,14 @@ function HandList({ player, draggable }) {
           handListIndex,
           dispatches
         );
-      } else {
+      if (!iAmHost()) {
         // request move to host
         const move = {
           id,
           index: atIndex,
           indent: atIndent,
           field: player.toString(),
+          timestamp: new Date().getTime()
         };
         requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
       }

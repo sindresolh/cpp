@@ -283,9 +283,17 @@ class CommunicationHandler extends Component {
     const { dispatch_setFieldState } = this.props;
     const prevState = store.getState().solutionField;
     const payloadState = JSON.parse(payload);
+    const solutionField = payloadState.solutionField;
 
-    if (!arrayIsEqual(prevState, payloadState)) {
-      dispatch_setFieldState(payloadState);
+    console.log(
+      store.getState().moveRequest.timestamp > payloadState.timestamp
+    );
+
+    // As long as this is after my last move
+    if (store.getState().moveRequest.timestamp < payloadState.timestamp) {
+      if (!arrayIsEqual(prevState, solutionField)) {
+        dispatch_setFieldState(solutionField);
+      }
     }
   }
 

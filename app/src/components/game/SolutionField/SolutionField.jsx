@@ -98,8 +98,7 @@ function SolutionField({ minwidth }) {
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0) => {
       // get block if it exists in solutionfield
-      if (iAmHost()) {
-          moveBlockInSolutionField(
+        moveBlockInSolutionField(
           id,
           atIndex,
           atIndent,
@@ -107,8 +106,8 @@ function SolutionField({ minwidth }) {
           store.getState().handList,
           dispatches
         );
-      } else {
-        const move = { id, index: atIndex, indent: atIndent, field: 'SF' };
+      if (!iAmHost()) {
+        const move = { id, index: atIndex, indent: atIndent, field: 'SF' , timestamp: new Date().getTime()};
         requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
       }
     },
