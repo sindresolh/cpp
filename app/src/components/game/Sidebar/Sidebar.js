@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import './Sidebar.css';
 import SidebarButton from './SidebarButton/SidebarButton';
 import SidebarModal from './SidebarModal/SidebarModal';
@@ -33,7 +33,7 @@ import {
   setAllLocks,
 } from '../../../utils/lockHelper/lockHelper';
 
-export default function Sidebar() {
+function Sidebar() {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalIcon, setModalIcon] = useState(HintIcon);
   const [modalTitle, setModalTitle] = useState('');
@@ -49,7 +49,6 @@ export default function Sidebar() {
   const currentTask = useSelector((state) => state.currentTask);
   let currentTaskNumber = currentTask.currentTaskNumber;
   let currentTaskObject = currentTask.tasks[currentTaskNumber];
-  const fieldBlocks = useSelector((state) => state.solutionField);
   const [currentHintNo, setCurrentHintNo] = useState(0);
   const [finished, setFinished] = useState(false);
   const [locked, setLocked] = useState(false);
@@ -243,6 +242,7 @@ export default function Sidebar() {
       dispatch(lockRequest({ forWho: LOCKTYPES.ALL_PLAYERS }));
     }
     closeModal();
+    let fieldBlocks = store.getState().solutionField;
     setCurrentFieldBlocks(fieldBlocks);
     let correctSolution = arrayIsEqual(
       fieldBlocks,
@@ -404,3 +404,5 @@ export default function Sidebar() {
     </div>
   );
 }
+
+export default Sidebar = memo(Sidebar);

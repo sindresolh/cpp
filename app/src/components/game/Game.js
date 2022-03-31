@@ -8,8 +8,9 @@ import Player from './Player/Player';
 import { useSelector } from 'react-redux';
 import { COLORS } from '../../utils/constants';
 import { useMediaQuery } from 'react-responsive';
+import { memo } from 'react';
 
-export default function Game() {
+function Game() {
   const players = useSelector((state) => state.players);
 
   // change the flex direction based on width and height
@@ -56,7 +57,12 @@ export default function Game() {
         {/*Player 1 and 3 on the left side*/}
         <div
           className='GameLeft'
-          style={{ flexFlow: playerFlow, margin: '3' + playerScale, marginLeft: marginSide, marginRight: marginSide }}
+          style={{
+            flexFlow: playerFlow,
+            margin: '3' + playerScale,
+            marginLeft: marginSide,
+            marginRight: marginSide,
+          }}
         >
           <Player playerNo={PLAYER.P1} name={names[0]} />
           <Player playerNo={PLAYER.P3} name={names[2]} />
@@ -71,7 +77,12 @@ export default function Game() {
         {/*Player 2 and 4 on the right side*/}
         <div
           className='GameRight'
-          style={{ flexFlow: playerFlow, margin: '3' + playerScale, marginLeft: marginSide, marginRight: marginSide }}
+          style={{
+            flexFlow: playerFlow,
+            margin: '3' + playerScale,
+            marginLeft: marginSide,
+            marginRight: marginSide,
+          }}
         >
           <Player playerNo={PLAYER.P2} name={names[1]} />
           <Player playerNo={PLAYER.P4} name={names[3]} />
@@ -80,3 +91,5 @@ export default function Game() {
     </DndProvider>
   );
 }
+
+export default memo(Game);

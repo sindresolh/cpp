@@ -4,6 +4,7 @@ import Lobby from './components/state/Lobby/Lobby';
 import Finished from './components/state/Finished/Finished';
 import { STATUS } from './utils/constants';
 import { useSelector } from 'react-redux';
+import { memo } from 'react';
 
 /**
  * Shows the lobby, the game or the finished page.
@@ -31,4 +32,4 @@ function App({ startGame }) {
   return getPage(status);
 }
 
-export default App;
+export default memo(App);

@@ -145,10 +145,11 @@ class CommunicationListener extends Component {
    * @param {*} payload : data sent
    */
   shout(type, payload) {
+    const json = JSON.stringify(payload);
     if (this.isProduction) {
-      this.props.webrtc.broadcast(type, payload);
+      this.props.webrtc.broadcast(type, json);
     } else {
-      this.props.webrtc.shout(type, payload);
+      this.props.webrtc.shout(type, json);
     }
   }
 
@@ -159,19 +160,88 @@ class CommunicationListener extends Component {
    * @param {*} payload
    */
   whisper(peerId, type, payload) {
+    const json = JSON.stringify(payload);
     const peer = this.props.webrtc.getPeerById(peerId);
     if (this.isProduction) {
-      this.props.webrtc.transmit(peer, type, payload);
+      this.props.webrtc.transmit(peer, type, json);
     } else {
-      this.props.webrtc.whisper(peer, type, payload);
+      this.props.webrtc.whisper(peer, type, json);
     }
   }
 
   /**
    * @returns true if this player is the host.
    */
-  iAmHost() {
-    return store.getState().host === '';
+  iAmHost(pid) {
+    return pid === '';
+  }
+
+  /**
+   * Shouts if this peer is host
+   *
+   * @param {*} type
+   * @param {*} payload
+   */
+  shoutIfHost(host, type, payload) {
+    if (this.iAmHost(host)) {
+      this.shout(type, payload);
+    }
+  }
+
+  /**
+   * Clears the board state
+   *
+   * @param {*} state
+   */
+  clearBoard(state) {
+    if (this.iAmHost(state.host)) {
+      // This peer cleared the board
+      const { dispatch_lockEvent } = this.props;
+      dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: false });
+      let payload = {
+        handList: state.handList,
+      };
+      this.shout(SET_LIST, payload);
+      payload = state.solutionField;
+      this.shout(SET_FIELD, payload);
+    } else this.whisper(state.host, CLEAR_TASK, '');
+  }
+
+  /**
+   * Shout that we are going to the next task
+   *
+   * @param {*} state
+   */
+  goToNextTask(state) {
+    this.initialize_board();
+    const payload = {
+      currentTask: state.currentTask,
+      handList: state.handList,
+      solutionField: state.solutionField,
+    };
+    this.shout(NEXT_TASK, payload);
+    const { dispatch_listEvent } = this.props;
+    dispatch_listEvent();
+  }
+
+  /**
+   * Shout that we are starting the game. I became host since I started the game from the lobby
+   *
+   * @param {*} state
+   */
+  startFromLobby(state) {
+    let playerIds = state.players.map((p) => p.id);
+
+    const payload = {
+      status: state.status,
+      handList: state.handList,
+      solutionField: state.solutionField,
+      playerIds: playerIds,
+      tasksetNumber: state.currentTask.selectedTaskSet,
+    };
+    if (state.status === STATUS.GAME) {
+      this.shout(START_GAME, payload);
+    }
   }
 
   /**
@@ -182,85 +252,45 @@ class CommunicationListener extends Component {
   componentDidUpdate(prevProps) {
     const state = store.getState();
 
-    if (prevProps.listEvent !== this.props.listEvent) {
-      // This peer moved codeblock in an handlist
-      const json = JSON.stringify({
-        handList: state.handList,
-      });
-      this.shout(SET_LIST, json);
-    } else if (prevProps.fieldEvent !== this.props.fieldEvent) {
-      // This peer moved codeblock in soloutionfield
-      const json = JSON.stringify(state.solutionField);
-      this.shout(SET_FIELD, json);
-    } else if (
-      // This peer updated the game state by going to the next task
-      prevProps.taskEvent !== this.props.taskEvent
-    ) {
-      this.initialize_board();
-      const json = JSON.stringify({
-        currentTask: state.currentTask,
-        handList: state.handList,
-        solutionField: state.solutionField,
-      });
-      this.shout(NEXT_TASK, json);
-      const { dispatch_listEvent } = this.props;
-      dispatch_listEvent();
-    } else if (prevProps.tasksetEvent !== this.props.tasksetEvent) {
-      const json = JSON.stringify(state.currentTask.selectedTaskSet);
-      this.shout(SET_TASKSET, json);
-    } else if (
-      prevProps.clearEvent.getTime() < this.props.clearEvent.getTime()
-    ) {
-      if (this.iAmHost()) {
-        // This peer cleared the board
-        const { dispatch_lockEvent } = this.props;
-        dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: false });
-        let json = JSON.stringify({
+    switch (true) {
+      case prevProps.selectEvent !== this.props.selectEvent: // New block selected
+        this.shoutIfHost(state.host, SELECT_EVENT, state.selectEvent);
+        break;
+      case prevProps.selectRequest !== this.props.selectRequest: // I want to select a new block
+        this.whisper(state.host, SELECT_REQUEST, state.selectRequest);
+        break;
+      case prevProps.moveRequest !== this.props.moveRequest: // I want to move a block
+        this.whisper(state.host, MOVE_REQUEST, state.moveRequest);
+        break;
+      case prevProps.fieldEvent !== this.props.fieldEvent: // Block moved in field
+        this.shout(SET_FIELD, state.solutionField);
+        break;
+      case prevProps.listEvent !== this.props.listEvent: // Block moved in list
+        this.shout(SET_LIST, {
           handList: state.handList,
         });
-        this.shout(SET_LIST, json);
-        json = JSON.stringify(state.solutionField);
-        this.shout(SET_FIELD, json);
-      } else this.whisper(state.host, CLEAR_TASK, '');
-    } else if (prevProps.status !== this.props.status) {
-      // This player started the game from the lobby
-      let playerIds = state.players.map((p) => p.id);
-
-      const json = JSON.stringify({
-        status: state.status,
-        handList: state.handList,
-        solutionField: state.solutionField,
-        playerIds: playerIds,
-        tasksetNumber: state.currentTask.selectedTaskSet,
-      });
-      if (state.status === STATUS.GAME) {
-        this.shout(START_GAME, json);
-      }
-    } else if (prevProps.finishEvent !== this.props.finishEvent) {
-      this.shout(FINISHED, '');
-    } else if (prevProps.moveRequest !== this.props.moveRequest) {
-      const json = JSON.stringify(state.moveRequest);
-      this.whisper(state.host, MOVE_REQUEST, json);
-    } else if (prevProps.lockRequest !== this.props.lockRequest) {
-      // I am not host and need to request a lock board for myself
-      const json = JSON.stringify(state.lockRequest);
-      this.whisper(state.host, LOCK_REQUEST, json);
-    } else if (prevProps.lockEvent !== this.props.lockEvent) {
-      // A new player has changed their ready status - See Sidebar.js
-      if (this.iAmHost()) {
-        // I am host and I just approved a lock.
-        const json = JSON.stringify(state.lockEvent);
-        this.shout(LOCK_EVENT, json);
-      }
-    } else if (prevProps.selectRequest !== this.props.selectRequest) {
-      const json = JSON.stringify(state.selectRequest);
-      this.whisper(state.host, SELECT_REQUEST, json);
-    } else if (prevProps.selectEvent !== this.props.selectEvent) {
-      if (this.iAmHost()) {
-        // I am host and I just approved a select.
-        const json = JSON.stringify(state.selectEvent);
-        this.shout(SELECT_EVENT, json);
-      }
+        break;
+      case prevProps.clearEvent.getTime() < this.props.clearEvent.getTime(): // I cleared the board
+        this.clearBoard(state);
+        break;
+      case prevProps.lockRequest !== this.props.lockRequest: // I want to lock the board
+        this.whisper(state.host, LOCK_REQUEST, state.lockRequest);
+        break;
+      case prevProps.lockEvent !== this.props.lockEvent: // Board locked
+        this.shoutIfHost(state.host, LOCK_EVENT, state.lockEvent);
+        break;
+      case prevProps.taskEvent !== this.props.taskEvent: // New task
+        this.goToNextTask(state);
+        break;
+      case prevProps.tasksetEvent !== this.props.tasksetEvent: // New taskset
+        this.shout(SET_TASKSET, state.currentTask.selectedTaskSet);
+        break;
+      case prevProps.status !== this.props.status: // I started this game from the lobby
+        this.startFromLobby(state);
+        break;
+      case prevProps.finishEvent !== this.props.finishEvent: // We solved the puzzles :)
+        this.shout(FINISHED, '');
+        break;
     }
 
     //Warn users leaving page

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import CodeLine from '../CodeLine/CodeLine';
 import { useCallback, useEffect, useState, useRef } from 'react';
@@ -28,13 +28,6 @@ import BigLockImage from '../../../utils/images/buttonIcons/biglock.png'
 import { setSelected, getSelectedBlocks } from '../../../utils/lockHelper/lockHelper';
 
 /**
- * @returns true if this player is the host.
- */
-const iAmHost = () => {
-  return store.getState().host === '';
-};
-
-/**
  * The field the players can move blocks into.
  * The field contains codelines which allows indenting of blocks, as well as
  * swapping positions by dragging.
@@ -44,6 +37,9 @@ const iAmHost = () => {
 function SolutionField({ minwidth }) {
   const currentTaskNumber = useSelector(
     (state) => state.currentTask.currentTaskNumber
+  );
+  const currentHost = useSelector(
+    (state) => state.host
   );
   const blocks = useSelector((state) => state.solutionField);
   const players = useSelector((state) => state.players);
@@ -61,6 +57,13 @@ function SolutionField({ minwidth }) {
   const prevDragIndex = useRef(0);
   // increase margin to keep indicators within the screen if column layout
   const marginSide = minwidth ? '0px' : '70px';
+
+  /**
+ * @returns true if this player is the host.
+ */
+  const iAmHost = () => {
+    return currentHost === '';
+  };
 
   const dispatch_fieldEvent = () => {
     dispatch(fieldEvent());
@@ -128,6 +131,18 @@ function SolutionField({ minwidth }) {
     dispatch(selectEvent({ pid: pid, index: index}));
   }
 
+  /** Ask for a new request if the old request was not the same
+   * 
+   * @param {*} index 
+   * @param {*} pid 
+   */
+  const requestSelect = (index, pid) =>{
+    let lastRequest = store.getState().selectRequest;
+    if(lastRequest == null || pid !== lastRequest.pid || index !== lastRequest.index){
+          dispatch(selectRequest({index: index, pid: pid}));
+    }
+  }
+
     /**
    * Perform a selectEvent if I am HOST, if not send a request
    * 
@@ -135,7 +150,7 @@ function SolutionField({ minwidth }) {
    * @param {*} pid: player id
    */
   const select = (index, pid = 'YOU') =>{
-    iAmHost()? handleSelect(index)  : dispatch(selectRequest({index: index, pid: pid}));
+    iAmHost()? handleSelect(index)  : requestSelect(index, pid);
   }
 
   /**
@@ -361,19 +376,19 @@ function SolutionField({ minwidth }) {
 
     for (let p of players){
 
-      if(p.id !== 'YOU'){
+      if(p.id !== 'YOU' && p.selected != null){
         // The new index is dragged up
         if(p.selected > index && p.selected <= prevDragIndex.current){
           changeIndicator(players, p.selected-1, p.id);
         }
-      // The new index is dragged down
-      else if(p.selected < index && p.selected >= prevDragIndex.current){
-        changeIndicator(players, p.selected+1, p.id);
-      }
-      else if(p.selected === index){
+        // The new index is dragged down
+        else if(p.selected < index && p.selected >= prevDragIndex.current){
+          changeIndicator(players, p.selected+1, p.id);
+        }
+        else if(p.selected === index){
         // The block this player was holding was dragged
         changeIndicator(players, prevDragIndex.current, p.id);
-      }
+        }
       }
     }
 
@@ -428,4 +443,4 @@ function SolutionField({ minwidth }) {
   );
 }
 
-export default SolutionField;
+export default memo(SolutionField);
