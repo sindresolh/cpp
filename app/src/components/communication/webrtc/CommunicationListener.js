@@ -202,8 +202,10 @@ class CommunicationListener extends Component {
         handList: state.handList,
       };
       this.shout(SET_LIST, payload);
-      payload = state.solutionField;
-      this.shout(SET_FIELD, payload);
+      this.shout(SET_FIELD, {
+        solutionField: state.solutionField,
+        timestamp: this.props.fieldEvent.getTime(),
+      });
     } else this.whisper(state.host, CLEAR_TASK, '');
   }
 

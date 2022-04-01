@@ -321,12 +321,11 @@ function SolutionField({ minwidth }) {
         
         // (e.detauil > 1) if clicked more than once
         if (e.detail > 1) {
-          if (iAmHost()) {
-            movedBlock.indent = 0;
-            dispatch(removeBlockFromField(movedBlock.id));
-            dispatch(addBlockToList(movedBlock));
-            fieldEventPromise().then(() => dispatch(listEvent()));
-          } else {
+          movedBlock.indent = 0;
+          dispatch(removeBlockFromField(movedBlock.id));
+          dispatch(addBlockToList(movedBlock));
+          fieldEventPromise().then(() => dispatch(listEvent()));
+          if (!iAmHost()) {
             const playerField = movedBlock.player.toString();
             const listIndex = movedBlock.player - 1;
             const atIndex = store.getState().handList[listIndex].length;
@@ -335,6 +334,7 @@ function SolutionField({ minwidth }) {
               index: atIndex,
               indent: 0,
               field: playerField,
+              timestamp: new Date().getTime()
             };
             requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
           }

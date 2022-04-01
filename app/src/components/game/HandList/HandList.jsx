@@ -150,16 +150,16 @@ function HandList({ player, draggable }) {
     if (!locked && e.detail > 1 && draggable && movedBlock != null) {
       let index = store.getState().solutionField.length + 1;
       // (e.detauil > 1) if clicked more than once
-      if (iAmHost()) {
-        dispatch(removeBlockFromList(movedBlock.id, movedBlock.player - 1));
-        dispatch(addBlockToField(movedBlock));
-        fieldEventPromise().then(() => dispatch(listEvent()));
-      } else {
+      dispatch(removeBlockFromList(movedBlock.id, movedBlock.player - 1));
+      dispatch(addBlockToField(movedBlock));
+      fieldEventPromise().then(() => dispatch(listEvent()));
+      if (!iAmHost()) {
         const move = {
           id: movedBlock.id,
           index: index,
           indent: 0,
           field: 'SF',
+          timestamp: new Date().getTime()
         };
         requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
       }

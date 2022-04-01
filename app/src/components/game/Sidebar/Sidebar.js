@@ -178,22 +178,20 @@ function Sidebar() {
    * Clear the board. If host: perform locally before dispatching field and list event. If not: request to host.
    */
   const clearBoard = () => {
-    if (iAmHost()) {
-      // Clear locally then update all players
-      let initalfield = currentTaskObject.field;
-      let state = store.getState();
-      let field = state.solutionField;
-      let handList = state.handList;
-      handList = clearBoardHelper(field, handList);
-      let players = state.players;
-      dispatch(setPlayers(setAllLocks(players, false)));
-      dispatch(lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: false }));
-      dispatch(setFieldState(initalfield));
-      dispatch(setListState(handList));
-      dispatch(clearEvent()); // Request clear to host
-    } else {
+    // Clear locally then update all players
+    let initalfield = currentTaskObject.field;
+    let state = store.getState();
+    let field = state.solutionField;
+    let handList = state.handList;
+    handList = clearBoardHelper(field, handList);
+    let players = state.players;
+    dispatch(setPlayers(setAllLocks(players, false)));
+    dispatch(lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: false }));
+    dispatch(setFieldState(initalfield));
+    dispatch(setListState(handList));
+    dispatch(clearEvent()); // Request clear to host
+    if (!iAmHost()) {
       dispatch(lockRequest({ forWho: LOCKTYPES.ALL_PLAYERS }));
-      dispatch(clearEvent()); // Request clear to host
     }
     closeModal();
   };
