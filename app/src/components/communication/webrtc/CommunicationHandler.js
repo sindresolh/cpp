@@ -37,6 +37,7 @@ import {
   SELECT_REQUEST,
   SELECT_EVENT,
   SET_TASKSET,
+  SET_LISTS_AND_FIELD,
 } from './messages';
 import {
   twoDimensionalArrayIsEqual,
@@ -220,6 +221,9 @@ class CommunicationHandler extends Component {
    */
   handlePeerData = (webrtc, type, payload, peer) => {
     switch (type) {
+      case SET_LISTS_AND_FIELD:
+        this.setField(payload);
+        this.setList(payload);
       case SET_FIELD:
         this.setField(payload);
         break;
@@ -274,7 +278,7 @@ class CommunicationHandler extends Component {
 
     let timePast = lastMoveHost - lastMoveMe;
 
-    //console.log(timePast);
+    console.log(timePast);
 
     /*console.log(
       store.getState().moveRequest.timestamp + ' --- ' + payloadState.timestamp
@@ -282,11 +286,7 @@ class CommunicationHandler extends Component {
 
     // As long as this is after my last move
     if (timePast > this.EVENT_DELAY) {
-      if (
-        !twoDimensionalArrayIsEqual(prevState.handList, payloadState.handList)
-      ) {
-        dispatch_setListState(payloadState.handList);
-      }
+      dispatch_setListState(payloadState.handList);
     }
   }
 
@@ -298,7 +298,7 @@ class CommunicationHandler extends Component {
   setField(payload) {
     const { dispatch_setFieldState } = this.props;
     const prevState = store.getState();
-    const prevSolution = prevState.solutionField;
+
     const payloadState = JSON.parse(payload);
     const solutionField = payloadState.solutionField;
     const lastMoveMe = prevState.moveRequest.timestamp;
@@ -313,9 +313,7 @@ class CommunicationHandler extends Component {
 
     // As long as this is after my last move
     if (timePast > this.EVENT_DELAY) {
-      if (!arrayIsEqual(prevSolution, solutionField)) {
-        dispatch_setFieldState(solutionField);
-      }
+      dispatch_setFieldState(solutionField);
     }
   }
 

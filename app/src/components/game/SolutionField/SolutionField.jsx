@@ -342,12 +342,9 @@ function SolutionField({ minwidth }) {
               timestamp: new Date().getTime()
             };
             requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
-           
           }
         }
       }
-
-     
 
     e.detail = 0; // resets detail so that other codeblocks can be clicked
   };

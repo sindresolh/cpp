@@ -191,8 +191,8 @@ const moveBlockFromField = (
       ...handList.slice(index),
     ];
 
-    dispatch_setList(updatedBlocks, handListIndex);
     dispatch_removeBlockFromField(id);
+    dispatch_setList(updatedBlocks, handListIndex);
     if (iAmHost()) dispatch_fieldEvent();
   }
 };

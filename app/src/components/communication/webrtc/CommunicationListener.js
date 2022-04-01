@@ -16,6 +16,7 @@ import {
   SELECT_REQUEST,
   SELECT_EVENT,
   SET_TASKSET,
+  SET_LISTS_AND_FIELD,
 } from './messages';
 import {
   startGame,
@@ -98,20 +99,16 @@ class CommunicationListener extends Component {
       let state = store.getState();
       let now = new Date().getTime();
 
-      // If there has not been a FIELD or LIST update since last hearbeat
-      if (
-        now - state.fieldEvent > this.EVENT_DELAY ||
-        now - state.listEvent > this.EVENT_DELAY
-      ) {
+      // If there has not been a FIELD update since last hearbeat
+      if (now - state.fieldEvent > this.EVENT_DELAY) {
         console.log(
           'more than ' + this.EVENT_DELAY + ' milliseconds since last move'
         );
 
-        const { dispatch_fieldEvent, dispatch_listEvent } = this.props;
+        const { dispatch_fieldEvent } = this.props;
         dispatch_fieldEvent();
-        dispatch_listEvent();
       }
-    }, this.HEARTHBEAT_INTERVAL);
+    }, this.EVENT_DELAY);
   }
 
   /**
@@ -224,14 +221,10 @@ class CommunicationListener extends Component {
       // This peer cleared the board
       const { dispatch_lockEvent } = this.props;
       dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: false });
-      let payload = {
-        handList: state.handList,
-        timestamp: this.props.listEvent.getTime(),
-      };
-      this.shout(SET_LIST, payload);
-      this.shout(SET_FIELD, {
+      this.shout(SET_LISTS_AND_FIELD, {
         solutionField: state.solutionField,
-        timestamp: this.props.fieldEvent.getTime(),
+        handList: state.handList,
+        timestamp: state.fieldEvent.getTime(),
       });
     } else this.whisper(state.host, CLEAR_TASK, '');
   }
@@ -291,16 +284,12 @@ class CommunicationListener extends Component {
       case prevProps.moveRequest !== this.props.moveRequest: // I want to move a block
         this.whisper(state.host, MOVE_REQUEST, state.moveRequest);
         break;
-      case prevProps.fieldEvent !== this.props.fieldEvent: // Block moved in field
-        this.shout(SET_FIELD, {
+      case prevProps.fieldEvent !== this.props.fieldEvent ||
+        prevProps.listEvent !== this.props.listEvent: // Block moved in field or list
+        this.shout(SET_LISTS_AND_FIELD, {
           solutionField: state.solutionField,
-          timestamp: this.props.fieldEvent.getTime(),
-        });
-        break;
-      case prevProps.listEvent !== this.props.listEvent: // Block moved in list
-        this.shout(SET_LIST, {
           handList: state.handList,
-          timestamp: state.listEvent.getTime(),
+          timestamp: this.props.fieldEvent.getTime(),
         });
         break;
       case prevProps.clearEvent.getTime() < this.props.clearEvent.getTime(): // I cleared the board
