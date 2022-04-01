@@ -88,7 +88,31 @@ class CommunicationListener extends Component {
   }
 
   isProduction = JSON.parse(configData.PRODUCTION);
-  EVENT_DELAY = 0;
+  HEARTHBEAT_INTERVAL = 100;
+  EVENT_DELAY = 2000;
+  timer = null;
+
+  hearthbeat() {
+    /* this.timer = setInterval(() => {
+      //console.log('this will run every ' + this.EVENT_DELAY + ' milliseconds');
+      let state = store.getState();
+      let now = new Date().getTime();
+
+      // If there has not been a FIELD or LIST update since last hearbeat
+      if (
+        now - state.fieldEvent > this.EVENT_DELAY ||
+        now - state.listEvent > this.EVENT_DELAY
+      ) {
+        console.log(
+          'more than ' + this.EVENT_DELAY + ' milliseconds since last move'
+        );
+
+        const { dispatch_fieldEvent, dispatch_listEvent } = this.props;
+        dispatch_fieldEvent();
+        dispatch_listEvent();
+      }
+    }, this.HEARTHBEAT_INTERVAL); */
+  }
 
   /**
    * Distribute cards to all players, including yourself
@@ -136,6 +160,8 @@ class CommunicationListener extends Component {
     this.initialize_board();
     const { dispatch_startGame } = this.props;
     dispatch_startGame();
+
+    this.hearthbeat();
   }
 
   /**
@@ -200,6 +226,7 @@ class CommunicationListener extends Component {
       dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: false });
       let payload = {
         handList: state.handList,
+        timestamp: this.props.listEvent.getTime(),
       };
       this.shout(SET_LIST, payload);
       this.shout(SET_FIELD, {
@@ -273,6 +300,7 @@ class CommunicationListener extends Component {
       case prevProps.listEvent !== this.props.listEvent: // Block moved in list
         this.shout(SET_LIST, {
           handList: state.handList,
+          timestamp: state.listEvent.getTime(),
         });
         break;
       case prevProps.clearEvent.getTime() < this.props.clearEvent.getTime(): // I cleared the board

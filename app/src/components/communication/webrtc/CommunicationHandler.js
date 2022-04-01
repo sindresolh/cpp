@@ -113,6 +113,7 @@ class CommunicationHandler extends Component {
   }
 
   isProduction = JSON.parse(configData.PRODUCTION);
+  EVENT_DELAY = 500;
 
   /* Close the modal. Callback from SideBarModal*/
   closeModal() {
@@ -266,12 +267,27 @@ class CommunicationHandler extends Component {
    */
   setList(payload) {
     const { dispatch_setListState } = this.props;
-    const prevState = store.getState().handList;
+    const prevState = store.getState();
     const payloadState = JSON.parse(payload);
+    const lastMoveMe = prevState.moveRequest.timestamp;
+    const lastMoveHost = payloadState.timestamp;
 
-    if (!twoDimensionalArrayIsEqual(prevState, payloadState)) {
+    let timePast = lastMoveHost - lastMoveMe;
+
+    /*     console.log(timePast);
+
+    console.log(
+      store.getState().moveRequest.timestamp + ' --- ' + payloadState.timestamp
+    ); */
+
+    // As long as this is after my last move
+    //if (timePast > this.EVENT_DELAY) {
+    if (
+      !twoDimensionalArrayIsEqual(prevState.handList, payloadState.handList)
+    ) {
       dispatch_setListState(payloadState.handList);
     }
+    //}
   }
 
   /**
@@ -281,25 +297,26 @@ class CommunicationHandler extends Component {
    */
   setField(payload) {
     const { dispatch_setFieldState } = this.props;
-    const prevState = store.getState().solutionField;
+    const prevState = store.getState();
+    const prevSolution = prevState.solutionField;
     const payloadState = JSON.parse(payload);
     const solutionField = payloadState.solutionField;
-    const lastMoveMe = store.getState().moveRequest.timestamp;
+    const lastMoveMe = prevState.moveRequest.timestamp;
     const lastMoveHost = payloadState.timestamp;
 
     let timePast = lastMoveHost - lastMoveMe;
 
-    console.log(timePast);
+    /*  console.log(timePast);
     console.log(
       store.getState().moveRequest.timestamp + ' --- ' + payloadState.timestamp
-    );
+    ); */
 
     // As long as this is after my last move
-    if (timePast > 500) {
-      if (!arrayIsEqual(prevState, solutionField)) {
-        dispatch_setFieldState(solutionField);
-      }
+    //if (timePast > this.EVENT_DELAY) {
+    if (!arrayIsEqual(prevSolution, solutionField)) {
+      dispatch_setFieldState(solutionField);
     }
+    //}
   }
 
   /**
