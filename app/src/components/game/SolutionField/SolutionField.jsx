@@ -316,8 +316,16 @@ function SolutionField({ minwidth }) {
     if (!locked && movedBlock != null && draggable) {
         // the user selected this codeblock
         setSelectedCodeline(movedBlock);
-        movedBlock.index = index;
-        select(index, 'ME')
+        if(movedBlock !== null){
+          movedBlock.index = index;
+          select(index, 'ME')
+
+        }
+        else{
+          select(null, 'ME')
+        }
+        
+        
         
         // (e.detauil > 1) if clicked more than once
         if (e.detail > 1) {
@@ -337,14 +345,12 @@ function SolutionField({ minwidth }) {
               timestamp: new Date().getTime()
             };
             requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
+           
           }
         }
       }
 
-      if(movedBlock === selectedCodeline ){
-        select(null, 'ME')
-        setSelectedCodeline(null);
-      }
+     
 
     e.detail = 0; // resets detail so that other codeblocks can be clicked
   };
