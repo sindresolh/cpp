@@ -320,12 +320,10 @@ function SolutionField({ minwidth }) {
           movedBlock.index = index;
           select(index, 'ME');
         }
-        else{
-          select(null, 'ME');
-        }
         
         // (e.detauil > 1) if clicked more than once
         if (e.detail > 1) {
+          handleDroppedLine(index);
           movedBlock.indent = 0;
           dispatch(removeBlockFromField(movedBlock.id));
           dispatch(addBlockToList(movedBlock));
