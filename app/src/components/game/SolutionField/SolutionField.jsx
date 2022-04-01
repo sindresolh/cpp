@@ -318,14 +318,11 @@ function SolutionField({ minwidth }) {
         setSelectedCodeline(movedBlock);
         if(movedBlock !== null){
           movedBlock.index = index;
-          select(index, 'ME')
-
+          select(index, 'ME');
         }
         else{
-          select(null, 'ME')
+          select(null, 'ME');
         }
-        
-        
         
         // (e.detauil > 1) if clicked more than once
         if (e.detail > 1) {

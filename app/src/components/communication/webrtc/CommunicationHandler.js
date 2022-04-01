@@ -274,20 +274,20 @@ class CommunicationHandler extends Component {
 
     let timePast = lastMoveHost - lastMoveMe;
 
-    /*     console.log(timePast);
+    //console.log(timePast);
 
-    console.log(
+    /*console.log(
       store.getState().moveRequest.timestamp + ' --- ' + payloadState.timestamp
     ); */
 
     // As long as this is after my last move
-    //if (timePast > this.EVENT_DELAY) {
-    if (
-      !twoDimensionalArrayIsEqual(prevState.handList, payloadState.handList)
-    ) {
-      dispatch_setListState(payloadState.handList);
+    if (timePast > this.EVENT_DELAY) {
+      if (
+        !twoDimensionalArrayIsEqual(prevState.handList, payloadState.handList)
+      ) {
+        dispatch_setListState(payloadState.handList);
+      }
     }
-    //}
   }
 
   /**
@@ -312,11 +312,11 @@ class CommunicationHandler extends Component {
     ); */
 
     // As long as this is after my last move
-    //if (timePast > this.EVENT_DELAY) {
-    if (!arrayIsEqual(prevSolution, solutionField)) {
-      dispatch_setFieldState(solutionField);
+    if (timePast > this.EVENT_DELAY) {
+      if (!arrayIsEqual(prevSolution, solutionField)) {
+        dispatch_setFieldState(solutionField);
+      }
     }
-    //}
   }
 
   /**

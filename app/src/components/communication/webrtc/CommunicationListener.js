@@ -89,11 +89,11 @@ class CommunicationListener extends Component {
 
   isProduction = JSON.parse(configData.PRODUCTION);
   HEARTHBEAT_INTERVAL = 100;
-  EVENT_DELAY = 2000;
+  EVENT_DELAY = 1000;
   timer = null;
 
   hearthbeat() {
-    /* this.timer = setInterval(() => {
+    this.timer = setInterval(() => {
       //console.log('this will run every ' + this.EVENT_DELAY + ' milliseconds');
       let state = store.getState();
       let now = new Date().getTime();
@@ -111,7 +111,7 @@ class CommunicationListener extends Component {
         dispatch_fieldEvent();
         dispatch_listEvent();
       }
-    }, this.HEARTHBEAT_INTERVAL); */
+    }, this.HEARTHBEAT_INTERVAL);
   }
 
   /**
