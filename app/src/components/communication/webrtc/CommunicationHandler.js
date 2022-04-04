@@ -37,6 +37,7 @@ import {
   SELECT_REQUEST,
   SELECT_EVENT,
   SET_TASKSET,
+  SET_LISTS_AND_FIELD,
 } from './messages';
 import {
   twoDimensionalArrayIsEqual,
@@ -113,6 +114,7 @@ class CommunicationHandler extends Component {
   }
 
   isProduction = JSON.parse(configData.PRODUCTION);
+  EVENT_DELAY = 1000;
 
   /* Close the modal. Callback from SideBarModal*/
   closeModal() {
@@ -219,6 +221,9 @@ class CommunicationHandler extends Component {
    */
   handlePeerData = (webrtc, type, payload, peer) => {
     switch (type) {
+      case SET_LISTS_AND_FIELD:
+        this.setField(payload);
+        this.setList(payload);
       case SET_FIELD:
         this.setField(payload);
         break;
@@ -266,10 +271,15 @@ class CommunicationHandler extends Component {
    */
   setList(payload) {
     const { dispatch_setListState } = this.props;
-    const prevState = store.getState().handList;
+    const prevState = store.getState();
     const payloadState = JSON.parse(payload);
+    const lastMoveMe = prevState.moveRequest.timestamp;
 
-    if (!twoDimensionalArrayIsEqual(prevState, payloadState)) {
+    let now = new Date().getTime();
+    let timePast = now - lastMoveMe;
+
+    // If I have not moved a block the last second
+    if (timePast > this.EVENT_DELAY) {
       dispatch_setListState(payloadState.handList);
     }
   }
@@ -281,11 +291,17 @@ class CommunicationHandler extends Component {
    */
   setField(payload) {
     const { dispatch_setFieldState } = this.props;
-    const prevState = store.getState().solutionField;
-    const payloadState = JSON.parse(payload);
+    const prevState = store.getState();
 
-    if (!arrayIsEqual(prevState, payloadState)) {
-      dispatch_setFieldState(payloadState);
+    const payloadState = JSON.parse(payload);
+    const solutionField = payloadState.solutionField;
+    const lastMoveMe = prevState.moveRequest.timestamp;
+    let now = new Date().getTime();
+    let timePast = now - lastMoveMe;
+
+    // If I have not moved a block the last second
+    if (timePast > this.EVENT_DELAY) {
+      dispatch_setFieldState(solutionField);
     }
   }
 

@@ -16,6 +16,7 @@ import {
   SELECT_REQUEST,
   SELECT_EVENT,
   SET_TASKSET,
+  SET_LISTS_AND_FIELD,
 } from './messages';
 import {
   startGame,
@@ -88,7 +89,62 @@ class CommunicationListener extends Component {
   }
 
   isProduction = JSON.parse(configData.PRODUCTION);
-  EVENT_DELAY = 0;
+  EVENT_DELAY = 2000;
+  timer = null;
+
+  /**
+   * Checks that a block with a given id only is present once in the lists
+   *
+   * @param {*} state
+   */
+  removeDuplicates(state) {
+    let blockIds = [];
+    let newField = [];
+    let newList = [];
+
+    for (let block of state.solutionField) {
+      if (!blockIds.includes(block.id)) {
+        blockIds.push(block.id);
+        newField.push(block);
+      }
+    }
+
+    for (let playerList of state.handList) {
+      let newPlayerList = [];
+      for (let block of playerList) {
+        if (!blockIds.includes(block.id)) {
+          blockIds.push(block.id);
+          newPlayerList.push(block);
+        }
+      }
+      newList.push(newPlayerList);
+    }
+
+    const { dispatch_setFieldState, dispatch_setListState } = this.props;
+    dispatch_setFieldState(newField);
+    dispatch_setListState(newList);
+  }
+
+  /**
+   * The HOST holds the correct state and synchronizes all players on a given interval
+   */
+  hearthbeat() {
+    this.timer = setInterval(() => {
+      let state = store.getState();
+      if (this.iAmHost(state.host)) {
+        let now = new Date().getTime();
+
+        // Checks that a block with a given id only is present once in the lists
+        this.removeDuplicates(state);
+
+        // If there has not been a FIELD update since last hearthbeat
+        if (now - state.fieldEvent > this.EVENT_DELAY) {
+          const { dispatch_fieldEvent } = this.props;
+          dispatch_fieldEvent();
+        }
+      }
+    }, this.EVENT_DELAY);
+  }
 
   /**
    * Distribute cards to all players, including yourself
@@ -198,12 +254,10 @@ class CommunicationListener extends Component {
       // This peer cleared the board
       const { dispatch_lockEvent } = this.props;
       dispatch_lockEvent({ pid: 'ALL_PLAYERS', lock: false });
-      let payload = {
+      this.shout(SET_LISTS_AND_FIELD, {
+        solutionField: state.solutionField,
         handList: state.handList,
-      };
-      this.shout(SET_LIST, payload);
-      payload = state.solutionField;
-      this.shout(SET_FIELD, payload);
+      });
     } else this.whisper(state.host, CLEAR_TASK, '');
   }
 
@@ -245,6 +299,22 @@ class CommunicationListener extends Component {
   }
 
   /**
+   * Start hearthbeat on mount
+   */
+  componentDidMount() {
+    setTimeout(() => {
+      this.hearthbeat();
+    }, this.EVENT_DELAY);
+  }
+
+  /**
+   * End hearthbeat on unmount
+   */
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
+  /**
    * Notifies other peers when this player changes the state
    *
    * @param {*} prevProps : Checks that the new value is different
@@ -262,11 +332,10 @@ class CommunicationListener extends Component {
       case prevProps.moveRequest !== this.props.moveRequest: // I want to move a block
         this.whisper(state.host, MOVE_REQUEST, state.moveRequest);
         break;
-      case prevProps.fieldEvent !== this.props.fieldEvent: // Block moved in field
-        this.shout(SET_FIELD, state.solutionField);
-        break;
-      case prevProps.listEvent !== this.props.listEvent: // Block moved in list
-        this.shout(SET_LIST, {
+      case prevProps.fieldEvent !== this.props.fieldEvent ||
+        prevProps.listEvent !== this.props.listEvent: // Block moved in field or list
+        this.shout(SET_LISTS_AND_FIELD, {
+          solutionField: state.solutionField,
           handList: state.handList,
         });
         break;

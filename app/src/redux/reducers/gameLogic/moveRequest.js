@@ -5,6 +5,7 @@ const initialState = {
   index: undefined,
   indent: undefined,
   field: undefined,
+  timestamp: new Date().getTime(),
 };
 
 /**  Reducer for storing the last move request a player has done.

@@ -98,8 +98,7 @@ function SolutionField({ minwidth }) {
   const moveBlock = useCallback(
     (id, atIndex, atIndent = 0) => {
       // get block if it exists in solutionfield
-      if (iAmHost()) {
-          moveBlockInSolutionField(
+        moveBlockInSolutionField(
           id,
           atIndex,
           atIndent,
@@ -107,8 +106,8 @@ function SolutionField({ minwidth }) {
           store.getState().handList,
           dispatches
         );
-      } else {
-        const move = { id, index: atIndex, indent: atIndent, field: 'SF' };
+      if (!iAmHost()) {
+        const move = { id, index: atIndex, indent: atIndent, field: 'SF' , timestamp: new Date().getTime()};
         requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
       }
     },
@@ -251,8 +250,6 @@ function SolutionField({ minwidth }) {
       let players = store.getState().players;
       let newSelectedBlocks = getSelectedBlocks(players);
       if(newSelectedBlocks != null && newSelectedBlocks != allSelectedLines){
-        // Update indicators if they are different
-        setAllSelectedLines(newSelectedBlocks);
         let mySelectedBlock = getSelectedBy(players, 'YOU');
         if(selectedCodeline != null && mySelectedBlock !== selectedCodeline.index){
           // Update my selected codeline if they are different
@@ -260,6 +257,12 @@ function SolutionField({ minwidth }) {
           if(selected != null) selected.index = mySelectedBlock;
           setSelectedCodeline(selected);
         }
+        // Update indicators if they are different, 
+        const myIndex = players.findIndex(object => {
+          return object.id === 'YOU';
+        });
+        newSelectedBlocks[myIndex] = null   // Do not keep track of my own index
+        setAllSelectedLines(newSelectedBlocks);
       }
     }, [newSelectEvent]);
 
@@ -314,20 +317,31 @@ function SolutionField({ minwidth }) {
    * @param {*} draggable : wheter or not the player has permission to perform this action
    */
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
+
+
     if (!locked && movedBlock != null && draggable) {
+        
         // the user selected this codeblock
         setSelectedCodeline(movedBlock);
-        movedBlock.index = index;
-        select(index, 'ME')
+        if(movedBlock !== null){
+          if(selectedCodeline !=null && selectedCodeline.index === movedBlock.index){
+            setSelectedCodeline(null);
+            select(null, 'ME')
+          }else {
+            movedBlock.index = index;
+            select(index, 'ME');
+          }
+        }
+
         
         // (e.detauil > 1) if clicked more than once
         if (e.detail > 1) {
-          if (iAmHost()) {
-            movedBlock.indent = 0;
-            dispatch(removeBlockFromField(movedBlock.id));
-            dispatch(addBlockToList(movedBlock));
-            fieldEventPromise().then(() => dispatch(listEvent()));
-          } else {
+          handleDroppedLine(index);
+          movedBlock.indent = 0;
+          dispatch(removeBlockFromField(movedBlock.id));
+          dispatch(addBlockToList(movedBlock));
+          fieldEventPromise().then(() => dispatch(listEvent()));
+          if (!iAmHost()) {
             const playerField = movedBlock.player.toString();
             const listIndex = movedBlock.player - 1;
             const atIndex = store.getState().handList[listIndex].length;
@@ -336,18 +350,15 @@ function SolutionField({ minwidth }) {
               index: atIndex,
               indent: 0,
               field: playerField,
+              timestamp: new Date().getTime()
             };
             requestMove(move, store.getState().moveRequest, dispatch_moveRequest);
           }
         }
       }
-
-      if(movedBlock === selectedCodeline ){
-        select(null, 'ME')
-        setSelectedCodeline(null);
-      }
-
+ 
     e.detail = 0; // resets detail so that other codeblocks can be clicked
+
   };
 
   /**

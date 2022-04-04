@@ -1,4 +1,12 @@
 import update from 'immutability-helper';
+import store from '../../redux/store/store';
+
+/**
+ * @returns true if this player is the host.
+ */
+const iAmHost = () => {
+  return store.getState().host === '';
+};
 
 /**
  * Move a code block in a hand list. Either swap position or move block from solution field.
@@ -41,7 +49,7 @@ export const moveBlockInHandList = (
       handListIndex,
       dispatches
     );
-  dispatch_listEvent(); // Move the block for the other players
+  if (iAmHost()) dispatch_listEvent(); // Move the block for the other players
 };
 
 /**
@@ -77,7 +85,7 @@ export const moveBlockInSolutionField = (
       dispatches
     );
   }
-  dispatch_fieldEvent(); // Move the block for the other players
+  if (iAmHost()) dispatch_fieldEvent(); // Move the block for the other players
 };
 
 /**
@@ -135,7 +143,7 @@ const moveBlockFromList = (id, index, solutionField, handLists, dispatches) => {
         blockIsNotFound = false;
         movedBlock = handLists[handListIndex][block];
         dispatch_removeBlockFromList(id, handListIndex);
-        dispatch_listEvent();
+        if (iAmHost()) dispatch_listEvent();
         const updatedBlocks = [
           ...solutionField.slice(0, index),
           movedBlock,
@@ -183,9 +191,9 @@ const moveBlockFromField = (
       ...handList.slice(index),
     ];
 
-    dispatch_setList(updatedBlocks, handListIndex);
     dispatch_removeBlockFromField(id);
-    dispatch_fieldEvent();
+    dispatch_setList(updatedBlocks, handListIndex);
+    if (iAmHost()) dispatch_fieldEvent();
   }
 };
 
