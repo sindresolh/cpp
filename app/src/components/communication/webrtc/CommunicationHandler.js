@@ -274,18 +274,11 @@ class CommunicationHandler extends Component {
     const prevState = store.getState();
     const payloadState = JSON.parse(payload);
     const lastMoveMe = prevState.moveRequest.timestamp;
-    //const lastMoveHost = payloadState.timestamp;
 
     let now = new Date().getTime();
     let timePast = now - lastMoveMe;
 
-    console.log(timePast);
-
-    /*console.log(
-      store.getState().moveRequest.timestamp + ' --- ' + payloadState.timestamp
-    ); */
-
-    // As long as this is after my last move
+    // If I have not moved a block the last second
     if (timePast > this.EVENT_DELAY) {
       dispatch_setListState(payloadState.handList);
     }
@@ -303,17 +296,10 @@ class CommunicationHandler extends Component {
     const payloadState = JSON.parse(payload);
     const solutionField = payloadState.solutionField;
     const lastMoveMe = prevState.moveRequest.timestamp;
-    //const lastMoveHost = payloadState.timestamp;
-
     let now = new Date().getTime();
     let timePast = now - lastMoveMe;
 
-    /*  console.log(timePast);
-    console.log(
-      store.getState().moveRequest.timestamp + ' --- ' + payloadState.timestamp
-    ); */
-
-    // As long as this is after my last move
+    // If I have not moved a block the last second
     if (timePast > this.EVENT_DELAY) {
       dispatch_setFieldState(solutionField);
     }

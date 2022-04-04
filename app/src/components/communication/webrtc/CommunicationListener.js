@@ -98,12 +98,8 @@ class CommunicationListener extends Component {
       if (this.iAmHost(state.host)) {
         let now = new Date().getTime();
 
-        // If there has not been a FIELD update since last hearbeat
+        // If there has not been a FIELD update since last hearthbeat
         if (now - state.fieldEvent > this.EVENT_DELAY) {
-          console.log(
-            'more than ' + this.EVENT_DELAY + ' milliseconds since last move'
-          );
-
           const { dispatch_fieldEvent } = this.props;
           dispatch_fieldEvent();
         }
@@ -222,7 +218,6 @@ class CommunicationListener extends Component {
       this.shout(SET_LISTS_AND_FIELD, {
         solutionField: state.solutionField,
         handList: state.handList,
-        timestamp: state.fieldEvent.getTime(),
       });
     } else this.whisper(state.host, CLEAR_TASK, '');
   }
@@ -294,7 +289,6 @@ class CommunicationListener extends Component {
         this.shout(SET_LISTS_AND_FIELD, {
           solutionField: state.solutionField,
           handList: state.handList,
-          timestamp: this.props.fieldEvent.getTime(),
         });
         break;
       case prevProps.clearEvent.getTime() < this.props.clearEvent.getTime(): // I cleared the board
