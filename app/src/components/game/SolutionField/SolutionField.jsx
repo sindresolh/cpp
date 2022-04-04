@@ -250,12 +250,6 @@ function SolutionField({ minwidth }) {
       let players = store.getState().players;
       let newSelectedBlocks = getSelectedBlocks(players);
       if(newSelectedBlocks != null && newSelectedBlocks != allSelectedLines){
-        // Update indicators if they are different, 
-        const myIndex = players.findIndex(object => {
-          return object.id === 'YOU';
-        });
-        newSelectedBlocks[myIndex] = null   // Do not keep track of my own index
-        setAllSelectedLines(newSelectedBlocks);
         let mySelectedBlock = getSelectedBy(players, 'YOU');
         if(selectedCodeline != null && mySelectedBlock !== selectedCodeline.index){
           // Update my selected codeline if they are different
@@ -263,6 +257,12 @@ function SolutionField({ minwidth }) {
           if(selected != null) selected.index = mySelectedBlock;
           setSelectedCodeline(selected);
         }
+        // Update indicators if they are different, 
+        const myIndex = players.findIndex(object => {
+          return object.id === 'YOU';
+        });
+        newSelectedBlocks[myIndex] = null   // Do not keep track of my own index
+        setAllSelectedLines(newSelectedBlocks);
       }
     }, [newSelectEvent]);
 
