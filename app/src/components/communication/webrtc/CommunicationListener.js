@@ -89,24 +89,24 @@ class CommunicationListener extends Component {
   }
 
   isProduction = JSON.parse(configData.PRODUCTION);
-  HEARTHBEAT_INTERVAL = 100;
-  EVENT_DELAY = 1000;
+  EVENT_DELAY = 2000;
   timer = null;
 
   hearthbeat() {
     this.timer = setInterval(() => {
-      //console.log('this will run every ' + this.EVENT_DELAY + ' milliseconds');
       let state = store.getState();
-      let now = new Date().getTime();
+      if (this.iAmHost(state.host)) {
+        let now = new Date().getTime();
 
-      // If there has not been a FIELD update since last hearbeat
-      if (now - state.fieldEvent > this.EVENT_DELAY) {
-        console.log(
-          'more than ' + this.EVENT_DELAY + ' milliseconds since last move'
-        );
+        // If there has not been a FIELD update since last hearbeat
+        if (now - state.fieldEvent > this.EVENT_DELAY) {
+          console.log(
+            'more than ' + this.EVENT_DELAY + ' milliseconds since last move'
+          );
 
-        const { dispatch_fieldEvent } = this.props;
-        dispatch_fieldEvent();
+          const { dispatch_fieldEvent } = this.props;
+          dispatch_fieldEvent();
+        }
       }
     }, this.EVENT_DELAY);
   }
@@ -157,8 +157,6 @@ class CommunicationListener extends Component {
     this.initialize_board();
     const { dispatch_startGame } = this.props;
     dispatch_startGame();
-
-    this.hearthbeat();
   }
 
   /**
@@ -264,6 +262,13 @@ class CommunicationListener extends Component {
     if (state.status === STATUS.GAME) {
       this.shout(START_GAME, payload);
     }
+  }
+  componentDidMount() {
+    this.hearthbeat();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timer);
   }
 
   /**

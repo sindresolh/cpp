@@ -114,7 +114,7 @@ class CommunicationHandler extends Component {
   }
 
   isProduction = JSON.parse(configData.PRODUCTION);
-  EVENT_DELAY = 500;
+  EVENT_DELAY = 1000;
 
   /* Close the modal. Callback from SideBarModal*/
   closeModal() {
@@ -274,9 +274,10 @@ class CommunicationHandler extends Component {
     const prevState = store.getState();
     const payloadState = JSON.parse(payload);
     const lastMoveMe = prevState.moveRequest.timestamp;
-    const lastMoveHost = payloadState.timestamp;
+    //const lastMoveHost = payloadState.timestamp;
 
-    let timePast = lastMoveHost - lastMoveMe;
+    let now = new Date().getTime();
+    let timePast = now - lastMoveMe;
 
     console.log(timePast);
 
@@ -302,9 +303,10 @@ class CommunicationHandler extends Component {
     const payloadState = JSON.parse(payload);
     const solutionField = payloadState.solutionField;
     const lastMoveMe = prevState.moveRequest.timestamp;
-    const lastMoveHost = payloadState.timestamp;
+    //const lastMoveHost = payloadState.timestamp;
 
-    let timePast = lastMoveHost - lastMoveMe;
+    let now = new Date().getTime();
+    let timePast = now - lastMoveMe;
 
     /*  console.log(timePast);
     console.log(
