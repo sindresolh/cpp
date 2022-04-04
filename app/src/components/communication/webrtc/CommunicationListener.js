@@ -92,11 +92,50 @@ class CommunicationListener extends Component {
   EVENT_DELAY = 2000;
   timer = null;
 
+  /**
+   * Checks that a block with a given id only is present once in the lists
+   *
+   * @param {*} state
+   */
+  removeDuplicates(state) {
+    let blockIds = [];
+    let newField = [];
+    let newList = [];
+
+    for (let block of state.solutionField) {
+      if (!blockIds.includes(block.id)) {
+        blockIds.push(block.id);
+        newField.push(block);
+      }
+    }
+
+    for (let playerList of state.handList) {
+      let newPlayerList = [];
+      for (let block of playerList) {
+        if (!blockIds.includes(block.id)) {
+          blockIds.push(block.id);
+          newPlayerList.push(block);
+        }
+      }
+      newList.push(newPlayerList);
+    }
+
+    const { dispatch_setFieldState, dispatch_setListState } = this.props;
+    dispatch_setFieldState(newField);
+    dispatch_setListState(newList);
+  }
+
+  /**
+   * The HOST holds the correct state and synchronizes all players on a given interval
+   */
   hearthbeat() {
     this.timer = setInterval(() => {
       let state = store.getState();
       if (this.iAmHost(state.host)) {
         let now = new Date().getTime();
+
+        // Checks that a block with a given id only is present once in the lists
+        this.removeDuplicates(state);
 
         // If there has not been a FIELD update since last hearthbeat
         if (now - state.fieldEvent > this.EVENT_DELAY) {
