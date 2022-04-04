@@ -317,13 +317,22 @@ function SolutionField({ minwidth }) {
    * @param {*} draggable : wheter or not the player has permission to perform this action
    */
   const handleDoubbleClick = (e, movedBlock, draggable, index) => {
+
+
     if (!locked && movedBlock != null && draggable) {
+        
         // the user selected this codeblock
         setSelectedCodeline(movedBlock);
         if(movedBlock !== null){
-          movedBlock.index = index;
-          select(index, 'ME');
+          if(selectedCodeline !=null && selectedCodeline.index === movedBlock.index){
+            setSelectedCodeline(null);
+            select(null, 'ME')
+          }else {
+            movedBlock.index = index;
+            select(index, 'ME');
+          }
         }
+
         
         // (e.detauil > 1) if clicked more than once
         if (e.detail > 1) {
@@ -347,8 +356,9 @@ function SolutionField({ minwidth }) {
           }
         }
       }
-
+ 
     e.detail = 0; // resets detail so that other codeblocks can be clicked
+
   };
 
   /**
