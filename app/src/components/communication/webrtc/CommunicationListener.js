@@ -297,10 +297,19 @@ class CommunicationListener extends Component {
       this.shout(START_GAME, payload);
     }
   }
+
+  /**
+   * Start hearthbeat on mount
+   */
   componentDidMount() {
-    this.hearthbeat();
+    setTimeout(() => {
+      this.hearthbeat();
+    }, this.EVENT_DELAY);
   }
 
+  /**
+   * End hearthbeat on unmount
+   */
   componentWillUnmount() {
     clearInterval(this.timer);
   }
