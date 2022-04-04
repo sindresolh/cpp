@@ -207,21 +207,19 @@ function Sidebar() {
    * Handle a click on the lock button.
    */
   const handleLock = () => {
-    // If I am the HOST I update for myself and the other players
-    if (iAmHost()) {
-      let players = store.getState().players;
+    let players = store.getState().players;
 
-      dispatch(
-        lockEvent({
-          pid: 'HOST',
-          lock: !locked,
-        })
-      );
-      dispatch(setPlayers(setLock(players, 'YOU', !locked)));
-      setNumberOfLockedInPlayers(
-        getAllLocks(players).filter((lock) => lock === true).length
-      );
-    } else {
+    dispatch(
+      lockEvent({
+        pid: 'HOST',
+        lock: !locked,
+      })
+    );
+    dispatch(setPlayers(setLock(players, 'YOU', !locked)));
+    setNumberOfLockedInPlayers(
+      getAllLocks(players).filter((lock) => lock === true).length
+    );
+    if (!iAmHost()) {
       // If I am not he HOST I need to ask for permission
       dispatch(lockRequest({ forWho: LOCKTYPES.FOR_MYSELF }));
     }
