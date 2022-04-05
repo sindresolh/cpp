@@ -370,9 +370,6 @@ class CommunicationHandler extends Component {
     } else if (payloadState.forWho === LOCKTYPES.ALL_PLAYERS) {
       dispatch_setPlayers(setAllLocks(players, lock));
       dispatch_lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: lock });
-    } else if (payloadState.forWho === 'HANDLE SUBMIT') {
-      dispatch_setPlayers(setAllLocks(players, false));
-      dispatch_lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: false });
     }
   }
 
@@ -409,12 +406,6 @@ class CommunicationHandler extends Component {
         dispatch_lockEvent({
           pid: payloadState.pid,
           lock: payloadState.lock,
-        });
-      } else if (payloadState.pid === 'HANDLE SUBMIT') {
-        dispatch_setPlayers(setAllLocks(players, false));
-        dispatch_lockEvent({
-          pid: payloadState.pid,
-          lock: false,
         });
       }
       // If it does not belong to another player it probably belongs to me
