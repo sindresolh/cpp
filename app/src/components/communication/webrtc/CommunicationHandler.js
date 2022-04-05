@@ -327,9 +327,14 @@ class CommunicationHandler extends Component {
     const payloadState = JSON.parse(payload);
 
     if (prevState !== payloadState.currentTask) {
-      const { dispatch_nextTask } = this.props;
+      const { dispatch_nextTask, dispatch_setPlayers, dispatch_lockEvent } =
+        this.props;
       dispatch_nextTask();
       this.initialFieldFromFile();
+
+      let players = store.getState().players;
+      dispatch_setPlayers(setAllLocks(players, false));
+      dispatch_lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: false });
     }
   }
   /**
@@ -365,6 +370,9 @@ class CommunicationHandler extends Component {
     } else if (payloadState.forWho === LOCKTYPES.ALL_PLAYERS) {
       dispatch_setPlayers(setAllLocks(players, lock));
       dispatch_lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: lock });
+    } else if (payloadState.forWho === 'HANDLE SUBMIT') {
+      dispatch_setPlayers(setAllLocks(players, false));
+      dispatch_lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: false });
     }
   }
 
@@ -401,6 +409,12 @@ class CommunicationHandler extends Component {
         dispatch_lockEvent({
           pid: payloadState.pid,
           lock: payloadState.lock,
+        });
+      } else if (payloadState.pid === 'HANDLE SUBMIT') {
+        dispatch_setPlayers(setAllLocks(players, false));
+        dispatch_lockEvent({
+          pid: payloadState.pid,
+          lock: false,
         });
       }
       // If it does not belong to another player it probably belongs to me

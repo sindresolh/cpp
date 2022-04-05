@@ -27,10 +27,13 @@ import {
   finishEvent,
   setHost,
   lockEvent,
+  setPlayers,
 } from '../../../redux/actions';
 import { shuffleCodeblocks } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
 import { STATUS } from '../../../utils/constants';
 import configData from '../../../config.json';
+import { LOCKTYPES } from '../../../utils/constants';
+import { setAllLocks } from '../../../utils/lockHelper/lockHelper';
 
 /**
  * Helper function to retrive data from the redux store.
@@ -73,6 +76,7 @@ function mapDispatchToProps(dispatch) {
     dispatch_finishEvent: (...args) => dispatch(finishEvent(...args)),
     dispatch_setHost: (...args) => dispatch(setHost(...args)),
     dispatch_lockEvent: (...args) => dispatch(lockEvent(...args)),
+    dispatch_setPlayers: (...args) => dispatch(setPlayers(...args)),
   };
 }
 
@@ -129,7 +133,7 @@ class CommunicationListener extends Component {
    * The HOST holds the correct state and synchronizes all players on a given interval
    */
   hearthbeat() {
-    this.timer = setInterval(() => {
+    /*  this.timer = setInterval(() => {
       let state = store.getState();
       if (this.iAmHost(state.host) && state.status === STATUS.GAME) {
         let now = new Date().getTime();
@@ -143,7 +147,7 @@ class CommunicationListener extends Component {
           dispatch_fieldEvent();
         }
       }
-    }, this.EVENT_DELAY);
+    }, this.EVENT_DELAY); */
   }
 
   /**
@@ -274,8 +278,13 @@ class CommunicationListener extends Component {
       solutionField: state.solutionField,
     };
     this.shout(NEXT_TASK, payload);
-    const { dispatch_listEvent } = this.props;
+    const { dispatch_listEvent, dispatch_setPlayers, dispatch_lockEvent } =
+      this.props;
     dispatch_listEvent();
+
+    let players = store.getState().players;
+    dispatch_setPlayers(setAllLocks(players, false));
+    dispatch_lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: false });
   }
 
   /**

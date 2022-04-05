@@ -86,7 +86,7 @@ function Sidebar() {
    */
   useEffect(() => {
     if (newLockEvent != null) {
-      if (newLockEvent.pid === LOCKTYPES.ALL_PLAYERS) {
+      if (newLockEvent.forWho === LOCKTYPES.ALL_PLAYERS) {
         openAllLocksInSidebar();
       } else {
         let players = store.getState().players;
@@ -97,9 +97,13 @@ function Sidebar() {
         setLocked(myLock);
         setLockedInPlayers(allLocks);
 
-        if (readyCount === numberOfPlayers) {
+        if (
+          readyCount === numberOfPlayers &&
+          newLockEvent.pid !== 'HANDLE SUBMIT'
+        ) {
           handleSubmit();
         }
+
         setNumberOfLockedInPlayers(readyCount);
       }
     }
@@ -229,14 +233,6 @@ function Sidebar() {
    * Make all players go to the next task of the submit is correct
    */
   const handleSubmit = () => {
-    if (iAmHost()) {
-      let players = store.getState().players;
-      // Clear the locks for all players
-      dispatch(setPlayers(setAllLocks(players, false)));
-      dispatch(lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: false }));
-    } else {
-      dispatch(lockRequest({ forWho: LOCKTYPES.ALL_PLAYERS }));
-    }
     closeModal();
     let fieldBlocks = store.getState().solutionField;
     setCurrentFieldBlocks(fieldBlocks);
@@ -299,6 +295,12 @@ function Sidebar() {
         COLORS.darkred,
         'block'
       );
+
+      if (iAmHost()) {
+        dispatch(lockEvent({ pid: 'HANDLE SUBMIT', lock: false }));
+      } else {
+        dispatch(lockRequest({ forWho: 'HANDLE SUBMIT' }));
+      }
     }
   };
 
