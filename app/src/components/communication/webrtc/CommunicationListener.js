@@ -304,7 +304,7 @@ class CommunicationListener extends Component {
   componentDidMount() {
     setTimeout(() => {
       this.hearthbeat();
-    }, this.EVENT_DELAY * 3);
+    }, this.EVENT_DELAY * 5);
   }
 
   /**
