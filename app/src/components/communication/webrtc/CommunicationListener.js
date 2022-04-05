@@ -131,7 +131,7 @@ class CommunicationListener extends Component {
   hearthbeat() {
     this.timer = setInterval(() => {
       let state = store.getState();
-      if (this.iAmHost(state.host)) {
+      if (this.iAmHost(state.host) && state.status === STATUS.GAME) {
         let now = new Date().getTime();
 
         // Checks that a block with a given id only is present once in the lists
