@@ -99,6 +99,17 @@ function Sidebar() {
 
         if (readyCount === numberOfPlayers) {
           handleSubmit();
+
+          setTimeout(() => {
+            if (iAmHost()) {
+              let players = store.getState().players;
+              // Clear the locks for all players
+              dispatch(setPlayers(setAllLocks(players, false)));
+              dispatch(lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: false }));
+            } else {
+              dispatch(lockRequest({ forWho: LOCKTYPES.ALL_PLAYERS }));
+            }
+          }, 500);
         }
         setNumberOfLockedInPlayers(readyCount);
       }
@@ -178,20 +189,22 @@ function Sidebar() {
    * Clear the board. If host: perform locally before dispatching field and list event. If not: request to host.
    */
   const clearBoard = () => {
-    // Clear locally then update all players
-    let initalfield = currentTaskObject.field;
-    let state = store.getState();
-    let field = state.solutionField;
-    let handList = state.handList;
-    handList = clearBoardHelper(field, handList);
-    let players = state.players;
-    dispatch(setPlayers(setAllLocks(players, false)));
-    dispatch(lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: false }));
-    dispatch(setFieldState(initalfield));
-    dispatch(setListState(handList));
-    dispatch(clearEvent()); // Request clear to host
-    if (!iAmHost()) {
+    if (iAmHost()) {
+      // Clear locally then update all players
+      let initalfield = currentTaskObject.field;
+      let state = store.getState();
+      let field = state.solutionField;
+      let handList = state.handList;
+      handList = clearBoardHelper(field, handList);
+      let players = state.players;
+      dispatch(setPlayers(setAllLocks(players, false)));
+      dispatch(lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: false }));
+      dispatch(setFieldState(initalfield));
+      dispatch(setListState(handList));
+      dispatch(clearEvent()); // Request clear to host
+    } else {
       dispatch(lockRequest({ forWho: LOCKTYPES.ALL_PLAYERS }));
+      dispatch(clearEvent()); // Request clear to host
     }
     closeModal();
   };
@@ -208,20 +221,27 @@ function Sidebar() {
    */
   const handleLock = () => {
     let players = store.getState().players;
+    let lock = false;
+    for (let p of players) {
+      if (p.id === 'YOU') lock = p.lock;
+    }
 
-    dispatch(
-      lockEvent({
-        pid: 'HOST',
-        lock: !locked,
-      })
-    );
-    dispatch(setPlayers(setLock(players, 'YOU', !locked)));
-    setNumberOfLockedInPlayers(
-      getAllLocks(players).filter((lock) => lock === true).length
-    );
-    if (!iAmHost()) {
+    // If I am the HOST I update for myself and the other players
+    if (iAmHost()) {
+      dispatch(
+        lockEvent({
+          pid: 'HOST',
+          lock: !lock,
+        })
+      );
+      dispatch(setPlayers(setLock(players, 'YOU', !locked)));
+      setNumberOfLockedInPlayers(
+        getAllLocks(players).filter((lock) => lock === true).length
+      );
+    } else {
       // If I am not he HOST I need to ask for permission
       dispatch(lockRequest({ forWho: LOCKTYPES.FOR_MYSELF }));
+      setLocked(!lock);
     }
   };
 
@@ -229,14 +249,6 @@ function Sidebar() {
    * Make all players go to the next task of the submit is correct
    */
   const handleSubmit = () => {
-    if (iAmHost()) {
-      let players = store.getState().players;
-      // Clear the locks for all players
-      dispatch(setPlayers(setAllLocks(players, false)));
-      dispatch(lockEvent({ pid: LOCKTYPES.ALL_PLAYERS, lock: false }));
-    } else {
-      dispatch(lockRequest({ forWho: LOCKTYPES.ALL_PLAYERS }));
-    }
     closeModal();
     let fieldBlocks = store.getState().solutionField;
     setCurrentFieldBlocks(fieldBlocks);
