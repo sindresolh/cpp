@@ -666,16 +666,20 @@ class CommunicationHandler extends Component {
       >
         {this.state.connected ? <CommunicationListener /> : <PuzzleGif />}
         {/* Fancy alert for new events, for now only shows when there is a new task*/}
-        <SidebarModal
-          modalIsOpen={this.state.isModalOpen}
-          icon={SubmitIcon}
-          title={this.state.modalTitle}
-          description={this.state.modalDescription}
-          buttonText={'Ok'}
-          buttonColor={this.state.modalButtonColor}
-          borderColor={this.state.modalBorderColor}
-          closeModal={() => this.closeModal()}
-        />
+        {this.state.modalTitle !== '' ? (
+          <SidebarModal
+            modalIsOpen={this.state.isModalOpen}
+            icon={SubmitIcon}
+            title={this.state.modalTitle}
+            description={this.state.modalDescription}
+            buttonText={'Ok'}
+            buttonColor={this.state.modalButtonColor}
+            borderColor={this.state.modalBorderColor}
+            closeModal={() => this.closeModal()}
+          />
+        ) : (
+          ''
+        )}
       </LioWebRTC>
     );
   }
