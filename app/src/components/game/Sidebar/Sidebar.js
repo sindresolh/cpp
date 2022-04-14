@@ -76,7 +76,7 @@ function Sidebar() {
    * Update the hint modal when changing current hint number
    */
   useEffect(() => {
-    if (modalIsOpen) {
+    if (modalIsOpen && modalTitle.includes('Hint')) {
       handleHint();
     }
   }, [currentHintNo]);
