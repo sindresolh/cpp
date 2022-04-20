@@ -13,9 +13,10 @@ import SidebarModal from '../../Game/Sidebar/SidebarModal/SidebarModal';
 import { removePlayer, setTaskSet, tasksetEvent } from '../../../redux/actions';
 
 const TASKSETS = [
-  { label: 'Dummy tasks', number: 0 },
-  { label: 'Simple tasks', number: 1 },
-  { label: 'Medium tasks', number: 2 },
+  { label: 'Playtest', number: 0 },
+  { label: 'Dummy tasks', number: 1 },
+  { label: 'Simple tasks', number: 2 },
+  { label: 'Medium tasks', number: 3 },
 ];
 
 /** Show the players in the lobby based on their nickname

@@ -4,11 +4,12 @@ import { ACTIONS } from '../../actions/ACTIONS';
 //import { taskset } from '../../../utils/taskset1/taskset';
 // TODO: Store all tasksets in one JSON file so all sets can be accessed from that import.
 // TODO: --if we use a server in the future we would just fetch from there
-import t1 from '../../../utils/tasksets/tasksets.json';
-import t2 from '../../../utils/tasksets/simpletasks.json';
-import t3 from '../../../utils/tasksets/mediumtasks.json';
+import t1 from '../../../utils/tasksets/playtest_taskset.json';
+import t2 from '../../../utils/tasksets/tasksets.json';
+import t3 from '../../../utils/tasksets/simpletasks.json';
+import t4 from '../../../utils/tasksets/mediumtasks.json';
 
-const TASKSETS = [t1, t2, t3];
+const TASKSETS = [t1, t2, t3, t4];
 
 /**
  *
@@ -35,7 +36,6 @@ const taskReducer = (state = initialState, action) => {
   switch (action.type) {
     case ACTIONS.NEXT_TASK:
       if (state.currentTaskNumber >= state.tasks.length - 1) {
-        // TODO: Make something happen when the team has completed task set
         return state;
       }
       return {

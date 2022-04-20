@@ -133,7 +133,7 @@ class CommunicationListener extends Component {
    * The HOST holds the correct state and synchronizes all players on a given interval
    */
   hearthbeat() {
-    /*  this.timer = setInterval(() => {
+    this.timer = setInterval(() => {
       let state = store.getState();
       if (this.iAmHost(state.host) && state.status === STATUS.GAME) {
         let now = new Date().getTime();
@@ -147,7 +147,7 @@ class CommunicationListener extends Component {
           dispatch_fieldEvent();
         }
       }
-    }, this.EVENT_DELAY); */
+    }, this.EVENT_DELAY);
   }
 
   /**

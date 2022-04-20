@@ -12,7 +12,7 @@ function Finished() {
   return (
     <div className='finished' style={{ background: COLORS.background }}>
       <h1>Congratulations!</h1>
-      <h6>TODO: oppsumering av utførelse</h6>
+      <h4>You managed to complete all tasks</h4>
       <SidebarButton
         title='Return to lobby'
         icon={CheckButton}
@@ -21,7 +21,7 @@ function Finished() {
           dispatch(setTaskNumber(0));
           dispatch(goToLobby());
         }}
-        width='20vh'
+        width='30vh'
       />
     </div>
   );

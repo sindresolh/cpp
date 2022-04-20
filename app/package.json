@@ -7,6 +7,7 @@
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
     "immutability-helper": "^3.1.1",
+    "perf_hooks": "0.0.1",
     "proxy-memoize": "^0.3.7",
     "react": "^17.0.2",
     "react-dnd": "^14.0.4",
