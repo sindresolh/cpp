@@ -171,7 +171,14 @@ function Lobby({ handleClick }) {
         <div style={{ marginBottom: '1em' }}>
           <select value={selectedTaskSet} onChange={handleChange}>
             {TASKSETS.map((taskset) => (
-              <option value={taskset.number}>{taskset.label}</option>
+              <option
+                selected='true'
+                disabled='disabled'
+                hidden
+                value={taskset.number}
+              >
+                {taskset.label}
+              </option>
             ))}
           </select>
         </div>
