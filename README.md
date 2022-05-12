@@ -13,10 +13,6 @@ npm version > 6.14.11
 react version > 17.0.2,
 ```
 
-## Start the server
-
-
-
 ## Start the client
 
 ```
@@ -24,5 +20,5 @@ cd cpp\app
 npm install
 npm start
 ```
-Acess the game in your browser as http://localhost:3000/ <br />
+Acess the game in your browser at http://localhost:3000/ <br />
 Open multiple tabs for multiple clients
