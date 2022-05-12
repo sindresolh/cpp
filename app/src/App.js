@@ -26,6 +26,8 @@ function App({ startGame }) {
         return <MainPage />;
       case STATUS.FINISHED:
         return <Finished />;
+      default:
+        break;
     }
   };
 

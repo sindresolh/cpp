@@ -1,5 +1,6 @@
 import allReducer from '../reducers';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore } from 'redux';
+// import { createStore, applyMiddleware } from 'redux';
 // import thunk from 'redux-thunk';                                             // PRODUCTION
 
 // Redux store that holds global state

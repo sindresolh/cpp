@@ -39,10 +39,6 @@ import {
   SET_TASKSET,
   SET_LISTS_AND_FIELD,
 } from './messages';
-import {
-  twoDimensionalArrayIsEqual,
-  arrayIsEqual,
-} from '../../../utils/compareArrays/compareArrays';
 import { clearBoard } from '../../../utils/shuffleCodeblocks/shuffleCodeblocks';
 import {
   moveBlockInHandList,
@@ -224,6 +220,7 @@ class CommunicationHandler extends Component {
       case SET_LISTS_AND_FIELD:
         this.setField(payload);
         this.setList(payload);
+        break;
       case SET_FIELD:
         this.setField(payload);
         break;
@@ -259,6 +256,7 @@ class CommunicationHandler extends Component {
         break;
       case SET_TASKSET:
         this.setTaskSet(payload);
+        break;
       default:
         break;
     }
