@@ -2,11 +2,7 @@ import React from 'react';
 import './CodeBlock.css';
 import { ItemTypes } from '../../../utils/itemtypes';
 import { useDrag } from 'react-dnd';
-import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { selectEvent, selectRequest, setPlayers} from '../../../redux/actions';
-import store from '../../../redux/store/store';
-import {setSelected} from '../../../utils/lockHelper/lockHelper';
 
 /**
  * This component represents a code block. Can be either in a player list or in a code line in the solution field.

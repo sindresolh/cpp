@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import store from '../../../redux/store/store';
 import App from '../../../App';
 import {
-  SET_LIST,
-  SET_FIELD,
   NEXT_TASK,
   CLEAR_TASK,
   START_GAME,
@@ -368,6 +366,8 @@ class CommunicationListener extends Component {
         break;
       case prevProps.finishEvent !== this.props.finishEvent: // We solved the puzzles :)
         this.shout(FINISHED, '');
+        break;
+      default:
         break;
     }
 

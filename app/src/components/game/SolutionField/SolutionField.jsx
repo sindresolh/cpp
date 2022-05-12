@@ -126,7 +126,7 @@ function SolutionField({ minwidth }) {
           dispatch(setPlayers(
       setSelected(players, pid, index))
     );
-    pid === 'YOU'? pid = 'HOST': pid = pid;
+    if(pid === 'YOU') pid = 'HOST';
     dispatch(selectEvent({ pid: pid, index: index}));
   }
 
@@ -185,7 +185,7 @@ function SolutionField({ minwidth }) {
 
       if (
         (e.shiftKey &&
-          e.keyCode == KEYBOARD_EVENT.TAB &&
+          e.keyCode === KEYBOARD_EVENT.TAB &&
           selectedCodeline.indent > 0) ||
         (e.keyCode === KEYBOARD_EVENT.BACKSPACE && selectedCodeline.indent > 0)
       ) {
@@ -249,7 +249,7 @@ function SolutionField({ minwidth }) {
     useEffect(() => {
       let players = store.getState().players;
       let newSelectedBlocks = getSelectedBlocks(players);
-      if(newSelectedBlocks != null && newSelectedBlocks != allSelectedLines){
+      if(newSelectedBlocks != null && newSelectedBlocks !== allSelectedLines){
         let mySelectedBlock = getSelectedBy(players, 'YOU');
         if(selectedCodeline != null && mySelectedBlock !== selectedCodeline.index){
           // Update my selected codeline if they are different
@@ -415,7 +415,7 @@ function SolutionField({ minwidth }) {
       <h6>{'Connected players: ' + players.length}</h6>
       {locked && minwidth ? (
         <div className='bigLockContainer'>
-          <img draggable={false} className='bigLock' src={BigLockImage} />{' '}
+          <img draggable={false} className='bigLock' src={BigLockImage} alt="lock icon" />{' '}
         </div>
       ) : (
         ''

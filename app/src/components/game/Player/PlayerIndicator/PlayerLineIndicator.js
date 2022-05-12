@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import './PlayerLineIndicator.css';
 import { COLORS } from '../../../../utils/constants';
 import Poly from '../../../../utils/drawing/Poly';
@@ -20,22 +19,42 @@ export default function PlayerIndicator({ selectedPlayers }) {
         style={{ marginLeft: PLAYER_ICON_OFFSETT }}
       >
         {selectedPlayers[PLAYER.P1 - 1] ? (
-          <img draggable={false} src={p1Icon} className='LinesmallPlayerIcon' />
+          <img
+            draggable={false}
+            src={p1Icon}
+            className='LinesmallPlayerIcon'
+            alt='player-red'
+          />
         ) : (
           ''
         )}
         {selectedPlayers[PLAYER.P2 - 1] ? (
-          <img draggable={false} src={p2Icon} className='LinesmallPlayerIcon' />
+          <img
+            draggable={false}
+            src={p2Icon}
+            className='LinesmallPlayerIcon'
+            alt='player-blue'
+          />
         ) : (
           ''
         )}
         {selectedPlayers[PLAYER.P3 - 1] ? (
-          <img draggable={false} src={p3Icon} className='LinesmallPlayerIcon' />
+          <img
+            draggable={false}
+            src={p3Icon}
+            className='LinesmallPlayerIcon'
+            alt='player-yellow'
+          />
         ) : (
           ''
         )}
         {selectedPlayers[PLAYER.P4 - 1] ? (
-          <img draggable={false} src={p4Icon} className='LinesmallPlayerIcon' />
+          <img
+            draggable={false}
+            src={p4Icon}
+            className='LinesmallPlayerIcon'
+            alt='player-green'
+          />
         ) : (
           ''
         )}
