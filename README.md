@@ -29,7 +29,7 @@ Open multiple tabs for multiple clients. <br /> <br />
   <li>Move blocks from your hand list to the solution field using drag-and-drop or by double-clicking the blocks. Vice versa for moving a block from the solution field to the hand list.</li>
   <li>Indent blocks in the solution field by selecting it (left-click) and then use the tab/backspace keys.</li>
   <li>Get hints by clicking 'Hint'.</li>
-  <li>Remove all blocks from the solution field bu clicking 'Clear'.</li>
+  <li>Remove all blocks from the solution field by clicking 'Clear'.</li>
   <li>When ready to submit, lock-in your solution by clicking 'Lock-in'. The task will be submitted when all players have locked in.</li>
 </ol>
 
