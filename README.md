@@ -1,4 +1,4 @@
-# Cooperative Parssons Problems (CPP)
+# Collaborative Parsons Problems (CPP)
 
 <p align="center">
   <img src="./documentation/images/screenshot.png" width="800">
