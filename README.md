@@ -10,7 +10,7 @@
 ```
 node version > 14.15.5
 npm version > 6.14.11
-react version > 17.0.2,
+react version > 17.0.2
 ```
 
 ## Start the game client (locally)
