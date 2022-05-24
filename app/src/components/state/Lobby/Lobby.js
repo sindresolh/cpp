@@ -173,7 +173,6 @@ function Lobby({ handleClick }) {
             {TASKSETS.map((taskset) => (
               <option
                 selected='true'
-                hidden
                 value={taskset.number}
               >
                 {taskset.label}
