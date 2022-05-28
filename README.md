@@ -1,4 +1,4 @@
-# Cooperative Parsons Problems (CPP)
+# Team-based Parsons Problems (TPP)
 
 <p align="center">
   <img src="./documentation/images/screenshot.png" width="800">
