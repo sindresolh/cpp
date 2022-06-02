@@ -1,6 +1,6 @@
 # Team-based Parsons Problems (TPP)
 
-## Try out the game with this link:
+### Try out the game with this link:
 https://incandescent-panda-07c898.netlify.app <br />
 (No prerequesites required for the website) <br /><br />
 
